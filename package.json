@@ -1,5 +1,5 @@
 {
-  "name": "lodger-api",
+  "name": "lodger",
   "version": "0.0.1",
   "description": "Offline-first API for HOAs",
   "main": "index.js",
@@ -28,6 +28,7 @@
     "rxjs": "^6.3.3",
     "vue": "^2.5.17",
     "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4",
     "vuex-toast": "^0.1.3"
   }
 }

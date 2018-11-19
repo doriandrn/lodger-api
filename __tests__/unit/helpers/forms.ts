@@ -3,9 +3,9 @@ import {
   pushFieldToSchema,
   toSchemaField,
   handleOnSubmit
-} from 'lodger/lib/helpers/forms'
+} from '../../../lib/helpers/forms'
 
-import { fields, fieldsWithExcludedItems } from 'lodger/lib/forms/__stubs__/playground'
+import { fields, fieldsWithExcludedItems } from '../../../lib/forms/__stubs__/playground'
 import { RxJsonSchema } from 'rxdb';
 
 describe('helpers/forms', () => {
