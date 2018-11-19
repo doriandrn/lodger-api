@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "jsx": "preserve",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "forms/*": [ "./lib/forms/*" ],
+      "@/*": [ "./*" ],
+      "~/*": [ "./*" ],
+      "types/*": [ "./types/*" ]
+    },
+    "rootDirs": [
+      "./"
+    ],
+    "types": [
+      "node",
+      "debug",
+      "jest",
+      "faker"
+    ],
+    "strict": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "_oldstore",
+    "__tests__"
+  ],
+  "compileOnSave": true
+}
