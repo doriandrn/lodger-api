@@ -1,9 +1,8 @@
 import { Module, ActionTree, GetterTree, MutationTree } from 'vuex'
-import { LodgerError } from 'lodger/lib/Errors';
-import { taxIsMultipleSelect } from 'lodger/lib/helpers/functions';
+import { LodgerError } from '../Errors';
+import { taxIsMultipleSelect } from './functions';
 
 // const namespaced: boolean = true
-
 
 interface RootState {
   [key: string]: any

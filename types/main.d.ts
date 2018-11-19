@@ -1,7 +1,7 @@
 /// <reference path="build.d.ts" />
 
 import { RxDocument, RxDatabase, RxCollection, RxCollectionCreator } from "rxdb"
-import { Form } from 'lodger/lib/Form'
+import { Form } from '../lib/Form'
 import { Store } from 'vuex'
 import { Taxonomii } from "../index"
 

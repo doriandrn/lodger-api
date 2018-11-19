@@ -2,11 +2,10 @@ import { Module, ActionTree, GetterTree, MutationTree } from 'vuex'
 /**
  * Preferences MODULE
  */
-declare global {
-  type PreferencesState = {
-    theme: string,
-    [k: string]: any
-  }
+
+type PreferencesState = {
+  theme: string,
+  [k: string]: any
 }
 
 const state: PreferencesState = {

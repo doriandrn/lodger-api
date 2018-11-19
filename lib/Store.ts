@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Vuex, { ModuleTree, Module } from 'vuex'
-import { Taxonomii } from 'lodger'
-import { setupSharedMethods } from 'lodger/lib/helpers/store'
-import { LodgerError } from 'lodger/lib/Errors';
-import * as RootModule from 'lodger/lib/store/index'
+
+import { Taxonomii } from '../index'
+import { setupSharedMethods } from './helpers/store'
+import { LodgerError } from './Errors';
+import * as RootModule from './store/index'
 import Debug from 'debug'
 
 Vue.use(Vuex)

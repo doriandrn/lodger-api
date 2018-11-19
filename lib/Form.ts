@@ -8,8 +8,8 @@ import { RxJsonSchema, RxCollectionCreator } from 'rxdb'
 import {
   pushFieldToSchema,
   addCommonFieldsToSchema
-} from 'lodger/lib/helpers/forms'
-import { FormError } from 'lodger/lib/Errors'
+} from './helpers/forms'
+import { FormError } from './Errors'
 import { GetterTree } from 'vuex'
 
 

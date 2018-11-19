@@ -1,5 +1,5 @@
 import { RxJsonSchema } from 'rxdb'
-import FormItemTypes from 'lodger/lib/defs/FormItemTypes'
+import FormItemTypes from '../defs/FormItemTypes'
 import Debug from 'debug'
 import { Taxonomii } from '../../index';
 const debug = Debug('lodger:forms')

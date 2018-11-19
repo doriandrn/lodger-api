@@ -32,7 +32,6 @@ const actions = {
   confirm: 'adaugaServiciu'
 }
 
-const global = true
 const multipleSelect = true
 
 const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer']
@@ -42,6 +41,6 @@ export {
   plural,
   actions,
   predefinite,
-  global,
+  global: true,
   multipleSelect
 }

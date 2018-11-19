@@ -1,4 +1,4 @@
-import { Lodger, Errors } from 'lodger/index'
+import { Lodger, Errors } from '../index'
 import Debug from 'debug'
 import { isRxDatabase } from 'rxdb'
 import BroadcastChannel from 'broadcast-channel'

@@ -17,7 +17,6 @@ module.exports = {
     'tsx'
   ],
   moduleNameMapper: {
-    'lodger/(.*)$': '<rootDir>/$1',
     '~/(.*)$': '<rootDir>/$1',
     'forms/(.*)$': '<rootDir>/lib/forms/$1',
     'lodger.config': '<rootDir>/lodger.config'
