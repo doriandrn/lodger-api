@@ -6,16 +6,16 @@ import fs from 'fs'
 import yaml from 'json2yaml'
 import equal from 'deep-equal'
 
-import LodgerStore from 'lodger/lib/Store'
-import { getCriteriu, taxIsMultipleSelect } from 'lodger/lib/helpers/functions'
-import { handleOnSubmit, assignRefIdsFromStore } from 'lodger/lib/helpers/forms'
-import DB from 'lodger/lib/DB'
-import { Form } from 'lodger/lib/Form'
-import { LodgerError } from 'lodger/lib/Errors'
+import LodgerStore from 'lib/Store'
+import { getCriteriu, taxIsMultipleSelect } from 'lib/helpers/functions'
+import { handleOnSubmit, assignRefIdsFromStore } from 'lib/helpers/forms'
+import DB from 'lib/DB'
+import { Form } from 'lib/Form'
+import { LodgerError } from 'lib/Errors'
 
 import Vue from 'vue'
 
-import { predefinite } from 'lodger/lib/forms/serviciu'
+import { predefinite } from 'lib/forms/serviciu'
 
 const { NODE_ENV } = process.env
 
