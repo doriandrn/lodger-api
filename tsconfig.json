@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "jsx": "preserve",
+    "lib": [ "esnext" ],
     "target": "esnext",
-    "module": "esnext",
+    "outFile": "./dist/index.js",
+    "module": "amd",
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "forms/*": [ "./lib/forms/*" ],
+      "forms/*": [ "lib/forms/*" ],
       "@/*": [ "./*" ],
       "~/*": [ "./*" ],
       "types/*": [ "./types/*" ]
@@ -27,9 +29,13 @@
     "experimentalDecorators": true,
     "esModuleInterop": true
   },
+  "include": [
+    "./src/**/*"
+  ],
   "exclude": [
     "_oldstore",
-    "__tests__"
+    "__tests__",
+    "node_modules/*"
   ],
   "compileOnSave": true
 }

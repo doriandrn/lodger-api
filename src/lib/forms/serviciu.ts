@@ -41,6 +41,5 @@ export {
   plural,
   actions,
   predefinite,
-  global: true,
   multipleSelect
 }

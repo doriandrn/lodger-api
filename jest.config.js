@@ -9,6 +9,9 @@ module.exports = {
       diagnostics: false
     }
   },
+  exclude: [
+    'fixtures/*'
+  ],
   moduleFileExtensions: [
     'js',
     'jsx',

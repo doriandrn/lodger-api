@@ -7,6 +7,7 @@ import yaml from 'json2yaml'
 import equal from 'deep-equal'
 
 import LodgerStore from './lib/Store'
+import { buildOpts } from './lib/build/opts'
 import { getCriteriu, taxIsMultipleSelect } from './lib/helpers/functions'
 import { handleOnSubmit, assignRefIdsFromStore } from './lib/helpers/forms'
 import DB from './lib/DB'
@@ -15,19 +16,10 @@ import { LodgerError } from './lib/Errors'
 
 import Vue from 'vue'
 
-import { predefinite } from 'forms/serviciu'
+import { string_similarity } from './lib/helpers/search'
+import { predefinite } from './lib/forms/serviciu'
 
 const { NODE_ENV } = process.env
-
-const buildOpts: BuildOptions = {
-  dbCon: {
-    name: 'Lodger/',
-    adapter: 'memory',
-    password: 'l0dg3rp4$$',
-    ignoreDuplicate: NODE_ENV === 'test'
-  },
-  usePersistedState: false
-}
 
 const subscribers: SubscribersList = {
   main: {},
@@ -67,7 +59,7 @@ const loadForms = (taxonomies: Taxonomii[]) => Object.assign({}, ...taxonomies.m
 
 type SubscribersList = { [k: string]: {} }
 
-const plugins: Plugin[] = []
+const plugins: LodgerPlugin[] = []
 
 const docsHolderObj = {
   docs: [],
@@ -121,7 +113,7 @@ const docsHolder = new Vue({
 
       } finally {
         if (!item) {
-          throw new LodgerError('item not found', arguments)
+          throw new LodgerError('item not found')
           // item = await collections[plural].findOne(id).exec()
         }
       }
@@ -172,7 +164,7 @@ class Lodger {
     })
 
     // todo, remove on prod
-    try { window.dh = docsHolder } catch (e) {}
+    // try { window.dh = docsHolder } catch (e) {}
   }
 
   /**
@@ -191,7 +183,7 @@ class Lodger {
    */
   async put (
     taxonomy: Taxonomie,
-    data: LodgerFormData,
+    data: LFormData,
     subscriber ?: string
   ) {
     const debug = Debug('lodger:put')
@@ -317,6 +309,49 @@ class Lodger {
     } else {
       store.getters[gName] = doc
     }
+  }
+
+  /**
+   * Cauta in searchMap
+   * @param input - string de cautat
+   */
+  search (
+    input: string,
+    searchTaxonomy ?: Taxonomie
+  ) {
+    if (!input) return
+    const debug = Debug('lodger:search')
+
+    const searchMap = this.getters['searchMap']
+    if (!searchMap) {
+      debug('no search map found in getters, search not working !!')
+      return
+    }
+    const results = {}
+
+    Object.keys(searchMap).forEach(tax => {
+      if (searchTaxonomy && searchTaxonomy !== tax) return
+      const iterator = searchMap[tax].entries()
+      results[tax] = []
+
+      for (let [ key, value ] of iterator) {
+        const relevance = string_similarity(String(input), value)
+        results[tax]
+          .push({ id: key, relevance, value })
+      }
+
+      results[tax] = results[tax]
+        .sort((a, b) => Number(a.relevance) - Number(b.relevance))
+        .reverse()
+        .slice(0, 6)
+    })
+
+    // clear method
+    results.clear = () => {
+      Object.keys(results).forEach(result => results[result] = [])
+    }
+
+    return results
   }
 
    /**

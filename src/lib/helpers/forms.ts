@@ -107,7 +107,7 @@ function assignRefIdsFromStore (context: any): void {
   const { references, getters } = context
   if (!(references && references.length)) return
   const refsObj = {}
-  references.map(tax => {
+  references.map((tax: Taxonomie) => {
     refsObj[`${tax}Id`] = getters[`${tax}/selected`]
   })
 
@@ -120,7 +120,7 @@ function assignRefIdsFromStore (context: any): void {
  * @param data
  */
 function handleOnSubmit (
-  data : LodgerFormData,
+  data : LFormData,
   context ?: any
 ) {
   const manipulatedData: any = {}

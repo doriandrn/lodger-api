@@ -1,5 +1,5 @@
 import { RxJsonSchema, RxCollectionCreator } from 'rxdb'
-import { Taxonomii } from 'lodger'
+import { Taxonomii } from '../index'
 
 declare global {
   type Strings = 'text' | 'textarea' | 'select' | 'search' | 'string' | undefined
