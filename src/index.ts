@@ -1,23 +1,25 @@
+/// <reference path="main.d.ts" />
+
 import Debug from 'debug'
 import { Store, GetterTree } from 'vuex'
 import { RxDatabase, RxCollectionCreator, RxDocument, isRxDocument } from 'rxdb'
-import fs from 'fs'
 
-import yaml from 'json2yaml'
+// import fs from 'fs'
+// import yaml from 'json2yaml'
 import equal from 'deep-equal'
 
-import LodgerStore from './lib/Store'
-import { buildOpts } from './lib/build/opts'
-import { getCriteriu, taxIsMultipleSelect } from './lib/helpers/functions'
-import { handleOnSubmit, assignRefIdsFromStore } from './lib/helpers/forms'
-import DB from './lib/DB'
-import { Form } from './lib/Form'
-import { LodgerError } from './lib/Errors'
+import LodgerStore from 'lib/Store'
+import { buildOpts } from 'build/opts'
+import { getCriteriu, taxIsMultipleSelect } from 'helpers/functions'
+import { handleOnSubmit, assignRefIdsFromStore } from 'helpers/forms'
+import DB from 'lib/DB'
+import { Form } from 'lib/Form'
+import { LodgerError } from 'lib/Errors'
 
 import Vue from 'vue'
 
-import { string_similarity } from './lib/helpers/search'
-import { predefinite } from './lib/forms/serviciu'
+import { string_similarity } from 'helpers/search'
+import { predefinite } from 'forms/serviciu'
 
 const { NODE_ENV } = process.env
 
@@ -672,10 +674,10 @@ class Lodger {
       const date = new Date()
       filename = `LdgDB-${date}`
     }
-    fs.writeFile(`${path}/${filename}.${extension}`, yaml.stringify(json), (e: Error) => {
-      if (e) throw new LodgerError(Errors.couldNotWriteFile)
-      debug(`written ${filename}.${extension} in path`)
-    })
+    // fs.writeFile(`${path}/${filename}.${extension}`, yaml.stringify(json), (e: Error) => {
+    //   if (e) throw new LodgerError(Errors.couldNotWriteFile)
+    //   debug(`written ${filename}.${extension} in path`)
+    // })
   }
 
   /**

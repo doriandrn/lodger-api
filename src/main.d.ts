@@ -1,9 +1,7 @@
-/// <reference path="build.d.ts" />
-
 import { RxDocument, RxDatabase, RxCollection, RxCollectionCreator } from "rxdb"
-import { Form } from '../lib/Form'
+import { Form } from  'lib/Form'
 import { Store } from 'vuex'
-import { Taxonomii } from "../index"
+import { Taxonomii } from './index'
 
 declare global {
   type Taxonomie = keyof typeof Taxonomii
@@ -21,17 +19,7 @@ declare global {
     username: string
   }
 
-  type Criteriu = {
-    limit?: number,
-    index?: number,
-    sort?: Sort,
-    find?: Find
-  }
-
   type Plural = <T>(definitie: T) => T
-
-  type Sort = {}
-  type Find = {} | null
 
   type DateContact = {
     emailPublic?: string,

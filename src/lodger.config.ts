@@ -1,5 +1,15 @@
 // import { version } from './package'
-const version = require('./package.json').version || '0.0.1'
+const version = require('../package.json').version
+
+type Sort = {}
+type Find = {} | null
+
+export type Criteriu = {
+  limit?: number,
+  index?: number,
+  sort?: Sort,
+  find?: Find
+}
 
 type LodgerConfig = {
   version: string,

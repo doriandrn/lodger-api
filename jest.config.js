@@ -9,9 +9,6 @@ module.exports = {
       diagnostics: false
     }
   },
-  exclude: [
-    'fixtures/*'
-  ],
   moduleFileExtensions: [
     'js',
     'jsx',
@@ -20,8 +17,7 @@ module.exports = {
     'tsx'
   ],
   moduleNameMapper: {
-    '~/(.*)$': '<rootDir>/$1',
-    'forms/(.*)$': '<rootDir>/lib/forms/$1',
+    '~/(.*)$': '<rootDir>/src/$1',
     'lodger.config': '<rootDir>/lodger.config'
   },
   transform: {

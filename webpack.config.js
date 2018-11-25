@@ -1,5 +1,12 @@
+var path = require('path')
+
+function resolve (dir) {
+  return path.join(__dirname, '.', dir)
+}
+
 module.exports = {
   entry: "./src/index.ts",
+
   output: {
     filename: "./dist/bundle.js",
   },
@@ -8,7 +15,14 @@ module.exports = {
   mode: "production",
 
   resolve: {
-    extensions: [".js", ".ts"]
+    extensions: [".js", ".ts"],
+    alias: {
+      lib: resolve('src/lib/'),
+      helpers: resolve('src/lib/helpers'),
+      forms: resolve('src/lib/forms'),
+      build: resolve('src/lib/build'),
+      defs: resolve('src/lib/defs')
+    }
   },
 
   optimization: {
@@ -27,5 +41,4 @@ module.exports = {
       }
     ]
   }
-
 }

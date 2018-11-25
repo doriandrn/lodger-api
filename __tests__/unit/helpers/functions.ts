@@ -5,8 +5,8 @@ import {
   spleet,
   getCriteriu,
   getTaxonomyConfig
-} from 'lodger/lib/helpers/functions'
-import lodgerConfig from '../../../lodger.config'
+} from '~/lib/helpers/functions'
+import lodgerConfig from 'lodger.config'
 
 describe('Functii ajutatoare', () => {
   describe('traverse', () => {

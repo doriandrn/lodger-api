@@ -1,6 +1,7 @@
 import { Module, ActionTree, GetterTree, MutationTree } from 'vuex'
 import { LodgerError } from '../Errors';
 import { taxIsMultipleSelect } from './functions';
+import { sharedStoreMethods } from 'defs/sharedStoreMethods'
 
 // const namespaced: boolean = true
 
@@ -10,15 +11,6 @@ interface RootState {
 
 type EmptyState = {}
 
-/**
- * @param { methoName: action }
- */
-const sharedStoreMethods: SharedStoreMethods = {
-  selected: 'select',
-  last: 'set_last',
-  // referencesIds: 'set_referencesIds'
-  // active: 'activate'
-}
 
 /**
  * Creates an empty store module

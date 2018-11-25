@@ -9,9 +9,47 @@ import {
   pushFieldToSchema,
   addCommonFieldsToSchema
 } from './helpers/forms'
+
+import { FormItemTypes } from './defs/formItemTypes'
 import { FormError } from './Errors'
 import { GetterTree } from 'vuex'
+import { RootState } from './Store'
 
+type ItemReference = Plural | object
+
+export type Item = {
+  id: string,
+  name?: string,
+  label?: string
+
+  type?: FormItemTypes,
+  required?: boolean,
+  encrypted?: boolean,
+
+  default?: any
+  value?: any
+
+  step?: number,
+  index?: boolean,
+  ref?: ItemReference,
+  items?: object,
+  indexRef?: boolean,
+
+  notInDb?: boolean // exclude field from DB schema
+  notInForm?: boolean // exclude field from client's end
+
+  v: string // validation string
+  click: string
+  showInList: 'primary' | 'secondary' | 'details'
+}
+
+type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
+
+type Fields = Item[]
+type FormName = string
+type FormMethods = {
+  [k: string]: () => Promise<any>
+}
 
 /**
  * Form Errors Definition

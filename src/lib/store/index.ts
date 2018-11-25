@@ -1,9 +1,9 @@
-import lodgerConfig from '../../../lodger.config'
+import lodgerConfig from '../../lodger.config'
 /**
  * MODULES
  */
 // TOAST
-import { createModule } from 'vuex-toast'
+// import { createModule } from 'vuex-toast'
 
 // MODAL
 import modal from './modules/modal'
@@ -22,7 +22,7 @@ const actions: ActionTree < Toast, RootState > = {
 }
 
 const modules = {
-  toast: createModule({ dismissInterval: 5000 }),
+  // toast: createModule({ dismissInterval: 5000 }),
   modal,
   prompt
 }

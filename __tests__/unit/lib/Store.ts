@@ -1,5 +1,5 @@
-import LodgerStore from 'lodger/lib/Store'
-import { sharedStoreMethods } from 'lodger/lib/helpers/store'
+import LodgerStore from '~/lib/Store'
+import { sharedStoreMethods } from '~/lib/helpers/store'
 
 const taxonomies = ['masina']
 
@@ -25,7 +25,7 @@ describe('LodgerStore', () => {
         expect(tGetter).toBeDefined()
       })
     })
-    
+
     describe('negative', () => {
       test('fails if invalid module supplied', () => {
         try {
@@ -47,7 +47,7 @@ describe('LodgerStore', () => {
     })
 
     describe('positive', () => {
-      
+
       test('no arguments -> empty store', () => {
         const s = new LodgerStore()
         expect(s).toBeDefined()

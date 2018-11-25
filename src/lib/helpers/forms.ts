@@ -1,7 +1,10 @@
 import { RxJsonSchema } from 'rxdb'
-import FormItemTypes from '../defs/FormItemTypes'
+import { FormItemTypes } from '../defs/formItemTypes'
+import formItemTypes from '../defs/formItemTypes'
+import { Item } from 'lib/Form'
+
 import Debug from 'debug'
-import { Taxonomii } from '../../index';
+// import { Taxonomii } from '../../index';
 const debug = Debug('lodger:forms')
 
 /**
@@ -15,9 +18,11 @@ const debug = Debug('lodger:forms')
  * @param {string} type
  * @returns {string} - tipul primar, eg. 'string'
  */
-function toRxDBtype(type: KnownItemTypes): RxDBType {
+type RxDBType = 'string' | 'number' | 'array' | 'object'
+
+function toRxDBtype(type: FormItemTypes): RxDBType {
   const _default = 'string'
-  const { strings, numbers, arrays, objects } = FormItemTypes
+  const { strings, numbers, arrays, objects } = formItemTypes
 
   if (!type || strings.indexOf(type) > -1) return _default
   if (objects.indexOf(type) > -1) return 'object'
@@ -103,10 +108,11 @@ const pushFieldToSchema = (formItem: Item, schema: RxJsonSchema) => {
  * @param { references, getters }
  * @returns {Object} eg { asociatieId: 'XXXX' }
  */
-function assignRefIdsFromStore (context: any): void {
+function assignRefIdsFromStore (context: any) {
   const { references, getters } = context
   if (!(references && references.length)) return
-  const refsObj = {}
+  type cheieIdTaxonomie = (x: Taxonomie) => string
+  const refsObj: {[k: cheieIdTaxonomie]: any} = {}
   references.map((tax: Taxonomie) => {
     refsObj[`${tax}Id`] = getters[`${tax}/selected`]
   })

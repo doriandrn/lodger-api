@@ -12,6 +12,14 @@ Vue.use(Vuex)
 const debug = Debug('lodger:Store')
 const modules: ModuleTree<RootState> = {}
 
+export type Locale = 'en' | 'ro'
+
+export interface RootState {
+  version: string,
+  locale: Locale
+}
+
+
 enum Errors {
   invalidModule = 'Invalid Module'
 }

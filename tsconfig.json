@@ -9,10 +9,12 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "forms/*": [ "lib/forms/*" ],
-      "@/*": [ "./*" ],
-      "~/*": [ "./*" ],
-      "types/*": [ "./types/*" ]
+      "lib/*": [ "src/lib/*" ],
+      "forms/*": [ "src/lib/forms/*" ],
+      "defs/*": [ "src/lib/defs/*" ],
+      "helpers/*": [ "src/lib/helpers/*" ],
+      "@/*": [ "./src/*" ],
+      "~/*": [ "./src/*" ]
     },
     "rootDirs": [
       "./"

@@ -1,4 +1,4 @@
-import { Taxonomii } from "lodger"
+import { Taxonomii } from "../../../index"
 import faker from 'faker'
 
 export default function fakeData (taxonomy: Taxonomii) {

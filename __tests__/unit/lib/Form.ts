@@ -1,5 +1,5 @@
-import { Form, Errors } from 'lodger/lib/Form'
-import { stub1, stub2, fields, name } from 'lodger/lib/forms/__stubs__/playground'
+import { Form, Errors } from '~/lib/Form'
+import { stub1, stub2, fields, name } from '../__stubs__/playground'
 
 describe('Form', () => {
   const __stub1__ = new Form(stub1)
@@ -18,7 +18,7 @@ describe('Form', () => {
   })
 
   describe('.schema', () => {
-    
+
     test('is defined', () => {
       const { schema } = __stub1__
       expect(schema).toBeDefined()
@@ -66,7 +66,7 @@ describe('Form', () => {
         expect(properties.x2.la).toBeDefined()
       })
     })
-    
+
   })
 
   describe('.collection', () => {
@@ -82,6 +82,11 @@ describe('Form', () => {
   })
 
   describe('.loadByName() - Loads a form by name', () => {
+    let form
+    const formToLoadAndTest = 'asociatie'
+    beforeAll(async () => {
+      form = await Form.loadByName(formToLoadAndTest)
+    })
     describe('negative', () => {
       test('throws if called with anything else than string', () => {
         expect(() => Form.loadByName('')).toThrow()
@@ -91,9 +96,13 @@ describe('Form', () => {
       })
     })
     describe('positive', () => {
+
       test('returns a fully inited <Form> if found and ok', () => {
-        const form = Form.loadByName('asociatie')
-        expect(form.name).toBe('asociatie')
+        expect(form).toBeDefined
+      })
+
+      test('form name is the same  as requested', () => {
+        expect(form.name).toBe(formToLoadAndTest)
       })
     })
   })
