@@ -1,4 +1,4 @@
-import { Lodger } from '../../lodger'
+import { Lodger } from '~/index'
 import faker from 'faker'
 import Debug from 'debug'
 import BroadcastChannel from 'broadcast-channel'

@@ -1,8 +1,8 @@
 // import { Taxonomii } from 'lodger/index'
-import LodgerConfig from '../../lodger.config'
+import LodgerConfig from '~/lodger.config'
 import Debug from 'debug'
-import { Taxonomii } from '../../index'
-import { Criteriu } from '../../lodger.config'
+import { Taxonomii } from '~/index'
+import { Criteriu } from '~/lodger.config'
 // Debug.enable('functions:*')
 
 type TraversableObject = { [index: string]: TraversableObject }

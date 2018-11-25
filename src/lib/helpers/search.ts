@@ -1,4 +1,4 @@
-export const get_bigrams = function (string) {
+export const get_bigrams = function (string: string) {
   var i, j, ref, s, v;
   s = string.toLowerCase();
   v = new Array(s.length - 1);
@@ -8,7 +8,7 @@ export const get_bigrams = function (string) {
   return v;
 };
 
-export const string_similarity = function (str1, str2) {
+export const string_similarity = function (str1: string, str2: string) {
   var hit_count, j, k, len, len1, pairs1, pairs2, union, x, y;
   if (str1.length > 0 && str2.length > 0) {
     pairs1 = get_bigrams(str1);

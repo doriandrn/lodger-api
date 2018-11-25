@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "lib/*": [ "src/lib/*" ],
+      "~/lib/*": [ "src/lib/*" ],
       "forms/*": [ "src/lib/forms/*" ],
       "defs/*": [ "src/lib/defs/*" ],
       "helpers/*": [ "src/lib/helpers/*" ],

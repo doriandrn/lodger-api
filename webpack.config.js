@@ -17,7 +17,8 @@ module.exports = {
   resolve: {
     extensions: [".js", ".ts"],
     alias: {
-      lib: resolve('src/lib/'),
+      '~': resolve('src'),
+      // '~/lib': resolve('src/lib/'),
       helpers: resolve('src/lib/helpers'),
       forms: resolve('src/lib/forms'),
       build: resolve('src/lib/build'),
