@@ -15,7 +15,7 @@ import { FormError } from './Errors'
 import { GetterTree } from 'vuex'
 import { RootState } from './Store'
 
-type ItemReference = Plural | object
+type ItemReference = Plural<Taxonomie> | object
 
 export type Item = {
   id: string,
@@ -43,7 +43,7 @@ export type Item = {
   showInList: 'primary' | 'secondary' | 'details'
 }
 
-type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
+// type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
 
 type Fields = Item[]
 type FormName = string
@@ -85,7 +85,7 @@ const defaultSchema: RxJsonSchema = {
   version: 0
 }
 
-interface LFormData {
+export interface LFormData {
   fields: Fields,
   name: string
 }

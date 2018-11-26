@@ -11,10 +11,6 @@ export type LodgerModule = {
   name: string
 }
 
-export interface LodgerPlugin {
-  name: string
-}
-
 export const buildOpts: BuildOptions = {
   dbCon: {
     name: 'Lodger/',

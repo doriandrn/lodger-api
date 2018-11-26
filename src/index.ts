@@ -1,7 +1,6 @@
 /// <reference path="main.d.ts" />
 
 import Debug from 'debug'
-import { Store, GetterTree } from 'vuex'
 import { RxDatabase, RxCollectionCreator, RxDocument, isRxDocument } from 'rxdb'
 
 // import fs from 'fs'
@@ -9,11 +8,11 @@ import { RxDatabase, RxCollectionCreator, RxDocument, isRxDocument } from 'rxdb'
 import equal from 'deep-equal'
 
 import LodgerStore from '~/lib/Store'
-import { buildOpts } from 'build/opts'
+import { buildOpts, BuildOptions } from '~/lib/build/opts'
 import { getCriteriu, taxIsMultipleSelect } from '~/lib/helpers/functions'
 import { handleOnSubmit, assignRefIdsFromStore } from '~/lib/helpers/forms'
 import DB from '~/lib/DB'
-import { Form } from '~/lib/Form'
+import { Form, LFormData } from '~/lib/Form'
 import { LodgerError } from '~/lib/Errors'
 
 import Vue from 'vue'
@@ -130,7 +129,7 @@ class Lodger {
     protected taxonomii: Taxonomii[],
     protected forms: Forms,
     protected db: RxDatabase,
-    readonly store: Store<RootState>
+    readonly store: LodgerStore
   ) {
     // const debug = Debug('lodger:constructor')
     const { subscriberData } = this
@@ -150,7 +149,7 @@ class Lodger {
       if (!payload || payload.id === undefined) return
       const path = type.split('/')
       if (path[1] !== 'select') return
-      const taxonomie = path[0]
+      const taxonomie = <Taxonomie>path[0]
       const { plural } = forms[taxonomie]
 
       if (payload.id && !payload.hadDoc) {
@@ -185,7 +184,7 @@ class Lodger {
    */
   async put (
     taxonomy: Taxonomie,
-    data: LFormData,
+    data: any,
     subscriber ?: string
   ) {
     const debug = Debug('lodger:put')
@@ -296,7 +295,7 @@ class Lodger {
   /**
    * Active document for taxonomy
   */
-  protected set _activeDocument (docHolder) {
+  protected set _activeDocument (docHolder: ActiveDocumentHolder) {
     let { taxonomie, doc } = docHolder
     const debug = Debug('lodger:_activeDocument')
     const gName = `${taxonomie}/activeDoc`
@@ -329,7 +328,11 @@ class Lodger {
       debug('no search map found in getters, search not working !!')
       return
     }
-    const results = {}
+    const results: SearchResults = {
+      clear: () => {
+        Object.keys(results).forEach(result => results[result] = [])
+      }
+    }
 
     Object.keys(searchMap).forEach(tax => {
       if (searchTaxonomy && searchTaxonomy !== tax) return
@@ -337,6 +340,7 @@ class Lodger {
       results[tax] = []
 
       for (let [ key, value ] of iterator) {
+        if (typeof value === 'function') continue
         const relevance = string_similarity(String(input), value)
         results[tax]
           .push({ id: key, relevance, value })
@@ -347,11 +351,6 @@ class Lodger {
         .reverse()
         .slice(0, 6)
     })
-
-    // clear method
-    results.clear = () => {
-      Object.keys(results).forEach(result => results[result] = [])
-    }
 
     return results
   }
@@ -422,7 +421,7 @@ class Lodger {
           // }
           const everyKeyInCriteriu = vm => ({ ...vm[subscriberName][plural].criteriu })
 
-          docsHolder.$watch(everyKeyInCriteriu, (newC, oldC) => {
+          docsHolder.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
             if (!newC || equal(newC, oldC) ) return
             // const diff = {}
             // if (newC.find) Object.assign(diff, { find: { ...newC.find } })
@@ -589,15 +588,15 @@ class Lodger {
       // taxonomies that depend on the selected tax and subscriber
       // todo: move from here
       const dependentTaxonomies: Taxonomie[] = []
-      Object.keys(forms).forEach(taxForm => {
+      Object.keys(forms).forEach((taxForm) => {
         const { referenceTaxonomies } = forms[taxForm]
         if (!referenceTaxonomies || referenceTaxonomies.indexOf(tax) < 0) return
-        dependentTaxonomies.push(taxForm)
+        dependentTaxonomies.push(<Taxonomie>taxForm)
       })
-      debug('DT', tax, dependentTaxonomies)
+      debug(`${tax} dep taxes:`, dependentTaxonomies)
 
       // call methods of references documents
-      referenceTaxonomies.forEach(async refTax => {
+      referenceTaxonomies.forEach(async (refTax: Taxonomie) => {
         const refdoc = store.getters[`${refTax}/activeDoc`]
         debug(`refdoc ${tax} (${refTax})`, refdoc)
         if (!refdoc) return
@@ -636,10 +635,10 @@ class Lodger {
    * Extend Lodger :)
    * Todo!
    *
-   * @param {Plugin} plugin
+   * @param {LodgerPlugin} plugin
    *
    */
-  static use (plugin: Plugin) {
+  static use (plugin: LodgerPlugin) {
     const debug = Debug('lodger:use')
     if (!plugin || typeof plugin !== 'object') {
       throw new LodgerError(Errors.invalidPluginDefinition)

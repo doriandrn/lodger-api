@@ -1,5 +1,5 @@
 import { RxDocument, RxDatabase, RxCollection, RxCollectionCreator } from "rxdb"
-import { Form } from  'lib/Form'
+import { Form } from  '~/lib/Form'
 import { Store } from 'vuex'
 import { Taxonomii } from './index'
 
@@ -19,7 +19,7 @@ declare global {
     username: string
   }
 
-  type Plural = <T>(definitie: T) => T
+  type Plural<T> = T extends Taxonomie ? string : string
 
   type DateContact = {
     emailPublic?: string,
@@ -103,7 +103,13 @@ declare global {
 
     doc?: RxDocument<Taxonomie>,
     hadDoc?: boolean,
+    subscriber?: string
   }
+
+  interface LodgerPlugin {
+    name: string
+  }
+
 
   /**
    * An user notification
@@ -111,5 +117,32 @@ declare global {
   type LdgNotification = {
     type: 'error' | 'success' | 'info' | 'warn',
     text: string
+  }
+
+  interface SearchResults {
+    clear: () => void
+    [k: string]: Result[]
+  }
+
+  // a search result
+  type Result = {
+    id: string,
+    value: string,
+    relevance: number,
+  }
+
+  type ActiveDocumentHolder = {
+    taxonomie: Taxonomie,
+    doc: RxDocument<Taxonomie>
+  }
+
+  type Sort = {}
+  type Find = {} | null
+
+  type Criteriu = {
+    limit?: number,
+    index?: number,
+    sort?: Sort,
+    find?: Find
   }
 }
