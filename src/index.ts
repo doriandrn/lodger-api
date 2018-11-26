@@ -3,8 +3,8 @@
 import Debug from 'debug'
 import { RxDatabase, RxCollectionCreator, RxDocument, isRxDocument } from 'rxdb'
 
-// import fs from 'fs'
-// import yaml from 'json2yaml'
+import fs from 'fs'
+import yaml from 'json2yaml'
 import equal from 'deep-equal'
 
 import LodgerStore from '~/lib/Store'
@@ -12,7 +12,7 @@ import { buildOpts, BuildOptions } from '~/lib/build/opts'
 import { getCriteriu, taxIsMultipleSelect } from '~/lib/helpers/functions'
 import { handleOnSubmit, assignRefIdsFromStore } from '~/lib/helpers/forms'
 import DB from '~/lib/DB'
-import { Form, LFormData } from '~/lib/Form'
+import { Form } from '~/lib/Form'
 import { LodgerError } from '~/lib/Errors'
 
 import Vue from 'vue'
@@ -58,11 +58,9 @@ enum Errors {
 
 const loadForms = (taxonomies: Taxonomii[]) => Object.assign({}, ...taxonomies.map((tax: Taxonomii) => ({ [tax]: Form.loadByName(tax) }) ))
 
-type SubscribersList = { [k: string]: {} }
-
 const plugins: LodgerPlugin[] = []
 
-const docsHolderObj = {
+const docsHolderObj: SubscriberData = {
   docs: [],
   items: {},
   criteriu: {},
@@ -131,8 +129,10 @@ class Lodger {
     protected db: RxDatabase,
     readonly store: LodgerStore
   ) {
-    // const debug = Debug('lodger:constructor')
-    const { subscriberData } = this
+    const debug = Debug('lodger:constructor')
+    const { subscriberData, plugins } = this
+
+    debug('plugins:', plugins)
 
     taxonomii.forEach(tax => {
       const { plural } = forms[tax]
@@ -187,7 +187,7 @@ class Lodger {
     data: any,
     subscriber ?: string
   ) {
-    const debug = Debug('lodger:put')
+    // const debug = Debug('lodger:put')
     if (!data || Object.keys(data).length < 1) throw new LodgerError(Errors.missingData, data)
 
     const {
@@ -328,11 +328,13 @@ class Lodger {
       debug('no search map found in getters, search not working !!')
       return
     }
-    const results: SearchResults = {
+    const results: SearchResults = {}
+
+    Object.assign(results, {
       clear: () => {
         Object.keys(results).forEach(result => results[result] = [])
       }
-    }
+    })
 
     Object.keys(searchMap).forEach(tax => {
       if (searchTaxonomy && searchTaxonomy !== tax) return
@@ -374,8 +376,7 @@ class Lodger {
 
     const {
       db: { collections },
-      forms,
-      store: { dispatch }
+      forms
      } = <Lodger>this
 
     if (!collections) throw new LodgerError(Errors.missingCoreDefinitions)
@@ -393,7 +394,7 @@ class Lodger {
     if (!docsHolder.$data[subscriberName]) Vue.set(docsHolder, subscriberName, {})
 
     taxonomii.forEach(taxonomie => {
-      const { plural, referenceTaxonomies } = forms[taxonomie]
+      const { plural } = forms[taxonomie]
       const colectie = collections[plural]
       if (!colectie) throw new LodgerError('invalid collection %%', plural)
       // const criteriu = { ...getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})) ) }
@@ -415,18 +416,10 @@ class Lodger {
         // add watcher for criteriu and when it changes
         // fire this subscribe func again
         if (!taxIsMultipleSelect(taxonomie)) {
-          // const everyKeyInCriteriu = (vm) => {
-          //   const c = vm[subscriberName][plural].criteriu
-          //   return { ...c }
-          // }
-          const everyKeyInCriteriu = vm => ({ ...vm[subscriberName][plural].criteriu })
+          const everyKeyInCriteriu: { [key in CriteriuKeys]: any } = (vm: Vue): Criteriu => ({ ...vm.$data[subscriberName][plural].criteriu })
 
           docsHolder.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
             if (!newC || equal(newC, oldC) ) return
-            // const diff = {}
-            // if (newC.find) Object.assign(diff, { find: { ...newC.find } })
-            // if (newC.sort) Object.assign(diff, { sort: newC.sort })
-            // debug('parsedNew', diff)
             this.subscribe(subscriberName, taxonomie, newC)
           }, { deep: true, immediate: false })
         }
@@ -482,7 +475,7 @@ class Lodger {
    */
   async setPreference (preference: string, value: any) {
     const debug = Debug('lodger:set')
-    const { db, store } = this
+    const { store } = this
     const allowedTaxonomies = ['client', 'user']
     if (!preference) throw new LodgerError(Errors.invalidPreferenceIndex)
     const taxonomy = preference.split('.')[0]
@@ -611,7 +604,7 @@ class Lodger {
         dependentTaxonomies.forEach(dTax => {
           const subscriber = payload.subscriber || 'main'
           const { plural } = forms[dTax]
-          const holder = docsHolder[subscriber][plural]
+          const holder = docsHolder.$data[subscriber][plural]
           if (!holder || !holder.criteriu) return
           debug('asignez',  dTax, subscriber, reference)
           holder.criteriu.find = { ...reference }
@@ -673,10 +666,10 @@ class Lodger {
       const date = new Date()
       filename = `LdgDB-${date}`
     }
-    // fs.writeFile(`${path}/${filename}.${extension}`, yaml.stringify(json), (e: Error) => {
-    //   if (e) throw new LodgerError(Errors.couldNotWriteFile)
-    //   debug(`written ${filename}.${extension} in path`)
-    // })
+    fs.writeFile(`${path}/${filename}.${extension}`, yaml.stringify(json), (e: Error) => {
+      if (e) throw new LodgerError(Errors.couldNotWriteFile)
+      debug(`written ${filename}.${extension} in path`)
+    })
   }
 
   /**
@@ -691,7 +684,7 @@ class Lodger {
    *
    */
   async unsubscribe (taxPlural: Plural<Taxonomie>, subscriberName: string = 'main') {
-    const sub = subscribers[subscriberName]
+    const sub: Subscriber = subscribers[subscriberName]
     const debug = Debug('lodger:unsub')
     debug('sub', sub)
     if (!sub[taxPlural]) {

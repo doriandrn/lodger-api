@@ -3,6 +3,11 @@ import { Form } from  '~/lib/Form'
 import { Store } from 'vuex'
 import { Taxonomii } from './index'
 
+declare module "*.json" {
+  const value: any;
+  export default value;
+}
+
 declare global {
   type Taxonomie = keyof typeof Taxonomii
 
@@ -119,8 +124,7 @@ declare global {
     text: string
   }
 
-  interface SearchResults {
-    clear: () => void
+  type SearchResults = {
     [k: string]: Result[]
   }
 
@@ -144,5 +148,27 @@ declare global {
     index?: number,
     sort?: Sort,
     find?: Find
+  }
+
+  type CriteriuKeys = keyof Criteriu
+
+  type Subscriber = {
+    [k: string]: {
+      unsubscribe: () => void
+    }
+  }
+
+  type SubscriberData = {
+    docs: RxDocument<Taxonomie>[],
+    items: {},
+    fetching: boolean,
+    criteriu?: Criteriu,
+  }
+
+  type SubscribersList = { [k: string]: Subscriber }
+  type SubscribersDataHolder = { [k: string]: SubscriberData }
+
+  type GettersDBTaxonomii = {
+    [k in Taxonomii]: () => RxCollection<any>
   }
 }
