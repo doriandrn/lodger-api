@@ -8,17 +8,16 @@ module.exports = {
   entry: "./src/index.ts",
 
   output: {
-    filename: "./dist/bundle.js",
+    filename: "index.js",
   },
 
-  devtool: "source-map",
   mode: "production",
 
   resolve: {
     extensions: [".js", ".ts"],
     alias: {
       '~': resolve('src'),
-      // '~/lib': resolve('src/lib/'),
+      '~/lib': resolve('src/lib/'),
       helpers: resolve('src/lib/helpers'),
       forms: resolve('src/lib/forms'),
       build: resolve('src/lib/build'),
@@ -26,9 +25,13 @@ module.exports = {
     }
   },
 
+  node: {
+    fs: 'empty'
+  },
+
   optimization: {
     removeEmptyChunks: true,
-    minimize: true
+    minimize: false
   },
 
   module: {
@@ -37,7 +40,8 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: 'awesome-typescript-loader'
+          loader: 'ts-loader',
+          options: { transpileOnly: true }
         }
       }
     ]

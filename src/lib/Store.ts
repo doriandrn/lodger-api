@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Vuex, { ModuleTree, Module } from 'vuex'
+import Vuex, { ModuleTree, Module, StoreOptions } from 'vuex'
 
 import { Taxonomii } from '../index'
 import { setupSharedMethods } from './helpers/store'
@@ -24,7 +24,7 @@ enum Errors {
   invalidModule = 'Invalid Module'
 }
 
-const customOpts = (context, options) => {
+const customOpts = (context: Lodger, options: StoreOptions<RootState>) => {
   const { taxonomii, forms } = context
 
   /**
@@ -42,7 +42,7 @@ const customOpts = (context, options) => {
     // LodgerStore.use(RootModule, false)
     Object.assign(options, RootModule)
     Object.keys(RootModule.modules).forEach(module => {
-      LodgerStore.use({ [module]: RootModule.modules[module] }, module !== 'toast')
+      LodgerStore.use({ [module]: <Module<any, RootState>>RootModule.modules[module] }, module !== 'toast')
     })
   }
 
@@ -69,7 +69,7 @@ export default class LodgerStore extends Vuex.Store<RootState> {
    * @param module
    * @param {Boolean} namespaced - if it should be namespaced
    */
-  static use (module: Module<any, RootState>, namespaced: boolean = true) {
+  static use (module: {[k: string]: Module<any, RootState>}, namespaced: boolean = true) {
     if (!module || typeof module !== 'object') {
       throw new LodgerError(Errors.invalidModule)
     }

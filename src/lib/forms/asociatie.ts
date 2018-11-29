@@ -135,7 +135,7 @@ const methods = <T>{
 
 const statics = {
   selected: async function (id) {
-    console.log('STATIC!', this)
+    // console.log('STATIC!', this)
     return await this.findOne(id).exec()
   }
 }

@@ -1,6 +1,7 @@
 import { Lodger, Errors } from '~/index'
 import Debug from 'debug'
 import { isRxDatabase } from 'rxdb'
+import fakeData from '~/lib/helpers/dev/fakeData'
 import BroadcastChannel from 'broadcast-channel'
 
 Debug.enable('lodger:*')
@@ -64,6 +65,13 @@ describe('Lodger', () => {
         await lodger.subscribe('asociatie')
         expect(lodger.asociatii()).toBeDefined()
       })
+
+      test('it creates a new subscriber from given subscriberName (3rd arg)', async () => {
+        await lodger.subscribe('asociatie', {}, 'aSub')
+        const asocs = await lodger.asociatii('aSub')
+        expect(asocs.toBeDefined())
+      })
+
     })
 
     describe('negative', () => {
@@ -89,26 +97,38 @@ describe('Lodger', () => {
     describe('.put()', () => {
       const debug = Debug('lodger:tests:put')
 
-      describe('positive', () => {
-        test('adds a new assoc', async () => {
+      describe('positive (adds a new taxonomy item: asociatie)', () => {
+        let asoc
+        beforeAll(async () => {
           const name = 'bla'
-          let asoc
+          const moneda = 'ron'
           try {
             asoc = await lodger.put('asociatie', {
-              name
+              name,
+              moneda
             })
-            console.info('ASOC', asoc)
           } catch (e) {
-            console.error('PUT FAILED', e)
+            debug('PUT FAILED', e)
           }
+        })
+        test('item was added ok', () => {
           expect(asoc).toBeDefined()
+        })
+
+        test('item was assigned an id', () => {
           const { _id } = asoc
           expect(_id).toBeDefined()
+        })
+
+        test(`getter 'asociatie/last' is the item's id`, () => {
+          const { _id } = asoc
           const lastAddedId = lodger.getters['asociatie/last']
           expect(lastAddedId).toBe(_id)
-          commonId = _id
+        })
 
-          debug('LODGERICA', Object.getOwnPropertyNames(lodger))
+        test('item gets selected', () => {
+          const { _id } = asoc
+          expect(lodger.getters['asociatie/selected']).toBe(_id)
         })
       })
 
@@ -151,7 +171,33 @@ describe('Lodger', () => {
       })
     })
 
-    describe('.[taxonomy]()', () => {
+    describe('.select()', () => {
+      let testerId
+      const tax = 'asociatie'
+      /**
+       * Adaugam 5 asociatii sa avem 5 id-uri cu care sa ne jucam :)
+       */
+      beforeAll(async () => {
+        const ns = 5
+
+        for (let i of Array(ns).keys()) {
+          const { _id } = await lodger.put(tax, fakeData(tax))
+          if (i === 3) testerId = _id
+        }
+      })
+      describe('positive', () => {
+        test('selects ok an item by it\'s id', () => {
+          lodger.select(tax, testerId)
+          expect(lodger.getters[`${tax}/selected`]).toEqual(testerId)
+        })
+      })
+
+      describe('negative', () => {
+
+      })
+    })
+
+    describe('.[taxonomy]() getters', () => {
       describe ('positive', () => {
         test('all taxes are defined & accesable', () => {
           // TODO: scrie un for, nu fi lazy

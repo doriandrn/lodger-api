@@ -97,24 +97,25 @@ const docsHolder = new Vue({
       try {
         const s = this.$data[subscriberName][taxonomie]
         item = _theDoc(s.docs)
-        if (item) debug('item gasit din prima', { taxonomie, subscriberName, s, item })
+        // if (item) debug('item gasit din prima', { taxonomie, subscriberName, s, item })
       } catch (e) {
         Object.keys(this.$data).forEach(sub => {
-          debug('SEX', sub)
+          // debug('SEX', sub)
           if (item) return
           const s = this.$data[sub][taxonomie]
-          debug('tried s', sub, s, taxonomie)
+          // debug('tried s', sub, s, taxonomie)
           if (!(s && s.docs)) return
-          debug('SBF', s)
+          // debug('SBF', s)
           item = _theDoc(s.docs)
-          if (item) debug('item gasit din a 2a', { taxonomie, subscriberName, s, item })
+          // if (item) debug('item gasit din a 2a', { taxonomie, subscriberName, s, item })
         })
 
       } finally {
-        if (!item) {
-          throw new LodgerError('item not found')
-          // item = await collections[plural].findOne(id).exec()
-        }
+        // item = await collections[plural].findOne(id).exec()
+      }
+
+      if (!item) {
+        throw new LodgerError('item not found')
       }
 
       return item
@@ -139,7 +140,10 @@ class Lodger {
 
       Object.defineProperty(this, plural, {
         get () {
-          return (subscriberName: string = 'main') => subscriberData(tax, subscriberName)
+          return (subscriberName: string = 'main') => {
+            debug('cerut sub', subscriberName)
+            return subscriberData(tax, subscriberName)
+          }
         }
       })
     })
@@ -173,7 +177,8 @@ class Lodger {
    * - Store action wrapper -
    */
   notify (notification: LdgNotification) {
-    this.store.dispatch('notify', notification)
+    // console.info(notification)
+    // this.store.dispatch('notify', notification)
   }
 
   /**
@@ -368,9 +373,9 @@ class Lodger {
    *
    */
   subscribe (
-    subscriberName : string = 'main',
     taxonomii: Taxonomii | Taxonomii[],
-    criteriuCerut ?: Criteriu
+    criteriuCerut ?: Criteriu,
+    subscriberName : string = 'main',
   ) {
     const debug = Debug('lodger:subscribe')
 
@@ -379,21 +384,28 @@ class Lodger {
       forms
      } = <Lodger>this
 
-    if (!collections) throw new LodgerError(Errors.missingCoreDefinitions)
+    // if (!collections) throw new LodgerError(Errors.missingCoreDefinitions)
 
     // always have it as an array
-    if (typeof taxonomii === 'string') taxonomii = Array(taxonomii)
+    taxonomii = typeof taxonomii === 'string' ?
+      Array(taxonomii) :
+      taxonomii
 
     debug('--- SUBSCRIBING ---\n', taxonomii, '\ncriteriu cerut: ', criteriuCerut)
 
     // const multipleTaxonomies: boolean = taxonomii.length > 1
-    if (!subscribers[subscriberName]) Object.assign(subscribers, { [subscriberName]: {} })
+    if (!subscribers[subscriberName])
+      Object.assign(subscribers, { [subscriberName]: {} })
 
     const subscriber = <Subscriber>subscribers[subscriberName]
 
-    if (!docsHolder.$data[subscriberName]) Vue.set(docsHolder, subscriberName, {})
+    if (!docsHolder.$data[subscriberName]) {
+      Vue.set(docsHolder, subscriberName, {})
+      debug('setat', subscriberName)
+    }
 
     taxonomii.forEach(taxonomie => {
+
       const { plural } = forms[taxonomie]
       const colectie = collections[plural]
       if (!colectie) throw new LodgerError('invalid collection %%', plural)
@@ -420,7 +432,7 @@ class Lodger {
 
           docsHolder.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
             if (!newC || equal(newC, oldC) ) return
-            this.subscribe(subscriberName, taxonomie, newC)
+            this.subscribe(taxonomie, newC, subscriberName)
           }, { deep: true, immediate: false })
         }
 
@@ -443,7 +455,7 @@ class Lodger {
         .$
         .subscribe((changes: RxDocument<any>[]) => {
           // DO NOT RETURN IF NO CHANGES!!!!!!!
-          debug(`${plural} for subscriber[${subscriberName}]`, changes)
+          // debug(`${plural} for subscriber[${subscriberName}]`, changes)
 
           // update data objects inside
           docsHolder.$data[subscriberName][plural].docs = changes.map(change => Object.freeze(change)) || []
@@ -591,7 +603,7 @@ class Lodger {
       // call methods of references documents
       referenceTaxonomies.forEach(async (refTax: Taxonomie) => {
         const refdoc = store.getters[`${refTax}/activeDoc`]
-        debug(`refdoc ${tax} (${refTax})`, refdoc)
+        // debug(`refdoc ${tax} (${refTax})`, refdoc)
         if (!refdoc) return
         const method = refdoc[`toggle_${tax}`]
         if (!method || typeof method !== 'function') return
@@ -606,7 +618,7 @@ class Lodger {
           const { plural } = forms[dTax]
           const holder = docsHolder.$data[subscriber][plural]
           if (!holder || !holder.criteriu) return
-          debug('asignez',  dTax, subscriber, reference)
+          debug('asignez', dTax, subscriber, reference)
           holder.criteriu.find = { ...reference }
 
           // deselect
@@ -686,7 +698,7 @@ class Lodger {
   async unsubscribe (taxPlural: Plural<Taxonomie>, subscriberName: string = 'main') {
     const sub: Subscriber = subscribers[subscriberName]
     const debug = Debug('lodger:unsub')
-    debug('sub', sub)
+    // debug('sub', sub)
     if (!sub[taxPlural]) {
       throw new LodgerError('subscriber nedefinit', {taxPlural, subscriberName})
     }

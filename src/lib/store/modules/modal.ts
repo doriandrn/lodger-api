@@ -27,7 +27,7 @@ const mutations = {
 
 const actions = {
   open: ({ commit }, content) => {
-    console.log('CC', content)
+    // console.log('CC', content)
     switch (typeof content) {
       case 'object':
         commit('DATA', content.data)

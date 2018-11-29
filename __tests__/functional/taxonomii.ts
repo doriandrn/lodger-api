@@ -71,9 +71,7 @@ describe('BLOCURI', () => {
   // const idsAsociatii = lodger.__getters.asociatii
 
   test('getters have the ids', () => {
-    // console.error('lodger', lodger)
     const idsAsociatii = lodger.getters['asociatie/ids']
-    // console.error('IA', idsAsociatii, ids, lodger.asociatii)
     expect(idsAsociatii).toEqual(ids)
   })
 

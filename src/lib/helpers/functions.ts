@@ -66,7 +66,7 @@ const getCriteriu = (taxonomie: Plural, criteriuCerut?: Criteriu) => {
 
     Object.assign(criteriu, {...criteriuCerut }, { sort })
   }
-  // console.info('criteriu', criteriu, criteriuCerut)
+
   // switch (taxonomie) {
   //   case 'blocuri':
   //   case 'incasari':
