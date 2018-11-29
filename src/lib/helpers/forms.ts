@@ -130,7 +130,6 @@ function handleOnSubmit (
   context ?: any
 ) {
   const manipulatedData: any = {}
-  debug('data before hOS', data)
 
   // not data.denumire pt servicii :/
   if (!data.la && !data.denumire) data.la = Date.now()
@@ -148,7 +147,7 @@ function handleOnSubmit (
   const { referencesIds } = context
 
   Object.assign(manipulatedData, referencesIds)
-  debug('data after hOS', manipulatedData)
+  // debug('data after hOS', manipulatedData)
   return manipulatedData
 }
 

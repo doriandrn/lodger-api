@@ -76,7 +76,7 @@ export default class LodgerStore extends Vuex.Store<RootState> {
     const key = Object.keys(module)[0]
     if (!key || !module[key]) throw new LodgerError(Errors.invalidModule)
 
-    debug('using module', key, module[key])
+    debug('using module', key)
 
     modules[key] = Object.assign({}, module[key], { namespaced })
   }

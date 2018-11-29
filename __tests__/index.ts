@@ -56,8 +56,11 @@ describe('Lodger', () => {
 
   describe('.subscribe()', () => {
     let lodger: Lodger
+    let debug
+
     beforeAll(async () => {
       lodger = await Lodger.build()
+      debug = Debug('lodger:test.subscribe')
     })
 
     describe('positive', () => {
@@ -66,16 +69,64 @@ describe('Lodger', () => {
         expect(lodger.asociatii()).toBeDefined()
       })
 
-      test('it creates a new subscriber from given subscriberName (3rd arg)', async () => {
-        await lodger.subscribe('asociatie', {}, 'aSub')
-        const asocs = await lodger.asociatii('aSub')
-        expect(asocs.toBeDefined())
-      })
-
     })
 
     describe('negative', () => {
 
+    })
+
+    describe('Custom Subscriber behaviour', () => {
+      let subscriberName: string
+
+      beforeAll(async () => {
+        subscriberName = 'asub'
+        await lodger.subscribe('asociatie', {}, subscriberName)
+      })
+
+      describe('positive', () => {
+        test('it creates a new subscriber from given subscriberName (3rd arg)', async () => {
+          const asocs = await lodger.asociatii(subscriberName)
+          expect(asocs).toBeDefined()
+        })
+
+        test('when a new item is created, it has it', async () => {
+          const { _id } = await lodger.put('asociatie', fakeData('asociatie'), subscriberName)
+          const asocs = await lodger.asociatii(subscriberName)
+          console.error('ass', asocs)
+          expect(asocs[_id]).toBeDefined()
+        })
+      })
+    })
+
+    afterAll(async () => {
+      await lodger.destroy()
+    })
+  })
+
+  describe('.unsubscribe()', () => {
+    const subscriberName = 'XXX'
+    let taxonomies
+    let subscribers
+    let lodger
+
+    beforeAll(async () => {
+      lodger = await Lodger.build()
+      taxonomies = ['asociatie', 'bloc', 'apartament']
+
+    })
+
+    describe('positive', () => {
+      test('dafuq', async () => {
+        const unsubscribe = await lodger.subscribe(taxonomies, {}, subscriberName)
+        expect(typeof unsubscribe[taxonomies[0]]).toBe('function')
+      })
+
+      test(`it unsubscribes asociatie from ${subscriberName}`, async () => {
+        await lodger.unsubscribe('asociatii', subscriberName)
+        const asocs = await lodger.asociatii(subscriberName)
+        console.error('asocs', asocs)
+        expect(asocs).toBeUndefined()
+      })
     })
 
     afterAll(async () => {
@@ -89,7 +140,6 @@ describe('Lodger', () => {
 
     beforeAll(async () => {
       lodger = await Lodger.build()
-
     })
 
     let commonId: string | null = null
@@ -174,6 +224,9 @@ describe('Lodger', () => {
     describe('.select()', () => {
       let testerId
       const tax = 'asociatie'
+      const gn = `${tax}/selected`
+      let g
+
       /**
        * Adaugam 5 asociatii sa avem 5 id-uri cu care sa ne jucam :)
        */
@@ -184,16 +237,51 @@ describe('Lodger', () => {
           const { _id } = await lodger.put(tax, fakeData(tax))
           if (i === 3) testerId = _id
         }
+
+        g = lodger.getters
       })
+
       describe('positive', () => {
-        test('selects ok an item by it\'s id', () => {
-          lodger.select(tax, testerId)
-          expect(lodger.getters[`${tax}/selected`]).toEqual(testerId)
+        test('selects ok an item by it\'s id', async () => {
+          await lodger.select(tax, testerId)
+          expect(g[gn]).toEqual(testerId)
+        })
+
+        test(`does NOT deselect the item if ID does not exist or wrong supplied`, async () => {
+
+          const curSelectedId = g[gn]
+          await lodger.select(tax, 'bla')
+          expect(g[gn]).toBe(curSelectedId)
+
+          await lodger.select(tax, '')
+          expect(g[gn]).toBe(curSelectedId)
+        })
+
+        test('deselects an item if NULL is given as 2nd arg', async () => {
+          await lodger.select(tax, null)
+          expect(g[gn]).toBe(null)
+        })
+
+        test('accepts an OBJECT (with id) as 2nd arg', async () => {
+          await lodger.select(tax, {
+            id: testerId
+          })
+          expect(g[gn]).toBe(testerId)
+        })
+
+        test('updates dependend taxonomies when smh gets selected', () => {
+
         })
       })
 
       describe('negative', () => {
-
+        test('throws if taxonomy does not exist', () => {
+          try {
+            lodger.select('masina', 'abc123')
+          } catch (e) {
+            expect(e).toBeDefined()
+          }
+        })
       })
     })
 
