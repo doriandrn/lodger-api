@@ -4,6 +4,11 @@ import { isRxDatabase } from 'rxdb'
 import fakeData from '~/lib/helpers/dev/fakeData'
 import BroadcastChannel from 'broadcast-channel'
 
+const delay = (value) => new Promise(resolve =>
+  setTimeout(() => resolve(), value)
+)
+
+
 Debug.enable('lodger:*')
 
 describe('Lodger', () => {
@@ -76,7 +81,7 @@ describe('Lodger', () => {
         const subscriberName = 'blabla'
         const unsubscribe = await lodger.subscribe(tax, {}, subscriberName)
         const aTaxSub = unsubscribe['asociatii']
-        // console.error('unsubb', Object.keys(aTaxSub))
+
         expect(typeof aTaxSub.unsubscribe).toBe('function')
       })
 
@@ -107,10 +112,15 @@ describe('Lodger', () => {
         })
 
         test('unsubscribes all taxonomies and data gets wiped from dataHolder', async () => {
-          Object.keys(unsubMultipleTaxes)
-            .forEach(async taxToUnsub => await unsubMultipleTaxes[taxToUnsub].unsubscribe())
+          const pluralsMultipleTaxes = multipleTaxes
+            .map(tx => forms[tx].plural)
 
-          expect(Object.keys(unsubMultipleTaxes).length).toBe(0)
+          Object.keys(unsubMultipleTaxes)
+            .forEach(async taxToUnsub => {
+              await unsubMultipleTaxes[taxToUnsub].unsubscribe()
+              expect(unsubMultipleTaxes[taxToUnsub].isClosed).toBeTruthy()
+              expect(lodger[pluralsMultipleTaxes[unsubMultipleTaxes[taxToUnsub]]](subName)).toBeUndefined()
+            })
         })
       })
 
@@ -134,11 +144,15 @@ describe('Lodger', () => {
           expect(asocs).toBeDefined()
         })
 
-        test('when a new item is created, it has it', async () => {
+        test('when a new item is created, dataholder has it', async (done) => {
           const { _id } = await lodger.put('asociatie', fakeData('asociatie'), subscriberName)
-          const asocs = await lodger.asociatii(subscriberName)
-          console.error('ass', asocs)
+          console.error('pus', _id)
+          await delay(3000)
+          const asocs = lodger.asociatii(subscriberName)
+          const asocs2 = lodger.asociatii()
+          console.error('ass', asocs, asocs2)
           expect(asocs[_id]).toBeDefined()
+          done()
         })
       })
     })

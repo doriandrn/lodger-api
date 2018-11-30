@@ -138,18 +138,21 @@ class Lodger {
     readonly store: LodgerStore
   ) {
     const debug = Debug('lodger:constructor')
-    const { subscriberData, plugins } = this
 
-    debug('plugins:', plugins)
+    // const subscriberData = this.subscriberData.bind(this)
 
     taxonomii.forEach(tax => {
       const { plural } = forms[tax]
 
       Object.defineProperty(this, plural, {
         get () {
+          debug('getter tax apelat')
           return (subscriberName: string = 'main') => {
-            debug('cerut sub', subscriberName)
-            return subscriberData(tax, subscriberName)
+            const d = vueHelper.subsData[subscriberName][plural]
+            debug('d', d)
+            const items = d.items
+            debug('ITEMS ITEMS iTIMETIME ITEM ITEMT IEMT ', items, d.items.length)
+            return d.items
           }
         }
       })
@@ -457,6 +460,8 @@ class Lodger {
           vueHelper.subsData[subscriberName][plural].items = Object.assign({},
             ...changes.map((item: RxDocument<any>) => ({ [item._id]: item._data }))
           )
+          debug('am scris items', vueHelper.subsData[subscriberName][plural].items)
+          console.error('am scris items', vueHelper.subsData[subscriberName][plural].items)
           vueHelper.subsData[subscriberName][plural].fetching = false
         })
       })
@@ -743,8 +748,7 @@ class Lodger {
     ) => {
       const { plural }  = forms[taxonomy]
       try {
-        const { items } = vueHelper.subsData[subscriberName][plural]
-        return items
+        return vueHelper.subsData[subscriberName][plural].items
       } catch (e) { throw new LodgerError('nu exista %%', { plural, subscriberName })}
     }
 
