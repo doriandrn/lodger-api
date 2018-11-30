@@ -385,7 +385,6 @@ class Lodger {
 
     debug('--- SUBSCRIBING ---\n', taxonomii, '\ncriteriu cerut: ', criteriuCerut)
 
-    // const multipleTaxonomies: boolean = taxonomii.length > 1
     if (!subscribers[subscriberName])
       Object.assign(subscribers, { [subscriberName]: {} })
 
@@ -408,6 +407,7 @@ class Lodger {
 
       let { limit, index, sort, find } = criteriu
       const paging = Number(limit || 0) * (index || 1)
+      let unwatch
 
       // first init -> define the data object container
       if (!vueHelper.subsData[subscriberName][plural]) {
@@ -422,7 +422,7 @@ class Lodger {
         if (!taxIsMultipleSelect(taxonomie)) {
           const everyKeyInCriteriu: { [key in CriteriuKeys]: any } = (vm: Vue): Criteriu => ({ ...vm.subsData[subscriberName][plural].criteriu })
 
-          vueHelper.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
+          unwatch = vueHelper.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
             if (!newC || equal(newC, oldC) ) return
             this.subscribe(taxonomie, newC, subscriberName)
           }, { deep: true, immediate: false })
@@ -440,6 +440,9 @@ class Lodger {
         this.unsubscribe(plural, subscriberName)
       }
 
+      if (typeof unwatch === 'function')
+        vueHelper.subsData[subscriberName][plural].unwatch = unwatch
+
       subscriber[plural] = colectie
         .find(find)
         .limit(paging)
@@ -456,7 +459,9 @@ class Lodger {
           )
           vueHelper.subsData[subscriberName][plural].fetching = false
         })
-    })
+      })
+
+    return subscriber
   }
 
   /**
@@ -695,6 +700,8 @@ class Lodger {
     }
     await sub[taxPlural].unsubscribe()
 
+    // unwatch & delete the data obj
+    await vueHelper.subsData[subscriberName][taxPlural].unwatch()
     Vue.set(vueHelper.subsData[subscriberName], taxPlural, null)
   }
 

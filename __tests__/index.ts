@@ -57,6 +57,9 @@ describe('Lodger', () => {
   describe('.subscribe()', () => {
     let lodger: Lodger
     let debug
+    const tax = 'asociatie'
+    const taxP = 'asociatii'
+
 
     beforeAll(async () => {
       lodger = await Lodger.build()
@@ -64,9 +67,51 @@ describe('Lodger', () => {
     })
 
     describe('positive', () => {
-      test('it subscribes and gets default content for a taxonomy', async () => {
-        await lodger.subscribe('asociatie')
-        expect(lodger.asociatii()).toBeDefined()
+      test('it subscribes and gets content/data for a taxonomy', async () => {
+        await lodger.subscribe(tax)
+        expect(lodger[taxP]()).toBeDefined()
+      })
+
+      test('returns the subscriber for unsubscribing', async () => {
+        const subscriberName = 'blabla'
+        const unsubscribe = await lodger.subscribe(tax, {}, subscriberName)
+        const aTaxSub = unsubscribe['asociatii']
+        // console.error('unsubb', Object.keys(aTaxSub))
+        expect(typeof aTaxSub.unsubscribe).toBe('function')
+      })
+
+      describe('Multiple Taxonomies behaviour', () => {
+        const subName = 'multipleTaxes'
+        const multipleTaxes = [`${tax}`, 'apartament', 'bloc']
+        let unsubMultipleTaxes
+        let forms
+
+        beforeAll(() => {
+          forms = lodger.forms
+        })
+
+        test('it subscribes multiple taxonomies at once', async () => {
+          unsubMultipleTaxes = await lodger.subscribe(multipleTaxes, undefined, subName)
+          expect(lodger.asociatii(subName)).toBeDefined()
+        })
+
+        test('keys length is equal in both cases', () => {
+          expect(Object.keys(unsubMultipleTaxes).length).toEqual(multipleTaxes.length)
+        })
+
+        test('unsubscriber is created ok for all taxes', async () => {
+          const pluralsMultipleTaxes = multipleTaxes
+            .map(tx => forms[tx].plural)
+
+          expect(pluralsMultipleTaxes).toEqual(Object.keys(unsubMultipleTaxes))
+        })
+
+        test('unsubscribes all taxonomies and data gets wiped from dataHolder', async () => {
+          Object.keys(unsubMultipleTaxes)
+            .forEach(async taxToUnsub => await unsubMultipleTaxes[taxToUnsub].unsubscribe())
+
+          expect(Object.keys(unsubMultipleTaxes).length).toBe(0)
+        })
       })
 
     })
@@ -111,15 +156,12 @@ describe('Lodger', () => {
 
     beforeAll(async () => {
       lodger = await Lodger.build()
-      taxonomies = ['asociatie', 'bloc', 'apartament']
+
 
     })
 
     describe('positive', () => {
-      test('dafuq', async () => {
-        const unsubscribe = await lodger.subscribe(taxonomies, {}, subscriberName)
-        expect(typeof unsubscribe[taxonomies[0]]).toBe('function')
-      })
+
 
       test(`it unsubscribes asociatie from ${subscriberName}`, async () => {
         await lodger.unsubscribe('asociatii', subscriberName)
