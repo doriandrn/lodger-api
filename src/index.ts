@@ -100,6 +100,10 @@ const vueHelper = new Vue({
         return doc
       }
 
+      // wait for items to update first coming from rxdb
+      await this.$nextTick()
+      await this.$nextTick()
+
       try {
         const s = this.subsData[subscriberName][taxonomie]
         debug('S', subscriberName, taxonomie, s, s.docs.length)
@@ -151,7 +155,7 @@ class Lodger {
             const d = vueHelper.subsData[subscriberName][plural]
             debug('d', d)
             const items = d.items
-            debug('ITEMS ITEMS iTIMETIME ITEM ITEMT IEMT ', items, d.items.length)
+            debug('ITEMS ITEMS', items, d.items.length)
             return d.items
           }
         }
@@ -272,8 +276,13 @@ class Lodger {
     const id = isObj && data.id ? data.id : data
     const subscriber = isObj && data.subscriber ? data.subscriber : undefined
 
-    if (id === undefined) { return }
+    // deselect
+    if (!id) {
+      await dispatch(`${taxonomie}/select`, undefined)
+      return
+    }
 
+    // delay this, await for changes from rxdbb
     const doc = isObj && data.doc ?
       data.doc :
       await vueHelper.getItem(plural, id, subscriber)
@@ -284,12 +293,13 @@ class Lodger {
       throw new LodgerError('invalid id supplied on select %%', id)
     } else {
       this._activeDocument = { taxonomie, doc }
+      await dispatch(`${taxonomie}/select`, id)
     }
 
     // on deselect, unsubscribe
-    if (id === null) await this.unsubscribe(plural, subscriber)
+    // if (id === null) await this.unsubscribe(plural, subscriber) //todo: use data.subscribe .unsubscribe()
 
-    await dispatch(`${taxonomie}/select`, id)
+
   }
 
   /**
@@ -461,7 +471,6 @@ class Lodger {
             ...changes.map((item: RxDocument<any>) => ({ [item._id]: item._data }))
           )
           debug('am scris items', vueHelper.subsData[subscriberName][plural].items)
-          console.error('am scris items', vueHelper.subsData[subscriberName][plural].items)
           vueHelper.subsData[subscriberName][plural].fetching = false
         })
       })
