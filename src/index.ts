@@ -67,6 +67,15 @@ const vueHelperObj: SubscriberData = {
   fetching: false
 }
 
+
+// Filters the documents array for the one with the id
+const _theDoc = (docs: RxDocument<Taxonomie, any>[], id: string) => {
+  if (!docs.length) throw new LodgerError('empty docs provided')
+  const doc = docs.filter(doc => doc._id === id)[0]
+  if (!(doc && isRxDocument(doc))) throw new LodgerError('no doc found %%', { id })
+  return doc
+}
+
 /**
  * Main holder for temporary items subscribed to
  *
@@ -78,6 +87,20 @@ const vueHelper = new Vue({
   data () {
     return {
       subsData: {}
+    }
+  },
+  // created () {
+  //   const debug = Debug('lodger:helper:created')
+  //   this.$on('updatedData', data => {
+  //     debug('G', data)
+  //     // const { subscriberName, plural } = data
+  //   })
+  // },
+  computed: {
+    ids () {
+      return (tax: Plural<Taxonomie>, subName: string) => {
+        return Object.keys(this.subsData[subName][tax])
+      }
     }
   },
   methods: {
@@ -92,44 +115,35 @@ const vueHelper = new Vue({
       if (subscriberName === undefined)
         subscriberName = 'main'
 
-      // Filters the documents array for the one with the id
-      const _theDoc = (docs: RxDocument<Taxonomie, any>[]) => {
-        if (!docs.length) throw new LodgerError('empty docs provided')
-        const doc = docs.filter(doc => doc._id === id)[0]
-        if (!(doc && isRxDocument(doc))) throw new LodgerError('no doc found %%', { id, subscriberName, taxonomie })
-        return doc
-      }
+      const { subsData } = this
 
-      // wait for items to update first coming from rxdb
-      await this.$nextTick()
-      await this.$nextTick()
+      // // return item
+      // return new Promise(async (resolve, reject) => {
+      //   // await rxdb to update data first.
+      //   await this.$nextTick()
 
       try {
-        const s = this.subsData[subscriberName][taxonomie]
-        debug('S', subscriberName, taxonomie, s, s.docs.length)
-        if (s.docs && s.docs.length) item = _theDoc(s.docs)
-        if (item) debug('item gasit din prima', { taxonomie, subscriberName, s, item })
+        const s = subsData[subscriberName][taxonomie]
+        // debug('S', subscriberName, taxonomie, s, s.docs.length)
+        if (s.docs && s.docs.length) return _theDoc(s.docs, id)
       } catch (e) {
         Object.keys(this.subsData).forEach(sub => {
           if (item) return
-          debug('trying sub', sub)
-          const s = this.subsData[sub][taxonomie]
-          debug(`D[${sub}][${taxonomie}]:`, s)
+          // debug('trying sub', sub)
+          const s = subsData[sub][taxonomie]
+          // debug(`D[${sub}][${taxonomie}]:`, s)
 
           if (!(s && s.docs && s.docs.length)) return
-          item = _theDoc(s.docs)
+          item = _theDoc(s.docs, id)
           if (item) debug('item gasit din a 2a', { taxonomie, subscriberName, s, item })
         })
 
       } finally {
         // item = await collections[plural].findOne(id).exec()
       }
-
-      if (!item) {
-        throw new LodgerError('item not found')
-      }
-
       return item
+      // // })
+      // })
     }
   }
 })
@@ -276,25 +290,27 @@ class Lodger {
     const id = isObj && data.id ? data.id : data
     const subscriber = isObj && data.subscriber ? data.subscriber : undefined
 
-    // deselect
-    if (!id) {
-      await dispatch(`${taxonomie}/select`, undefined)
-      return
-    }
+    await dispatch(`${taxonomie}/select`, id)
 
-    // delay this, await for changes from rxdbb
-    const doc = isObj && data.doc ?
-      data.doc :
-      await vueHelper.getItem(plural, id, subscriber)
+    // // deselect
+    // if (!id) {
+    //   await dispatch(`${taxonomie}/select`, undefined)
+    //   return
+    // }
 
-    debug('selected doc', doc._id)
+    // // delay this, await for changes from rxdbb
+    // const doc = isObj && data.doc ?
+    //   data.doc :
+    //   await vueHelper.getItem(plural, id, subscriber)
 
-    if (!doc) {
-      throw new LodgerError('invalid id supplied on select %%', id)
-    } else {
-      this._activeDocument = { taxonomie, doc }
-      await dispatch(`${taxonomie}/select`, id)
-    }
+    // debug('selected doc', doc._id)
+
+    // if (!doc) {
+    //   throw new LodgerError('invalid id supplied on select %%', id)
+    // } else {
+    //   this._activeDocument = { taxonomie, doc }
+    //   await dispatch(`${taxonomie}/select`, id)
+    // }
 
     // on deselect, unsubscribe
     // if (id === null) await this.unsubscribe(plural, subscriber) //todo: use data.subscribe .unsubscribe()
@@ -351,7 +367,7 @@ class Lodger {
       const iterator = searchMap[tax].entries()
       results[tax] = []
 
-      for (let [ key, value ] of iterator) {
+      for (let [key, value] of iterator) {
         if (typeof value === 'function') continue
         const relevance = string_similarity(String(input), value)
         results[tax]
@@ -386,6 +402,7 @@ class Lodger {
 
     const {
       db: { collections },
+      store: { getters },
       forms
      } = <Lodger>this
 
@@ -464,14 +481,24 @@ class Lodger {
         .subscribe((changes: RxDocument<any>[]) => {
           // DO NOT RETURN IF NO CHANGES!!!!!!!
           // debug(`${plural} for subscriber[${subscriberName}]`, changes)
+          const x = vueHelper.subsData[subscriberName][plural]
+          const selectedId = getters[`${taxonomie}/selected`]
 
           // update data objects inside
-          vueHelper.subsData[subscriberName][plural].docs = changes.map(change => Object.freeze(change)) || []
-          vueHelper.subsData[subscriberName][plural].items = Object.assign({},
-            ...changes.map((item: RxDocument<any>) => ({ [item._id]: item._data }))
+          x.docs = changes.map(change => Object.freeze(change)) || []
+          x.items = Object.assign({},
+            ...changes.map((item: RxDocument<Taxonomie>) => ({ [item._id]: item._data }))
           )
-          debug('am scris items', vueHelper.subsData[subscriberName][plural].items)
-          vueHelper.subsData[subscriberName][plural].fetching = false
+          x.fetching = false
+
+          // set the active document from selected id
+          if (x.items[selectedId]) {
+            const doc = changes.filter(change => change._id === selectedId)[0]
+            this._activeDocument = { doc, taxonomie }
+            debug('got active doc', taxonomie, x.items[selectedId])
+          }
+          // vueHelper.$emit('updatedData', { subscriberName, plural })
+          debug('am scris items', x.items)
         })
       })
 
@@ -593,9 +620,10 @@ class Lodger {
       const tax = path[0]
 
       debug('payload', payload)
+      if (!payload) return
 
       const id = typeof payload === 'string' ? payload : payload.id
-      if (id === undefined) return
+      if (id === store.getters[`tax/selected`]) return
 
       const reference = { [`${tax}Id`]: id }
       const { referenceTaxonomies } = forms[tax]

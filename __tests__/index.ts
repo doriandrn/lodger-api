@@ -302,13 +302,12 @@ describe('Lodger', () => {
        * Adaugam 5 asociatii sa avem 5 id-uri cu care sa ne jucam :)
        */
       beforeAll(async () => {
-        const ns = 5
+        const ns = 4
 
         for (let i of Array(ns).keys()) {
           const { _id } = await lodger.put(tax, fakeData(tax))
           if (i === 3) testerId = _id
         }
-
         g = lodger.getters
       })
 
@@ -316,6 +315,11 @@ describe('Lodger', () => {
         test('selects ok an item by it\'s id', async () => {
           await lodger.select(tax, testerId)
           expect(g[gn]).toEqual(testerId)
+        })
+
+        test('cannot select the same item again', async () => {
+          const selected = await lodger.select(tax, testerId)
+          expect(selected).toBeUndefined()
         })
 
         test(`does NOT deselect the item if ID does not exist or wrong supplied`, async () => {
@@ -330,7 +334,7 @@ describe('Lodger', () => {
 
         test('deselects an item if NULL is given as 2nd arg', async () => {
           await lodger.select(tax, null)
-          expect(g[gn]).toBe(undefined)
+          expect(g[gn]).toBeFalsy()
         })
 
         test('accepts an OBJECT (with id) as 2nd arg', async () => {
