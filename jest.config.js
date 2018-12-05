@@ -17,6 +17,7 @@ module.exports = {
     'tsx'
   ],
   moduleNameMapper: {
+    '@/(.*)$': '<rootDir>/$1',
     '~/(.*)$': '<rootDir>/src/$1',
     'defs/(.*)$': '<rootDir>/src/lib/defs/$1',
     'build/(.*)$': '<rootDir>/src/lib/build/$1',

@@ -80,6 +80,7 @@ describe('Lodger', () => {
         expect(lodger[taxP]()).toBeDefined()
       })
 
+
       test('returns the subscriber for unsubscribing', async () => {
         const subscriberName = 'blabla'
         const unsubscribe = await lodger.subscribe(tax, {}, subscriberName)
@@ -94,89 +95,116 @@ describe('Lodger', () => {
 
         await lodger.subscribe(taxToTest)
         await delay(300)
+        await lodger.subscribe(taxToTest, null, 'xx')
         expect(lodger.subscribedTaxes).toContain(taxToTest)
+        console.error(lodger.subscribedTaxes)
       })
-
-      describe('Predefined DB items', () => {
-
-        describe('services', () => {
-          describe('positive', () => {
-            test('predefineds get inserted on first subscribe', async () => {
-              await lodger.subscribe('serviciu')
-              await delay(500)
-              const servicii = lodger.servicii()
-              expect(servicii).toBeDefined()
-              expect(Object.keys(servicii).length).toEqual(predefinite.length)
-            })
-          })
-
-          describe('negative', () => {
-            test('predefineds dont get inserted on second subscribe', async () => {
-              await lodger.subscribe('serviciu')
-              await delay(500)
-              const servicii = lodger.servicii()
-              expect(servicii).toBeDefined()
-              expect(Object.keys(servicii).length).toEqual(predefinite.length)
-            })
-
-            test('predefineds dont get inserted on another subscriber subscribe()', async () => {
-              await lodger.subscribe('serviciu', null, 'coca')
-              await delay(500)
-              const servicii = lodger.servicii('coca')
-              expect(servicii).toBeDefined()
-              expect(Object.keys(servicii).length).toEqual(predefinite.length)
-            })
-          })
-        })
-      })
-
-      describe('Multiple Taxonomies behaviour', () => {
-        const subName = 'multipleTaxes'
-        const multipleTaxes = [`${tax}`, 'apartament', 'bloc']
-        let unsubMultipleTaxes
-        let forms
-
-        beforeAll(() => {
-          forms = lodger.forms
-        })
-
-        test('it subscribes multiple taxonomies at once', async () => {
-          unsubMultipleTaxes = await lodger.subscribe(multipleTaxes, undefined, subName)
-          expect(lodger.asociatii(subName)).toBeDefined()
-        })
-
-        test('keys length is equal in both cases', () => {
-          expect(Object.keys(unsubMultipleTaxes).length).toEqual(multipleTaxes.length)
-        })
-
-        test('unsubscriber is created ok for all taxes', async () => {
-          const pluralsMultipleTaxes = multipleTaxes
-            .map(tx => forms[tx].plural)
-
-          expect(pluralsMultipleTaxes).toEqual(Object.keys(unsubMultipleTaxes))
-        })
-
-        test('unsubscribes all taxonomies and data gets wiped from dataHolder', async (done) => {
-          const pluralsMultipleTaxes = multipleTaxes
-            .map(tx => forms[tx].plural)
-
-          expect.assertions(pluralsMultipleTaxes.length)
-
-          await Promise.all(Object.keys(unsubMultipleTaxes)
-            .map(async taxToUnsub => {
-              await unsubMultipleTaxes[taxToUnsub].unsubscribe()
-              expect(unsubMultipleTaxes[taxToUnsub].closed).toBeTruthy()
-              // expect(lodger[pluralsMultipleTaxes[unsubMultipleTaxes[taxToUnsub]]](subName)).toBeUndefined()
-            }))
-
-          done()
-        })
-      })
-
     })
 
     describe('negative', () => {
 
+    })
+
+    describe('Criteria', () => {
+      const subName = 'criteriaTest'
+      const tax = 'apartament'
+      const plural = 'apartamente'
+      const limit = 2
+
+      beforeAll(async () => {
+        for (let i in Array(limit*3).keys()) {
+          await lodger.put(tax, fakeData(tax))
+        }
+        await delay(1500)
+      })
+
+      describe('positive', () => {
+        test('limits the items', async () => {
+          const criteriu = { limit }
+          const sub = lodger.subscribe(tax, criteriu, subName)
+          await delay(200)
+          const items = lodger[plural](subName)
+          console.error('OI', items)
+          expect(Object.keys(items).length).toEqual(limit)
+          await sub[plural].unsubscribe()
+        })
+      })
+    })
+
+    describe('Predefined DB items', () => {
+
+      describe('services', () => {
+        describe('positive', () => {
+          test('predefineds get inserted on first subscribe', async () => {
+            await lodger.subscribe('serviciu')
+            await delay(500)
+            const servicii = lodger.servicii()
+            expect(servicii).toBeDefined()
+            expect(Object.keys(servicii).length).toEqual(predefinite.length)
+          })
+        })
+
+        describe('negative', () => {
+          test('predefineds dont get inserted on second subscribe', async () => {
+            await lodger.subscribe('serviciu')
+            await delay(500)
+            const servicii = lodger.servicii()
+            expect(servicii).toBeDefined()
+            expect(Object.keys(servicii).length).toEqual(predefinite.length)
+          })
+
+          test('predefineds dont get inserted on another subscriber subscribe()', async () => {
+            await lodger.subscribe('serviciu', null, 'coca')
+            await delay(500)
+            const servicii = lodger.servicii('coca')
+            expect(servicii).toBeDefined()
+            expect(Object.keys(servicii).length).toEqual(predefinite.length)
+          })
+        })
+      })
+    })
+
+    describe('Multiple Taxonomies behaviour', () => {
+      const subName = 'multipleTaxes'
+      const multipleTaxes = [`${tax}`, 'apartament', 'bloc']
+      let unsubMultipleTaxes
+      let forms
+
+      beforeAll(() => {
+        forms = lodger.forms
+      })
+
+      test('it subscribes multiple taxonomies at once', async () => {
+        unsubMultipleTaxes = await lodger.subscribe(multipleTaxes, undefined, subName)
+        expect(lodger.asociatii(subName)).toBeDefined()
+      })
+
+      test('keys length is equal in both cases', () => {
+        expect(Object.keys(unsubMultipleTaxes).length).toEqual(multipleTaxes.length)
+      })
+
+      test('unsubscriber is created ok for all taxes', async () => {
+        const pluralsMultipleTaxes = multipleTaxes
+          .map(tx => forms[tx].plural)
+
+        expect(pluralsMultipleTaxes).toEqual(Object.keys(unsubMultipleTaxes))
+      })
+
+      test('unsubscribes all taxonomies and data gets wiped from dataHolder', async (done) => {
+        const pluralsMultipleTaxes = multipleTaxes
+          .map(tx => forms[tx].plural)
+
+        expect.assertions(pluralsMultipleTaxes.length)
+
+        await Promise.all(Object.keys(unsubMultipleTaxes)
+          .map(async taxToUnsub => {
+            await unsubMultipleTaxes[taxToUnsub].unsubscribe()
+            expect(unsubMultipleTaxes[taxToUnsub].closed).toBeTruthy()
+            // expect(lodger[pluralsMultipleTaxes[unsubMultipleTaxes[taxToUnsub]]](subName)).toBeUndefined()
+          }))
+
+        done()
+      })
     })
 
     describe('Custom Subscriber behaviour', () => {
@@ -208,6 +236,8 @@ describe('Lodger', () => {
 
       })
     })
+
+    describe('Unsubscribe behaviour', () => {})
 
     afterAll(async () => {
       await lodger.destroy()
@@ -414,7 +444,7 @@ describe('Lodger', () => {
             const items = lodger[`${plural}`](subName)
             const allSchemaKeys = Object.keys(properties)
             const oneItem = Object.keys(items)[0]
-            console.error('OI', oneItem)
+
             const containingItems = Object.keys(items[oneItem])
               .filter(item => ['_id', '_rev'].indexOf(item) < 0)
             expect(allSchemaKeys).toEqual(expect.arrayContaining(containingItems))

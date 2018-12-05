@@ -5,7 +5,7 @@ import {
   handleOnSubmit
 } from '~/lib/helpers/forms'
 
-import { fields, fieldsWithExcludedItems } from '../__stubs__/playground'
+import { fields, fieldsWithExcludedItems } from '@/__stubs__/playground'
 import { RxJsonSchema } from 'rxdb';
 
 describe('helpers/forms', () => {

@@ -1,5 +1,5 @@
 import { Form, Errors } from '~/lib/Form'
-import { stub1, stub2, fields, name } from '../__stubs__/playground'
+import { stub1, stub2, fields, name } from '@/__stubs__/playground'
 
 describe('Form', () => {
   const __stub1__ = new Form(stub1)

@@ -182,7 +182,7 @@ class Lodger {
 
       Object.defineProperty(this, plural, {
         get () {
-          debug('getter tax apelat')
+          // debug('getter tax apelat')
           return (subscriberName: string = 'main') => {
             try {
               return vueHelper.subsData[subscriberName][plural].items
@@ -511,7 +511,7 @@ class Lodger {
           if (x.items[selectedId]) {
             const doc = changes.filter(change => change._id === selectedId)[0]
             this._activeDocument = { doc, taxonomie }
-            debug('got active doc', taxonomie, x.items[selectedId])
+            debug('got active doc', taxonomie, x.items[selectedId]._id)
           } else {
             // ID is not in changes, lookup DB, otherwise it's invalid
             const doc = await collections[plural].findOne(selectedId)
@@ -523,7 +523,7 @@ class Lodger {
             // an invalid ID was provided,  maybe?
           }
           // vueHelper.$emit('updatedData', { subscriberName, plural })
-          debug(`new ${plural}`, x.items)
+          debug(`new ${plural}`, Object.keys(x.items).length)
         })
       })
 
