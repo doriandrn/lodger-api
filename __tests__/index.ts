@@ -1,9 +1,11 @@
-import { Lodger, Errors } from '~/index'
+import { Lodger, Errors, Taxonomii } from '~/index'
 import Debug from 'debug'
 import { isRxDatabase } from 'rxdb'
 import fakeData from '~/lib/helpers/dev/fakeData'
 import BroadcastChannel from 'broadcast-channel'
 import { predefinite } from '~/lib/forms/serviciu'
+
+const taxonomii: Taxonomii[] = <Taxonomii[]>Object.keys(Taxonomii)
 
 const delay = (value) => new Promise(resolve =>
   setTimeout(() => resolve(), value)
@@ -89,7 +91,6 @@ describe('Lodger', () => {
     let debug
     const tax = 'asociatie'
     const taxP = 'asociatii'
-
 
     beforeAll(async () => {
       lodger = await Lodger.build()
@@ -240,10 +241,10 @@ describe('Lodger', () => {
 
       describe(`positive [${testTax}]`, () => {
         let asoc
+        const moneda = 'ron'
 
         beforeAll(async () => {
           const name = 'bla'
-          const moneda = 'ron'
           try {
             asoc = await lodger.put(testTax, {
               name,
@@ -271,6 +272,16 @@ describe('Lodger', () => {
         test('item gets selected immediately after', () => {
           const { _id } = asoc
           expect(lodger.getters['asociatie/selected']).toBe(_id)
+        })
+
+        test('updates the current item if _id is provided and ok', async () => {
+          const asocnew = Object.assign({}, {
+            _id: asoc._id,
+            name: 'New aso',
+            moneda
+          })
+          const { _id } = await lodger.put(testTax, asocnew)
+          expect(_id).toEqual(asoc._id)
         })
       })
 
@@ -384,22 +395,48 @@ describe('Lodger', () => {
       // beforeEach(async () => {
       //   await delay(2500)
       // })
+      let forms
+      const subName = 'test'
+      beforeAll(() => {
+        taxonomii.map(async tax => {
+          try {
+            lodger.subscribe(tax, null, subName)
+            await lodger.put(tax, fakeData(tax))
+            await delay(500) //give rxdb time to update the changes
+          } catch (e) {
+            console.error(e)
+          }
 
-      describe ('positive', () => {
-        test('all taxes are defined & accesable', () => {
-          expect(lodger.apartamente).toBeDefined()
-          expect(lodger.asociatii).toBeDefined()
+        })
+        forms = lodger.forms
+      })
+
+      describe('positive', () => {
+        taxonomii.map(tax => {
+          test(`${tax} is defined`, async () => {
+            const { plural } = forms[tax]
+            await delay(100)
+            expect(lodger[`${plural}`](subName)).toBeDefined()
+          })
+
+          test(`${tax} item matches schema`, async () => {
+            const { plural, schema: { properties } } = forms[tax]
+            await delay(100)
+            const items = lodger[`${plural}`](subName)
+            const allSchemaKeys = Object.keys(properties)
+            const oneItem = Object.keys(items)[0]
+            console.error('OI', oneItem)
+            const containingItems = Object.keys(items[oneItem])
+              .filter(item => ['_id', '_rev'].indexOf(item) < 0)
+            expect(allSchemaKeys).toEqual(expect.arrayContaining(containingItems))
+          })
         })
 
-        test('returns the items of main subscriber if called with no args', () => {
-          expect(lodger.apartamente()).toReturn()
-          console.error('ll', lodger.apartamente())
-          // setTimeout(() => {
-          // }, 500)
-        })
-
-        test('returns the items of another sub', () => {
-          expect(lodger.apartamente('listeDePlata')).toReturn()
+        test('returns the items of another sub', async () => {
+          const subName = 'listeDePlata'
+          await lodger.subscribe('apartament', undefined, subName)
+          await delay(500)
+          expect(lodger.apartamente(subName)).toBeDefined()
         })
       })
 
@@ -427,15 +464,19 @@ describe('Lodger', () => {
       })
 
       describe('negative', () => {
-        test('it fails if wrong path is supplied', async () => {
+        test('it fails if wrong path is supplied', () => {
           try {
-            await lodger.export('xx/xx')
+            lodger.export('xx/xx')
           } catch (e) {
             expect(e).toBeDefined()
           }
         })
 
       })
+    })
+
+    describe('.search()', () => {
+
     })
 
     describe('.setPreference()', () => {

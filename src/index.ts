@@ -40,6 +40,7 @@ enum Taxonomii {
   cheltuiala = 'cheltuiala',
   serviciu = 'serviciu',
   furnizor = 'furnizor',
+  // contor = 'contor',
   utilizator = 'utilizator'
 }
 
@@ -175,6 +176,8 @@ class Lodger {
         }
       })
     })
+
+    // console.error(Object.getOwnPropertyNames(this))
 
     // todo, remove on prod
     // try { window.dh = vueHelper } catch (e) {}
@@ -314,8 +317,6 @@ class Lodger {
 
     // on deselect, unsubscribe
     // if (id === null) await this.unsubscribe(plural, subscriber) //todo: use data.subscribe .unsubscribe()
-
-
   }
 
   /**
