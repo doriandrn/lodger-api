@@ -3,6 +3,7 @@ import Debug from 'debug'
 import { isRxDatabase } from 'rxdb'
 import fakeData from '~/lib/helpers/dev/fakeData'
 import BroadcastChannel from 'broadcast-channel'
+import { predefinite } from '~/lib/forms/serviciu'
 
 const delay = (value) => new Promise(resolve =>
   setTimeout(() => resolve(), value)
@@ -52,12 +53,30 @@ describe('Lodger', () => {
         expect(lodger).toBeDefined()
         await lodger.destroy()
       })
+    })
 
-      test('predefined services get inserted', () => {
-        const servicii = L.servicii()
-        expect(servicii).toBeDefined()
+    describe('Predefined DB items', () => {
+      describe('services', () => {
+        describe('positive', () => {
+          test('predefineds get inserted on first subscribe', async () => {
+            await L.subscribe('serviciu')
+            await delay(500)
+            const servicii = L.servicii()
+            expect(servicii).toBeDefined()
+            expect(Object.keys(servicii).length).toEqual(predefinite.length)
+          })
+        })
+
+        describe('negative', () => {
+          test('predefineds dont get inserted on second subscribe', async () => {
+            await L.subscribe('serviciu')
+            await delay(500)
+            const servicii = L.servicii()
+            expect(servicii).toBeDefined()
+            expect(Object.keys(servicii).length).toEqual(predefinite.length)
+          })
+        })
       })
-
     })
 
     afterAll(async () => {
@@ -217,14 +236,16 @@ describe('Lodger', () => {
 
     describe('.put()', () => {
       const debug = Debug('lodger:tests:put')
+      const testTax = 'asociatie'
 
-      describe('positive (adds a new taxonomy item: asociatie)', () => {
+      describe(`positive [${testTax}]`, () => {
         let asoc
+
         beforeAll(async () => {
           const name = 'bla'
           const moneda = 'ron'
           try {
-            asoc = await lodger.put('asociatie', {
+            asoc = await lodger.put(testTax, {
               name,
               moneda
             })
@@ -232,11 +253,11 @@ describe('Lodger', () => {
             debug('PUT FAILED', e)
           }
         })
-        test('item was added ok', () => {
+        test('item gets added ok', () => {
           expect(asoc).toBeDefined()
         })
 
-        test('item was assigned an id', () => {
+        test('item is assigned an _id', () => {
           const { _id } = asoc
           expect(_id).toBeDefined()
         })
@@ -247,7 +268,7 @@ describe('Lodger', () => {
           expect(lastAddedId).toBe(_id)
         })
 
-        test('item gets selected', () => {
+        test('item gets selected immediately after', () => {
           const { _id } = asoc
           expect(lodger.getters['asociatie/selected']).toBe(_id)
         })
@@ -322,16 +343,6 @@ describe('Lodger', () => {
           expect(selected).toBeUndefined()
         })
 
-        test(`does NOT deselect the item if ID does not exist or wrong supplied`, async () => {
-
-          const curSelectedId = g[gn]
-          await lodger.select(tax, 'bla')
-          expect(g[gn]).toBe(curSelectedId)
-
-          await lodger.select(tax, '')
-          expect(g[gn]).toBe(curSelectedId)
-        })
-
         test('deselects an item if NULL is given as 2nd arg', async () => {
           await lodger.select(tax, null)
           expect(g[gn]).toBeFalsy()
@@ -357,19 +368,34 @@ describe('Lodger', () => {
             expect(e).toBeDefined()
           }
         })
+
+        test(`does NOT deselect the item if ID does not exist or wrong supplied`, async () => {
+          const curSelectedId = g[gn]
+          await lodger.select(tax, 'bla')
+          expect(g[gn]).toBe(curSelectedId)
+
+          await lodger.select(tax, '')
+          expect(g[gn]).toBe(curSelectedId)
+        })
       })
     })
 
     describe('.[taxonomy]() getters', () => {
+      // beforeEach(async () => {
+      //   await delay(2500)
+      // })
+
       describe ('positive', () => {
         test('all taxes are defined & accesable', () => {
-          // TODO: scrie un for, nu fi lazy
           expect(lodger.apartamente).toBeDefined()
           expect(lodger.asociatii).toBeDefined()
         })
 
         test('returns the items of main subscriber if called with no args', () => {
           expect(lodger.apartamente()).toReturn()
+          console.error('ll', lodger.apartamente())
+          // setTimeout(() => {
+          // }, 500)
         })
 
         test('returns the items of another sub', () => {
@@ -385,6 +411,30 @@ describe('Lodger', () => {
             expect(e).toBeDefined()
           }
         })
+      })
+    })
+
+    describe('.export()', () => {
+      describe('positive', () => {
+        test('it exports with no path given in downloads folder', async () => {
+          try {
+
+            await lodger.export()
+          } catch (e) {
+            expect(e).toBeUndefined()
+          }
+        })
+      })
+
+      describe('negative', () => {
+        test('it fails if wrong path is supplied', async () => {
+          try {
+            await lodger.export('xx/xx')
+          } catch (e) {
+            expect(e).toBeDefined()
+          }
+        })
+
       })
     })
 

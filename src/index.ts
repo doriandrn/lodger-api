@@ -166,11 +166,11 @@ class Lodger {
         get () {
           debug('getter tax apelat')
           return (subscriberName: string = 'main') => {
-            const d = vueHelper.subsData[subscriberName][plural]
-            debug('d', d)
-            const items = d.items
-            debug('ITEMS ITEMS', items, d.items.length)
-            return d.items
+            try {
+              return vueHelper.subsData[subscriberName][plural].items
+            } catch (e) {
+              throw new LodgerError('not yet defined. wait more! :) %%', { subscriberName, plural })
+            }
           }
         }
       })
@@ -391,6 +391,7 @@ class Lodger {
    * TODO: de exportat de -aici
    *
    * Usage: subscribes DB changes to a given variable (binder)
+   * @returns {Subscriber}
    *
    */
   subscribe (
@@ -467,7 +468,7 @@ class Lodger {
       } else {
         // vueHelper[subscriberName][plural].criteriu = criteriu
         vueHelper.subsData[subscriberName][plural].fetching = true
-        this.unsubscribe(plural, subscriberName)
+        // this.unsubscribe(plural, subscriberName) // todo: update ot new sub model
       }
 
       if (typeof unwatch === 'function')
@@ -478,7 +479,7 @@ class Lodger {
         .limit(paging)
         .sort(sort)
         .$
-        .subscribe((changes: RxDocument<any>[]) => {
+        .subscribe(async (changes: RxDocument<any>[]) => {
           // DO NOT RETURN IF NO CHANGES!!!!!!!
           // debug(`${plural} for subscriber[${subscriberName}]`, changes)
           const x = vueHelper.subsData[subscriberName][plural]
@@ -496,6 +497,15 @@ class Lodger {
             const doc = changes.filter(change => change._id === selectedId)[0]
             this._activeDocument = { doc, taxonomie }
             debug('got active doc', taxonomie, x.items[selectedId])
+          } else {
+            // ID is not in changes, lookup DB, otherwise it's invalid
+            const doc = await collections[plural].findOne(selectedId)
+            if (!doc) {
+              throw new LodgerError('invalid id supplied', plural, selectedId)
+            } else {
+              this._activeDocument = { doc, taxonomie }
+            }
+            // an invalid ID was provided,  maybe?
           }
           // vueHelper.$emit('updatedData', { subscriberName, plural })
           debug('am scris items', x.items)
@@ -731,21 +741,22 @@ class Lodger {
 
   /**
    * Unsubscribe a single taxonomy from a single sub.
+   * DEPRECATED
    *
    */
-  async unsubscribe (taxPlural: Plural<Taxonomie>, subscriberName: string = 'main') {
-    const sub: Subscriber = subscribers[subscriberName]
-    const debug = Debug('lodger:unsub')
-    // debug('sub', sub)
-    if (!sub[taxPlural]) {
-      throw new LodgerError('subscriber nedefinit', {taxPlural, subscriberName})
-    }
-    await sub[taxPlural].unsubscribe()
+  // async unsubscribe (taxPlural: Plural<Taxonomie>, subscriberName: string = 'main') {
+  //   const sub: Subscriber = subscribers[subscriberName]
+  //   const debug = Debug('lodger:unsub')
+  //   // debug('sub', sub)
+  //   if (!sub[taxPlural]) {
+  //     throw new LodgerError('subscriber nedefinit', {taxPlural, subscriberName})
+  //   }
+  //   await sub[taxPlural].unsubscribe()
 
-    // unwatch & delete the data obj
-    await vueHelper.subsData[subscriberName][taxPlural].unwatch()
-    Vue.set(vueHelper.subsData[subscriberName], taxPlural, null)
-  }
+  //   // unwatch & delete the data obj
+  //   await vueHelper.subsData[subscriberName][taxPlural].unwatch()
+  //   Vue.set(vueHelper.subsData[subscriberName], taxPlural, null)
+  // }
 
   /**
    * Kills all active listeners for a given subscriber name
