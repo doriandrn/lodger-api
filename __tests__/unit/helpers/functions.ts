@@ -6,7 +6,7 @@ import {
   getCriteriu,
   getTaxonomyConfig
 } from '~/lib/helpers/functions'
-import lodgerConfig from 'lodger.config'
+import lodgerConfig from '~/lodger.config'
 
 describe('Functii ajutatoare', () => {
   describe('traverse', () => {

@@ -55,30 +55,7 @@ describe('Lodger', () => {
         expect(lodger).toBeDefined()
         await lodger.destroy()
       })
-    })
 
-    describe('Predefined DB items', () => {
-      describe('services', () => {
-        describe('positive', () => {
-          test('predefineds get inserted on first subscribe', async () => {
-            await L.subscribe('serviciu')
-            await delay(500)
-            const servicii = L.servicii()
-            expect(servicii).toBeDefined()
-            expect(Object.keys(servicii).length).toEqual(predefinite.length)
-          })
-        })
-
-        describe('negative', () => {
-          test('predefineds dont get inserted on second subscribe', async () => {
-            await L.subscribe('serviciu')
-            await delay(500)
-            const servicii = L.servicii()
-            expect(servicii).toBeDefined()
-            expect(Object.keys(servicii).length).toEqual(predefinite.length)
-          })
-        })
-      })
     })
 
     afterAll(async () => {
@@ -109,6 +86,48 @@ describe('Lodger', () => {
         const aTaxSub = unsubscribe['asociatii']
 
         expect(typeof aTaxSub.unsubscribe).toBe('function')
+      })
+
+      test('first init hook gets called only once', async () => {
+        const taxToTest = 'utilizator'
+        const pl = 'utilizatori'
+
+        await lodger.subscribe(taxToTest)
+        await delay(300)
+        expect(lodger.subscribedTaxes).toContain(taxToTest)
+      })
+
+      describe('Predefined DB items', () => {
+
+        describe('services', () => {
+          describe('positive', () => {
+            test('predefineds get inserted on first subscribe', async () => {
+              await lodger.subscribe('serviciu')
+              await delay(500)
+              const servicii = lodger.servicii()
+              expect(servicii).toBeDefined()
+              expect(Object.keys(servicii).length).toEqual(predefinite.length)
+            })
+          })
+
+          describe('negative', () => {
+            test('predefineds dont get inserted on second subscribe', async () => {
+              await lodger.subscribe('serviciu')
+              await delay(500)
+              const servicii = lodger.servicii()
+              expect(servicii).toBeDefined()
+              expect(Object.keys(servicii).length).toEqual(predefinite.length)
+            })
+
+            test('predefineds dont get inserted on another subscriber subscribe()', async () => {
+              await lodger.subscribe('serviciu', null, 'coca')
+              await delay(500)
+              const servicii = lodger.servicii('coca')
+              expect(servicii).toBeDefined()
+              expect(Object.keys(servicii).length).toEqual(predefinite.length)
+            })
+          })
+        })
       })
 
       describe('Multiple Taxonomies behaviour', () => {
@@ -194,36 +213,6 @@ describe('Lodger', () => {
       await lodger.destroy()
     })
   })
-
-  // DEPRECATING DIS SHIT
-
-  // describe('.unsubscribe()', () => {
-  //   const subscriberName = 'XXX'
-  //   let taxonomies
-  //   let subscribers
-  //   let lodger
-
-  //   beforeAll(async () => {
-  //     lodger = await Lodger.build()
-
-
-  //   })
-
-  //   describe('positive', () => {
-
-
-  //     test(`it unsubscribes asociatie from ${subscriberName}`, async () => {
-  //       await lodger.unsubscribe('asociatii', subscriberName)
-  //       const asocs = await lodger.asociatii(subscriberName)
-  //       console.error('asocs', asocs)
-  //       expect(asocs).toBeUndefined()
-  //     })
-  //   })
-
-  //   afterAll(async () => {
-  //     await lodger.destroy()
-  //   })
-  // })
 
   describe('Public API', async () => {
     let lodger: Lodger
@@ -519,45 +508,6 @@ describe('Lodger', () => {
         })
       })
     })
-
-    // describe('._formData(formName)', () => {
-    //   describe('positive', () => {
-    //     test('returns the requested form by name', () => {
-    //       const name = 'asociatie'
-    //       expect(lodger._formData(name)).toBe(lodger.forms.filter(form => form.name === name)[0].data)
-    //     })
-    //   })
-
-    //   describe('negative', () => {
-    //     test('throws if argument is diff than string', () => {
-    //       try {
-    //         lodger._formData({ name: 'baba' })
-    //       } catch (e) {
-    //         expect(e).toBeDefined()
-    //       }
-
-    //       try {
-    //         lodger._formData(1)
-    //       } catch (e) {
-    //         expect(e).toBeDefined()
-    //       }
-
-    //       try {
-    //         lodger._formData(['asociatie'])
-    //       } catch (e) {
-    //         expect(e).toBeDefined()
-    //       }
-    //     })
-
-    //     test('throws if no form found with the speciffied name', () => {
-    //       try {
-    //         lodger._formData('invalid')
-    //       } catch (e) {
-    //         expect(e).toBeDefined()
-    //       }
-    //     })
-    //   })
-    // })
 
     afterAll(async () => {
       if (!lodger) return

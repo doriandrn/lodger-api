@@ -68,6 +68,23 @@ const vueHelperObj: SubscriberData = {
   fetching: false
 }
 
+const subscribedTaxes: Taxonomie[] = []
+
+const initialSubscribe = ({ taxonomie, plural, collections }) => {
+  const debug = Debug('lodger:initialSubscribe')
+  // add watcher for criteriu and when it changes
+  // fire this subscribe func again
+
+  // insert predefined services on first init
+  // todo: make this a hook and call funcs
+  if (plural === 'servicii') {
+    predefinite.forEach(async denumire => { await collections[plural].insert({ denumire }) })
+    debug('first init, adaugat predefinite')
+  }
+
+  subscribedTaxes.push(taxonomie)
+}
+
 
 // Filters the documents array for the one with the id
 const _theDoc = (docs: RxDocument<Taxonomie, any>[], id: string) => {
@@ -441,7 +458,11 @@ class Lodger {
       const paging = Number(limit || 0) * (index || 1)
       let unwatch
 
-      // first init -> define the data object container
+      if (subscribedTaxes.indexOf(taxonomie) < 0) {
+        initialSubscribe({ taxonomie, plural, collections })
+      }
+
+      // Define the data object container
       if (!vueHelper.subsData[subscriberName][plural]) {
         const freshO = Object.assign({}, vueHelperObj)
         freshO.criteriu = Object.assign({}, criteriu)
@@ -458,13 +479,6 @@ class Lodger {
             if (!newC || equal(newC, oldC) ) return
             this.subscribe(taxonomie, newC, subscriberName)
           }, { deep: true, immediate: false })
-        }
-
-        // insert predefined services on first init
-        // todo: make this a hook and call funcs
-        if (plural === 'servicii') {
-          predefinite.forEach(async denumire => { await collections[plural].insert({ denumire }) })
-          debug('first init, adaugat predefinite')
         }
       } else {
         // vueHelper[subscriberName][plural].criteriu = criteriu
@@ -509,7 +523,7 @@ class Lodger {
             // an invalid ID was provided,  maybe?
           }
           // vueHelper.$emit('updatedData', { subscriberName, plural })
-          debug('am scris items', x.items)
+          debug(`new ${plural}`, x.items)
         })
       })
 
@@ -772,6 +786,10 @@ class Lodger {
         debug('unsubscribed', subscriber)
       })
     )
+  }
+
+  protected get subscribedTaxes () {
+    return subscribedTaxes
   }
 
   /**

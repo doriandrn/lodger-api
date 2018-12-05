@@ -5,7 +5,7 @@ import {
   createEmptyStoreModule,
   setupSharedMethods,
   setupFromFile
-} from 'lodger/lib/helpers/store'
+} from '~/lib/helpers/store'
 
 const taxonomies = ['car', 'plane']
 
@@ -66,7 +66,7 @@ describe('helpers for store', () => {
       test('actions has the action', () => {
         expect(actions.select).toBeDefined()
       })
-      
+
       test('mutations has the action', () => {
         expect(mutations.select).toBeDefined()
       })
@@ -84,7 +84,7 @@ describe('helpers for store', () => {
         }
       })
 
-      
+
     })
 
     describe('negative', () => {
@@ -101,7 +101,11 @@ describe('helpers for store', () => {
       })
 
       test('throws if sharedMethods argument is not an object of type { string: string }', () => {
-        expect(() => { setupSharedMethods( [] ) }).toThrow()
+        try {
+          setupSharedMethods( [] )
+        } catch (e) {
+          expect(e).toBeDefined()
+        }
       })
     })
   })
