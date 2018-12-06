@@ -830,7 +830,7 @@ class Lodger {
   }
 }
 
-export {
+export default {
   Lodger,
   Errors,
   Taxonomii
