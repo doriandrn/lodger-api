@@ -3981,7 +3981,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
+	g = g || new Function("return this")();
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -19518,27 +19518,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __importDefa
     const getCriteriu = (taxonomie, criteriuCerut) => {
         if (typeof taxonomie !== 'string')
             throw new Error('taxonomie incorecta');
-        if (criteriuCerut && typeof criteriuCerut !== 'object') {
+        if (criteriuCerut && typeof criteriuCerut !== 'object')
             throw new Error('criteriu incorect');
-        }
         const { defaults } = lodger_config_1.default.taxonomii;
         const debug = debug_1.default('functions:getCriteriu');
-        const criteriu = Object.assign({}, { ...defaults.criteriu }, { ...getTaxonomyConfig(taxonomie).criteriu });
-        Object.assign(criteriu, getTaxonomyConfig(taxonomie).criteriu);
-        debug(taxonomie, 'criteriu inainte de criteriuCerut', criteriu);
-        debug(taxonomie, 'criteriu cerut', { ...criteriuCerut });
-        if (criteriuCerut) {
-            debug('CRITERIU CERUT', criteriuCerut);
-            let sort = {};
-            if (criteriuCerut.sort) {
-                let { key, direction } = criteriuCerut.sort;
-                if (key === 'la' && taxonomie === 'servicii')
-                    key = 'denumire';
-                sort = key ? { [key]: direction || 1 } : {};
-            }
-            Object.assign(criteriu, { ...criteriuCerut }, { sort });
-        }
-        // console.info('criteriu', criteriu, criteriuCerut)
+        const criteriu = Object.assign({}, { ...defaults.criteriu }, { ...getTaxonomyConfig(taxonomie).criteriu }, { ...criteriuCerut });
+        // Object.assign(criteriu, getTaxonomyConfig(taxonomie).criteriu)
+        // debug(taxonomie, 'criteriu inainte de criteriuCerut', criteriu)
+        // debug(taxonomie, 'criteriu cerut', { ...criteriuCerut })
+        // if (criteriuCerut) {
+        //   debug('CRITERIU CERUT', criteriuCerut)
+        //   let sort = {}
+        //   if (criteriuCerut.sort) {
+        //     // let { key, direction } = criteriuCerut.sort
+        //     // if (key === 'la' && taxonomie === 'servicii') key = 'denumire'
+        //     sort = key ? { [key]: direction || 1 } : {}
+        //   }
+        //   Object.assign(criteriu, {...criteriuCerut }, { sort })
+        // }
         // switch (taxonomie) {
         //   case 'blocuri':
         //   case 'incasari':
@@ -19745,7 +19742,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __importDefa
      */
     function handleOnSubmit(data, context) {
         const manipulatedData = {};
-        debug('data before hOS', data);
         // not data.denumire pt servicii :/
         if (!data.la && !data.denumire)
             data.la = Date.now();
@@ -19761,7 +19757,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __importDefa
             return manipulatedData;
         const { referencesIds } = context;
         Object.assign(manipulatedData, referencesIds);
-        debug('data after hOS', manipulatedData);
+        // debug('data after hOS', manipulatedData)
         return manipulatedData;
     }
     exports.handleOnSubmit = handleOnSubmit;
@@ -23663,7 +23659,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     exports.methods = methods;
     const statics = {
         selected: async function (id) {
-            console.log('STATIC!', this);
+            // console.log('STATIC!', this)
             return await this.findOne(id).exec();
         }
     };
@@ -44870,6 +44866,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
         Taxonomii["cheltuiala"] = "cheltuiala";
         Taxonomii["serviciu"] = "serviciu";
         Taxonomii["furnizor"] = "furnizor";
+        // contor = 'contor',
         Taxonomii["utilizator"] = "utilizator";
     })(Taxonomii || (Taxonomii = {}));
     exports.Taxonomii = Taxonomii;
@@ -44888,11 +44885,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     exports.Errors = Errors;
     const loadForms = (taxonomies) => Object.assign({}, ...taxonomies.map((tax) => ({ [tax]: Form_1.Form.loadByName(tax) })));
     const plugins = [];
-    const docsHolderObj = {
+    const vueHelperObj = {
         docs: [],
         items: {},
         criteriu: {},
         fetching: false
+    };
+    const subscribedTaxes = [];
+    const initialSubscribe = async ({ taxonomie, plural, collections, store }) => {
+        // const debug = Debug('lodger:initialSubscribe')
+        switch (taxonomie) {
+            // insert predefined services
+            case 'serviciu':
+                serviciu_1.predefinite.forEach(async (denumire) => { await collections[plural].insert({ denumire }); });
+                break;
+            // insert admin user
+            case 'utilizator':
+                const { _id } = await collections[plural].insert({
+                    name: 'Administrator',
+                    rol: 'admin'
+                });
+                store.dispatch('utilizator/set_active', _id);
+                break;
+        }
+        subscribedTaxes.push(taxonomie);
+    };
+    // Filters the documents array for the one with the id
+    const _theDoc = (docs, id) => {
+        if (!docs.length)
+            throw new Errors_1.LodgerError('empty docs provided');
+        const doc = docs.filter(doc => doc._id === id)[0];
+        if (!(doc && rxdb_1.isRxDocument(doc)))
+            throw new Errors_1.LodgerError('no doc found %%', { id });
+        return doc;
     };
     /**
      * Main holder for temporary items subscribed to
@@ -44901,49 +44926,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
      * holds RX documents
      * and methods to accezss / manipulate them
      */
-    const docsHolder = new vue_1.default({
+    const vueHelper = new vue_1.default({
         data() {
-            return Object.assign({}, { ...subscribers });
+            return {
+                subsData: {}
+            };
+        },
+        // created () {
+        //   const debug = Debug('lodger:helper:created')
+        //   this.$on('updatedData', data => {
+        //     debug('G', data)
+        //     // const { subscriberName, plural } = data
+        //   })
+        // },
+        computed: {
+            ids() {
+                return (tax, subName) => {
+                    return Object.keys(this.subsData[subName][tax]);
+                };
+            }
         },
         methods: {
-            async getItem(taxonomie, id, subscriberName = 'main') {
+            async getItem(taxonomie, id, subscriberName) {
                 let item;
                 const debug = debug_1.default('lodger:getItem');
-                // Filters the documents array for the one with the id
-                const _theDoc = (docs) => {
-                    const doc = docs.filter(doc => doc._id === id)[0];
-                    if (!(doc && rxdb_1.isRxDocument(doc)))
-                        throw new Errors_1.LodgerError('no doc found %%', id);
-                    return doc;
-                };
+                if (subscriberName === undefined)
+                    subscriberName = 'main';
+                const { subsData } = this;
+                // // return item
+                // return new Promise(async (resolve, reject) => {
+                //   // await rxdb to update data first.
+                //   await this.$nextTick()
                 try {
-                    const s = this.$data[subscriberName][taxonomie];
-                    item = _theDoc(s.docs);
-                    if (item)
-                        debug('item gasit din prima', { taxonomie, subscriberName, s, item });
+                    const s = subsData[subscriberName][taxonomie];
+                    // debug('S', subscriberName, taxonomie, s, s.docs.length)
+                    if (s.docs && s.docs.length)
+                        return _theDoc(s.docs, id);
                 }
                 catch (e) {
-                    Object.keys(this.$data).forEach(sub => {
-                        debug('SEX', sub);
+                    Object.keys(this.subsData).forEach(sub => {
                         if (item)
                             return;
-                        const s = this.$data[sub][taxonomie];
-                        debug('tried s', sub, s, taxonomie);
-                        if (!(s && s.docs))
+                        // debug('trying sub', sub)
+                        const s = subsData[sub][taxonomie];
+                        // debug(`D[${sub}][${taxonomie}]:`, s)
+                        if (!(s && s.docs && s.docs.length))
                             return;
-                        debug('SBF', s);
-                        item = _theDoc(s.docs);
+                        item = _theDoc(s.docs, id);
                         if (item)
                             debug('item gasit din a 2a', { taxonomie, subscriberName, s, item });
                     });
                 }
                 finally {
-                    if (!item) {
-                        throw new Errors_1.LodgerError('item not found');
-                        // item = await collections[plural].findOne(id).exec()
-                    }
+                    // item = await collections[plural].findOne(id).exec()
                 }
                 return item;
+                // // })
+                // })
             }
         }
     });
@@ -44954,44 +44993,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
             this.db = db;
             this.store = store;
             const debug = debug_1.default('lodger:constructor');
-            const { subscriberData, plugins } = this;
-            debug('plugins:', plugins);
+            // const subscriberData = this.subscriberData.bind(this)
             taxonomii.forEach(tax => {
                 const { plural } = forms[tax];
                 Object.defineProperty(this, plural, {
                     get() {
-                        return (subscriberName = 'main') => subscriberData(tax, subscriberName);
+                        // debug('getter tax apelat')
+                        return (subscriberName = 'main') => {
+                            try {
+                                return vueHelper.subsData[subscriberName][plural].items;
+                            }
+                            catch (e) {
+                                throw new Errors_1.LodgerError('not yet defined. wait more! :) %%', { subscriberName, plural });
+                            }
+                        };
                     }
                 });
             });
-            // hooks up the active document
-            store.subscribe(async ({ type, payload }) => {
-                if (!payload || payload.id === undefined)
-                    return;
-                const path = type.split('/');
-                if (path[1] !== 'select')
-                    return;
-                const taxonomie = path[0];
-                const { plural } = forms[taxonomie];
-                if (payload.id && !payload.hadDoc) {
-                    let doc;
-                    doc = await docsHolder.getItem(plural, payload.id, payload.subscriber);
-                    this._activeDocument = { taxonomie, doc };
-                }
-                // on deselect, unsubscribe
-                if (payload.id === null) {
-                    this.unsubscribe(plural, payload.subscriber);
-                }
-            });
+            // console.error(Object.getOwnPropertyNames(this))
             // todo, remove on prod
-            // try { window.dh = docsHolder } catch (e) {}
+            // try { window.dh = vueHelper } catch (e) {}
         }
         /**
          * Notifies the user about an update/change
          * - Store action wrapper -
          */
         notify(notification) {
-            this.store.dispatch('notify', notification);
+            // console.info(notification)
+            // this.store.dispatch('notify', notification)
         }
         /**
          * Adds / updates an entry in the DB
@@ -45066,23 +45095,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
          * @param id
          */
         async select(taxonomie, data) {
-            // const debug = Debug('lodger:select')
+            const debug = debug_1.default('lodger:select');
             const { dispatch } = this.store;
-            if (typeof data === 'object') {
-                const { doc } = data;
-                if (doc) {
-                    this._activeDocument = { taxonomie, doc };
-                    data.doc = undefined;
-                    data.hadDoc = true;
-                }
-            }
-            await dispatch(`${taxonomie}/select`, data);
-        }
-        /**
-         * deselect an item
-         */
-        async deselect(taxonomie, subscriber) {
-            await this.store.dispatch(`${taxonomie}/select`, { id: null, subscriber });
+            const form = this.forms[taxonomie];
+            if (!form)
+                throw new Errors_1.LodgerError('invalid taxonomy %%', taxonomie);
+            const { plural } = form;
+            const isObj = typeof data === 'object' && data !== null;
+            const id = isObj && data.id ? data.id : data;
+            const subscriber = isObj && data.subscriber ? data.subscriber : undefined;
+            await dispatch(`${taxonomie}/select`, id);
+            // // deselect
+            // if (!id) {
+            //   await dispatch(`${taxonomie}/select`, undefined)
+            //   return
+            // }
+            // // delay this, await for changes from rxdbb
+            // const doc = isObj && data.doc ?
+            //   data.doc :
+            //   await vueHelper.getItem(plural, id, subscriber)
+            // debug('selected doc', doc._id)
+            // if (!doc) {
+            //   throw new LodgerError('invalid id supplied on select %%', id)
+            // } else {
+            //   this._activeDocument = { taxonomie, doc }
+            //   await dispatch(`${taxonomie}/select`, id)
+            // }
+            // on deselect, unsubscribe
+            // if (id === null) await this.unsubscribe(plural, subscriber) //todo: use data.subscribe .unsubscribe()
         }
         /**
          * Active document for taxonomy
@@ -45096,7 +45136,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                 Object.defineProperty(store.getters, gName, {
                     configurable: false,
                     get() { return doc; },
-                    set(newDoc) { doc = newDoc; debug('resetat', newDoc, doc); }
+                    set(newDoc) { doc = newDoc; }
                 });
             }
             else {
@@ -45149,75 +45189,101 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
         * TODO: de exportat de -aici
         *
         * Usage: subscribes DB changes to a given variable (binder)
+        * @returns {Subscriber}
         *
         */
-        subscribe(subscriberName = 'main', taxonomii, criteriuCerut) {
+        subscribe(taxonomii, criteriuCerut, subscriberName = 'main') {
             const debug = debug_1.default('lodger:subscribe');
-            const { db: { collections }, forms } = this;
-            if (!collections)
-                throw new Errors_1.LodgerError(Errors.missingCoreDefinitions);
+            const { db: { collections }, store, forms } = this;
+            const { getters } = store;
             // always have it as an array
-            if (typeof taxonomii === 'string')
-                taxonomii = Array(taxonomii);
+            taxonomii = typeof taxonomii === 'string' ?
+                Array(taxonomii) :
+                taxonomii;
             debug('--- SUBSCRIBING ---\n', taxonomii, '\ncriteriu cerut: ', criteriuCerut);
-            // const multipleTaxonomies: boolean = taxonomii.length > 1
             if (!subscribers[subscriberName])
                 Object.assign(subscribers, { [subscriberName]: {} });
             const subscriber = subscribers[subscriberName];
-            if (!docsHolder.$data[subscriberName])
-                vue_1.default.set(docsHolder, subscriberName, {});
+            if (!vueHelper.subsData[subscriberName]) {
+                vue_1.default.set(vueHelper.subsData, subscriberName, {});
+                // debug('D initializat subscriber: ', subscriberName)
+            }
             taxonomii.forEach(taxonomie => {
                 const { plural } = forms[taxonomie];
                 const colectie = collections[plural];
                 if (!colectie)
                     throw new Errors_1.LodgerError('invalid collection %%', plural);
-                // const criteriu = { ...getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})) ) }
-                const criteriu = Object.assign({}, { ...functions_1.getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {}))) });
-                debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut });
-                debug(`${taxonomie}: criteriu`, criteriu);
+                const criteriu = Object.assign({}, {
+                    ...functions_1.getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})))
+                });
+                // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
+                // debug(`${taxonomie}: criteriu`, criteriu)
                 let { limit, index, sort, find } = criteriu;
                 const paging = Number(limit || 0) * (index || 1);
-                // first init -> define the data object container
-                if (!docsHolder.$data[subscriberName][plural]) {
-                    const freshO = Object.assign({}, docsHolderObj);
+                let unwatch;
+                if (subscribedTaxes.indexOf(taxonomie) < 0) {
+                    initialSubscribe({ taxonomie, plural, collections, store });
+                }
+                // Define the data object container
+                if (!vueHelper.subsData[subscriberName][plural]) {
+                    const freshO = Object.assign({}, vueHelperObj);
                     freshO.criteriu = Object.assign({}, criteriu);
-                    vue_1.default.set(docsHolder[subscriberName], plural, freshO);
+                    vue_1.default.set(vueHelper.subsData[subscriberName], plural, freshO);
+                    // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
                     // add watcher for criteriu and when it changes
                     // fire this subscribe func again
                     if (!functions_1.taxIsMultipleSelect(taxonomie)) {
-                        const everyKeyInCriteriu = (vm) => ({ ...vm.$data[subscriberName][plural].criteriu });
-                        docsHolder.$watch(everyKeyInCriteriu, (newC, oldC) => {
+                        const everyKeyInCriteriu = (vm) => ({ ...vm.subsData[subscriberName][plural].criteriu });
+                        unwatch = vueHelper.$watch(everyKeyInCriteriu, (newC, oldC) => {
                             if (!newC || deep_equal_1.default(newC, oldC))
                                 return;
-                            this.subscribe(subscriberName, taxonomie, newC);
+                            this.subscribe(taxonomie, newC, subscriberName);
                         }, { deep: true, immediate: false });
-                    }
-                    // insert predefined services on first init
-                    // todo: make this a hook and call funcs
-                    if (plural === 'servicii') {
-                        serviciu_1.predefinite.forEach(async (denumire) => { await collections[plural].insert({ denumire }); });
-                        debug('first init, adaugat predefinite');
                     }
                 }
                 else {
-                    // docsHolder[subscriberName][plural].criteriu = criteriu
-                    docsHolder.$data[subscriberName][plural].fetching = true;
-                    this.unsubscribe(plural, subscriberName);
+                    // vueHelper[subscriberName][plural].criteriu = criteriu
+                    vueHelper.subsData[subscriberName][plural].fetching = true;
+                    // this.unsubscribe(plural, subscriberName) // todo: update ot new sub model
                 }
+                if (typeof unwatch === 'function')
+                    vueHelper.subsData[subscriberName][plural].unwatch = unwatch;
                 subscriber[plural] = colectie
                     .find(find)
                     .limit(paging)
                     .sort(sort)
                     .$
-                    .subscribe((changes) => {
+                    .subscribe(async (changes) => {
                     // DO NOT RETURN IF NO CHANGES!!!!!!!
-                    debug(`${plural} for subscriber[${subscriberName}]`, changes);
+                    // debug(`${plural} for subscriber[${subscriberName}]`, changes)
+                    const x = vueHelper.subsData[subscriberName][plural];
+                    const selectedId = getters[`${taxonomie}/selected`];
                     // update data objects inside
-                    docsHolder.$data[subscriberName][plural].docs = changes.map(change => Object.freeze(change)) || [];
-                    docsHolder.$data[subscriberName][plural].items = Object.assign({}, ...changes.map((item) => ({ [item._id]: item._data })));
-                    docsHolder.$data[subscriberName][plural].fetching = false;
+                    x.docs = changes.map(change => Object.freeze(change)) || [];
+                    x.items = Object.assign({}, ...changes.map((item) => ({ [item._id]: item._data })));
+                    x.fetching = false;
+                    // set the active document from selected id
+                    if (x.items[selectedId]) {
+                        const doc = changes.filter(change => change._id === selectedId)[0];
+                        this._activeDocument = { doc, taxonomie };
+                        debug('got active doc', taxonomie, x.items[selectedId]._id);
+                    }
+                    else {
+                        // ID is not in changes, lookup DB, otherwise it's invalid
+                        const doc = await collections[plural].findOne(selectedId);
+                        if (!doc) {
+                            throw new Errors_1.LodgerError('invalid id supplied', plural, selectedId);
+                        }
+                        else {
+                            this._activeDocument = { doc, taxonomie };
+                        }
+                        // an invalid ID was provided,  maybe?
+                    }
+                    // vueHelper.$emit('updatedData', { subscriberName, plural })
+                    debug(`new ${plural}`, Object.keys(x.items).length);
                 });
             });
+            return subscriber;
         }
         /**
          * Array of taxonomies that have no reference
@@ -45316,7 +45382,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
              * try to call all DB methods for refrences of the taxonomy
              *
              */
-            // store.subscribe(DBGettersMethods({ collections, plurals, store }) )
             store.subscribe(async ({ type, payload }, state) => {
                 const path = type.split('/');
                 if (path[1] !== 'select')
@@ -45324,8 +45389,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                 const debug = debug_1.default('lodger:SELECTstoreSubscriber');
                 const tax = path[0];
                 debug('payload', payload);
+                if (!payload)
+                    return;
                 const id = typeof payload === 'string' ? payload : payload.id;
-                if (id === undefined)
+                if (id === store.getters[`tax/selected`])
                     return;
                 const reference = { [`${tax}Id`]: id };
                 const { referenceTaxonomies } = forms[tax];
@@ -45342,7 +45409,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                 // call methods of references documents
                 referenceTaxonomies.forEach(async (refTax) => {
                     const refdoc = store.getters[`${refTax}/activeDoc`];
-                    debug(`refdoc ${tax} (${refTax})`, refdoc);
+                    // debug(`refdoc ${tax} (${refTax})`, refdoc)
                     if (!refdoc)
                         return;
                     const method = refdoc[`toggle_${tax}`];
@@ -45356,7 +45423,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                     dependentTaxonomies.forEach(dTax => {
                         const subscriber = payload.subscriber || 'main';
                         const { plural } = forms[dTax];
-                        const holder = docsHolder.$data[subscriber][plural];
+                        const holder = vueHelper.subsData[subscriber][plural];
                         if (!holder || !holder.criteriu)
                             return;
                         debug('asignez', dTax, subscriber, reference);
@@ -45422,17 +45489,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
         }
         /**
          * Unsubscribe a single taxonomy from a single sub.
+         * DEPRECATED
          *
          */
-        async unsubscribe(taxPlural, subscriberName = 'main') {
-            const sub = subscribers[subscriberName];
-            const debug = debug_1.default('lodger:unsub');
-            debug('sub', sub);
-            if (!sub[taxPlural]) {
-                throw new Errors_1.LodgerError('subscriber nedefinit', { taxPlural, subscriberName });
-            }
-            await sub[taxPlural].unsubscribe();
-        }
+        // async unsubscribe (taxPlural: Plural<Taxonomie>, subscriberName: string = 'main') {
+        //   const sub: Subscriber = subscribers[subscriberName]
+        //   const debug = Debug('lodger:unsub')
+        //   // debug('sub', sub)
+        //   if (!sub[taxPlural]) {
+        //     throw new LodgerError('subscriber nedefinit', {taxPlural, subscriberName})
+        //   }
+        //   await sub[taxPlural].unsubscribe()
+        //   // unwatch & delete the data obj
+        //   await vueHelper.subsData[subscriberName][taxPlural].unwatch()
+        //   Vue.set(vueHelper.subsData[subscriberName], taxPlural, null)
+        // }
         /**
          * Kills all active listeners for a given subscriber name
          * @param subscriberName
@@ -45444,6 +45515,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                 await sub[subscriber].unsubscribe();
                 debug('unsubscribed', subscriber);
             }));
+        }
+        get subscribedTaxes() {
+            return subscribedTaxes;
         }
         /**
          * For taxonomies that have references
@@ -45463,7 +45537,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
             return (taxonomy, subscriberName) => {
                 const { plural } = forms[taxonomy];
                 try {
-                    return docsHolder.$data[subscriberName][plural];
+                    return vueHelper.subsData[subscriberName][plural].items;
                 }
                 catch (e) {
                     throw new Errors_1.LodgerError('nu exista %%', { plural, subscriberName });
@@ -49604,7 +49678,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     (function (Errors) {
         Errors["invalidModule"] = "Invalid Module";
     })(Errors || (Errors = {}));
-    const customOpts = (context, options) => {
+    exports.customOpts = (context, options) => {
+        if (!context.taxonomii && !context.forms)
+            return;
         const { taxonomii, forms } = context;
         /**
          * Builds modules based on taxonomies
@@ -49629,7 +49705,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     // export default class LodgerStore implements StoreOptions<RootState> {
     class LodgerStore extends vuex_1.default.Store {
         constructor(context, options = {}) {
-            super(customOpts(context, options));
+            super(exports.customOpts(context, options));
             this.context = context;
             this.options = options;
             this.modules = {};
@@ -49648,7 +49724,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
             const key = Object.keys(module)[0];
             if (!key || !module[key])
                 throw new Errors_1.LodgerError(Errors.invalidModule);
-            debug('using module', key, module[key]);
+            debug('using module', key);
             modules[key] = Object.assign({}, module[key], { namespaced });
         }
     }
@@ -50836,7 +50912,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 153 */
 /***/ (function(module) {
 
-module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first API for HOAs","main":"index.js","repository":"https://github.com/doriandrn/lodger-api.git","author":"Dorian Tudorache <dorian.snaz@gmail.com>","license":"MIT","scripts":{"tsc":"tsc index.ts","build":"webpack","test":"jest"},"devDependencies":{"@types/debug":"^0.0.31","@types/faker":"^4.1.4","@types/jest":"^23.3.9","@types/node":"^10.12.9","babel-jest":"^23.6.0","debug":"^4.1.0","deep-equal":"^1.0.1","fs":"^0.0.1-security","jest":"^23.6.0","json2yaml":"^1.1.0","pouchdb-adapter-memory":"^7.0.0","ts-jest":"^23.10.4","ts-loader":"^5.3.0","typescript":"^3.1.6","webpack-cli":"^3.1.2"},"dependencies":{"awesome-typescript-loader":"^5.2.1","pouchdb-adapter-http":"^7.0.0","pouchdb-adapter-idb":"^7.0.0","rxdb":"^8.0.4","rxjs":"^6.3.3","source-map-loader":"^0.2.4","vue":"^2.5.17","vuex":"^3.0.1","vuex-persistedstate":"^2.5.4","vuex-toast":"^0.1.3","webpack":"^4.26.0"}};
+module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first API for HOAs","main":"index.js","repository":"https://github.com/doriandrn/lodger-api.git","author":"Dorian Tudorache <dorian.snaz@gmail.com>","license":"MIT","scripts":{"tsc":"tsc index.ts","build":"webpack","test":"jest"},"devDependencies":{"@types/debug":"^0.0.31","@types/faker":"^4.1.4","@types/jest":"^23.3.10","@types/node":"^10.12.10","babel-jest":"^23.6.0","debug":"^4.1.0","deep-equal":"^1.0.1","faker":"^4.1.0","fs":"^0.0.1-security","jest":"^23.6.0","json2yaml":"^1.1.0","pouchdb-adapter-memory":"^7.0.0","ts-jest":"^23.10.5","ts-loader":"^5.3.1","typescript":"^3.1.6","webpack-cli":"^3.1.2"},"dependencies":{"awesome-typescript-loader":"^5.2.1","pouchdb-adapter-http":"^7.0.0","pouchdb-adapter-idb":"^7.0.0","rxdb":"^8.0.4","rxjs":"^6.3.3","source-map-loader":"^0.2.4","vue":"^2.5.17","vuex":"^3.0.1","vuex-persistedstate":"^2.5.4","vuex-toast":"^0.1.3","webpack":"^4.26.1"}};
 
 /***/ }),
 /* 154 */
@@ -50922,7 +50998,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     };
     const actions = {
         open: ({ commit }, content) => {
-            console.log('CC', content);
+            // console.log('CC', content)
             switch (typeof content) {
                 case 'object':
                     commit('DATA', content.data);

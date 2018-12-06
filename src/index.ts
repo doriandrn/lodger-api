@@ -70,16 +70,22 @@ const vueHelperObj: SubscriberData = {
 
 const subscribedTaxes: Taxonomie[] = []
 
-const initialSubscribe = ({ taxonomie, plural, collections }) => {
-  const debug = Debug('lodger:initialSubscribe')
-  // add watcher for criteriu and when it changes
-  // fire this subscribe func again
+const initialSubscribe = async ({ taxonomie, plural, collections, store }) => {
+  // const debug = Debug('lodger:initialSubscribe')
+  switch (taxonomie) {
+    // insert predefined services
+    case 'serviciu':
+      predefinite.forEach(async denumire => { await collections[plural].insert({ denumire }) })
+      break
 
-  // insert predefined services on first init
-  // todo: make this a hook and call funcs
-  if (plural === 'servicii') {
-    predefinite.forEach(async denumire => { await collections[plural].insert({ denumire }) })
-    debug('first init, adaugat predefinite')
+    // insert admin user
+    case 'utilizator':
+      const { _id } = await collections[plural].insert({
+        name: 'Administrator',
+        rol: 'admin'
+      })
+      store.dispatch('utilizator/set_active', _id)
+      break
   }
 
   subscribedTaxes.push(taxonomie)
@@ -421,11 +427,11 @@ class Lodger {
 
     const {
       db: { collections },
-      store: { getters },
+      store,
       forms
      } = <Lodger>this
 
-    // if (!collections) throw new LodgerError(Errors.missingCoreDefinitions)
+     const { getters } = store
 
     // always have it as an array
     taxonomii = typeof taxonomii === 'string' ?
@@ -441,7 +447,7 @@ class Lodger {
 
     if (!vueHelper.subsData[subscriberName]) {
       Vue.set(vueHelper.subsData, subscriberName, {})
-      debug('D initializat subscriber: ', subscriberName)
+      // debug('D initializat subscriber: ', subscriberName)
     }
 
     taxonomii.forEach(taxonomie => {
@@ -449,17 +455,19 @@ class Lodger {
       const colectie = collections[plural]
       if (!colectie) throw new LodgerError('invalid collection %%', plural)
 
-      const criteriu = Object.assign({}, { ...getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})) ) })
+      const criteriu = Object.assign({}, {
+        ...getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})) )
+      })
 
-      debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
-      debug(`${taxonomie}: criteriu`, criteriu)
+      // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
+      // debug(`${taxonomie}: criteriu`, criteriu)
 
       let { limit, index, sort, find } = criteriu
       const paging = Number(limit || 0) * (index || 1)
       let unwatch
 
       if (subscribedTaxes.indexOf(taxonomie) < 0) {
-        initialSubscribe({ taxonomie, plural, collections })
+        initialSubscribe({ taxonomie, plural, collections, store })
       }
 
       // Define the data object container
@@ -468,7 +476,7 @@ class Lodger {
         freshO.criteriu = Object.assign({}, criteriu)
 
         Vue.set(vueHelper.subsData[subscriberName], plural, freshO)
-        debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
+        // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
 
         // add watcher for criteriu and when it changes
         // fire this subscribe func again

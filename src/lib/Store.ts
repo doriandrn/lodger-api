@@ -19,23 +19,30 @@ export interface RootState {
   locale: Locale
 }
 
-
 enum Errors {
   invalidModule = 'Invalid Module'
 }
 
-const customOpts = (context: Lodger, options: StoreOptions<RootState>) => {
+export const customOpts = (
+  context: Lodger,
+  options: StoreOptions<RootState>
+) => {
+  if (!context.taxonomii && !context.forms) return
   const { taxonomii, forms } = context
 
   /**
    * Builds modules based on taxonomies
    * TODO: make this a method ?!
    */
-  if (!(taxonomii && taxonomii.length)) throw new LodgerError('No taxes supplied')
+  if (!(taxonomii && taxonomii.length))
+    throw new LodgerError('No taxes supplied')
 
   taxonomii.forEach((tax: Taxonomii) => {
     const { plural } = forms[tax]
-    modules[tax] = setupSharedMethods(undefined, undefined, tax, plural)
+
+    modules[tax] = setupSharedMethods(
+      undefined, undefined, tax, plural
+    )
   })
 
   if (RootModule && RootModule.modules) {

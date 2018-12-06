@@ -105,15 +105,70 @@ describe('Lodger', () => {
 
     })
 
+    describe('First time subscribe behaviour', () => {
+      describe('Predefined DB items', () => {
+        describe('users', () => {
+          describe('positive', () => {
+            let adminId
+            test('inserts admin on first sub', async () => {
+              await lodger.subscribe('utilizator')
+              await delay(300)
+              const utilizatori = lodger.utilizatori()
+              adminId = Object.keys(utilizatori)[0]
+              expect(adminId).toBeDefined()
+              expect(Object.keys(utilizatori)[1]).toBeUndefined()
+            })
+
+            test('active utilizator/administrator = above inserted user', () => {
+              // console.error('wtf', lodger.getters['utilizator/activ'])
+              expect(lodger.getters['utilizator/activ']).toEqual(adminId)
+            })
+          })
+        })
+
+        describe('services', () => {
+          describe('positive', () => {
+            test('predefineds get inserted on first subscribe', async () => {
+              await lodger.subscribe('serviciu')
+              await delay(500)
+              const servicii = lodger.servicii()
+              expect(servicii).toBeDefined()
+              expect(Object.keys(servicii).length).toEqual(predefinite.length)
+            })
+          })
+
+          describe('negative', () => {
+            test('predefineds dont get inserted on second subscribe', async () => {
+              await lodger.subscribe('serviciu')
+              await delay(500)
+              const servicii = lodger.servicii()
+              expect(servicii).toBeDefined()
+              expect(Object.keys(servicii).length).toEqual(predefinite.length)
+            })
+
+            test('predefineds dont get inserted on another subscriber subscribe()', async () => {
+              await lodger.subscribe('serviciu', null, 'coca')
+              await delay(500)
+              const servicii = lodger.servicii('coca')
+              expect(servicii).toBeDefined()
+              expect(Object.keys(servicii).length).toEqual(predefinite.length)
+            })
+          })
+        })
+      })
+    })
+
     describe('Criteria', () => {
       const subName = 'criteriaTest'
-      const tax = 'apartament'
-      const plural = 'apartamente'
+      const tax = 'asociatie'
+      const plural = 'asociatii'
       const limit = 2
 
       beforeAll(async () => {
-        for (let i in Array(limit*3).keys()) {
-          await lodger.put(tax, fakeData(tax))
+        for (let i of Array(limit*3).keys()) {
+          const { _id } = await lodger.put(tax, fakeData(tax))
+          console.error('i', _id)
+          await delay(10)
         }
         await delay(1500)
       })
@@ -121,44 +176,40 @@ describe('Lodger', () => {
       describe('positive', () => {
         test('limits the items', async () => {
           const criteriu = { limit }
-          const sub = lodger.subscribe(tax, criteriu, subName)
+          const sub = await lodger.subscribe(tax, criteriu, subName)
           await delay(200)
           const items = lodger[plural](subName)
-          console.error('OI', items)
+
           expect(Object.keys(items).length).toEqual(limit)
           await sub[plural].unsubscribe()
         })
-      })
-    })
 
-    describe('Predefined DB items', () => {
+        test('loads more items with given index', async () => {
+          const criteriu = { limit, index: limit*2 }
+          const sub = await lodger.subscribe(tax, criteriu, subName)
+          await delay(200)
+          const items = lodger[plural](subName)
 
-      describe('services', () => {
-        describe('positive', () => {
-          test('predefineds get inserted on first subscribe', async () => {
-            await lodger.subscribe('serviciu')
-            await delay(500)
-            const servicii = lodger.servicii()
-            expect(servicii).toBeDefined()
-            expect(Object.keys(servicii).length).toEqual(predefinite.length)
-          })
+          expect(Object.keys(items).length).toEqual(limit*3)
+          await sub[plural].unsubscribe()
         })
 
-        describe('negative', () => {
-          test('predefineds dont get inserted on second subscribe', async () => {
-            await lodger.subscribe('serviciu')
-            await delay(500)
-            const servicii = lodger.servicii()
-            expect(servicii).toBeDefined()
-            expect(Object.keys(servicii).length).toEqual(predefinite.length)
-          })
+      })
 
-          test('predefineds dont get inserted on another subscriber subscribe()', async () => {
-            await lodger.subscribe('serviciu', null, 'coca')
-            await delay(500)
-            const servicii = lodger.servicii('coca')
-            expect(servicii).toBeDefined()
-            expect(Object.keys(servicii).length).toEqual(predefinite.length)
+      describe('Sort', () => {
+        describe('positive', () => {
+          test('name - AZ (+limit)', async () => {
+            const limit = 5
+            const sort = { name: 1 }
+            const criteriu = { limit, sort }
+            const sub = await lodger.subscribe(tax, criteriu, subName)
+            await delay(200)
+            const items = lodger[plural](subName)
+
+            // expect(Object.keys(items).length).toEqual(limit*3)
+            expect(Object.values(items).map(item => item.name))
+              .toEqual(expect.arrayContaining(Object.values(items).map(i => i.name).sort()))
+            await sub[plural].unsubscribe()
           })
         })
       })
