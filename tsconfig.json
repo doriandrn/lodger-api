@@ -4,7 +4,7 @@
     "jsx": "preserve",
     "lib": [ "esnext" ],
     "target": "esnext",
-    "outFile": "./dist/index.js",
+    "outFile": "./index.js",
     "module": "amd",
     "moduleResolution": "node",
     "baseUrl": ".",
