@@ -9,4 +9,4 @@ log.txt
 # yarn stff
 yarn.lock
 
-dist/
+#dist/
