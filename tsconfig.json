@@ -5,7 +5,7 @@
     "lib": [ "esnext" ],
     "target": "esnext",
     "outFile": "./index.js",
-    "module": "amd",
+    "module": "system",
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
