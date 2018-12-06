@@ -4,8 +4,7 @@
     "jsx": "preserve",
     "lib": [ "esnext" ],
     "target": "esnext",
-    "outFile": "./index.js",
-    "module": "system",
+    "module": "commonjs",
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
