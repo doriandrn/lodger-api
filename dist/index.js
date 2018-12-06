@@ -44869,6 +44869,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
         // contor = 'contor',
         Taxonomii["utilizator"] = "utilizator";
     })(Taxonomii || (Taxonomii = {}));
+    exports.Taxonomii = Taxonomii;
     var Errors;
     (function (Errors) {
         Errors["missingDB"] = "Missing database";
@@ -44881,6 +44882,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
         Errors["missingData"] = "Missing data %%";
         Errors["couldNotWriteFile"] = "Cannot write file";
     })(Errors || (Errors = {}));
+    exports.Errors = Errors;
     const loadForms = (taxonomies) => Object.assign({}, ...taxonomies.map((tax) => ({ [tax]: Form_1.Form.loadByName(tax) })));
     const plugins = [];
     const vueHelperObj = {
@@ -45543,11 +45545,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
             };
         }
     }
-    exports.default = {
-        Lodger,
-        Errors,
-        Taxonomii
-    };
+    exports.Lodger = Lodger;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 

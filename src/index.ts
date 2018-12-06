@@ -172,7 +172,7 @@ const vueHelper = new Vue({
   }
 })
 
-class Lodger {
+export class Lodger {
   constructor (
     protected taxonomii: Taxonomii[],
     protected forms: Forms,
@@ -830,8 +830,7 @@ class Lodger {
   }
 }
 
-export default {
-  Lodger,
+export {
   Errors,
   Taxonomii
 }
