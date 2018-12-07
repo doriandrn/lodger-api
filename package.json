@@ -7,7 +7,7 @@
   "author": "Dorian Tudorache <dorian.snaz@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "tsc": "tsc index.ts",
+    "check-types": "tsc",
     "build": "webpack",
     "test": "jest"
   },

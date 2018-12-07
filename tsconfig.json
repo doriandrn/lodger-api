@@ -2,18 +2,18 @@
   "compilerOptions": {
     "allowJs": false,
     "jsx": "preserve",
-    "lib": [ "esnext" ],
-    "target": "es6",
-    "module": "es2015",
+    "lib": [ "esnext", "es2015" ],
+    "target": "esnext",
+    "module": "esnext",
     "moduleResolution": "node",
-    "baseUrl": ".",
+    "baseUrl": "./src/",
     "paths": {
-      "~/lib/*": [ "src/lib/*" ],
-      "forms/*": [ "src/lib/forms/*" ],
-      "defs/*": [ "src/lib/defs/*" ],
-      "helpers/*": [ "src/lib/helpers/*" ],
-      "@/*": [ "./src/*" ],
-      "~/*": [ "./src/*" ]
+      "~/lib/*": [ "lib/*" ],
+      "forms/*": [ "lib/forms/*" ],
+      "defs/*": [ "lib/defs/*" ],
+      "helpers/*": [ "lib/helpers/*" ],
+      "@/*": [ "/*" ],
+      "~/*": [ "/*" ]
     },
     "rootDirs": [
       "./"
@@ -24,11 +24,13 @@
       "jest",
       "faker"
     ],
+    "noEmit": true, // pt babel
     "strict": true,
     "sourceMap": true,
     "noUnusedLocals": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "isolatedModules": false
   },
   "include": [
     "./src/**/*"
