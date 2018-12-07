@@ -4,7 +4,7 @@
     "jsx": "preserve",
     "lib": [ "esnext" ],
     "target": "esnext",
-    "module": "commonjs",
+    "module": "es6",
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
