@@ -40,8 +40,10 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: 'ts-loader',
-          options: { transpileOnly: true }
+          // loader: 'ts-loader',
+          // loader: 'awesome-typescript-loader',
+          loader: 'babel-loader',
+          // options: { transpileOnly: true }
         }
       }
     ]

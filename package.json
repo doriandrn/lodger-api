@@ -12,11 +12,17 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
     "@types/debug": "^0.0.31",
     "@types/faker": "^4.1.4",
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.10",
     "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.4",
     "debug": "^4.1.0",
     "deep-equal": "^1.0.1",
     "faker": "^4.1.0",
