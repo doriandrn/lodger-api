@@ -31,7 +31,7 @@ module.exports = {
 
   optimization: {
     removeEmptyChunks: true,
-    minimize: true,
+    minimize: false,
     concatenateModules: true
   },
 
