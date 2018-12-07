@@ -5,7 +5,7 @@ function resolve (dir) {
 }
 
 module.exports = {
-  entry: "./src/index.ts",
+  entry: "~/index.ts",
 
   output: {
     filename: "index.js"
@@ -31,7 +31,8 @@ module.exports = {
 
   optimization: {
     removeEmptyChunks: true,
-    minimize: false
+    minimize: true,
+    concatenateModules: true
   },
 
   module: {
