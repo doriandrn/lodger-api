@@ -147,1092 +147,14 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push([128,1]);
+/******/ 	deferredModules.push(["/7QA",1]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 100:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/**
- * o cheltuiala = parte dintr-o factura
- */
-const fields = [{
-  id: 'asociatieId',
-  ref: 'asociatii',
-  required: true,
-  index: true
-}, {
-  id: 'facturi',
-  type: 'search',
-  taxonomy: 'facturi',
-  ref: 'facturi' // required: true TODO: e necesar? ?????????
-
-}, {
-  id: 'suma',
-  type: 'bani',
-  required: true,
-  index: true,
-  showInList: 'secondary'
-}, {
-  id: 'moneda',
-  notInForm: true,
-  required: true,
-  showInList: 'secondary',
-  value: getters => getters['asociatie/activa'].moneda
-}, {
-  id: 'modDistribuire',
-  type: 'distribuire'
-}, {
-  id: 'apartamenteEligibile',
-  type: 'selApartamente',
-  options: getters => getters['asociatie/apartamente']
-}];
-const plural = 'cheltuieli';
-
-
-/***/ }),
-
-/***/ 101:
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-
-/***/ 102:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-const fields = [{
-  id: 'furnizorId',
-  //aka DE LA
-  required: true,
-  type: 'search',
-  ref: 'furnizori'
-}, {
-  id: 'suma',
-  type: 'bani',
-  showInList: 'primary',
-  index: true,
-  required: true,
-  label: 'defaults.sum'
-}, {
-  id: 'nrFactura',
-  type: 'number',
-  default: 1,
-  index: true,
-  value: getters => Number(getters['asociatie/nrUltimaChitanta'] || 0) + 1
-}, {
-  id: 'dataScadenta',
-  type: 'date',
-  showInList: 'secondary'
-}, {
-  id: 'moneda',
-  notInForm: true,
-  required: true,
-  value: getters => getters['asociatie/moneda']
-}, // ASTA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
-// TREBUIE SA FIGUREZE
-// asociatieId = idul asociatiei apului
-/// !!!!!!!!!!!!!!!!
-{
-  id: 'asociatieId',
-  notInForm: true,
-  required: true,
-  index: true,
-  value: g => g['asociatie/active'] || g['asociatie/selected']
-}];
-const plural = 'facturi';
-
-
-/***/ }),
-
-/***/ 103:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "campuri", function() { return campuri; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
-const campuri = [{
-  id: 'subiect',
-  required: true
-}, {
-  id: 'tip',
-  type: 'select',
-  options: ['bug', 'enhacement', 'feature', 'other'],
-  default: 'bug',
-  required: true
-}, {
-  id: 'mesaj',
-  required: true,
-  type: 'textarea',
-  placeholder: 'Părerea / Sugestia / Critica ta'
-}];
-const actiuni = {
-  confirm: 'trimiteFeedback'
-};
-
-/***/ }),
-
-/***/ 104:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-const fields = [{
-  id: 'name',
-  required: true,
-  showInList: 'primary',
-  index: true
-}, {
-  id: 'servicii',
-  type: 'servicii',
-  required: true,
-  servicii: g => g['asociatie/activeDoc'].servicii,
-  ref: 'serviciu'
-}, {
-  id: 'idN'
-}];
-const actiuni = {
-  confirm: 'adaugaFurnizor'
-};
-const plural = 'furnizori';
-
-/***/ }),
-
-/***/ 105:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-const gi = `incasare/activeDoc`;
-const fields = [{
-  id: 'apartamentId',
-  //aka DE LA
-  required: true,
-  type: 'search',
-  ref: 'apartamente'
-}, {
-  id: 'suma',
-  type: 'bani',
-  showInList: 'primary',
-  index: true,
-  required: true,
-  label: 'defaults.sum'
-}, {
-  id: 'nrChitanta',
-  type: 'number',
-  default: 1,
-  index: true,
-  value: getters => Number(getters['incasare/activeDoc'].nrUltimaChitanta || 0) + 1
-}, {
-  id: 'moneda',
-  notInForm: true,
-  required: true,
-  value: getters => getters['incasare/activeDoc'].moneda
-}, // ASTEA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
-// TREBUIE SA FIGUREZE
-/// !!!!!!!!!!!!!!!!
-{
-  id: 'blocId',
-  notInForm: true,
-  required: true,
-  index: true,
-  value: g => g['bloc/selected'].id
-}, {
-  id: 'asociatieId',
-  notInForm: true,
-  required: true,
-  index: true,
-  value: g => g['asociatie/selected'].id
-}];
-const actions = {
-  confirm: 'incaseaza'
-};
-const plural = 'incasari';
-
-
-/***/ }),
-
-/***/ 106:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "campuri", function() { return campuri; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
-const campuri = [{
-  id: 'balanta',
-  label: 'asociatie.init.balanta',
-  required: true,
-  type: 'bani',
-  '@change': 'asociatie/initBalanta',
-
-  value(getters) {
-    return getters['asociatie/balanta'];
-  }
-
-}, {
-  id: 'dataDinLunaListe',
-  label: 'asociatie.init.dataDinLuna',
-  required: true,
-  type: 'number',
-  max: 28,
-  min: 1
-}];
-const actiuni = {
-  confirm: 'initDone'
-};
-
-/***/ }),
-
-/***/ 107:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setari", function() { return setari; });
-const setari = {
-  regionale: {
-    campuri: [{
-      id: 'limba',
-      type: 'select',
-      '@change': 'schimbaLimba',
-      value: g => g.locale,
-      options: g => g.limbiChoose
-    }, {
-      id: 'moneda',
-      type: 'select',
-      value: g => g.moneda,
-      options: g => g.monede
-    }]
-  }
-};
-
-/***/ }),
-
-/***/ 108:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "methods", function() { return methods; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "settings", function() { return settings; });
-const getter = `utilizator/activeDoc`;
-const fields = [// {
-//   id: '_id',
-//   notInDb: true,
-//   notInForm: true,
-//   value: g => g[getter]._id
-// },
-{
-  id: 'name',
-  required: true,
-  primary: true,
-  showInList: 'primary',
-  value: g => g[getter].nume
-}, {
-  id: 'emailPublic',
-  value: g => g[getter].emailPublic
-}, {
-  id: 'rol',
-  required: true,
-  notInForm: true
-}, {
-  id: 'alteDetaliiContact',
-  type: 'contactFields',
-  notInForm: true
-}, {
-  id: 'preferinte',
-  type: 'object',
-  notInForm: true
-}];
-const plural = 'utilizatori';
-const methods = {
-  async UPDATEAZA(campuri) {
-    // TODO: nu permite updatarea anumitor chei
-    Object.keys(campuri).forEach(camp => {
-      this[camp] = campuri[camp];
-    });
-    await this.save();
-  }
-
-};
-const settings = {
-  online: {
-    campuri: [{
-      id: 'parola',
-      required: false,
-      encrypted: true
-    }, {
-      id: 'social',
-      required: false,
-      encrypted: true
-    }]
-  }
-};
-
-
-/***/ }),
-
-/***/ 111:
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-
-/***/ 117:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var rxdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(42);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-
-
-const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:db');
-const {
-  NODE_ENV
-} = process.env; // RxDB.QueryChangeDetector.enable()
-// RxDB.QueryChangeDetector.enableDebugging()
-
-switch (NODE_ENV) {
-  default:
-    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](__webpack_require__(194));
-    break;
-
-  case 'production':
-    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](__webpack_require__(190));
-    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](__webpack_require__(191));
-    break;
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (async function (collections, config) {
-  debug('Initing');
-  const db = await rxdb__WEBPACK_IMPORTED_MODULE_0__[/* create */ "a"](Object.assign({}, config)); // show leadership in title
-
-  db.waitForLeadership().then(() => {
-    if (NODE_ENV !== 'dev') return;
-    document.title = `♛ ${document.title}`;
-  });
-  await Promise.all(collections.map(c => db.collection(c)));
-  return db;
-});
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(14)))
-
-/***/ }),
-
-/***/ 125:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Form; });
-/* unused harmony export Errors */
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _helpers_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(51);
-/* harmony import */ var _Errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(16);
-
-
-/**
- * Forms for Lodger
- * are quite diferrently structured
- * than a normal JsonSchema
- */
-
-
-
-
-/**
- * Form Errors Definition
- *
- * TODO: account for translations
- */
-var Errors;
-
-(function (Errors) {
-  Errors["invalidRequested"] = "Invalid form requested: %%";
-  Errors["invalidName"] = "Invalid name supplied";
-  Errors["noData"] = "Form %% is missing data";
-  Errors["missingName"] = "Forms should have a name";
-  Errors["missingPlural"] = "A plural definition is required for %%";
-})(Errors || (Errors = {}));
-
-if (false) {}
-
-const defaultSchema = {
-  title: '',
-  properties: {},
-  required: [],
-  type: 'object',
-  version: 0
-};
-
-/**
- * A valid RxJsonSchema out of the form
- */
-const toRxSchema = formData => {
-  const {
-    name,
-    fields
-  } = formData;
-  const schema = JSON.parse(JSON.stringify(defaultSchema));
-  schema.title = name;
-  fields.filter(field => !field.notInDb).forEach(field => {
-    Object(_helpers_forms__WEBPACK_IMPORTED_MODULE_2__[/* pushFieldToSchema */ "d"])(field, schema);
-  });
-  if (name !== 'serviciu') Object(_helpers_forms__WEBPACK_IMPORTED_MODULE_2__[/* addCommonFieldsToSchema */ "a"])(schema);
-  return schema;
-};
-/**
- * All indexabble fields
- * @returns {Array} the ids of all fields with index: true
- */
-
-
-const lookupIndexables = fields => fields.filter(field => field.index).map(field => field.id);
-/**
- * Makes a RxCollection valid collection from the form
- */
-
-
-function toRxCollection(context) {
-  const {
-    schema,
-    data: {
-      plural,
-      methods,
-      statics
-    }
-  } = context;
-  const name = plural;
-  return {
-    name,
-    schema,
-    methods,
-    statics
-  };
-}
-/**
- * Form class
- */
-
-
-class Form {
-  constructor(data) {
-    this.data = data;
-
-    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(this, "schema", void 0);
-
-    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(this, "indexables", void 0);
-
-    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(this, "collection", void 0);
-
-    this.indexables = lookupIndexables(data.fields);
-    this.schema = toRxSchema(data);
-    this.collection = toRxCollection(this); // this.sortOptions = sortOptions({ indexables, name })
-  }
-  /**
-   * gets the sorting options for tax
-   * @returns an object with each key used as a sorting option
-   */
-
-
-  get sortOptions() {
-    const {
-      indexables,
-      name
-    } = this;
-
-    if (!['serviciu', 'contor'].indexOf(name)) {
-      indexables.push('la');
-    } // TODO: !!! ia din common methods
-
-
-    const sorts = {};
-    indexables.forEach(indexable => {
-      const label = `sort.${indexable === 'name' ? 'az' : indexable}`;
-      Object.assign(sorts, {
-        [indexable]: {
-          label
-        }
-      });
-    }); // debug(`${name} => sortable fields`, sorts)
-
-    return sorts;
-  }
-  /**
-   * Makes a Vue-ready $data {object} suitable to be completed
-   * by the user in the end form
-   * as it will turn reactive
-   */
-
-
-  componentData(isNewForm, getters) {
-    const {
-      data: {
-        fields
-      },
-      name
-    } = this;
-    const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:Form.ts:componentData');
-    let $data = {};
-    fields.forEach(camp => {
-      const {
-        label,
-        required,
-        click,
-        notInForm,
-        notInDb
-      } = camp;
-      let {
-        id,
-        value
-      } = camp;
-      debug('camp.value (f)', value);
-      let _def = camp.default;
-      if (click && !id) camp.id = click; // skip fields
-
-      if (isNewForm) {
-        if (!notInForm || notInDb) value = null;
-      } // apply getters to funcs
-
-
-      if (typeof value === 'function' && getters) {
-        try {
-          value = value(getters);
-          debug('valoare dupa apel functie: ', value);
-        } catch (e) {
-          debug('failed to get val', label, getters);
-          value = null;
-        }
-      }
-
-      if (typeof _def === 'function') _def = _def(getters); // label
-
-      camp.label = label || `${name ? `${name}.new.` : ''}${id}`; // validarea de required
-
-      if (required || camp.v && camp.v.indexOf('required') < 0) camp.v = `required|${camp.v || ''}`; // valoarea finala
-
-      $data[id] = null;
-      $data[id] = value !== null && value !== undefined ? value : _def;
-    });
-    return $data;
-  }
-  /**
-   * Loads a known form by name
-   *
-   * @param name
-   */
-
-
-  static loadByName(name) {
-    const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:Form');
-    let form;
-
-    try {
-      form = __webpack_require__(192)("./" + name);
-      if (form.default) form = form.default;
-      Object.assign(form, {
-        name
-      });
-      debug('✓', name);
-    } catch (e) {
-      debug('Error', e);
-      throw new _Errors__WEBPACK_IMPORTED_MODULE_3__[/* FormError */ "a"](Errors.invalidRequested, name);
-    }
-
-    return new Form(form);
-  }
-
-  get name() {
-    return this.data.name;
-  }
-
-  get plural() {
-    return this.data.plural;
-  }
-  /**
-   * Reference taxonomies of a taxonomy
-   *
-   * @returns {Array} taxonomii
-   */
-
-
-  get referenceTaxonomies() {
-    const {
-      data: {
-        fields
-      }
-    } = this;
-    return fields.filter(field => field.id.indexOf('Id') === field.id.length - 2).map(field => field.id.replace('Id', ''));
-  }
-  /**
-   * Items to be display to user,
-   * @returns {Object} the keys of the fields: their position
-   *
-   */
-
-
-  get __displayItemKeys() {
-    const {
-      fields
-    } = this.data;
-    return Object.assign({}, ...fields.filter(field => field.showInList).map(field => ({
-      [field.id]: field.showInList
-    })));
-  }
-
-}
-
-
-
-/***/ }),
-
-/***/ 126:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export get_bigrams */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return string_similarity; });
-const get_bigrams = function (string) {
-  var i, j, ref, s, v;
-  s = string.toLowerCase();
-  v = new Array(s.length - 1);
-
-  for (i = j = 0, ref = v.length; j <= ref; i = j += 1) {
-    v[i] = s.slice(i, i + 2);
-  }
-
-  return v;
-};
-const string_similarity = function (str1, str2) {
-  var hit_count, j, k, len, len1, pairs1, pairs2, union, x, y;
-
-  if (str1.length > 0 && str2.length > 0) {
-    pairs1 = get_bigrams(str1);
-    pairs2 = get_bigrams(str2);
-    union = pairs1.length + pairs2.length;
-    hit_count = 0;
-
-    for (j = 0, len = pairs1.length; j < len; j++) {
-      x = pairs1[j];
-
-      for (k = 0, len1 = pairs2.length; k < len1; k++) {
-        y = pairs2[k];
-
-        if (x === y) {
-          hit_count++;
-        }
-      }
-    }
-
-    if (hit_count > 0) {
-      return 2.0 * hit_count / union;
-    }
-  }
-
-  return 0.0;
-};
-
-/***/ }),
-
-/***/ 127:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var lib_store_namespaceObject = {};
-__webpack_require__.r(lib_store_namespaceObject);
-__webpack_require__.d(lib_store_namespaceObject, "state", function() { return store_state; });
-__webpack_require__.d(lib_store_namespaceObject, "actions", function() { return store_actions; });
-__webpack_require__.d(lib_store_namespaceObject, "modules", function() { return modules; });
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/defineProperty.js
-var defineProperty = __webpack_require__(38);
-var defineProperty_default = /*#__PURE__*/__webpack_require__.n(defineProperty);
-
-// EXTERNAL MODULE: ./node_modules/vue/dist/vue.runtime.esm.js
-var vue_runtime_esm = __webpack_require__(49);
-
-// EXTERNAL MODULE: ./node_modules/vuex/dist/vuex.esm.js
-var vuex_esm = __webpack_require__(71);
-
-// EXTERNAL MODULE: ./src/lib/Errors.ts
-var Errors = __webpack_require__(16);
-
-// EXTERNAL MODULE: ./src/lib/helpers/functions.ts
-var functions = __webpack_require__(53);
-
-// CONCATENATED MODULE: ./src/lib/defs/sharedStoreMethods.ts
-/**
- * @param { methoName: action }
- */
-const sharedStoreMethods = {
-  selected: 'select',
-  last: 'set_last'
-};
-// CONCATENATED MODULE: ./src/lib/helpers/store.ts
-
-
- // const namespaced: boolean = true
-
-/**
- * Creates an empty store module
- */
-function createEmptyStoreModule() {
-  /**
-   * Empties
-   */
-  const state = {};
-  const getters = {};
-  const actions = {};
-  const mutations = {};
-  return {
-    namespaced: true,
-    state,
-    actions,
-    mutations,
-    getters
-  };
-} // const otherActions = (taxonomy, actionName) => {
-//   switch (actionName) {
-//     case 'select':
-//       return [
-//         `${taxonomy}/set_referencesIds`
-//       ]
-//     default:
-//       return []
-//   }
-// }
-
-/**
-  * Shared methods across taxonomies, called individually
-  *
-  * @param taxonomy
-  * @requires sharedMethods
-  */
-
-
-function setupSharedMethods(sharedMethods = sharedStoreMethods, module = createEmptyStoreModule(), moduleName, plural) {
-  if (typeof sharedMethods !== 'object') {
-    throw new Errors["b" /* LodgerError */]('invalid methods supplied');
-  } // pt servicii si contoare
-
-
-  const isMultiple = Object(functions["b" /* taxIsMultipleSelect */])(moduleName);
-  Object.keys(sharedMethods).forEach(methodName => {
-    const action = sharedMethods[methodName];
-    const multipleSelect = isMultiple && action === 'select';
-    module.state[methodName] = undefined;
-
-    module.getters[methodName] = (S, G) => {
-      if (multipleSelect) {
-        const doc = G[`${moduleName}/activeDoc`];
-        return doc ? doc[plural] : undefined;
-      } else {
-        return S[methodName] && S[methodName].id ? S[methodName].id : S[methodName];
-      }
-    };
-
-    module.actions[action] = ({
-      commit,
-      dispatch
-    }, data) => {
-      commit(action, data); // const otherActionsToDispatch = otherActions(moduleName, methodName)
-      // otherActionsToDispatch.forEach(action => {
-      //   dispatch(action, )
-      // })
-    };
-
-    module.mutations[action] = (s, data) => {
-      s[methodName] = data;
-    };
-  }); // module.getters['activeDoc'] = (S: RootState) => S.doc || {}
-
-  return module;
-}
-/**
- * Loads a taxonomy's store data from it's filename in store
- */
-
-
-function setupFromFile(taxonomy) {
-  return {};
-}
-
-
-// EXTERNAL MODULE: ./src/lodger.config.ts
-var lodger_config = __webpack_require__(54);
-
-// CONCATENATED MODULE: ./src/lib/store/modules/modal.ts
-const state = {
-  open: false,
-  content: null,
-  data: null
-};
-const getters = {
-  open: state => state.open,
-  content: state => state.content,
-  data: state => state.data
-};
-const mutations = {
-  OPEN: (state, content) => {
-    if (content) state.content = content;
-    state.open = true;
-  },
-  DATA: (state, data) => {
-    state.data = data;
-  },
-  CLOSE: state => {
-    state.open = false;
-    state.content = null;
-    state.data = null;
-  }
-};
-const actions = {
-  open: ({
-    commit
-  }, content) => {
-    // console.log('CC', content)
-    switch (typeof content) {
-      case 'object':
-        commit('DATA', content.data);
-        commit('OPEN', content.id);
-        return;
-
-      case 'string':
-        commit('DATA', content);
-        break;
-    }
-
-    commit('OPEN', content);
-  },
-  close: ({
-    commit,
-    dispatch,
-    getters,
-    rootGetters
-  }) => {
-    const prompt = rootGetters['modal/content'] === 'prompt';
-    commit('CLOSE');
-    if (prompt) dispatch('prompt/cancel', null, {
-      root: true
-    });
-  }
-};
-/* harmony default export */ var modal = ({
-  state,
-  actions,
-  mutations,
-  getters
-});
-// CONCATENATED MODULE: ./src/lib/store/modules/prompt.ts
-const prompt_state = () => ({
-  _happened: false,
-  type: null,
-  message: null
-});
-
-const prompt_mutations = {
-  PROMPT: (state, {
-    type,
-    message
-  }) => {
-    state.type = type;
-    state.message = message;
-    state._happened = true;
-  },
-  PROMPT_OK: state => {
-    state.type = null;
-    state.message = null;
-    state._happened = false;
-  },
-  PROMPT_CANCEL: state => {
-    state.type = null;
-    state.message = null;
-  }
-};
-const prompt_actions = {
-  confirm: ({
-    commit,
-    dispatch
-  }) => {
-    dispatch('modal/close', true, {
-      root: true
-    });
-    commit('PROMPT_OK');
-  },
-  new: ({
-    commit,
-    dispatch
-  }, prompt) => {
-    dispatch('modal/open', 'prompt', {
-      root: true
-    });
-    commit('PROMPT', prompt);
-  },
-  cancel: ({
-    commit
-  }) => {
-    commit('PROMPT_CANCEL');
-  }
-};
-const prompt_getters = {
-  type: state => state.type,
-  message: state => state.message,
-  prompted: state => state._happened
-};
-/* harmony default export */ var modules_prompt = ({
-  state: prompt_state,
-  actions: prompt_actions,
-  mutations: prompt_mutations,
-  getters: prompt_getters
-});
-// CONCATENATED MODULE: ./src/lib/store/index.ts
-
-/**
- * MODULES
- */
-// TOAST
-// import { createModule } from 'vuex-toast'
-// MODAL
-
-
-
-const {
-  version
-} = lodger_config["a" /* default */];
-const store_state = {
-  locale: 'ro',
-  version
-};
-const store_actions = {
-  notify: ({
-    dispatch
-  }, notificare) => {
-    dispatch('@@toast/ADD_TOAST_MESSAGE', notificare);
-  }
-};
-const modules = {
-  // toast: createModule({ dismissInterval: 5000 }),
-  modal: modal,
-  prompt: modules_prompt
-};
-
-// EXTERNAL MODULE: ./node_modules/debug/src/browser.js
-var browser = __webpack_require__(11);
-var browser_default = /*#__PURE__*/__webpack_require__.n(browser);
-
-// CONCATENATED MODULE: ./src/lib/Store.ts
-/* unused harmony export customOpts */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Store_LodgerStore; });
-
-
-
-
-
-
-
-vue_runtime_esm["a" /* default */].use(vuex_esm["a" /* default */]);
-const debug = browser_default()('lodger:Store');
-const Store_modules = {};
-var Store_Errors;
-
-(function (Errors) {
-  Errors["invalidModule"] = "Invalid Module";
-})(Store_Errors || (Store_Errors = {}));
-
-const customOpts = (context, options) => {
-  if (!context.taxonomii && !context.forms) return;
-  const {
-    taxonomii,
-    forms
-  } = context;
-  /**
-   * Builds modules based on taxonomies
-   * TODO: make this a method ?!
-   */
-
-  if (!(taxonomii && taxonomii.length)) throw new Errors["b" /* LodgerError */]('No taxes supplied');
-  taxonomii.forEach(tax => {
-    const {
-      plural
-    } = forms[tax];
-    Store_modules[tax] = setupSharedMethods(undefined, undefined, tax, plural);
-  });
-
-  if (lib_store_namespaceObject && modules) {
-    // LodgerStore.use(RootModule, false)
-    Object.assign(options, lib_store_namespaceObject);
-    Object.keys(modules).forEach(module => {
-      Store_LodgerStore.use({
-        [module]: modules[module]
-      }, module !== 'toast');
-    });
-  }
-
-  options.modules = Store_modules;
-  return options;
-}; // export default class LodgerStore implements StoreOptions<RootState> {
-
-class Store_LodgerStore extends vuex_esm["a" /* default */].Store {
-  constructor(context, options = {}) {
-    super(customOpts(context, options));
-    this.context = context;
-    this.options = options;
-
-    defineProperty_default()(this, "modules", {});
-  }
-  /**
-   * Use a store module
-   * to be used before calling the constructor
-   *
-   * @param module
-   * @param {Boolean} namespaced - if it should be namespaced
-   */
-
-
-  static use(module, namespaced = true) {
-    if (!module || typeof module !== 'object') {
-      throw new Errors["b" /* LodgerError */](Store_Errors.invalidModule);
-    }
-
-    const key = Object.keys(module)[0];
-    if (!key || !module[key]) throw new Errors["b" /* LodgerError */](Store_Errors.invalidModule);
-    debug('using module', key);
-    Store_modules[key] = Object.assign({}, module[key], {
-      namespaced
-    });
-  }
-
-}
-
-/***/ }),
-
-/***/ 128:
+/***/ "/7QA":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1240,27 +162,27 @@ __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Lodger", function() { return Lodger; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return Errors; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Taxonomii", function() { return Taxonomii; });
-/* harmony import */ var _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(33);
+/* harmony import */ var _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("MVZn");
 /* harmony import */ var _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("NOtv");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var rxdb__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(42);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(115);
+/* harmony import */ var rxdb__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("p9ch");
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("Po9p");
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var json2yaml__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(116);
+/* harmony import */ var json2yaml__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("gkHL");
 /* harmony import */ var json2yaml__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(json2yaml__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var deep_equal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(36);
+/* harmony import */ var deep_equal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("f66B");
 /* harmony import */ var deep_equal__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(deep_equal__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _lib_Store__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(127);
-/* harmony import */ var _lib_build_opts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(72);
-/* harmony import */ var _lib_helpers_functions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(53);
-/* harmony import */ var _lib_helpers_forms__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(51);
-/* harmony import */ var _lib_DB__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(117);
-/* harmony import */ var _lib_Form__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(125);
-/* harmony import */ var _lib_Errors__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(16);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(49);
-/* harmony import */ var _lib_helpers_search__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(126);
-/* harmony import */ var forms_serviciu__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(60);
+/* harmony import */ var _lib_Store__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("5Fil");
+/* harmony import */ var _lib_build_opts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("huy0");
+/* harmony import */ var _lib_helpers_functions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("ABXj");
+/* harmony import */ var _lib_helpers_forms__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("REmU");
+/* harmony import */ var _lib_DB__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("FOda");
+/* harmony import */ var _lib_Form__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("512P");
+/* harmony import */ var _lib_Errors__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("LORn");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("Kw5r");
+/* harmony import */ var _lib_helpers_search__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__("5u1Y");
+/* harmony import */ var forms_serviciu__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__("0fNj");
 
 /// <reference path="main.d.ts" />
 
@@ -2044,7 +966,7 @@ class Lodger {
     const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:export');
     const json = await this.db.dump();
     const extension = 'ldb';
-    if (!path) path = `${__webpack_require__(193).homeDir}/downloads/`;
+    if (!path) path = `${__webpack_require__("PENG").homeDir}/downloads/`;
 
     if (!filename) {
       const date = new Date();
@@ -2138,25 +1060,1184 @@ class Lodger {
 
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
 
 /***/ }),
 
-/***/ 133:
+/***/ 0:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 158:
-/***/ (function(module) {
+/***/ "0fNj":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first API for HOAs","main":"dist/index.js","repository":"https://github.com/doriandrn/lodger-api.git","author":"Dorian Tudorache <dorian.snaz@gmail.com>","license":"MIT","scripts":{"check-types":"tsc","build":"webpack","test":"jest"},"devDependencies":{"@babel/core":"^7.2.0","@babel/plugin-proposal-class-properties":"^7.2.1","@babel/plugin-proposal-object-rest-spread":"^7.2.0","@babel/plugin-transform-runtime":"^7.2.0","@babel/preset-env":"^7.2.0","@babel/preset-es2015":"^7.0.0-beta.53","@babel/preset-typescript":"^7.1.0","@types/debug":"^0.0.31","@types/faker":"^4.1.4","@types/jest":"^23.3.10","@types/node":"^10.12.10","babel-jest":"^23.6.0","babel-loader":"^8.0.4","debug":"^4.1.0","deep-equal":"^1.0.1","faker":"^4.1.0","fs":"^0.0.1-security","jest":"^23.6.0","json2yaml":"^1.1.0","pouchdb-adapter-memory":"^7.0.0","ts-jest":"^23.10.5","ts-loader":"^5.3.1","typescript":"^3.1.6","webpack-cli":"^3.1.2"},"dependencies":{"@babel/runtime":"^7.2.0","awesome-typescript-loader":"^5.2.1","pouchdb-adapter-http":"^7.0.0","pouchdb-adapter-idb":"^7.0.0","rxdb":"^8.0.4","rxjs":"^6.3.3","source-map-loader":"^0.2.4","vue":"^2.5.17","vuex":"^3.0.1","vuex-persistedstate":"^2.5.4","vuex-toast":"^0.1.3","webpack":"^4.26.1"}};
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "predefinite", function() { return predefinite; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "multipleSelect", function() { return multipleSelect; });
+const fields = [
+/**
+ * desi globale, serviciile sunt pt asociatii.
+ * excludem asta din db, pastram pt referinta
+ */
+{
+  id: 'asociatieId',
+  notInDb: true
+}, {
+  id: 'denumire',
+  required: true,
+  showInList: 'primary',
+  isPrimary: true,
+  index: true
+}, {
+  id: 'furnizori',
+  type: 'array',
+  notInForm: true
+}, {
+  id: 'contoare',
+  type: 'contoare'
+}];
+const plural = 'servicii';
+const actions = {
+  confirm: 'adaugaServiciu'
+};
+const multipleSelect = true;
+const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
+
 
 /***/ }),
 
-/***/ 16:
+/***/ "0jyb":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
+/**
+ * o cheltuiala = parte dintr-o factura
+ */
+const fields = [{
+  id: 'asociatieId',
+  ref: 'asociatii',
+  required: true,
+  index: true
+}, {
+  id: 'facturi',
+  type: 'search',
+  taxonomy: 'facturi',
+  ref: 'facturi' // required: true TODO: e necesar? ?????????
+
+}, {
+  id: 'suma',
+  type: 'bani',
+  required: true,
+  index: true,
+  showInList: 'secondary'
+}, {
+  id: 'moneda',
+  notInForm: true,
+  required: true,
+  showInList: 'secondary',
+  value: getters => getters['asociatie/activa'].moneda
+}, {
+  id: 'modDistribuire',
+  type: 'distribuire'
+}, {
+  id: 'apartamenteEligibile',
+  type: 'selApartamente',
+  options: getters => getters['asociatie/apartamente']
+}];
+const plural = 'cheltuieli';
+
+
+/***/ }),
+
+/***/ 1:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 2:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 3:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ "3RaG":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "methods", function() { return methods; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "statics", function() { return statics; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setari", function() { return setari; });
+const getter = 'modal/data';
+const modalOpen = 'modal/open';
+const modalContent = 'modal/content';
+const plural = 'asociatii';
+const fields = [{
+  id: '_id',
+  notInDb: true,
+  notInForm: true,
+  value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter]._id
+}, {
+  id: 'name',
+  required: true,
+  focus: true,
+  index: true,
+  showInList: 'primary',
+  value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter].name,
+  v: 'max:32|min:3',
+  transform: 'capitalize'
+}, {
+  id: 'organizatie',
+  type: 'object' // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
+  // value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter].idN,
+
+}, {
+  id: 'moneda',
+  required: true
+}, {
+  id: 'balanta',
+  type: 'number',
+  value: g => g[getter].balanta,
+  showInList: 'details'
+}, {
+  id: 'incasari',
+  type: 'array',
+  ref: 'incasari',
+  value: g => g[getter].incasari,
+  notInForm: true
+}, {
+  id: 'utilizatori',
+  type: 'array',
+  ref: 'utilizatori',
+  value: g => g[getter].utilizatori,
+  notInForm: true
+}, {
+  id: 'servicii',
+  type: 'array',
+  ref: 'servicii',
+  value: g => g[getter].servicii,
+  showInList: 'secondary',
+  notInForm: true
+}, {
+  id: 'furnizori',
+  type: 'array',
+  ref: 'furnizori',
+  value: g => g[getter].furnizori,
+  notInForm: true
+}, {
+  id: 'filtreCheltuieli',
+  value: g => g[getter].filtreCheltuieli,
+  type: 'array',
+  notInForm: true
+}, {
+  id: 'preferinte',
+  value: g => g[getter].preferinte,
+  type: 'object',
+  notInForm: true
+}];
+const methods = {
+  async initBalanta(data) {
+    this.balanta = data.balanta;
+    await this.save();
+  },
+
+  async incaseaza(data) {
+    if (!this.balanta) this.balanta = 0;
+    let incasari = this.incasari || [];
+    this.balanta += data.suma;
+    incasari.push(data.id);
+    this.incasari = incasari;
+    await this.save();
+  },
+
+  async toggle_serviciu(serviciu) {
+    if (!serviciu) return;
+    let {
+      servicii
+    } = this;
+    if (!servicii) servicii = [];
+    const index = servicii.indexOf(serviciu);
+
+    if (index > -1) {
+      servicii.splice(index, 1);
+    } else {
+      servicii.push(serviciu);
+    } // this.update('servicii', servicii)
+
+
+    this.update({
+      $set: {
+        servicii
+      }
+    });
+  },
+
+  async UPDATEAZA(fields) {
+    // TODO: nu permite updatarea anumitor chei
+    Object.keys(fields).forEach(camp => {
+      this[camp] = fields[camp];
+    });
+    await this.save();
+  }
+
+};
+const statics = {
+  selected: async function (id) {
+    // console.log('STATIC!', this)
+    return await this.findOne(id).exec();
+  } // DRY: la buatoane, daca au 'click', n-au nevoie de id
+
+};
+const setari = {
+  date: {
+    fields: [{
+      type: 'button',
+      click: 'exportDb'
+    }, {
+      type: 'button',
+      click: 'importDb'
+    }]
+  },
+  periculoase: {
+    order: -1,
+    avansat: true,
+    fields: [{
+      type: 'button',
+      click: 'sterge'
+    }]
+  }
+};
+
+
+/***/ }),
+
+/***/ "512P":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Form; });
+/* unused harmony export Errors */
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("lSNA");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("NOtv");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _helpers_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("REmU");
+/* harmony import */ var _Errors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("LORn");
+
+
+/**
+ * Forms for Lodger
+ * are quite diferrently structured
+ * than a normal JsonSchema
+ */
+
+
+
+
+/**
+ * Form Errors Definition
+ *
+ * TODO: account for translations
+ */
+var Errors;
+
+(function (Errors) {
+  Errors["invalidRequested"] = "Invalid form requested: %%";
+  Errors["invalidName"] = "Invalid name supplied";
+  Errors["noData"] = "Form %% is missing data";
+  Errors["missingName"] = "Forms should have a name";
+  Errors["missingPlural"] = "A plural definition is required for %%";
+})(Errors || (Errors = {}));
+
+if (false) {}
+
+const defaultSchema = {
+  title: '',
+  properties: {},
+  required: [],
+  type: 'object',
+  version: 0
+};
+
+/**
+ * A valid RxJsonSchema out of the form
+ */
+const toRxSchema = formData => {
+  const {
+    name,
+    fields
+  } = formData;
+  const schema = JSON.parse(JSON.stringify(defaultSchema));
+  schema.title = name;
+  fields.filter(field => !field.notInDb).forEach(field => {
+    Object(_helpers_forms__WEBPACK_IMPORTED_MODULE_2__[/* pushFieldToSchema */ "d"])(field, schema);
+  });
+  if (name !== 'serviciu') Object(_helpers_forms__WEBPACK_IMPORTED_MODULE_2__[/* addCommonFieldsToSchema */ "a"])(schema);
+  return schema;
+};
+/**
+ * All indexabble fields
+ * @returns {Array} the ids of all fields with index: true
+ */
+
+
+const lookupIndexables = fields => fields.filter(field => field.index).map(field => field.id);
+/**
+ * Makes a RxCollection valid collection from the form
+ */
+
+
+function toRxCollection(context) {
+  const {
+    schema,
+    data: {
+      plural,
+      methods,
+      statics
+    }
+  } = context;
+  const name = plural;
+  return {
+    name,
+    schema,
+    methods,
+    statics
+  };
+}
+/**
+ * Form class
+ */
+
+
+class Form {
+  constructor(data) {
+    this.data = data;
+
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(this, "schema", void 0);
+
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(this, "indexables", void 0);
+
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(this, "collection", void 0);
+
+    this.indexables = lookupIndexables(data.fields);
+    this.schema = toRxSchema(data);
+    this.collection = toRxCollection(this); // this.sortOptions = sortOptions({ indexables, name })
+  }
+  /**
+   * gets the sorting options for tax
+   * @returns an object with each key used as a sorting option
+   */
+
+
+  get sortOptions() {
+    const {
+      indexables,
+      name
+    } = this;
+
+    if (!['serviciu', 'contor'].indexOf(name)) {
+      indexables.push('la');
+    } // TODO: !!! ia din common methods
+
+
+    const sorts = {};
+    indexables.forEach(indexable => {
+      const label = `sort.${indexable === 'name' ? 'az' : indexable}`;
+      Object.assign(sorts, {
+        [indexable]: {
+          label
+        }
+      });
+    }); // debug(`${name} => sortable fields`, sorts)
+
+    return sorts;
+  }
+  /**
+   * Makes a Vue-ready $data {object} suitable to be completed
+   * by the user in the end form
+   * as it will turn reactive
+   */
+
+
+  componentData(isNewForm, getters) {
+    const {
+      data: {
+        fields
+      },
+      name
+    } = this;
+    const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:Form.ts:componentData');
+    let $data = {};
+    fields.forEach(camp => {
+      const {
+        label,
+        required,
+        click,
+        notInForm,
+        notInDb
+      } = camp;
+      let {
+        id,
+        value
+      } = camp;
+      debug('camp.value (f)', value);
+      let _def = camp.default;
+      if (click && !id) camp.id = click; // skip fields
+
+      if (isNewForm) {
+        if (!notInForm || notInDb) value = null;
+      } // apply getters to funcs
+
+
+      if (typeof value === 'function' && getters) {
+        try {
+          value = value(getters);
+          debug('valoare dupa apel functie: ', value);
+        } catch (e) {
+          debug('failed to get val', label, getters);
+          value = null;
+        }
+      }
+
+      if (typeof _def === 'function') _def = _def(getters); // label
+
+      camp.label = label || `${name ? `${name}.new.` : ''}${id}`; // validarea de required
+
+      if (required || camp.v && camp.v.indexOf('required') < 0) camp.v = `required|${camp.v || ''}`; // valoarea finala
+
+      $data[id] = null;
+      $data[id] = value !== null && value !== undefined ? value : _def;
+    });
+    return $data;
+  }
+  /**
+   * Loads a known form by name
+   *
+   * @param name
+   */
+
+
+  static loadByName(name) {
+    const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:Form');
+    let form;
+
+    try {
+      form = __webpack_require__("eiOh")("./" + name);
+      if (form.default) form = form.default;
+      Object.assign(form, {
+        name
+      });
+      debug('✓', name);
+    } catch (e) {
+      debug('Error', e);
+      throw new _Errors__WEBPACK_IMPORTED_MODULE_3__[/* FormError */ "a"](Errors.invalidRequested, name);
+    }
+
+    return new Form(form);
+  }
+
+  get name() {
+    return this.data.name;
+  }
+
+  get plural() {
+    return this.data.plural;
+  }
+  /**
+   * Reference taxonomies of a taxonomy
+   *
+   * @returns {Array} taxonomii
+   */
+
+
+  get referenceTaxonomies() {
+    const {
+      data: {
+        fields
+      }
+    } = this;
+    return fields.filter(field => field.id.indexOf('Id') === field.id.length - 2).map(field => field.id.replace('Id', ''));
+  }
+  /**
+   * Items to be display to user,
+   * @returns {Object} the keys of the fields: their position
+   *
+   */
+
+
+  get __displayItemKeys() {
+    const {
+      fields
+    } = this.data;
+    return Object.assign({}, ...fields.filter(field => field.showInList).map(field => ({
+      [field.id]: field.showInList
+    })));
+  }
+
+}
+
+
+
+/***/ }),
+
+/***/ "5Fil":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var lib_store_namespaceObject = {};
+__webpack_require__.r(lib_store_namespaceObject);
+__webpack_require__.d(lib_store_namespaceObject, "state", function() { return store_state; });
+__webpack_require__.d(lib_store_namespaceObject, "actions", function() { return store_actions; });
+__webpack_require__.d(lib_store_namespaceObject, "modules", function() { return modules; });
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/defineProperty.js
+var defineProperty = __webpack_require__("lSNA");
+var defineProperty_default = /*#__PURE__*/__webpack_require__.n(defineProperty);
+
+// EXTERNAL MODULE: ./node_modules/vue/dist/vue.runtime.esm.js
+var vue_runtime_esm = __webpack_require__("Kw5r");
+
+// EXTERNAL MODULE: ./node_modules/vuex/dist/vuex.esm.js
+var vuex_esm = __webpack_require__("L2JU");
+
+// EXTERNAL MODULE: ./src/lib/Errors.ts
+var Errors = __webpack_require__("LORn");
+
+// EXTERNAL MODULE: ./src/lib/helpers/functions.ts
+var functions = __webpack_require__("ABXj");
+
+// CONCATENATED MODULE: ./src/lib/defs/sharedStoreMethods.ts
+/**
+ * @param { methoName: action }
+ */
+const sharedStoreMethods = {
+  selected: 'select',
+  last: 'set_last'
+};
+// CONCATENATED MODULE: ./src/lib/helpers/store.ts
+
+
+ // const namespaced: boolean = true
+
+/**
+ * Creates an empty store module
+ */
+function createEmptyStoreModule() {
+  /**
+   * Empties
+   */
+  const state = {};
+  const getters = {};
+  const actions = {};
+  const mutations = {};
+  return {
+    namespaced: true,
+    state,
+    actions,
+    mutations,
+    getters
+  };
+} // const otherActions = (taxonomy, actionName) => {
+//   switch (actionName) {
+//     case 'select':
+//       return [
+//         `${taxonomy}/set_referencesIds`
+//       ]
+//     default:
+//       return []
+//   }
+// }
+
+/**
+  * Shared methods across taxonomies, called individually
+  *
+  * @param taxonomy
+  * @requires sharedMethods
+  */
+
+
+function setupSharedMethods(sharedMethods = sharedStoreMethods, module = createEmptyStoreModule(), moduleName, plural) {
+  if (typeof sharedMethods !== 'object') {
+    throw new Errors["b" /* LodgerError */]('invalid methods supplied');
+  } // pt servicii si contoare
+
+
+  const isMultiple = Object(functions["b" /* taxIsMultipleSelect */])(moduleName);
+  Object.keys(sharedMethods).forEach(methodName => {
+    const action = sharedMethods[methodName];
+    const multipleSelect = isMultiple && action === 'select';
+    module.state[methodName] = undefined;
+
+    module.getters[methodName] = (S, G) => {
+      if (multipleSelect) {
+        const doc = G[`${moduleName}/activeDoc`];
+        return doc ? doc[plural] : undefined;
+      } else {
+        return S[methodName] && S[methodName].id ? S[methodName].id : S[methodName];
+      }
+    };
+
+    module.actions[action] = ({
+      commit,
+      dispatch
+    }, data) => {
+      commit(action, data); // const otherActionsToDispatch = otherActions(moduleName, methodName)
+      // otherActionsToDispatch.forEach(action => {
+      //   dispatch(action, )
+      // })
+    };
+
+    module.mutations[action] = (s, data) => {
+      s[methodName] = data;
+    };
+  }); // module.getters['activeDoc'] = (S: RootState) => S.doc || {}
+
+  return module;
+}
+/**
+ * Loads a taxonomy's store data from it's filename in store
+ */
+
+
+function setupFromFile(taxonomy) {
+  return {};
+}
+
+
+// EXTERNAL MODULE: ./src/lodger.config.ts
+var lodger_config = __webpack_require__("Jh6w");
+
+// CONCATENATED MODULE: ./src/lib/store/modules/modal.ts
+const state = {
+  open: false,
+  content: null,
+  data: null
+};
+const getters = {
+  open: state => state.open,
+  content: state => state.content,
+  data: state => state.data
+};
+const mutations = {
+  OPEN: (state, content) => {
+    if (content) state.content = content;
+    state.open = true;
+  },
+  DATA: (state, data) => {
+    state.data = data;
+  },
+  CLOSE: state => {
+    state.open = false;
+    state.content = null;
+    state.data = null;
+  }
+};
+const actions = {
+  open: ({
+    commit
+  }, content) => {
+    // console.log('CC', content)
+    switch (typeof content) {
+      case 'object':
+        commit('DATA', content.data);
+        commit('OPEN', content.id);
+        return;
+
+      case 'string':
+        commit('DATA', content);
+        break;
+    }
+
+    commit('OPEN', content);
+  },
+  close: ({
+    commit,
+    dispatch,
+    getters,
+    rootGetters
+  }) => {
+    const prompt = rootGetters['modal/content'] === 'prompt';
+    commit('CLOSE');
+    if (prompt) dispatch('prompt/cancel', null, {
+      root: true
+    });
+  }
+};
+/* harmony default export */ var modal = ({
+  state,
+  actions,
+  mutations,
+  getters
+});
+// CONCATENATED MODULE: ./src/lib/store/modules/prompt.ts
+const prompt_state = () => ({
+  _happened: false,
+  type: null,
+  message: null
+});
+
+const prompt_mutations = {
+  PROMPT: (state, {
+    type,
+    message
+  }) => {
+    state.type = type;
+    state.message = message;
+    state._happened = true;
+  },
+  PROMPT_OK: state => {
+    state.type = null;
+    state.message = null;
+    state._happened = false;
+  },
+  PROMPT_CANCEL: state => {
+    state.type = null;
+    state.message = null;
+  }
+};
+const prompt_actions = {
+  confirm: ({
+    commit,
+    dispatch
+  }) => {
+    dispatch('modal/close', true, {
+      root: true
+    });
+    commit('PROMPT_OK');
+  },
+  new: ({
+    commit,
+    dispatch
+  }, prompt) => {
+    dispatch('modal/open', 'prompt', {
+      root: true
+    });
+    commit('PROMPT', prompt);
+  },
+  cancel: ({
+    commit
+  }) => {
+    commit('PROMPT_CANCEL');
+  }
+};
+const prompt_getters = {
+  type: state => state.type,
+  message: state => state.message,
+  prompted: state => state._happened
+};
+/* harmony default export */ var modules_prompt = ({
+  state: prompt_state,
+  actions: prompt_actions,
+  mutations: prompt_mutations,
+  getters: prompt_getters
+});
+// CONCATENATED MODULE: ./src/lib/store/index.ts
+
+/**
+ * MODULES
+ */
+// TOAST
+// import { createModule } from 'vuex-toast'
+// MODAL
+
+
+
+const {
+  version
+} = lodger_config["a" /* default */];
+const store_state = {
+  locale: 'ro',
+  version
+};
+const store_actions = {
+  notify: ({
+    dispatch
+  }, notificare) => {
+    dispatch('@@toast/ADD_TOAST_MESSAGE', notificare);
+  }
+};
+const modules = {
+  // toast: createModule({ dismissInterval: 5000 }),
+  modal: modal,
+  prompt: modules_prompt
+};
+
+// EXTERNAL MODULE: ./node_modules/debug/src/browser.js
+var browser = __webpack_require__("NOtv");
+var browser_default = /*#__PURE__*/__webpack_require__.n(browser);
+
+// CONCATENATED MODULE: ./src/lib/Store.ts
+/* unused harmony export customOpts */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Store_LodgerStore; });
+
+
+
+
+
+
+
+vue_runtime_esm["a" /* default */].use(vuex_esm["a" /* default */]);
+const debug = browser_default()('lodger:Store');
+const Store_modules = {};
+var Store_Errors;
+
+(function (Errors) {
+  Errors["invalidModule"] = "Invalid Module";
+})(Store_Errors || (Store_Errors = {}));
+
+const customOpts = (context, options) => {
+  if (!context.taxonomii && !context.forms) return;
+  const {
+    taxonomii,
+    forms
+  } = context;
+  /**
+   * Builds modules based on taxonomies
+   * TODO: make this a method ?!
+   */
+
+  if (!(taxonomii && taxonomii.length)) throw new Errors["b" /* LodgerError */]('No taxes supplied');
+  taxonomii.forEach(tax => {
+    const {
+      plural
+    } = forms[tax];
+    Store_modules[tax] = setupSharedMethods(undefined, undefined, tax, plural);
+  });
+
+  if (lib_store_namespaceObject && modules) {
+    // LodgerStore.use(RootModule, false)
+    Object.assign(options, lib_store_namespaceObject);
+    Object.keys(modules).forEach(module => {
+      Store_LodgerStore.use({
+        [module]: modules[module]
+      }, module !== 'toast');
+    });
+  }
+
+  options.modules = Store_modules;
+  return options;
+}; // export default class LodgerStore implements StoreOptions<RootState> {
+
+class Store_LodgerStore extends vuex_esm["a" /* default */].Store {
+  constructor(context, options = {}) {
+    super(customOpts(context, options));
+    this.context = context;
+    this.options = options;
+
+    defineProperty_default()(this, "modules", {});
+  }
+  /**
+   * Use a store module
+   * to be used before calling the constructor
+   *
+   * @param module
+   * @param {Boolean} namespaced - if it should be namespaced
+   */
+
+
+  static use(module, namespaced = true) {
+    if (!module || typeof module !== 'object') {
+      throw new Errors["b" /* LodgerError */](Store_Errors.invalidModule);
+    }
+
+    const key = Object.keys(module)[0];
+    if (!key || !module[key]) throw new Errors["b" /* LodgerError */](Store_Errors.invalidModule);
+    debug('using module', key);
+    Store_modules[key] = Object.assign({}, module[key], {
+      namespaced
+    });
+  }
+
+}
+
+/***/ }),
+
+/***/ "5u1Y":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export get_bigrams */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return string_similarity; });
+const get_bigrams = function (string) {
+  var i, j, ref, s, v;
+  s = string.toLowerCase();
+  v = new Array(s.length - 1);
+
+  for (i = j = 0, ref = v.length; j <= ref; i = j += 1) {
+    v[i] = s.slice(i, i + 2);
+  }
+
+  return v;
+};
+const string_similarity = function (str1, str2) {
+  var hit_count, j, k, len, len1, pairs1, pairs2, union, x, y;
+
+  if (str1.length > 0 && str2.length > 0) {
+    pairs1 = get_bigrams(str1);
+    pairs2 = get_bigrams(str2);
+    union = pairs1.length + pairs2.length;
+    hit_count = 0;
+
+    for (j = 0, len = pairs1.length; j < len; j++) {
+      x = pairs1[j];
+
+      for (k = 0, len1 = pairs2.length; k < len1; k++) {
+        y = pairs2[k];
+
+        if (x === y) {
+          hit_count++;
+        }
+      }
+    }
+
+    if (hit_count > 0) {
+      return 2.0 * hit_count / union;
+    }
+  }
+
+  return 0.0;
+};
+
+/***/ }),
+
+/***/ "ABXj":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export traverse */
+/* unused harmony export no$ */
+/* unused harmony export spleet */
+/* unused harmony export slugify */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCriteriu; });
+/* unused harmony export getTaxonomyConfig */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return taxIsMultipleSelect; });
+/* harmony import */ var _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("MVZn");
+/* harmony import */ var _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lodger_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("Jh6w");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("NOtv");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
+
+// import { Taxonomii } from 'lodger/index'
+
+
+
+/**
+ * Traverseaza un obiect cu o functie
+ *
+ * @param {object} obiectul de traversat
+ * @param {function} fn - callback -> cheie, valoare
+ */
+function traverse(o, fn) {
+  for (let i in o) {
+    fn.apply(this, [i, o[i]]);
+    if (o[i] !== null && typeof o[i] === "object") traverse(o[i], fn);
+  }
+}
+/**
+ * Returneaza config-ul pentru o taxonomie sau default
+ *
+ * @param {string} taxonomie
+ */
+
+
+const getTaxonomyConfig = tax => {
+  const {
+    taxonomii
+  } = _lodger_config__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"];
+  const {
+    defaults
+  } = taxonomii;
+  if (!tax) return defaults;
+  const config = taxonomii[tax];
+  return config ? config : defaults;
+};
+/**
+ * Criteriu default pentru o taxonmoie ceruta
+ *
+ * @param {string} taxonomie
+ * @param {object} criteriuCerut - poate fi diferit decat default
+ */
+
+
+const getCriteriu = (taxonomie, criteriuCerut) => {
+  if (typeof taxonomie !== 'string') throw new Error('taxonomie incorecta');
+  if (criteriuCerut && typeof criteriuCerut !== 'object') throw new Error('criteriu incorect');
+  const {
+    defaults
+  } = _lodger_config__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].taxonomii;
+  const debug = debug__WEBPACK_IMPORTED_MODULE_2___default()('functions:getCriteriu');
+  const criteriu = Object.assign({}, _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default()({}, defaults.criteriu), _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default()({}, getTaxonomyConfig(taxonomie).criteriu), _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default()({}, criteriuCerut)); // Object.assign(criteriu, getTaxonomyConfig(taxonomie).criteriu)
+  // debug(taxonomie, 'criteriu inainte de criteriuCerut', criteriu)
+  // debug(taxonomie, 'criteriu cerut', { ...criteriuCerut })
+  // if (criteriuCerut) {
+  //   debug('CRITERIU CERUT', criteriuCerut)
+  //   let sort = {}
+  //   if (criteriuCerut.sort) {
+  //     // let { key, direction } = criteriuCerut.sort
+  //     // if (key === 'la' && taxonomie === 'servicii') key = 'denumire'
+  //     sort = key ? { [key]: direction || 1 } : {}
+  //   }
+  //   Object.assign(criteriu, {...criteriuCerut }, { sort })
+  // }
+  // switch (taxonomie) {
+  //   case 'blocuri':
+  //   case 'incasari':
+  //   case 'cheltuieli':
+  //     Object.assign(criteriu.find, { asociatieId: g => g['asociatie/activa']._id })
+  //   case 'apartamente':
+  //     Object.assign(criteriu.find, { bloc: { $in: g => g['bloc/ids'] } })
+  // }
+  // servicii,furnizori, asociatii sunt globale, n-au nevoie de criteriu de cautare
+
+  debug(taxonomie, 'DUPA:', criteriu);
+  return criteriu;
+};
+/**
+ * Scoate '$' de la inceputul unui string
+ * @param {string} str
+ */
+
+
+const no$ = str => {
+  if (typeof str !== 'string') return str;
+  if (str.indexOf('$') !== 0) return str;
+  return no$(str.replace('$', '').trim());
+};
+/**
+ * Imparte un string de mutatie ('asociatie/INCASEAZA')
+ * @param {string} str
+ */
+
+
+const spleet = str => {
+  if (typeof str !== 'string' || str.indexOf('/') < 0) return str;
+  const split = String(str).split('/');
+  return {
+    what: split[0],
+    mutation: split[1]
+  };
+};
+/**
+ * slug-ifica... destul de descriptiv :)
+ * @param {string} text
+ */
+
+
+const slugify = text => {
+  return text.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
+  .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+  .replace(/\-\-+/g, '-') // Replace multiple - with single -
+  .replace(/^-+/, '') // Trim - from start of text
+  .replace(/-+$/, ''); // Trim - from end of text
+};
+
+const taxIsMultipleSelect = tax => ['serviciu', 'contor'].indexOf(tax) > -1;
+
+
+
+/***/ }),
+
+/***/ "F4IF":
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+
+/***/ "FOda":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var rxdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("p9ch");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("NOtv");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:db');
+const {
+  NODE_ENV
+} = process.env; // RxDB.QueryChangeDetector.enable()
+// RxDB.QueryChangeDetector.enableDebugging()
+
+switch (NODE_ENV) {
+  default:
+    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](__webpack_require__("b0B5"));
+    break;
+
+  case 'production':
+    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](__webpack_require__("ezGW"));
+    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](__webpack_require__("Wh65"));
+    break;
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (async function (collections, config) {
+  debug('Initing');
+  const db = await rxdb__WEBPACK_IMPORTED_MODULE_0__[/* create */ "a"](Object.assign({}, config)); // show leadership in title
+
+  db.waitForLeadership().then(() => {
+    if (NODE_ENV !== 'dev') return;
+    document.title = `♛ ${document.title}`;
+  });
+  await Promise.all(collections.map(c => db.collection(c)));
+  return db;
+});
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
+
+/***/ }),
+
+/***/ "Jh6w":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// import { version } from './package'
+const version = __webpack_require__("kiQV").version;
+
+const taxonomii = {
+  defaults: {
+    criteriu: {
+      limit: 25,
+      index: 0,
+      sort: {},
+      find: null
+    }
+  },
+  asociatii: {
+    criteriu: {
+      limit: 100
+    }
+  }
+};
+const config = {
+  version,
+  taxonomii
+};
+/* harmony default export */ __webpack_exports__["a"] = (config);
+
+/***/ }),
+
+/***/ "LORn":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2195,76 +2276,7 @@ class FormError extends LodgerError {
 
 /***/ }),
 
-/***/ 164:
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-
-/***/ 166:
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-
-/***/ 192:
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./apartament": 97,
-	"./apartament.ts": 97,
-	"./asociatie": 98,
-	"./asociatie.ts": 98,
-	"./bloc": 99,
-	"./bloc.ts": 99,
-	"./cheltuiala": 100,
-	"./cheltuiala.ts": 100,
-	"./contor": 101,
-	"./contor.ts": 101,
-	"./factura": 102,
-	"./factura.ts": 102,
-	"./feedback": 103,
-	"./feedback.ts": 103,
-	"./furnizor": 104,
-	"./furnizor.ts": 104,
-	"./incasare": 105,
-	"./incasare.ts": 105,
-	"./initFinanc": 106,
-	"./initFinanc.ts": 106,
-	"./preferinte": 107,
-	"./preferinte.ts": 107,
-	"./serviciu": 60,
-	"./serviciu.ts": 60,
-	"./utilizator": 108,
-	"./utilizator.ts": 108
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return id;
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 192;
-
-/***/ }),
-
-/***/ 51:
+/***/ "REmU":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2282,7 +2294,7 @@ const formItemTypes = {
 };
 /* harmony default export */ var defs_formItemTypes = (formItemTypes);
 // EXTERNAL MODULE: ./node_modules/debug/src/browser.js
-var browser = __webpack_require__(11);
+var browser = __webpack_require__("NOtv");
 var browser_default = /*#__PURE__*/__webpack_require__.n(browser);
 
 // CONCATENATED MODULE: ./src/lib/helpers/forms.ts
@@ -2483,237 +2495,102 @@ const addCommonFieldsToSchema = (schema, commonFields = [{
 
 /***/ }),
 
-/***/ 53:
+/***/ "UdaM":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export traverse */
-/* unused harmony export no$ */
-/* unused harmony export spleet */
-/* unused harmony export slugify */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCriteriu; });
-/* unused harmony export getTaxonomyConfig */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return taxIsMultipleSelect; });
-/* harmony import */ var _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(33);
-/* harmony import */ var _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _lodger_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(54);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
-
-// import { Taxonomii } from 'lodger/index'
-
-
-
-/**
- * Traverseaza un obiect cu o functie
- *
- * @param {object} obiectul de traversat
- * @param {function} fn - callback -> cheie, valoare
- */
-function traverse(o, fn) {
-  for (let i in o) {
-    fn.apply(this, [i, o[i]]);
-    if (o[i] !== null && typeof o[i] === "object") traverse(o[i], fn);
-  }
-}
-/**
- * Returneaza config-ul pentru o taxonomie sau default
- *
- * @param {string} taxonomie
- */
-
-
-const getTaxonomyConfig = tax => {
-  const {
-    taxonomii
-  } = _lodger_config__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"];
-  const {
-    defaults
-  } = taxonomii;
-  if (!tax) return defaults;
-  const config = taxonomii[tax];
-  return config ? config : defaults;
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+const fields = [{
+  id: 'name',
+  required: true,
+  showInList: 'primary',
+  index: true
+}, {
+  id: 'servicii',
+  type: 'servicii',
+  required: true,
+  servicii: g => g['asociatie/activeDoc'].servicii,
+  ref: 'serviciu'
+}, {
+  id: 'idN'
+}];
+const actiuni = {
+  confirm: 'adaugaFurnizor'
 };
-/**
- * Criteriu default pentru o taxonmoie ceruta
- *
- * @param {string} taxonomie
- * @param {object} criteriuCerut - poate fi diferit decat default
- */
-
-
-const getCriteriu = (taxonomie, criteriuCerut) => {
-  if (typeof taxonomie !== 'string') throw new Error('taxonomie incorecta');
-  if (criteriuCerut && typeof criteriuCerut !== 'object') throw new Error('criteriu incorect');
-  const {
-    defaults
-  } = _lodger_config__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].taxonomii;
-  const debug = debug__WEBPACK_IMPORTED_MODULE_2___default()('functions:getCriteriu');
-  const criteriu = Object.assign({}, _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default()({}, defaults.criteriu), _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default()({}, getTaxonomyConfig(taxonomie).criteriu), _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default()({}, criteriuCerut)); // Object.assign(criteriu, getTaxonomyConfig(taxonomie).criteriu)
-  // debug(taxonomie, 'criteriu inainte de criteriuCerut', criteriu)
-  // debug(taxonomie, 'criteriu cerut', { ...criteriuCerut })
-  // if (criteriuCerut) {
-  //   debug('CRITERIU CERUT', criteriuCerut)
-  //   let sort = {}
-  //   if (criteriuCerut.sort) {
-  //     // let { key, direction } = criteriuCerut.sort
-  //     // if (key === 'la' && taxonomie === 'servicii') key = 'denumire'
-  //     sort = key ? { [key]: direction || 1 } : {}
-  //   }
-  //   Object.assign(criteriu, {...criteriuCerut }, { sort })
-  // }
-  // switch (taxonomie) {
-  //   case 'blocuri':
-  //   case 'incasari':
-  //   case 'cheltuieli':
-  //     Object.assign(criteriu.find, { asociatieId: g => g['asociatie/activa']._id })
-  //   case 'apartamente':
-  //     Object.assign(criteriu.find, { bloc: { $in: g => g['bloc/ids'] } })
-  // }
-  // servicii,furnizori, asociatii sunt globale, n-au nevoie de criteriu de cautare
-
-  debug(taxonomie, 'DUPA:', criteriu);
-  return criteriu;
-};
-/**
- * Scoate '$' de la inceputul unui string
- * @param {string} str
- */
-
-
-const no$ = str => {
-  if (typeof str !== 'string') return str;
-  if (str.indexOf('$') !== 0) return str;
-  return no$(str.replace('$', '').trim());
-};
-/**
- * Imparte un string de mutatie ('asociatie/INCASEAZA')
- * @param {string} str
- */
-
-
-const spleet = str => {
-  if (typeof str !== 'string' || str.indexOf('/') < 0) return str;
-  const split = String(str).split('/');
-  return {
-    what: split[0],
-    mutation: split[1]
-  };
-};
-/**
- * slug-ifica... destul de descriptiv :)
- * @param {string} text
- */
-
-
-const slugify = text => {
-  return text.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
-  .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-  .replace(/\-\-+/g, '-') // Replace multiple - with single -
-  .replace(/^-+/, '') // Trim - from start of text
-  .replace(/-+$/, ''); // Trim - from end of text
-};
-
-const taxIsMultipleSelect = tax => ['serviciu', 'contor'].indexOf(tax) > -1;
-
-
+const plural = 'furnizori';
 
 /***/ }),
 
-/***/ 54:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// import { version } from './package'
-const version = __webpack_require__(158).version;
-
-const taxonomii = {
-  defaults: {
-    criteriu: {
-      limit: 25,
-      index: 0,
-      sort: {},
-      find: null
-    }
-  },
-  asociatii: {
-    criteriu: {
-      limit: 100
-    }
-  }
-};
-const config = {
-  version,
-  taxonomii
-};
-/* harmony default export */ __webpack_exports__["a"] = (config);
-
-/***/ }),
-
-/***/ 60:
+/***/ "VjXs":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "predefinite", function() { return predefinite; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "multipleSelect", function() { return multipleSelect; });
-const fields = [
-/**
- * desi globale, serviciile sunt pt asociatii.
- * excludem asta din db, pastram pt referinta
- */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "methods", function() { return methods; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "settings", function() { return settings; });
+const getter = `utilizator/activeDoc`;
+const fields = [// {
+//   id: '_id',
+//   notInDb: true,
+//   notInForm: true,
+//   value: g => g[getter]._id
+// },
 {
-  id: 'asociatieId',
-  notInDb: true
-}, {
-  id: 'denumire',
+  id: 'name',
   required: true,
+  primary: true,
   showInList: 'primary',
-  isPrimary: true,
-  index: true
+  value: g => g[getter].nume
 }, {
-  id: 'furnizori',
-  type: 'array',
+  id: 'emailPublic',
+  value: g => g[getter].emailPublic
+}, {
+  id: 'rol',
+  required: true,
   notInForm: true
 }, {
-  id: 'contoare',
-  type: 'contoare'
+  id: 'alteDetaliiContact',
+  type: 'contactFields',
+  notInForm: true
+}, {
+  id: 'preferinte',
+  type: 'object',
+  notInForm: true
 }];
-const plural = 'servicii';
-const actions = {
-  confirm: 'adaugaServiciu'
+const plural = 'utilizatori';
+const methods = {
+  async UPDATEAZA(campuri) {
+    // TODO: nu permite updatarea anumitor chei
+    Object.keys(campuri).forEach(camp => {
+      this[camp] = campuri[camp];
+    });
+    await this.save();
+  }
+
 };
-const multipleSelect = true;
-const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
+const settings = {
+  online: {
+    campuri: [{
+      id: 'parola',
+      required: false,
+      encrypted: true
+    }, {
+      id: 'social',
+      required: false,
+      encrypted: true
+    }]
+  }
+};
 
 
 /***/ }),
 
-/***/ 72:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return buildOpts; });
-const {
-  NODE_ENV
-} = process.env;
-const buildOpts = {
-  dbCon: {
-    name: 'Lodger/',
-    adapter: 'memory',
-    password: 'l0dg3rp4$$',
-    ignoreDuplicate: NODE_ENV === 'test'
-  },
-  usePersistedState: false
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(14)))
-
-/***/ }),
-
-/***/ 97:
+/***/ "WuGB":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2848,160 +2725,60 @@ const methods = {
 
 /***/ }),
 
-/***/ 98:
+/***/ "aBzF":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "methods", function() { return methods; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "statics", function() { return statics; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setari", function() { return setari; });
-const getter = 'modal/data';
-const modalOpen = 'modal/open';
-const modalContent = 'modal/content';
-const plural = 'asociatii';
-const fields = [{
-  id: '_id',
-  notInDb: true,
-  notInForm: true,
-  value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter]._id
-}, {
-  id: 'name',
-  required: true,
-  focus: true,
-  index: true,
-  showInList: 'primary',
-  value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter].name,
-  v: 'max:32|min:3',
-  transform: 'capitalize'
-}, {
-  id: 'organizatie',
-  type: 'object' // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
-  // value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter].idN,
-
-}, {
-  id: 'moneda',
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "campuri", function() { return campuri; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
+const campuri = [{
+  id: 'subiect',
   required: true
 }, {
-  id: 'balanta',
-  type: 'number',
-  value: g => g[getter].balanta,
-  showInList: 'details'
+  id: 'tip',
+  type: 'select',
+  options: ['bug', 'enhacement', 'feature', 'other'],
+  default: 'bug',
+  required: true
 }, {
-  id: 'incasari',
-  type: 'array',
-  ref: 'incasari',
-  value: g => g[getter].incasari,
-  notInForm: true
-}, {
-  id: 'utilizatori',
-  type: 'array',
-  ref: 'utilizatori',
-  value: g => g[getter].utilizatori,
-  notInForm: true
-}, {
-  id: 'servicii',
-  type: 'array',
-  ref: 'servicii',
-  value: g => g[getter].servicii,
-  showInList: 'secondary',
-  notInForm: true
-}, {
-  id: 'furnizori',
-  type: 'array',
-  ref: 'furnizori',
-  value: g => g[getter].furnizori,
-  notInForm: true
-}, {
-  id: 'filtreCheltuieli',
-  value: g => g[getter].filtreCheltuieli,
-  type: 'array',
-  notInForm: true
-}, {
-  id: 'preferinte',
-  value: g => g[getter].preferinte,
-  type: 'object',
-  notInForm: true
+  id: 'mesaj',
+  required: true,
+  type: 'textarea',
+  placeholder: 'Părerea / Sugestia / Critica ta'
 }];
-const methods = {
-  async initBalanta(data) {
-    this.balanta = data.balanta;
-    await this.save();
-  },
-
-  async incaseaza(data) {
-    if (!this.balanta) this.balanta = 0;
-    let incasari = this.incasari || [];
-    this.balanta += data.suma;
-    incasari.push(data.id);
-    this.incasari = incasari;
-    await this.save();
-  },
-
-  async toggle_serviciu(serviciu) {
-    if (!serviciu) return;
-    let {
-      servicii
-    } = this;
-    if (!servicii) servicii = [];
-    const index = servicii.indexOf(serviciu);
-
-    if (index > -1) {
-      servicii.splice(index, 1);
-    } else {
-      servicii.push(serviciu);
-    } // this.update('servicii', servicii)
-
-
-    this.update({
-      $set: {
-        servicii
-      }
-    });
-  },
-
-  async UPDATEAZA(fields) {
-    // TODO: nu permite updatarea anumitor chei
-    Object.keys(fields).forEach(camp => {
-      this[camp] = fields[camp];
-    });
-    await this.save();
-  }
-
+const actiuni = {
+  confirm: 'trimiteFeedback'
 };
-const statics = {
-  selected: async function (id) {
-    // console.log('STATIC!', this)
-    return await this.findOne(id).exec();
-  } // DRY: la buatoane, daca au 'click', n-au nevoie de id
-
-};
-const setari = {
-  date: {
-    fields: [{
-      type: 'button',
-      click: 'exportDb'
-    }, {
-      type: 'button',
-      click: 'importDb'
-    }]
-  },
-  periculoase: {
-    order: -1,
-    avansat: true,
-    fields: [{
-      type: 'button',
-      click: 'sterge'
-    }]
-  }
-};
-
 
 /***/ }),
 
-/***/ 99:
+/***/ "aSoU":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setari", function() { return setari; });
+const setari = {
+  regionale: {
+    campuri: [{
+      id: 'limba',
+      type: 'select',
+      '@change': 'schimbaLimba',
+      value: g => g.locale,
+      options: g => g.limbiChoose
+    }, {
+      id: 'moneda',
+      type: 'select',
+      value: g => g.moneda,
+      options: g => g.monede
+    }]
+  }
+};
+
+/***/ }),
+
+/***/ "bYfg":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3051,6 +2828,229 @@ const plural = 'blocuri';
 const actions = {
   confirm: 'adaugaBloc'
 };
+
+
+/***/ }),
+
+/***/ "eiOh":
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./apartament": "WuGB",
+	"./apartament.ts": "WuGB",
+	"./asociatie": "3RaG",
+	"./asociatie.ts": "3RaG",
+	"./bloc": "bYfg",
+	"./bloc.ts": "bYfg",
+	"./cheltuiala": "0jyb",
+	"./cheltuiala.ts": "0jyb",
+	"./contor": "F4IF",
+	"./contor.ts": "F4IF",
+	"./factura": "oSra",
+	"./factura.ts": "oSra",
+	"./feedback": "aBzF",
+	"./feedback.ts": "aBzF",
+	"./furnizor": "UdaM",
+	"./furnizor.ts": "UdaM",
+	"./incasare": "mbEA",
+	"./incasare.ts": "mbEA",
+	"./initFinanc": "k0bU",
+	"./initFinanc.ts": "k0bU",
+	"./preferinte": "aSoU",
+	"./preferinte.ts": "aSoU",
+	"./serviciu": "0fNj",
+	"./serviciu.ts": "0fNj",
+	"./utilizator": "VjXs",
+	"./utilizator.ts": "VjXs"
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "eiOh";
+
+/***/ }),
+
+/***/ "huy0":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return buildOpts; });
+const {
+  NODE_ENV
+} = process.env;
+const buildOpts = {
+  dbCon: {
+    name: 'Lodger/',
+    adapter: 'memory',
+    password: 'l0dg3rp4$$',
+    ignoreDuplicate: NODE_ENV === 'test'
+  },
+  usePersistedState: false
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
+
+/***/ }),
+
+/***/ "k0bU":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "campuri", function() { return campuri; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
+const campuri = [{
+  id: 'balanta',
+  label: 'asociatie.init.balanta',
+  required: true,
+  type: 'bani',
+  '@change': 'asociatie/initBalanta',
+
+  value(getters) {
+    return getters['asociatie/balanta'];
+  }
+
+}, {
+  id: 'dataDinLunaListe',
+  label: 'asociatie.init.dataDinLuna',
+  required: true,
+  type: 'number',
+  max: 28,
+  min: 1
+}];
+const actiuni = {
+  confirm: 'initDone'
+};
+
+/***/ }),
+
+/***/ "kiQV":
+/***/ (function(module) {
+
+module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first API for HOAs","main":"dist/index.js","repository":"https://github.com/doriandrn/lodger-api.git","author":"Dorian Tudorache <dorian.snaz@gmail.com>","license":"MIT","scripts":{"check-types":"tsc","build":"webpack","test":"jest"},"devDependencies":{"@babel/core":"^7.2.0","@babel/plugin-proposal-class-properties":"^7.2.1","@babel/plugin-proposal-object-rest-spread":"^7.2.0","@babel/plugin-transform-runtime":"^7.2.0","@babel/preset-env":"^7.2.0","@babel/preset-es2015":"^7.0.0-beta.53","@babel/preset-typescript":"^7.1.0","@types/debug":"^0.0.31","@types/faker":"^4.1.4","@types/jest":"^23.3.10","@types/node":"^10.12.10","babel-jest":"^23.6.0","babel-loader":"^8.0.4","debug":"^4.1.0","deep-equal":"^1.0.1","faker":"^4.1.0","fs":"^0.0.1-security","jest":"^23.6.0","json2yaml":"^1.1.0","pouchdb-adapter-memory":"^7.0.0","ts-jest":"^23.10.5","ts-loader":"^5.3.1","typescript":"^3.1.6","webpack-cli":"^3.1.2"},"dependencies":{"@babel/runtime":"^7.2.0","awesome-typescript-loader":"^5.2.1","pouchdb-adapter-http":"^7.0.0","pouchdb-adapter-idb":"^7.0.0","rxdb":"^8.0.4","rxjs":"^6.3.3","source-map-loader":"^0.2.4","vue":"^2.5.17","vuex":"^3.0.1","vuex-persistedstate":"^2.5.4","vuex-toast":"^0.1.3","webpack":"^4.26.1"}};
+
+/***/ }),
+
+/***/ "mbEA":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+const gi = `incasare/activeDoc`;
+const fields = [{
+  id: 'apartamentId',
+  //aka DE LA
+  required: true,
+  type: 'search',
+  ref: 'apartamente'
+}, {
+  id: 'suma',
+  type: 'bani',
+  showInList: 'primary',
+  index: true,
+  required: true,
+  label: 'defaults.sum'
+}, {
+  id: 'nrChitanta',
+  type: 'number',
+  default: 1,
+  index: true,
+  value: getters => Number(getters['incasare/activeDoc'].nrUltimaChitanta || 0) + 1
+}, {
+  id: 'moneda',
+  notInForm: true,
+  required: true,
+  value: getters => getters['incasare/activeDoc'].moneda
+}, // ASTEA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
+// TREBUIE SA FIGUREZE
+/// !!!!!!!!!!!!!!!!
+{
+  id: 'blocId',
+  notInForm: true,
+  required: true,
+  index: true,
+  value: g => g['bloc/selected'].id
+}, {
+  id: 'asociatieId',
+  notInForm: true,
+  required: true,
+  index: true,
+  value: g => g['asociatie/selected'].id
+}];
+const actions = {
+  confirm: 'incaseaza'
+};
+const plural = 'incasari';
+
+
+/***/ }),
+
+/***/ "oSra":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+const fields = [{
+  id: 'furnizorId',
+  //aka DE LA
+  required: true,
+  type: 'search',
+  ref: 'furnizori'
+}, {
+  id: 'suma',
+  type: 'bani',
+  showInList: 'primary',
+  index: true,
+  required: true,
+  label: 'defaults.sum'
+}, {
+  id: 'nrFactura',
+  type: 'number',
+  default: 1,
+  index: true,
+  value: getters => Number(getters['asociatie/nrUltimaChitanta'] || 0) + 1
+}, {
+  id: 'dataScadenta',
+  type: 'date',
+  showInList: 'secondary'
+}, {
+  id: 'moneda',
+  notInForm: true,
+  required: true,
+  value: getters => getters['asociatie/moneda']
+}, // ASTA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
+// TREBUIE SA FIGUREZE
+// asociatieId = idul asociatiei apului
+/// !!!!!!!!!!!!!!!!
+{
+  id: 'asociatieId',
+  notInForm: true,
+  required: true,
+  index: true,
+  value: g => g['asociatie/active'] || g['asociatie/selected']
+}];
+const plural = 'facturi';
 
 
 /***/ })

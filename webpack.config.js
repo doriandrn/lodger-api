@@ -9,7 +9,8 @@ module.exports = {
 
   output: {
     filename: "index.js",
-    path: resolve('dist')
+    path: resolve('dist'),
+    chunkFilename: "bundle.js"
   },
 
   mode: "production",
@@ -31,12 +32,14 @@ module.exports = {
   },
 
   optimization: {
-    removeEmptyChunks: true,
+    // removeEmptyChunks: true,
     minimize: false,
-    concatenateModules: true,
+    // concatenateModules: true,
+    moduleIds: 'hashed',
     splitChunks: {
       chunks: 'all'
-    }
+    },
+    nodeEnv: 'production'
   },
 
   module: {

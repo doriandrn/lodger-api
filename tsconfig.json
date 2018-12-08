@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "allowJs": false,
+    "allowJs": true,
     "jsx": "preserve",
     "lib": [
       "esnext",
       "es2015"
     ],
-    "target": "esnext",
-    "module": "commonjs",
+    "target": "es5",
+    "module": "system",
     "moduleResolution": "node",
     "baseUrl": "./src/",
     "paths": {
