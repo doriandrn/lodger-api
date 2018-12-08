@@ -1,4 +1,4 @@
-import lodgerConfig from '~/lodger.config'
+import lodgerConfig from 'lodger.config'
 /**
  * MODULES
  */

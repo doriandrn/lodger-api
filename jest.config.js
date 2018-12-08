@@ -22,7 +22,7 @@ module.exports = {
     'defs/(.*)$': '<rootDir>/src/lib/defs/$1',
     'build/(.*)$': '<rootDir>/src/lib/build/$1',
     'forms/(.*)$': '<rootDir>/src/lib/forms/$1',
-    'lodger.config': '<rootDir>/lodger.config'
+    'lodger.config': '<rootDir>/src/lodger.config'
   },
   transform: {
     '^.+\\.jsx?$': 'babel-jest',

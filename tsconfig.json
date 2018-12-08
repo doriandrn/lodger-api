@@ -19,12 +19,12 @@
     ],
     "baseUrl": "./src/",
     "paths": {
+      "~/*": [ "./src/*" ],
       "~/lib/*": [ "lib/*" ],
       "forms/*": [ "lib/forms/*" ],
       "defs/*": [ "lib/defs/*" ],
       "helpers/*": [ "lib/helpers/*" ],
       "@/*": [ "/*" ],
-      "~/*": [ "/*" ]
     },
     "rootDirs": [
       "./"
