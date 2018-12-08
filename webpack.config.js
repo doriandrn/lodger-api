@@ -8,7 +8,8 @@ module.exports = {
   entry: "~/index.ts",
 
   output: {
-    filename: "index.js"
+    filename: "index.js",
+    path: resolve('dist')
   },
 
   mode: "production",
@@ -41,9 +42,9 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: /(node_modules|bower_components)/,
         use: {
+          loader: 'babel-loader',
           // loader: 'ts-loader',
           // loader: 'awesome-typescript-loader',
-          loader: 'babel-loader',
           // options: { transpileOnly: true }
         }
       }
