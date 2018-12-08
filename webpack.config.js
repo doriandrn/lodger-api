@@ -33,7 +33,10 @@ module.exports = {
   optimization: {
     removeEmptyChunks: true,
     minimize: false,
-    concatenateModules: true
+    concatenateModules: true,
+    splitChunks: {
+      chunks: 'all'
+    }
   },
 
   module: {
