@@ -47,8 +47,18 @@ module.exports = {
 
   module: {
     rules: [
+      // {
+      //   test: /\.ts?$/,
+      //   exclude: /(node_modules|bower_components)/,
+      //   use: {
+      //     loader: 'ts-loader',
+      //     // loader: 'ts-loader',
+      //     // loader: 'awesome-typescript-loader',
+      //     options: { transpileOnly: true }
+      //   }
+      // },
       {
-        test: /\.tsx?$/,
+        test: /\.ts?$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',

@@ -7,9 +7,12 @@
   "author": "Dorian Tudorache <dorian.snaz@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "check-types": "tsc",
-    "build": "webpack",
-    "test": "jest"
+    "test": "jest",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "rollup -c",
+    "build": "yarn build:types && yarn build:js"
   },
   "devDependencies": {
     "@babel/core": "^7.2.0",
@@ -32,6 +35,10 @@
     "jest": "^23.6.0",
     "json2yaml": "^1.1.0",
     "pouchdb-adapter-memory": "^7.0.0",
+    "rollup": "^0.67.4",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "ts-jest": "^23.10.5",
     "ts-loader": "^5.3.1",
     "typescript": "^3.1.6",
