@@ -10,7 +10,8 @@ module.exports = {
   output: {
     filename: "index.js",
     path: resolve('dist'),
-    chunkFilename: "bundle.js"
+    chunkFilename: "bundle.js",
+    libraryTarget: 'umd'
   },
 
   mode: "production",
