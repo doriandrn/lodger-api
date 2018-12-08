@@ -5,16 +5,17 @@ function resolve (dir) {
 }
 
 module.exports = {
-  entry: "~/index.ts",
+  entry: '~/index.ts',
 
   output: {
-    filename: "index.js",
+    filename: 'index.js',
     path: resolve('dist'),
     chunkFilename: "bundle.js",
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    library: 'Lodger'
   },
 
-  mode: "production",
+  mode: 'production',
 
   resolve: {
     extensions: [".js", ".ts"],
