@@ -115,7 +115,7 @@ var remedial = createCommonjsModule(function (module) {
             }
             return o + '"';
         };
-    }
+    } 
 
     if (!String.prototype.supplant) {
         String.prototype.supplant = function (o) {
@@ -198,10 +198,10 @@ var json2yaml = createCommonjsModule(function (module) {
             }
 
             output += '\n' + indentLevel + '- ' + handler(y);
-
+             
           });
           indentLevel = indentLevel.replace(/  /, '');
-
+          
           return output;
         }
       , "object": function (x) {
