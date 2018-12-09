@@ -1,12 +1,11 @@
 import * as RxDB from 'rxdb'
 import Debug from 'debug'
+import memoryAdapter from 'pouchdb-adapter-memory'
+import idbAdapter from 'pouchdb-adapter-idb'
+import httpAdapter from 'pouchdb-adapter-http'
 
 const debug = Debug('lodger:db')
 const { NODE_ENV } = process.env
-
-const memoryAdapter = require('pouchdb-adapter-memory')
-const httpAdapter = require('pouchdb-adapter-http')
-const idbAdapter = require('pouchdb-adapter-idb')
 
 // RxDB.QueryChangeDetector.enable()
 // RxDB.QueryChangeDetector.enableDebugging()

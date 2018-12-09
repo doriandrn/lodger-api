@@ -39,14 +39,6 @@ export default {
     'pouchdb-adapter-http'
   ],
 
-  globals: {
-    rxdb: 'RxDB',
-    debug: 'Debug',
-    'pouchdb-adapter-memory': 'memoryAdapter',
-    'pouchdb-adapter-idb': 'idbAdapter',
-    'pouchdb-adapter-http': 'httpAdapter'
-  },
-
   plugins: [
     // Allows node_modules resolution
     resolve({ extensions, preferBuiltins: true }),
@@ -74,5 +66,12 @@ export default {
   output: {
     file: pkg.main,
     format: 'cjs',
+    globals: {
+      rxdb: 'RxDB',
+      debug: 'Debug',
+      'pouchdb-adapter-memory': 'memoryAdapter',
+      'pouchdb-adapter-idb': 'idbAdapter',
+      'pouchdb-adapter-http': 'httpAdapter'
+    },
   },
 };

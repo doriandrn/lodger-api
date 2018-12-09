@@ -5,6 +5,9 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var RxDB = require('rxdb');
+var memoryAdapter = _interopDefault(require('pouchdb-adapter-memory'));
+var idbAdapter = _interopDefault(require('pouchdb-adapter-idb'));
+var httpAdapter = _interopDefault(require('pouchdb-adapter-http'));
 var Debug = _interopDefault(require('debug'));
 
 /*! *****************************************************************************
@@ -10187,13 +10190,7 @@ const addCommonFieldsToSchema = (schema, commonFields = [{
 const debug$2 = Debug('lodger:db');
 const {
   NODE_ENV: NODE_ENV$1
-} = process.env;
-
-const memoryAdapter = require('pouchdb-adapter-memory');
-
-const httpAdapter = require('pouchdb-adapter-http');
-
-const idbAdapter = require('pouchdb-adapter-idb'); // RxDB.QueryChangeDetector.enable()
+} = process.env; // RxDB.QueryChangeDetector.enable()
 // RxDB.QueryChangeDetector.enableDebugging()
 // type Adapter = 'http' | 'idb' | 'memory'
 // const adapters = {
@@ -10207,7 +10204,6 @@ const idbAdapter = require('pouchdb-adapter-idb'); // RxDB.QueryChangeDetector.e
 //     RxDB.plugin(adapter)
 //   })
 // })
-
 
 switch (NODE_ENV$1) {
   default:
