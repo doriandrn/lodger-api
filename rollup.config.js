@@ -33,6 +33,11 @@ export default {
   // external: ['fs', 'tty', 'os', 'util', 'debug', 'rxdb'],
   external: ['debug', 'rxdb'],
 
+  globals: {
+    rxdb: 'RxDB',
+    debug: 'Debug'
+  },
+
   plugins: [
     // Allows node_modules resolution
     resolve({ extensions, preferBuiltins: true }),
