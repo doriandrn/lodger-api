@@ -30,13 +30,13 @@ export default {
 
   // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
   // https://rollupjs.org/guide/en#external-e-external
-  // external: ['fs', 'tty', 'os', 'util', 'debug', 'rxdb'],
+
   external: [
-    'debug',
-    'rxdb',
     'pouchdb-adapter-memory',
     'pouchdb-adapter-idb',
-    'pouchdb-adapter-http'
+    'pouchdb-adapter-http',
+    'rxdb',
+    'debug'
   ],
 
   plugins: [
