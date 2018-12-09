@@ -41,7 +41,10 @@ export default {
 
   globals: {
     rxdb: 'RxDB',
-    debug: 'Debug'
+    debug: 'Debug',
+    'pouchdb-adapter-memory': 'memoryAdapter',
+    'pouchdb-adapter-idb': 'idbAdapter',
+    'pouchdb-adapter-http': 'httpAdapter'
   },
 
   plugins: [
