@@ -10231,11 +10231,6 @@ function DB (collections, config) {
 }
 
 /**
- * Forms for Lodger
- * are quite diferrently structured
- * than a normal JsonSchema
- */
-/**
  * Form Errors Definition
  *
  * TODO: account for translations
@@ -10415,22 +10410,23 @@ class Form {
 
 
   static loadByName(name) {
-    const debug = Debug('lodger:Form');
-    let form;
+    return __awaiter(this, void 0, void 0, function* () {
+      const debug = Debug('lodger:Form');
+      if (!name) throw new FormError('no name supplied for form');
 
-    try {
-      form = require("forms/" + name);
-      if (form.default) form = form.default;
-      Object.assign(form, {
-        name
-      });
-      debug('✓', name);
-    } catch (e) {
-      debug('Error', e);
-      throw new FormError(Errors$1.invalidRequested, name);
-    }
-
-    return new Form(form);
+      try {
+        // form = require("forms/" + name)
+        let form = yield Promise.resolve(require(`forms/${name}`));
+        if (form.default) form = form.default;
+        Object.assign(form, {
+          name
+        });
+        debug('✓', name);
+        return new Form(Object.assign({}, form));
+      } catch (e) {
+        throw new FormError(Errors$1.invalidRequested, name);
+      }
+    });
   }
 
   get name() {
@@ -10555,10 +10551,24 @@ const subscribers = {
   Errors["missingData"] = "Missing data %%";
   Errors["couldNotWriteFile"] = "Cannot write file";
 })(exports.Errors || (exports.Errors = {}));
+/**
+ * Loads all forms for taxonomies
+ * @param taxonomies
+ */
 
-const loadForms = taxonomies => Object.assign({}, ...taxonomies.map(tax => ({
-  [tax]: Form.loadByName(tax)
-})));
+
+const loadForms = taxonomies => __awaiter(undefined, void 0, void 0, function* () {
+  return Object.assign({}, ...(yield Promise.all(taxonomies.map(tax => __awaiter(this, void 0, void 0, function* () {
+    try {
+      const form = yield Form.loadByName(tax);
+      return {
+        [tax]: form
+      };
+    } catch (e) {
+      throw new LodgerError('failed to load form for %%', tax);
+    }
+  })))));
+});
 
 const plugins = [];
 const vueHelperObj = {
@@ -11169,7 +11179,21 @@ class Lodger {
       const debug = Debug('lodger:build');
       debug(`building in ${NODE_ENV$2} mode ...`);
       const taxonomii = Object.keys(exports.Taxonomii);
-      const forms = loadForms(taxonomii);
+      let forms;
+
+      try {
+        forms = yield loadForms(taxonomii);
+      } catch (e) {
+        throw new LodgerError('loading forms failed %%', e);
+      }
+
+      if (!forms) {
+        throw new LodgerError('build failed. forms could not be inited.');
+      } else {
+        debug(forms);
+      }
+
+      debug(`Loaded ${Object.keys(forms).length} forms ok.`);
 
       const _collections = taxonomii.map(tax => forms[tax].collection);
 

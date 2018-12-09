@@ -18,7 +18,6 @@ describe('Form', () => {
   })
 
   describe('.schema', () => {
-
     test('is defined', () => {
       const { schema } = __stub1__
       expect(schema).toBeDefined()
@@ -88,11 +87,20 @@ describe('Form', () => {
       form = await Form.loadByName(formToLoadAndTest)
     })
     describe('negative', () => {
-      test('throws if called with anything else than string', () => {
-        expect(() => Form.loadByName('')).toThrow()
+      test('throws if called with anything else than string', async () => {
+        try {
+          await Form.loadByName('')
+        } catch (e) {
+          expect(e).toBeDefined()
+        }
+
       })
-      test('throws for unknown filenames', () => {
-        expect(() => Form.loadByName('ceva')).toThrow()
+      test('throws for unknown filenames', async () => {
+        try {
+          await Form.loadByName('ceva')
+        } catch (e) {
+          expect(e).toBeDefined()
+        }
       })
     })
     describe('positive', () => {

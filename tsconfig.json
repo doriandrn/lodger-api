@@ -11,7 +11,7 @@
     "declarationDir": "dist/types",
     "declaration": true,
     "target": "es2015",
-    "module": "es2015",
+    "module": "commonjs",
     "jsx": "preserve",
     "lib": [
       "esnext",

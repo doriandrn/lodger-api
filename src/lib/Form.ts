@@ -235,20 +235,20 @@ class Form {
    *
    * @param name
    */
-  static loadByName (name: string): Form {
+  static async loadByName (name: string): Form {
     const debug = Debug('lodger:Form')
-    let form
+    if (!name) throw new FormError('no name supplied for form')
 
     try {
-      form = require("forms/" + name)
+      // form = require("forms/" + name)
+      let form = await import(`forms/${name}`)
       if (form.default) form = form.default
       Object.assign(form, { name })
       debug('✓', name)
+      return new Form({ ...form })
     } catch (e) {
-      debug('Error', e)
       throw new FormError(Errors.invalidRequested, name)
     }
-    return new Form(form)
   }
 
   get name () {

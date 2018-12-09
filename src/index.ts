@@ -57,7 +57,22 @@ enum Errors {
   couldNotWriteFile = 'Cannot write file'
 }
 
-const loadForms = (taxonomies: Taxonomii[]) => Object.assign({}, ...taxonomies.map((tax: Taxonomii) => ({ [tax]: Form.loadByName(tax) }) ))
+/**
+ * Loads all forms for taxonomies
+ * @param taxonomies
+ */
+const loadForms = async (taxonomies: Taxonomii[]) => {
+  return Object.assign({},
+    ...await Promise.all(taxonomies.map(async (tax: Taxonomii) => {
+      try {
+        const form = await Form.loadByName(tax)
+        return { [tax]: form }
+      } catch (e) {
+        throw new LodgerError('failed to load form for %%', tax)
+      }
+    }
+  )))
+}
 
 const plugins: LodgerPlugin[] = []
 
@@ -631,8 +646,19 @@ export class Lodger {
     debug(`building in ${NODE_ENV} mode ...`)
 
     const taxonomii: Taxonomii[] = <Taxonomii[]>Object.keys(Taxonomii)
+    let forms: {[k in Taxonomie]: Form} | {}
+    try {
+      forms = await loadForms(taxonomii)
+    } catch (e) {
+      throw new LodgerError('loading forms failed %%', e)
+    }
+    if (!forms) {
+      throw new LodgerError('build failed. forms could not be inited.')
+    } else {
+      debug(forms)
+    }
 
-    const forms = loadForms(taxonomii)
+    debug(`Loaded ${Object.keys(forms).length} forms ok.`)
 
     const _collections: RxCollectionCreator[] = taxonomii.map(tax => forms[tax].collection)
     const db = await DB(_collections, dbCon)

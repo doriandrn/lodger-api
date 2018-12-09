@@ -41,7 +41,12 @@ export default {
 
   plugins: [
     // Allows node_modules resolution
-    resolve({ extensions, preferBuiltins: true }),
+    resolve({
+      extensions,
+      preferBuiltins: true,
+      module: true,
+      modulesOnly: true
+    }),
 
     globals(),
 
