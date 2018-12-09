@@ -7,10 +7,12 @@ function resolve (dir) {
 module.exports = {
   entry: '~/index.ts',
 
+  target: 'node',
+
   output: {
     filename: 'index.js',
     path: resolve('dist'),
-    chunkFilename: "bundle.js",
+    chunkFilename: "[name].bundle.js",
     libraryTarget: 'umd',
     // library: 'Lodger',
     umdNamedDefine: true
@@ -21,6 +23,7 @@ module.exports = {
   resolve: {
     extensions: [".js", ".ts"],
     alias: {
+      'lodger.config': resolve('./'),
       '~': resolve('src'),
       '~/lib': resolve('src/lib/'),
       helpers: resolve('src/lib/helpers'),
