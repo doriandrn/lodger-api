@@ -5,17 +5,17 @@ function resolve (dir) {
 }
 
 module.exports = {
-  entry: '~/index.ts',
+  entry: './src/index.ts',
 
   target: 'node',
 
   output: {
     filename: 'index.js',
     path: resolve('dist'),
-    chunkFilename: "[name].bundle.js",
-    libraryTarget: 'umd',
-    // library: 'Lodger',
-    umdNamedDefine: true
+    chunkFilename: "[chunkhash].bundle.js",
+    libraryTarget: 'commonjs',
+    library: 'Lodger',
+    // umdNamedDefine: true
   },
 
   mode: 'production',
@@ -23,18 +23,19 @@ module.exports = {
   resolve: {
     extensions: [".js", ".ts"],
     alias: {
-      'lodger.config': resolve('./'),
       '~': resolve('src'),
       '~/lib': resolve('src/lib/'),
       helpers: resolve('src/lib/helpers'),
       forms: resolve('src/lib/forms'),
       build: resolve('src/lib/build'),
-      defs: resolve('src/lib/defs')
+      defs: resolve('src/lib/defs'),
+      'lodger.config': resolve('./src/lodger.config.ts')
     }
   },
 
   node: {
-    fs: 'empty'
+    fs: 'empty',
+    net: 'empty',
   },
 
   optimization: {
