@@ -7,15 +7,15 @@ function resolve (dir) {
 module.exports = {
   entry: './src/index.ts',
 
-  target: 'node',
+  target: 'web',
 
   output: {
     filename: 'index.js',
     path: resolve('dist'),
     chunkFilename: "[chunkhash].bundle.js",
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs',
     // library: 'Lodger',
-    umdNamedDefine: true
+    // umdNamedDefine: true
   },
 
   mode: 'production',
