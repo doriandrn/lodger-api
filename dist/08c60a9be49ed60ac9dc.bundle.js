@@ -1,5 +1,4 @@
-exports.ids = [10];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[10],{
 
 /***/ "aSoU":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -26,4 +25,4 @@ const setari = {
 
 /***/ })
 
-};;
+}]);

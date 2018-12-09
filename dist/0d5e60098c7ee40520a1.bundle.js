@@ -1,5 +1,4 @@
-exports.ids = [2];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[2],{
 
 /***/ "bYfg":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -55,4 +54,4 @@ const actions = {
 
 /***/ })
 
-};;
+}]);

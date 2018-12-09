@@ -1,5 +1,4 @@
-exports.ids = [9];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[9],{
 
 /***/ "k0bU":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -33,4 +32,4 @@ const actiuni = {
 
 /***/ })
 
-};;
+}]);

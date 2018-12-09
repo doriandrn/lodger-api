@@ -1,5 +1,4 @@
-exports.ids = [3];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[3],{
 
 /***/ "0jyb":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -47,4 +46,4 @@ const plural = 'cheltuieli';
 
 /***/ })
 
-};;
+}]);

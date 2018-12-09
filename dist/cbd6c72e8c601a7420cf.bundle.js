@@ -1,5 +1,4 @@
-exports.ids = [8];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[8],{
 
 /***/ "mbEA":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -58,4 +57,4 @@ const plural = 'incasari';
 
 /***/ })
 
-};;
+}]);

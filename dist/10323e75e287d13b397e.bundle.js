@@ -1,5 +1,4 @@
-exports.ids = [11];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[11],{
 
 /***/ "VjXs":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -75,4 +74,4 @@ const settings = {
 
 /***/ })
 
-};;
+}]);

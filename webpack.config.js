@@ -7,7 +7,7 @@ function resolve (dir) {
 module.exports = {
   entry: './src/index.ts',
 
-  target: 'node',
+  target: 'web',
 
   output: {
     filename: 'index.js',
@@ -36,6 +36,7 @@ module.exports = {
   node: {
     fs: 'empty',
     net: 'empty',
+    tls: 'empty'
   },
 
   optimization: {

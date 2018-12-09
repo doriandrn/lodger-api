@@ -1,5 +1,4 @@
-exports.ids = [7];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[7],{
 
 /***/ "UdaM":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -30,4 +29,4 @@ const plural = 'furnizori';
 
 /***/ })
 
-};;
+}]);

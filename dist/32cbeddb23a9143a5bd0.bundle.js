@@ -1,5 +1,4 @@
-exports.ids = [0];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[0],{
 
 /***/ "WuGB":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -144,4 +143,4 @@ const methods = {
 
 /***/ })
 
-};;
+}]);

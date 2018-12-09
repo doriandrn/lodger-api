@@ -1,5 +1,4 @@
-exports.ids = [5];
-exports.modules = {
+(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[5],{
 
 /***/ "oSra":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -52,4 +51,4 @@ const plural = 'facturi';
 
 /***/ })
 
-};;
+}]);
