@@ -27,6 +27,7 @@ const name = 'Lodger';
 
 export default {
   input: './src/index.ts',
+  inlineDynamicImports: true,
 
   // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
   // https://rollupjs.org/guide/en#external-e-external
@@ -41,17 +42,25 @@ export default {
 
   plugins: [
     // Allows node_modules resolution
+    ts(),
     resolve({
       extensions,
-      preferBuiltins: true,
-      module: true,
-      modulesOnly: true
+      preferBuiltins: false,
+      // module: true,
+      // modulesOnly: true,
+      // customResolveOptions: {
+      //   forms: 'src/lib/forms/*'
+      // }
     }),
 
     globals(),
 
+    // Compile TypeScript/JavaScript files
+    babel(),
+
     // Allow bundling cjs modules. Rollup doesn't understand cjs
     commonjs({
+      // include: ['node_modules/**/*', 'forms/*'],
       namedExports:  {
         // left-hand side can be an absolute path, a path
         // relative to the current directory, or the name
@@ -60,18 +69,15 @@ export default {
       }
     }),
 
-    ts(),
 
-    builtins(),
-
-    // Compile TypeScript/JavaScript files
-    babel({ extensions, include: ['src/**/*'] }),
+    builtins()
   ],
 
   output: {
     file: pkg.main,
     format: 'cjs',
     globals: {
+      forms: 'forms',
       rxdb: 'RxDB',
       debug: 'Debug',
       'pouchdb-adapter-memory': 'memoryAdapter',

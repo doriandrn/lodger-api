@@ -5,7 +5,7 @@ import { RxDatabase, RxCollectionCreator, RxDocument, isRxDocument } from 'rxdb'
 
 import fs from 'fs'
 import yaml from 'json2yaml'
-import equal from 'deep-equal'
+import deepEqual from 'deep-equal'
 
 import LodgerStore from '~/lib/Store'
 import { buildOpts, BuildOptions } from '~/lib/build/opts'
@@ -61,15 +61,10 @@ enum Errors {
  * Loads all forms for taxonomies
  * @param taxonomies
  */
-const loadForms = async (taxonomies: Taxonomii[]) => {
+async function loadForms (taxonomies: Taxonomii[]) {
   return Object.assign({},
     ...await Promise.all(taxonomies.map(async (tax: Taxonomii) => {
-      try {
-        const form = await Form.loadByName(tax)
-        return { [tax]: form }
-      } catch (e) {
-        throw new LodgerError('failed to load form for %%', tax)
-      }
+      return { [tax]: await Form.loadByName(tax) }
     }
   )))
 }
@@ -85,7 +80,7 @@ const vueHelperObj: SubscriberData = {
 
 const subscribedTaxes: Taxonomie[] = []
 
-const initialSubscribe = async ({ taxonomie, plural, collections, store }) => {
+async function initialSubscribe ({ taxonomie, plural, collections, store }) {
   // const debug = Debug('lodger:initialSubscribe')
   switch (taxonomie) {
     // insert predefined services
@@ -499,7 +494,7 @@ export class Lodger {
           const everyKeyInCriteriu: { [key in CriteriuKeys]: any } = (vm: Vue): Criteriu => ({ ...vm.subsData[subscriberName][plural].criteriu })
 
           unwatch = vueHelper.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
-            if (!newC || equal(newC, oldC) ) return
+            if (!newC || deepEqual(newC, oldC) ) return
             this.subscribe(taxonomie, newC, subscriberName)
           }, { deep: true, immediate: false })
         }
