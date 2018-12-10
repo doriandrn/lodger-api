@@ -1,12 +1,15 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[9],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[9],{
 
 /***/ "k0bU":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "campuri", function() { return campuri; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.actiuni = exports.campuri = void 0;
 const campuri = [{
   id: 'balanta',
   label: 'asociatie.init.balanta',
@@ -26,9 +29,11 @@ const campuri = [{
   max: 28,
   min: 1
 }];
+exports.campuri = campuri;
 const actiuni = {
   confirm: 'initDone'
 };
+exports.actiuni = actiuni;
 
 /***/ })
 

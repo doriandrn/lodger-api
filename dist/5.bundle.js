@@ -1,12 +1,15 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[5],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[5],{
 
 /***/ "oSra":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.plural = exports.fields = void 0;
 const fields = [{
   id: 'furnizorId',
   //aka DE LA
@@ -46,8 +49,9 @@ const fields = [{
   index: true,
   value: g => g['asociatie/active'] || g['asociatie/selected']
 }];
+exports.fields = fields;
 const plural = 'facturi';
-
+exports.plural = plural;
 
 /***/ })
 

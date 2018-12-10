@@ -1,4 +1,4 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[13],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[13],{
 
 /***/ "++Q9":
 /***/ (function(module, exports, __webpack_require__) {
@@ -9922,6 +9922,7 @@ var funs = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
  * Vue.js v2.5.17
  * (c) 2014-2018 Evan You
@@ -17362,7 +17363,7 @@ if (inBrowser) {
 
 /*  */
 
-/* harmony default export */ __webpack_exports__["a"] = (Vue);
+/* harmony default export */ __webpack_exports__["default"] = (Vue);
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("yLpj"), __webpack_require__("URgk").setImmediate))
 
@@ -17388,13 +17389,14 @@ var $$rxSubscriber = rxSubscriber;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export Store */
-/* unused harmony export install */
-/* unused harmony export mapState */
-/* unused harmony export mapMutations */
-/* unused harmony export mapGetters */
-/* unused harmony export mapActions */
-/* unused harmony export createNamespacedHelpers */
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Store", function() { return Store; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapState", function() { return mapState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapMutations", function() { return mapMutations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapGetters", function() { return mapGetters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapActions", function() { return mapActions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createNamespacedHelpers", function() { return createNamespacedHelpers; });
 /**
  * vuex v3.0.1
  * (c) 2017 Evan You
@@ -18272,7 +18274,7 @@ var index_esm = {
 };
 
 
-/* harmony default export */ __webpack_exports__["a"] = (index_esm);
+/* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
 
 /***/ }),
@@ -22692,6 +22694,7 @@ function immediate(task) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var pouchdb_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("DL4p");
 /* harmony import */ var pouchdb_errors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("/xTr");
 /* harmony import */ var pouchdb_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("h7FI");
@@ -24693,7 +24696,7 @@ function index (PouchDB) {
   PouchDB.adapter('idb', IdbPouch, true);
 }
 
-/* harmony default export */ __webpack_exports__["a"] = (index);
+/* harmony default export */ __webpack_exports__["default"] = (index);
 
 
 /***/ }),
@@ -26391,6 +26394,7 @@ module.exports = _createClass;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/pouchdb-utils/lib/index-browser.es.js
 var index_browser_es = __webpack_require__("DL4p");
@@ -28421,7 +28425,7 @@ function index (PouchDB) {
   PouchDB.adapter('memory', MemDownPouch, true);
 }
 
-/* harmony default export */ var pouchdb_adapter_memory_lib_index_es = __webpack_exports__["a"] = (index);
+/* harmony default export */ var pouchdb_adapter_memory_lib_index_es = __webpack_exports__["default"] = (index);
 
 
 /***/ }),
@@ -29539,6 +29543,7 @@ ReadStream.prototype._cleanup = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var pouchdb_errors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("/xTr");
 /* harmony import */ var pouchdb_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("DL4p");
 /* harmony import */ var pouchdb_fetch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("D0Cq");
@@ -30661,7 +30666,7 @@ function index (PouchDB) {
   PouchDB.adapter('https', HttpPouch, false);
 }
 
-/* harmony default export */ __webpack_exports__["a"] = (index);
+/* harmony default export */ __webpack_exports__["default"] = (index);
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
 
@@ -33492,6 +33497,7 @@ var hooks = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/rxdb/node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__("GoXK");
@@ -51201,20 +51207,20 @@ var local_documents_overwritable = {};
   overwritable: local_documents_overwritable
 });
 // CONCATENATED MODULE: ./node_modules/rxdb/dist/es/index.js
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return es_create; });
-/* unused harmony export removeDatabase */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return dist_es_plugin; });
-/* unused harmony export dbCount */
-/* unused harmony export isRxDatabase */
-/* unused harmony export isRxCollection */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return es_isRxDocument; });
-/* unused harmony export isRxQuery */
-/* unused harmony export isRxSchema */
-/* unused harmony export RxSchema */
-/* unused harmony export PouchDB */
-/* unused harmony export QueryChangeDetector */
-/* unused harmony export RxDatabase */
-/* unused harmony export checkAdapter */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create", function() { return es_create; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeDatabase", function() { return es_removeDatabase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plugin", function() { return dist_es_plugin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dbCount", function() { return es_dbCount; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRxDatabase", function() { return es_isRxDatabase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRxCollection", function() { return es_isRxCollection; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRxDocument", function() { return es_isRxDocument; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRxQuery", function() { return es_isRxQuery; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRxSchema", function() { return es_isRxSchema; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RxSchema", function() { return es_RxSchema; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PouchDB", function() { return es_PouchDB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QueryChangeDetector", function() { return es_QueryChangeDetector; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RxDatabase", function() { return es_RxDatabase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkAdapter", function() { return es_checkAdapter; });
 /**
  * this is the default rxdb-export
  * It has a batteries-included guarantee.
@@ -51284,7 +51290,7 @@ var es_PouchDB = core.PouchDB;
 var es_QueryChangeDetector = core.QueryChangeDetector;
 var es_RxDatabase = core.RxDatabase;
 var es_checkAdapter = core.checkAdapter;
-/* harmony default export */ var rxdb_dist_es = ({
+/* harmony default export */ var rxdb_dist_es = __webpack_exports__["default"] = ({
   create: es_create,
   checkAdapter: es_checkAdapter,
   removeDatabase: es_removeDatabase,

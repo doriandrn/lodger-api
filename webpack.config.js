@@ -14,7 +14,7 @@ module.exports = {
     path: resolve('dist'),
     chunkFilename: "[name].bundle.js",
     libraryTarget: 'umd',
-    library: 'Lodger',
+    // library: 'Lodger',
     umdNamedDefine: true
   },
 

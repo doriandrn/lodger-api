@@ -1,11 +1,15 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[10],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[10],{
 
 /***/ "aSoU":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setari", function() { return setari; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.setari = void 0;
 const setari = {
   regionale: {
     campuri: [{
@@ -22,6 +26,7 @@ const setari = {
     }]
   }
 };
+exports.setari = setari;
 
 /***/ })
 

@@ -1,13 +1,15 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[2],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[2],{
 
 /***/ "bYfg":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.actions = exports.fields = exports.plural = void 0;
 const bs = 'bloc/activeDoc';
 const fields = [{
   id: '_id',
@@ -46,11 +48,13 @@ const fields = [{
   required: true,
   value: g => g['asociatie/active'] || g['asociatie/selected']
 }];
+exports.fields = fields;
 const plural = 'blocuri';
+exports.plural = plural;
 const actions = {
   confirm: 'adaugaBloc'
 };
-
+exports.actions = actions;
 
 /***/ })
 

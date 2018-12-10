@@ -1,13 +1,15 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[8],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[8],{
 
 /***/ "mbEA":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.plural = exports.actions = exports.fields = void 0;
 const gi = `incasare/activeDoc`;
 const fields = [{
   id: 'apartamentId',
@@ -49,11 +51,13 @@ const fields = [{
   index: true,
   value: g => g['asociatie/selected'].id
 }];
+exports.fields = fields;
 const actions = {
   confirm: 'incaseaza'
 };
+exports.actions = actions;
 const plural = 'incasari';
-
+exports.plural = plural;
 
 /***/ })
 

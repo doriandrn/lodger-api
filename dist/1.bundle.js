@@ -1,15 +1,16 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[1],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[1],{
 
 /***/ "3RaG":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "methods", function() { return methods; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "statics", function() { return statics; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setari", function() { return setari; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.setari = exports.statics = exports.methods = exports.plural = exports.fields = void 0;
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -18,6 +19,7 @@ const getter = 'modal/data';
 const modalOpen = 'modal/open';
 const modalContent = 'modal/content';
 const plural = 'asociatii';
+exports.plural = plural;
 const fields = [{
   id: '_id',
   notInDb: true,
@@ -81,6 +83,7 @@ const fields = [{
   type: 'object',
   notInForm: true
 }];
+exports.fields = fields;
 const methods = {
   initBalanta(data) {
     var _this = this;
@@ -143,6 +146,7 @@ const methods = {
   }
 
 };
+exports.methods = methods;
 const statics = {
   selected: function () {
     var _ref = _asyncToGenerator(function* (id) {
@@ -156,6 +160,7 @@ const statics = {
   }() // DRY: la buatoane, daca au 'click', n-au nevoie de id
 
 };
+exports.statics = statics;
 const setari = {
   date: {
     fields: [{
@@ -175,7 +180,7 @@ const setari = {
     }]
   }
 };
-
+exports.setari = setari;
 
 /***/ })
 

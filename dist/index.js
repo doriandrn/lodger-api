@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("Lodger", [], factory);
-	else if(typeof exports === 'object')
-		exports["Lodger"] = factory();
-	else
-		root["Lodger"] = factory();
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// install a JSONP callback for chunk loading
@@ -215,7 +215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// on error function for async loading
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/
-/******/ 	var jsonpArray = window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || [];
+/******/ 	var jsonpArray = window["webpackJsonp"] = window["webpackJsonp"] || [];
 /******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
 /******/ 	jsonpArray.push = webpackJsonpCallback;
 /******/ 	jsonpArray = jsonpArray.slice();
@@ -232,32 +232,48 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ({
 
 /***/ "/7QA":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Lodger", function() { return Lodger; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Errors", function() { return Errors; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Taxonomii", function() { return Taxonomii; });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("NOtv");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var rxdb__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("p9ch");
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("Po9p");
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var json2yaml__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("gkHL");
-/* harmony import */ var json2yaml__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(json2yaml__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var deep_equal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("f66B");
-/* harmony import */ var deep_equal__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(deep_equal__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _lib_Store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("5Fil");
-/* harmony import */ var _lib_build_opts__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("huy0");
-/* harmony import */ var _lib_helpers_functions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("ABXj");
-/* harmony import */ var _lib_helpers_forms__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("REmU");
-/* harmony import */ var _lib_DB__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("FOda");
-/* harmony import */ var _lib_Form__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("512P");
-/* harmony import */ var _lib_Errors__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("LORn");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("Kw5r");
-/* harmony import */ var _lib_helpers_search__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__("5u1Y");
-/* harmony import */ var forms_serviciu__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__("0fNj");
+/* WEBPACK VAR INJECTION */(function(process) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Taxonomii = exports.Errors = exports.Lodger = void 0;
+
+var _debug = _interopRequireDefault(__webpack_require__("NOtv"));
+
+var _rxdb = __webpack_require__("p9ch");
+
+var _fs = _interopRequireDefault(__webpack_require__("Po9p"));
+
+var _json2yaml = _interopRequireDefault(__webpack_require__("gkHL"));
+
+var _deepEqual = _interopRequireDefault(__webpack_require__("f66B"));
+
+var _Store = _interopRequireDefault(__webpack_require__("5Fil"));
+
+var _opts = __webpack_require__("huy0");
+
+var _functions = __webpack_require__("ABXj");
+
+var _forms = __webpack_require__("REmU");
+
+var _DB = _interopRequireDefault(__webpack_require__("FOda"));
+
+var _Form = __webpack_require__("512P");
+
+var _Errors = __webpack_require__("LORn");
+
+var _vue = _interopRequireDefault(__webpack_require__("Kw5r"));
+
+var _search = __webpack_require__("5u1Y");
+
+var _serviciu = __webpack_require__("0fNj");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -265,22 +281,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-/// <reference path="main.d.ts" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const {
   NODE_ENV
@@ -294,6 +294,7 @@ const subscribers = {
 
 };
 var Taxonomii;
+exports.Taxonomii = Taxonomii;
 
 (function (Taxonomii) {
   Taxonomii["asociatie"] = "asociatie";
@@ -305,13 +306,15 @@ var Taxonomii;
   Taxonomii["serviciu"] = "serviciu";
   Taxonomii["furnizor"] = "furnizor";
   Taxonomii["utilizator"] = "utilizator";
-})(Taxonomii || (Taxonomii = {}));
+})(Taxonomii || (exports.Taxonomii = Taxonomii = {}));
 
 var Errors;
 /**
  * Loads all forms for taxonomies
  * @param taxonomies
  */
+
+exports.Errors = Errors;
 
 (function (Errors) {
   Errors["missingDB"] = "Missing database";
@@ -323,7 +326,7 @@ var Errors;
   Errors["noPlural"] = "Could not find plural definition for %%";
   Errors["missingData"] = "Missing data %%";
   Errors["couldNotWriteFile"] = "Cannot write file";
-})(Errors || (Errors = {}));
+})(Errors || (exports.Errors = Errors = {}));
 
 function loadForms(_x) {
   return _loadForms.apply(this, arguments);
@@ -336,7 +339,7 @@ function _loadForms() {
     function () {
       var _ref5 = _asyncToGenerator(function* (tax) {
         return {
-          [tax]: yield _lib_Form__WEBPACK_IMPORTED_MODULE_10__[/* Form */ "a"].loadByName(tax)
+          [tax]: yield _Form.Form.loadByName(tax)
         };
       });
 
@@ -373,7 +376,7 @@ function _initialSubscribe() {
     switch (taxonomie) {
       // insert predefined services
       case 'serviciu':
-        forms_serviciu__WEBPACK_IMPORTED_MODULE_14__["predefinite"].forEach(
+        _serviciu.predefinite.forEach(
         /*#__PURE__*/
         function () {
           var _ref6 = _asyncToGenerator(function* (denumire) {
@@ -386,6 +389,7 @@ function _initialSubscribe() {
             return _ref6.apply(this, arguments);
           };
         }());
+
         break;
       // insert admin user
 
@@ -406,9 +410,9 @@ function _initialSubscribe() {
 }
 
 const _theDoc = (docs, id) => {
-  if (!docs.length) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('empty docs provided');
+  if (!docs.length) throw new _Errors.LodgerError('empty docs provided');
   const doc = docs.filter(doc => doc._id === id)[0];
-  if (!(doc && Object(rxdb__WEBPACK_IMPORTED_MODULE_1__[/* isRxDocument */ "b"])(doc))) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('no doc found %%', {
+  if (!(doc && (0, _rxdb.isRxDocument)(doc))) throw new _Errors.LodgerError('no doc found %%', {
     id
   });
   return doc;
@@ -422,7 +426,7 @@ const _theDoc = (docs, id) => {
  */
 
 
-const vueHelper = new vue__WEBPACK_IMPORTED_MODULE_12__[/* default */ "a"]({
+const vueHelper = new _vue.default({
   data() {
     return {
       subsData: {}
@@ -450,7 +454,7 @@ const vueHelper = new vue__WEBPACK_IMPORTED_MODULE_12__[/* default */ "a"]({
 
       return _asyncToGenerator(function* () {
         let item;
-        const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:getItem');
+        const debug = (0, _debug.default)('lodger:getItem');
         if (subscriberName === undefined) subscriberName = 'main';
         const {
           subsData
@@ -488,13 +492,14 @@ const vueHelper = new vue__WEBPACK_IMPORTED_MODULE_12__[/* default */ "a"]({
 
   }
 });
+
 class Lodger {
   constructor(taxonomii, forms, db, store) {
     this.taxonomii = taxonomii;
     this.forms = forms;
     this.db = db;
     this.store = store;
-    const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:constructor'); // const subscriberData = this.subscriberData.bind(this)
+    const debug = (0, _debug.default)('lodger:constructor'); // const subscriberData = this.subscriberData.bind(this)
 
     taxonomii.forEach(tax => {
       const {
@@ -507,7 +512,7 @@ class Lodger {
             try {
               return vueHelper.subsData[subscriberName][plural].items;
             } catch (e) {
-              throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('not yet defined. wait more! :) %%', {
+              throw new _Errors.LodgerError('not yet defined. wait more! :) %%', {
                 subscriberName,
                 plural
               });
@@ -542,7 +547,7 @@ class Lodger {
 
     return _asyncToGenerator(function* () {
       // const debug = Debug('lodger:put')
-      if (!data || Object.keys(data).length < 1) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"](Errors.missingData, data);
+      if (!data || Object.keys(data).length < 1) throw new _Errors.LodgerError(Errors.missingData, data);
       const {
         db,
         store,
@@ -567,7 +572,7 @@ class Lodger {
        */
 
 
-      const internallyHandledData = Object(_lib_helpers_forms__WEBPACK_IMPORTED_MODULE_8__[/* handleOnSubmit */ "c"])(data, {
+      const internallyHandledData = (0, _forms.handleOnSubmit)(data, {
         referencesIds,
         store
       });
@@ -616,11 +621,11 @@ class Lodger {
         db,
         forms
       } = _this3;
-      const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:trash');
+      const debug = (0, _debug.default)('lodger:trash');
       const {
         plural
       } = forms[taxonomie];
-      if (!plural) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('wtf');
+      if (!plural) throw new _Errors.LodgerError('wtf');
       const col = db.collections[plural];
       const doc = yield col.findOne(id);
       yield doc.remove();
@@ -641,12 +646,12 @@ class Lodger {
     var _this4 = this;
 
     return _asyncToGenerator(function* () {
-      const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:select');
+      const debug = (0, _debug.default)('lodger:select');
       const {
         dispatch
       } = _this4.store;
       const form = _this4.forms[taxonomie];
-      if (!form) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('invalid taxonomy %%', taxonomie);
+      if (!form) throw new _Errors.LodgerError('invalid taxonomy %%', taxonomie);
       const {
         plural
       } = form;
@@ -683,7 +688,7 @@ class Lodger {
       taxonomie,
       doc
     } = docHolder;
-    const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:_activeDocument');
+    const debug = (0, _debug.default)('lodger:_activeDocument');
     const gName = `${taxonomie}/activeDoc`;
     const {
       store
@@ -714,7 +719,7 @@ class Lodger {
 
   search(input, searchTaxonomy) {
     if (!input) return;
-    const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:search');
+    const debug = (0, _debug.default)('lodger:search');
     const searchMap = this.getters['searchMap'];
 
     if (!searchMap) {
@@ -735,7 +740,7 @@ class Lodger {
 
       for (let [key, value] of iterator) {
         if (typeof value === 'function') continue;
-        const relevance = Object(_lib_helpers_search__WEBPACK_IMPORTED_MODULE_13__[/* string_similarity */ "a"])(String(input), value);
+        const relevance = (0, _search.string_similarity)(String(input), value);
         results[tax].push({
           id: key,
           relevance,
@@ -763,7 +768,7 @@ class Lodger {
   subscribe(taxonomii, criteriuCerut, subscriberName = 'main') {
     var _this5 = this;
 
-    const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:subscribe');
+    const debug = (0, _debug.default)('lodger:subscribe');
     const {
       db: {
         collections
@@ -783,7 +788,8 @@ class Lodger {
     const subscriber = subscribers[subscriberName];
 
     if (!vueHelper.subsData[subscriberName]) {
-      vue__WEBPACK_IMPORTED_MODULE_12__[/* default */ "a"].set(vueHelper.subsData, subscriberName, {}); // debug('D initializat subscriber: ', subscriberName)
+      _vue.default.set(vueHelper.subsData, subscriberName, {}); // debug('D initializat subscriber: ', subscriberName)
+
     }
 
     taxonomii.forEach(taxonomie => {
@@ -791,8 +797,8 @@ class Lodger {
         plural
       } = forms[taxonomie];
       const colectie = collections[plural];
-      if (!colectie) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('invalid collection %%', plural);
-      const criteriu = Object.assign({}, _objectSpread({}, Object(_lib_helpers_functions__WEBPACK_IMPORTED_MODULE_7__[/* getCriteriu */ "a"])(plural, JSON.parse(JSON.stringify(criteriuCerut || {}))))); // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
+      if (!colectie) throw new _Errors.LodgerError('invalid collection %%', plural);
+      const criteriu = Object.assign({}, _objectSpread({}, (0, _functions.getCriteriu)(plural, JSON.parse(JSON.stringify(criteriuCerut || {}))))); // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
       // debug(`${taxonomie}: criteriu`, criteriu)
 
       let {
@@ -817,15 +823,17 @@ class Lodger {
       if (!vueHelper.subsData[subscriberName][plural]) {
         const freshO = Object.assign({}, vueHelperObj);
         freshO.criteriu = Object.assign({}, criteriu);
-        vue__WEBPACK_IMPORTED_MODULE_12__[/* default */ "a"].set(vueHelper.subsData[subscriberName], plural, freshO); // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
+
+        _vue.default.set(vueHelper.subsData[subscriberName], plural, freshO); // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
         // add watcher for criteriu and when it changes
         // fire this subscribe func again
 
-        if (!Object(_lib_helpers_functions__WEBPACK_IMPORTED_MODULE_7__[/* taxIsMultipleSelect */ "b"])(taxonomie)) {
+
+        if (!(0, _functions.taxIsMultipleSelect)(taxonomie)) {
           const everyKeyInCriteriu = vm => _objectSpread({}, vm.subsData[subscriberName][plural].criteriu);
 
           unwatch = vueHelper.$watch(everyKeyInCriteriu, (newC, oldC) => {
-            if (!newC || deep_equal__WEBPACK_IMPORTED_MODULE_4___default()(newC, oldC)) return;
+            if (!newC || (0, _deepEqual.default)(newC, oldC)) return;
             this.subscribe(taxonomie, newC, subscriberName);
           }, {
             deep: true,
@@ -865,7 +873,7 @@ class Lodger {
             const doc = yield collections[plural].findOne(selectedId);
 
             if (!doc) {
-              throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('invalid id supplied', plural, selectedId);
+              throw new _Errors.LodgerError('invalid id supplied', plural, selectedId);
             } else {
               _this5._activeDocument = {
                 doc,
@@ -913,16 +921,16 @@ class Lodger {
     var _this6 = this;
 
     return _asyncToGenerator(function* () {
-      const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:set');
+      const debug = (0, _debug.default)('lodger:set');
       const {
         store
       } = _this6;
       const allowedTaxonomies = ['client', 'user'];
-      if (!preference) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"](Errors.invalidPreferenceIndex);
+      if (!preference) throw new _Errors.LodgerError(Errors.invalidPreferenceIndex);
       const taxonomy = preference.split('.')[0];
 
       if (!taxonomy || allowedTaxonomies.indexOf(taxonomy) < 0) {
-        throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"](Errors.invalidPreferenceIndex);
+        throw new _Errors.LodgerError(Errors.invalidPreferenceIndex);
       }
 
       debug('setting preference', preference, value);
@@ -996,8 +1004,8 @@ class Lodger {
     return _asyncToGenerator(function* () {
       let {
         dbCon
-      } = options || _lib_build_opts__WEBPACK_IMPORTED_MODULE_6__[/* buildOpts */ "a"];
-      const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:build');
+      } = options || _opts.buildOpts;
+      const debug = (0, _debug.default)('lodger:build');
       debug(`building in ${NODE_ENV} mode ...`);
       const taxonomii = Object.keys(Taxonomii);
       let forms;
@@ -1005,11 +1013,11 @@ class Lodger {
       try {
         forms = yield loadForms(taxonomii);
       } catch (e) {
-        throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('loading forms failed %%', e);
+        throw new _Errors.LodgerError('loading forms failed %%', e);
       }
 
       if (!forms) {
-        throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('build failed. forms could not be inited.');
+        throw new _Errors.LodgerError('build failed. forms could not be inited.');
       } else {
         debug(forms);
       }
@@ -1018,13 +1026,13 @@ class Lodger {
 
       const _collections = taxonomii.map(tax => forms[tax].collection);
 
-      const db = yield Object(_lib_DB__WEBPACK_IMPORTED_MODULE_9__[/* default */ "a"])(_collections, dbCon);
-      const store = new _lib_Store__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"]({
+      const db = yield (0, _DB.default)(_collections, dbCon);
+      const store = new _Store.default({
         taxonomii,
         forms
       }); // const { collections } = await db
 
-      if (options) Object.assign(_lib_build_opts__WEBPACK_IMPORTED_MODULE_6__[/* buildOpts */ "a"], _objectSpread({}, options));
+      if (options) Object.assign(_opts.buildOpts, _objectSpread({}, options));
       /**
        * When a taxonomy item gets SELECTED,
        * try to call all DB methods for refrences of the taxonomy
@@ -1040,7 +1048,7 @@ class Lodger {
         }, state) {
           const path = type.split('/');
           if (path[1] !== 'select') return;
-          const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:SELECTstoreSubscriber');
+          const debug = (0, _debug.default)('lodger:SELECTstoreSubscriber');
           const tax = path[0];
           debug('payload', payload);
           if (!payload) return;
@@ -1119,10 +1127,10 @@ class Lodger {
 
 
   static use(plugin) {
-    const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:use');
+    const debug = (0, _debug.default)('lodger:use');
 
     if (!plugin || typeof plugin !== 'object') {
-      throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"](Errors.invalidPluginDefinition);
+      throw new _Errors.LodgerError(Errors.invalidPluginDefinition);
     }
 
     const {
@@ -1157,7 +1165,7 @@ class Lodger {
     var _this8 = this;
 
     return _asyncToGenerator(function* () {
-      const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:export');
+      const debug = (0, _debug.default)('lodger:export');
       const json = yield _this8.db.dump();
       const extension = 'ldb';
       if (!path) path = `${__webpack_require__("PENG").homeDir}/downloads/`;
@@ -1167,8 +1175,8 @@ class Lodger {
         filename = `LdgDB-${date}`;
       }
 
-      fs__WEBPACK_IMPORTED_MODULE_2___default.a.writeFile(`${path}/${filename}.${extension}`, json2yaml__WEBPACK_IMPORTED_MODULE_3___default.a.stringify(json), e => {
-        if (e) throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"](Errors.couldNotWriteFile);
+      _fs.default.writeFile(`${path}/${filename}.${extension}`, _json2yaml.default.stringify(json), e => {
+        if (e) throw new _Errors.LodgerError(Errors.couldNotWriteFile);
         debug(`written ${filename}.${extension} in path`);
       });
     })();
@@ -1208,7 +1216,7 @@ class Lodger {
   unsubscribeAll(subscriberName = 'main') {
     return _asyncToGenerator(function* () {
       const sub = subscribers[subscriberName];
-      const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:unsubAll');
+      const debug = (0, _debug.default)('lodger:unsubAll');
       return yield Promise.all(Object.keys(sub).map(
       /*#__PURE__*/
       function () {
@@ -1239,7 +1247,7 @@ class Lodger {
     const {
       getters
     } = this.store;
-    return references => Object(_lib_helpers_forms__WEBPACK_IMPORTED_MODULE_8__[/* assignRefIdsFromStore */ "b"])({
+    return references => (0, _forms.assignRefIdsFromStore)({
       references,
       getters
     });
@@ -1257,7 +1265,7 @@ class Lodger {
       try {
         return vueHelper.subsData[subscriberName][plural].items;
       } catch (e) {
-        throw new _lib_Errors__WEBPACK_IMPORTED_MODULE_11__[/* LodgerError */ "b"]('nu exista %%', {
+        throw new _Errors.LodgerError('nu exista %%', {
           plural,
           subscriberName
         });
@@ -1267,6 +1275,7 @@ class Lodger {
 
 }
 
+exports.Lodger = Lodger;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
 
 /***/ }),
@@ -1279,15 +1288,15 @@ class Lodger {
 /***/ }),
 
 /***/ "0fNj":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "predefinite", function() { return predefinite; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "multipleSelect", function() { return multipleSelect; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.multipleSelect = exports.predefinite = exports.actions = exports.plural = exports.fields = void 0;
 const fields = [
 /**
  * desi globale, serviciile sunt pt asociatii.
@@ -1310,13 +1319,17 @@ const fields = [
   id: 'contoare',
   type: 'contoare'
 }];
+exports.fields = fields;
 const plural = 'servicii';
+exports.plural = plural;
 const actions = {
   confirm: 'adaugaServiciu'
 };
+exports.actions = actions;
 const multipleSelect = true;
+exports.multipleSelect = multipleSelect;
 const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
-
+exports.predefinite = predefinite;
 
 /***/ }),
 
@@ -1333,130 +1346,104 @@ const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 
 var map = {
 	"./apartament": [
 		"WuGB",
-		9,
 		0
 	],
 	"./apartament.ts": [
 		"WuGB",
-		9,
 		0
 	],
 	"./asociatie": [
 		"3RaG",
-		9,
 		1
 	],
 	"./asociatie.ts": [
 		"3RaG",
-		9,
 		1
 	],
 	"./bloc": [
 		"bYfg",
-		9,
 		2
 	],
 	"./bloc.ts": [
 		"bYfg",
-		9,
 		2
 	],
 	"./cheltuiala": [
 		"0jyb",
-		9,
 		3
 	],
 	"./cheltuiala.ts": [
 		"0jyb",
-		9,
 		3
 	],
 	"./contor": [
 		"F4IF",
-		7,
 		4
 	],
 	"./contor.ts": [
 		"F4IF",
-		7,
 		4
 	],
 	"./factura": [
 		"oSra",
-		9,
 		5
 	],
 	"./factura.ts": [
 		"oSra",
-		9,
 		5
 	],
 	"./feedback": [
 		"aBzF",
-		9,
 		6
 	],
 	"./feedback.ts": [
 		"aBzF",
-		9,
 		6
 	],
 	"./furnizor": [
 		"UdaM",
-		9,
 		7
 	],
 	"./furnizor.ts": [
 		"UdaM",
-		9,
 		7
 	],
 	"./incasare": [
 		"mbEA",
-		9,
 		8
 	],
 	"./incasare.ts": [
 		"mbEA",
-		9,
 		8
 	],
 	"./initFinanc": [
 		"k0bU",
-		9,
 		9
 	],
 	"./initFinanc.ts": [
 		"k0bU",
-		9,
 		9
 	],
 	"./preferinte": [
 		"aSoU",
-		9,
 		10
 	],
 	"./preferinte.ts": [
 		"aSoU",
-		9,
 		10
 	],
 	"./serviciu": [
-		"0fNj",
-		9
+		"0fNj"
 	],
 	"./serviciu.ts": [
-		"0fNj",
-		9
+		"0fNj"
 	],
 	"./utilizator": [
 		"VjXs",
-		9,
 		11
 	],
 	"./utilizator.ts": [
 		"VjXs",
-		9,
 		11
 	]
 };
@@ -1469,9 +1456,9 @@ function webpackAsyncContext(req) {
 			throw e;
 		});
 	}
-	return Promise.all(ids.slice(2).map(__webpack_require__.e)).then(function() {
+	return Promise.all(ids.slice(1).map(__webpack_require__.e)).then(function() {
 		var id = ids[0];
-		return __webpack_require__.t(id, ids[1])
+		return __webpack_require__.t(id, 7);
 	});
 }
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
@@ -1497,27 +1484,27 @@ module.exports = webpackAsyncContext;
 /***/ }),
 
 /***/ "512P":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Form; });
-/* unused harmony export Errors */
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("NOtv");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _helpers_forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("REmU");
-/* harmony import */ var _Errors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("LORn");
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Errors = exports.Form = void 0;
+
+var _debug = _interopRequireDefault(__webpack_require__("NOtv"));
+
+var _forms = __webpack_require__("REmU");
+
+var _Errors = __webpack_require__("LORn");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-/**
- * Forms for Lodger
- * are quite diferrently structured
- * than a normal JsonSchema
- */
-
-
-
 
 /**
  * Form Errors Definition
@@ -1525,6 +1512,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * TODO: account for translations
  */
 var Errors;
+exports.Errors = Errors;
 
 (function (Errors) {
   Errors["invalidRequested"] = "Invalid form requested: %%";
@@ -1532,7 +1520,7 @@ var Errors;
   Errors["noData"] = "Form %% is missing data";
   Errors["missingName"] = "Forms should have a name";
   Errors["missingPlural"] = "A plural definition is required for %%";
-})(Errors || (Errors = {}));
+})(Errors || (exports.Errors = Errors = {}));
 
 if (false) {}
 
@@ -1555,9 +1543,9 @@ const toRxSchema = formData => {
   const schema = JSON.parse(JSON.stringify(defaultSchema));
   schema.title = name;
   fields.filter(field => !field.notInDb).forEach(field => {
-    Object(_helpers_forms__WEBPACK_IMPORTED_MODULE_1__[/* pushFieldToSchema */ "d"])(field, schema);
+    (0, _forms.pushFieldToSchema)(field, schema);
   });
-  if (name !== 'serviciu') Object(_helpers_forms__WEBPACK_IMPORTED_MODULE_1__[/* addCommonFieldsToSchema */ "a"])(schema);
+  if (name !== 'serviciu') (0, _forms.addCommonFieldsToSchema)(schema);
   return schema;
 };
 /**
@@ -1651,7 +1639,7 @@ class Form {
       },
       name
     } = this;
-    const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:Form.ts:componentData');
+    const debug = (0, _debug.default)('lodger:Form.ts:componentData');
     let $data = {};
     fields.forEach(camp => {
       const {
@@ -1703,8 +1691,8 @@ class Form {
 
 
   static loadByName(name) {
-    const debug = debug__WEBPACK_IMPORTED_MODULE_0___default()('lodger:Form');
-    if (!name) throw new _Errors__WEBPACK_IMPORTED_MODULE_2__[/* FormError */ "a"]('no name supplied for form');
+    const debug = (0, _debug.default)('lodger:Form');
+    if (!name) throw new _Errors.FormError('no name supplied for form');
     let form;
     return __webpack_require__("1BQs")(`./${name}`).then(formData => {
       form = _objectSpread({}, formData);
@@ -1715,7 +1703,7 @@ class Form {
       debug('✓', name);
       return new Form(_objectSpread({}, form));
     }).catch(err => {
-      throw new _Errors__WEBPACK_IMPORTED_MODULE_2__[/* FormError */ "a"](err);
+      throw new _Errors.FormError(err);
     });
   }
 
@@ -1759,44 +1747,351 @@ class Form {
 
 }
 
-
+exports.Form = Form;
 
 /***/ }),
 
 /***/ "5Fil":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var lib_store_namespaceObject = {};
-__webpack_require__.r(lib_store_namespaceObject);
-__webpack_require__.d(lib_store_namespaceObject, "state", function() { return store_state; });
-__webpack_require__.d(lib_store_namespaceObject, "actions", function() { return store_actions; });
-__webpack_require__.d(lib_store_namespaceObject, "modules", function() { return modules; });
 
-// EXTERNAL MODULE: ./node_modules/vue/dist/vue.runtime.esm.js
-var vue_runtime_esm = __webpack_require__("Kw5r");
 
-// EXTERNAL MODULE: ./node_modules/vuex/dist/vuex.esm.js
-var vuex_esm = __webpack_require__("L2JU");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.customOpts = void 0;
 
-// EXTERNAL MODULE: ./src/lib/Errors.ts
-var Errors = __webpack_require__("LORn");
+var _vue = _interopRequireDefault(__webpack_require__("Kw5r"));
 
-// EXTERNAL MODULE: ./src/lib/helpers/functions.ts
-var functions = __webpack_require__("ABXj");
+var _vuex = _interopRequireDefault(__webpack_require__("L2JU"));
 
-// CONCATENATED MODULE: ./src/lib/defs/sharedStoreMethods.ts
-/**
- * @param { methoName: action }
- */
-const sharedStoreMethods = {
-  selected: 'select',
-  last: 'set_last'
+var _store = __webpack_require__("ChhQ");
+
+var _Errors = __webpack_require__("LORn");
+
+var RootModule = _interopRequireWildcard(__webpack_require__("tzzb"));
+
+var _debug = _interopRequireDefault(__webpack_require__("NOtv"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+_vue.default.use(_vuex.default);
+
+const debug = (0, _debug.default)('lodger:Store');
+const modules = {};
+var Errors;
+
+(function (Errors) {
+  Errors["invalidModule"] = "Invalid Module";
+})(Errors || (Errors = {}));
+
+const customOpts = (context, options) => {
+  if (!context.taxonomii && !context.forms) return;
+  const {
+    taxonomii,
+    forms
+  } = context;
+  /**
+   * Builds modules based on taxonomies
+   * TODO: make this a method ?!
+   */
+
+  if (!(taxonomii && taxonomii.length)) throw new _Errors.LodgerError('No taxes supplied');
+  taxonomii.forEach(tax => {
+    const {
+      plural
+    } = forms[tax];
+    modules[tax] = (0, _store.setupSharedMethods)(undefined, undefined, tax, plural);
+  });
+
+  if (RootModule && RootModule.modules) {
+    // LodgerStore.use(RootModule, false)
+    Object.assign(options, RootModule);
+    Object.keys(RootModule.modules).forEach(module => {
+      LodgerStore.use({
+        [module]: RootModule.modules[module]
+      }, module !== 'toast');
+    });
+  }
+
+  options.modules = modules;
+  return options;
+}; // export default class LodgerStore implements StoreOptions<RootState> {
+
+
+exports.customOpts = customOpts;
+
+class LodgerStore extends _vuex.default.Store {
+  constructor(context, options = {}) {
+    super(customOpts(context, options));
+    this.context = context;
+    this.options = options;
+
+    _defineProperty(this, "modules", {});
+  }
+  /**
+   * Use a store module
+   * to be used before calling the constructor
+   *
+   * @param module
+   * @param {Boolean} namespaced - if it should be namespaced
+   */
+
+
+  static use(module, namespaced = true) {
+    if (!module || typeof module !== 'object') {
+      throw new _Errors.LodgerError(Errors.invalidModule);
+    }
+
+    const key = Object.keys(module)[0];
+    if (!key || !module[key]) throw new _Errors.LodgerError(Errors.invalidModule);
+    debug('using module', key);
+    modules[key] = Object.assign({}, module[key], {
+      namespaced
+    });
+  }
+
+}
+
+exports.default = LodgerStore;
+
+/***/ }),
+
+/***/ "5u1Y":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.string_similarity = exports.get_bigrams = void 0;
+
+const get_bigrams = function (string) {
+  var i, j, ref, s, v;
+  s = string.toLowerCase();
+  v = new Array(s.length - 1);
+
+  for (i = j = 0, ref = v.length; j <= ref; i = j += 1) {
+    v[i] = s.slice(i, i + 2);
+  }
+
+  return v;
 };
-// CONCATENATED MODULE: ./src/lib/helpers/store.ts
+
+exports.get_bigrams = get_bigrams;
+
+const string_similarity = function (str1, str2) {
+  var hit_count, j, k, len, len1, pairs1, pairs2, union, x, y;
+
+  if (str1.length > 0 && str2.length > 0) {
+    pairs1 = get_bigrams(str1);
+    pairs2 = get_bigrams(str2);
+    union = pairs1.length + pairs2.length;
+    hit_count = 0;
+
+    for (j = 0, len = pairs1.length; j < len; j++) {
+      x = pairs1[j];
+
+      for (k = 0, len1 = pairs2.length; k < len1; k++) {
+        y = pairs2[k];
+
+        if (x === y) {
+          hit_count++;
+        }
+      }
+    }
+
+    if (hit_count > 0) {
+      return 2.0 * hit_count / union;
+    }
+  }
+
+  return 0.0;
+};
+
+exports.string_similarity = string_similarity;
+
+/***/ }),
+
+/***/ "ABXj":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
- // const namespaced: boolean = true
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.traverse = traverse;
+exports.taxIsMultipleSelect = exports.getTaxonomyConfig = exports.getCriteriu = exports.slugify = exports.spleet = exports.no$ = void 0;
+
+var _lodger = _interopRequireDefault(__webpack_require__("Jh6w"));
+
+var _debug = _interopRequireDefault(__webpack_require__("NOtv"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/**
+ * Traverseaza un obiect cu o functie
+ *
+ * @param {object} obiectul de traversat
+ * @param {function} fn - callback -> cheie, valoare
+ */
+function traverse(o, fn) {
+  for (let i in o) {
+    fn.apply(this, [i, o[i]]);
+    if (o[i] !== null && typeof o[i] === "object") traverse(o[i], fn);
+  }
+}
+/**
+ * Returneaza config-ul pentru o taxonomie sau default
+ *
+ * @param {string} taxonomie
+ */
+
+
+const getTaxonomyConfig = tax => {
+  const {
+    taxonomii
+  } = _lodger.default;
+  const {
+    defaults
+  } = taxonomii;
+  if (!tax) return defaults;
+  const config = taxonomii[tax];
+  return config ? config : defaults;
+};
+/**
+ * Criteriu default pentru o taxonmoie ceruta
+ *
+ * @param {string} taxonomie
+ * @param {object} criteriuCerut - poate fi diferit decat default
+ */
+
+
+exports.getTaxonomyConfig = getTaxonomyConfig;
+
+const getCriteriu = (taxonomie, criteriuCerut) => {
+  if (typeof taxonomie !== 'string') throw new Error('taxonomie incorecta');
+  if (criteriuCerut && typeof criteriuCerut !== 'object') throw new Error('criteriu incorect');
+  const {
+    defaults
+  } = _lodger.default.taxonomii;
+  const debug = (0, _debug.default)('functions:getCriteriu');
+  const criteriu = Object.assign({}, _objectSpread({}, defaults.criteriu), _objectSpread({}, getTaxonomyConfig(taxonomie).criteriu), _objectSpread({}, criteriuCerut)); // Object.assign(criteriu, getTaxonomyConfig(taxonomie).criteriu)
+  // debug(taxonomie, 'criteriu inainte de criteriuCerut', criteriu)
+  // debug(taxonomie, 'criteriu cerut', { ...criteriuCerut })
+  // if (criteriuCerut) {
+  //   debug('CRITERIU CERUT', criteriuCerut)
+  //   let sort = {}
+  //   if (criteriuCerut.sort) {
+  //     // let { key, direction } = criteriuCerut.sort
+  //     // if (key === 'la' && taxonomie === 'servicii') key = 'denumire'
+  //     sort = key ? { [key]: direction || 1 } : {}
+  //   }
+  //   Object.assign(criteriu, {...criteriuCerut }, { sort })
+  // }
+  // switch (taxonomie) {
+  //   case 'blocuri':
+  //   case 'incasari':
+  //   case 'cheltuieli':
+  //     Object.assign(criteriu.find, { asociatieId: g => g['asociatie/activa']._id })
+  //   case 'apartamente':
+  //     Object.assign(criteriu.find, { bloc: { $in: g => g['bloc/ids'] } })
+  // }
+  // servicii,furnizori, asociatii sunt globale, n-au nevoie de criteriu de cautare
+
+  debug(taxonomie, 'DUPA:', criteriu);
+  return criteriu;
+};
+/**
+ * Scoate '$' de la inceputul unui string
+ * @param {string} str
+ */
+
+
+exports.getCriteriu = getCriteriu;
+
+const no$ = str => {
+  if (typeof str !== 'string') return str;
+  if (str.indexOf('$') !== 0) return str;
+  return no$(str.replace('$', '').trim());
+};
+/**
+ * Imparte un string de mutatie ('asociatie/INCASEAZA')
+ * @param {string} str
+ */
+
+
+exports.no$ = no$;
+
+const spleet = str => {
+  if (typeof str !== 'string' || str.indexOf('/') < 0) return str;
+  const split = String(str).split('/');
+  return {
+    what: split[0],
+    mutation: split[1]
+  };
+};
+/**
+ * slug-ifica... destul de descriptiv :)
+ * @param {string} text
+ */
+
+
+exports.spleet = spleet;
+
+const slugify = text => {
+  return text.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
+  .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+  .replace(/\-\-+/g, '-') // Replace multiple - with single -
+  .replace(/^-+/, '') // Trim - from start of text
+  .replace(/-+$/, ''); // Trim - from end of text
+};
+
+exports.slugify = slugify;
+
+const taxIsMultipleSelect = tax => ['serviciu', 'contor'].indexOf(tax) > -1;
+
+exports.taxIsMultipleSelect = taxIsMultipleSelect;
+
+/***/ }),
+
+/***/ "ChhQ":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createEmptyStoreModule = createEmptyStoreModule;
+exports.setupSharedMethods = setupSharedMethods;
+exports.setupFromFile = setupFromFile;
+Object.defineProperty(exports, "sharedStoreMethods", {
+  enumerable: true,
+  get: function () {
+    return _sharedStoreMethods.sharedStoreMethods;
+  }
+});
+
+var _Errors = __webpack_require__("LORn");
+
+var _functions = __webpack_require__("ABXj");
+
+var _sharedStoreMethods = __webpack_require__("uPxy");
 
 /**
  * Creates an empty store module
@@ -1835,13 +2130,13 @@ function createEmptyStoreModule() {
   */
 
 
-function setupSharedMethods(sharedMethods = sharedStoreMethods, module = createEmptyStoreModule(), moduleName, plural) {
+function setupSharedMethods(sharedMethods = _sharedStoreMethods.sharedStoreMethods, module = createEmptyStoreModule(), moduleName, plural) {
   if (typeof sharedMethods !== 'object') {
-    throw new Errors["b" /* LodgerError */]('invalid methods supplied');
+    throw new _Errors.LodgerError('invalid methods supplied');
   } // pt servicii si contoare
 
 
-  const isMultiple = Object(functions["b" /* taxIsMultipleSelect */])(moduleName);
+  const isMultiple = (0, _functions.taxIsMultipleSelect)(moduleName);
   Object.keys(sharedMethods).forEach(methodName => {
     const action = sharedMethods[methodName];
     const multipleSelect = isMultiple && action === 'select';
@@ -1882,80 +2177,190 @@ function setupFromFile(taxonomy) {
   return {};
 }
 
+/***/ }),
 
-// EXTERNAL MODULE: ./src/lodger.config.ts
-var lodger_config = __webpack_require__("Jh6w");
+/***/ "FOda":
+/***/ (function(module, exports, __webpack_require__) {
 
-// CONCATENATED MODULE: ./src/lib/store/modules/modal.ts
-const state = {
-  open: false,
-  content: null,
-  data: null
-};
-const getters = {
-  open: state => state.open,
-  content: state => state.content,
-  data: state => state.data
-};
-const mutations = {
-  OPEN: (state, content) => {
-    if (content) state.content = content;
-    state.open = true;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var RxDB = _interopRequireWildcard(__webpack_require__("p9ch"));
+
+var _debug = _interopRequireDefault(__webpack_require__("NOtv"));
+
+var _pouchdbAdapterMemory = _interopRequireDefault(__webpack_require__("b0B5"));
+
+var _pouchdbAdapterIdb = _interopRequireDefault(__webpack_require__("Wh65"));
+
+var _pouchdbAdapterHttp = _interopRequireDefault(__webpack_require__("ezGW"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+const debug = (0, _debug.default)('lodger:db');
+const {
+  NODE_ENV
+} = process.env; // RxDB.QueryChangeDetector.enable()
+// RxDB.QueryChangeDetector.enableDebugging()
+// type Adapter = 'http' | 'idb' | 'memory'
+// const adapters = {
+//   production: ['http', 'idb'],
+//   development: ['memory']
+// }
+// Object.keys(adapters).forEach(env, () => {
+//   adapters[env].forEach((adapterType: Adapter) => {
+//     if (NODE_ENV !== env) return
+//     const adapter = `pouchdb-adapter-${adapterType}`
+//     RxDB.plugin(adapter)
+//   })
+// })
+
+switch (NODE_ENV) {
+  default:
+    RxDB.plugin(_pouchdbAdapterMemory.default);
+    break;
+
+  case 'production':
+    RxDB.plugin(_pouchdbAdapterHttp.default);
+    RxDB.plugin(_pouchdbAdapterIdb.default);
+    break;
+}
+
+function _default(_x, _x2) {
+  return _ref.apply(this, arguments);
+}
+
+function _ref() {
+  _ref = _asyncToGenerator(function* (collections, config) {
+    debug('Initing');
+    const db = yield RxDB.create(Object.assign({}, config)); // show leadership in title
+
+    db.waitForLeadership().then(() => {
+      if (NODE_ENV !== 'dev') return;
+      document.title = `♛ ${document.title}`;
+    });
+    yield Promise.all(collections.map(c => db.collection(c)));
+    return db;
+  });
+  return _ref.apply(this, arguments);
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
+
+/***/ }),
+
+/***/ "Jh6w":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+// import { version } from './package'
+const version = __webpack_require__("kiQV").version;
+
+const taxonomii = {
+  defaults: {
+    criteriu: {
+      limit: 25,
+      index: 0,
+      sort: {},
+      find: null
+    }
   },
-  DATA: (state, data) => {
-    state.data = data;
-  },
-  CLOSE: state => {
-    state.open = false;
-    state.content = null;
-    state.data = null;
+  asociatii: {
+    criteriu: {
+      limit: 100
+    }
   }
 };
-const actions = {
-  open: ({
-    commit
-  }, content) => {
-    // console.log('CC', content)
-    switch (typeof content) {
-      case 'object':
-        commit('DATA', content.data);
-        commit('OPEN', content.id);
-        return;
+const config = {
+  version,
+  taxonomii
+};
+var _default = config;
+exports.default = _default;
 
-      case 'string':
-        commit('DATA', content);
-        break;
+/***/ }),
+
+/***/ "LORn":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FormError = exports.LodgerError = void 0;
+
+/**
+ * Error logger
+ */
+class LodgerError extends Error {
+  constructor(m, details) {
+    if (details) {
+      m = m.replace('%%', `"${JSON.stringify(details)}"`);
     }
 
-    commit('OPEN', content);
-  },
-  close: ({
-    commit,
-    dispatch,
-    getters,
-    rootGetters
-  }) => {
-    const prompt = rootGetters['modal/content'] === 'prompt';
-    commit('CLOSE');
-    if (prompt) dispatch('prompt/cancel', null, {
-      root: true
-    });
+    super(m); // Set the prototype explicitly.
+
+    Object.setPrototypeOf(this, LodgerError.prototype);
   }
-};
-/* harmony default export */ var modal = ({
-  state,
-  actions,
-  mutations,
-  getters
+
+}
+/**
+ * Error logger for forms
+ */
+
+
+exports.LodgerError = LodgerError;
+
+class FormError extends LodgerError {
+  constructor(m, details) {
+    super(m, details); // Set the prototype explicitly.
+
+    Object.setPrototypeOf(this, FormError.prototype);
+  }
+
+}
+
+exports.FormError = FormError;
+
+/***/ }),
+
+/***/ "Ljsz":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-// CONCATENATED MODULE: ./src/lib/store/modules/prompt.ts
-const prompt_state = () => ({
+exports.default = void 0;
+
+const state = () => ({
   _happened: false,
   type: null,
   message: null
 });
 
-const prompt_mutations = {
+const mutations = {
   PROMPT: (state, {
     type,
     message
@@ -1974,7 +2379,7 @@ const prompt_mutations = {
     state.message = null;
   }
 };
-const prompt_actions = {
+const actions = {
   confirm: ({
     commit,
     dispatch
@@ -1999,496 +2404,68 @@ const prompt_actions = {
     commit('PROMPT_CANCEL');
   }
 };
-const prompt_getters = {
+const getters = {
   type: state => state.type,
   message: state => state.message,
   prompted: state => state._happened
 };
-/* harmony default export */ var modules_prompt = ({
-  state: prompt_state,
-  actions: prompt_actions,
-  mutations: prompt_mutations,
-  getters: prompt_getters
+var _default = {
+  state,
+  actions,
+  mutations,
+  getters
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ "P7Hp":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-// CONCATENATED MODULE: ./src/lib/store/index.ts
-
-/**
- * MODULES
- */
-// TOAST
-// import { createModule } from 'vuex-toast'
-// MODAL
-
-
-
-const {
-  version
-} = lodger_config["a" /* default */];
-const store_state = {
-  locale: 'ro',
-  version
+exports.default = void 0;
+const strings = ['text', 'textarea', 'select', 'search'];
+const numbers = ['number', 'date-time', 'bani', 'date'];
+const arrays = ['array', 'scari', 'servicii', 'furnizori', 'contactFields', 'contoare', 'distribuire', 'selApartamente'];
+const objects = ['object'];
+const formItemTypes = {
+  strings,
+  numbers,
+  arrays,
+  objects
 };
-const store_actions = {
-  notify: ({
-    dispatch
-  }, notificare) => {
-    dispatch('@@toast/ADD_TOAST_MESSAGE', notificare);
-  }
-};
-const modules = {
-  // toast: createModule({ dismissInterval: 5000 }),
-  modal: modal,
-  prompt: modules_prompt
-};
-
-// EXTERNAL MODULE: ./node_modules/debug/src/browser.js
-var browser = __webpack_require__("NOtv");
-var browser_default = /*#__PURE__*/__webpack_require__.n(browser);
-
-// CONCATENATED MODULE: ./src/lib/Store.ts
-/* unused harmony export customOpts */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Store_LodgerStore; });
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-
-
-
-
-
-
-vue_runtime_esm["a" /* default */].use(vuex_esm["a" /* default */]);
-const debug = browser_default()('lodger:Store');
-const Store_modules = {};
-var Store_Errors;
-
-(function (Errors) {
-  Errors["invalidModule"] = "Invalid Module";
-})(Store_Errors || (Store_Errors = {}));
-
-const customOpts = (context, options) => {
-  if (!context.taxonomii && !context.forms) return;
-  const {
-    taxonomii,
-    forms
-  } = context;
-  /**
-   * Builds modules based on taxonomies
-   * TODO: make this a method ?!
-   */
-
-  if (!(taxonomii && taxonomii.length)) throw new Errors["b" /* LodgerError */]('No taxes supplied');
-  taxonomii.forEach(tax => {
-    const {
-      plural
-    } = forms[tax];
-    Store_modules[tax] = setupSharedMethods(undefined, undefined, tax, plural);
-  });
-
-  if (lib_store_namespaceObject && modules) {
-    // LodgerStore.use(RootModule, false)
-    Object.assign(options, lib_store_namespaceObject);
-    Object.keys(modules).forEach(module => {
-      Store_LodgerStore.use({
-        [module]: modules[module]
-      }, module !== 'toast');
-    });
-  }
-
-  options.modules = Store_modules;
-  return options;
-}; // export default class LodgerStore implements StoreOptions<RootState> {
-
-class Store_LodgerStore extends vuex_esm["a" /* default */].Store {
-  constructor(context, options = {}) {
-    super(customOpts(context, options));
-    this.context = context;
-    this.options = options;
-
-    _defineProperty(this, "modules", {});
-  }
-  /**
-   * Use a store module
-   * to be used before calling the constructor
-   *
-   * @param module
-   * @param {Boolean} namespaced - if it should be namespaced
-   */
-
-
-  static use(module, namespaced = true) {
-    if (!module || typeof module !== 'object') {
-      throw new Errors["b" /* LodgerError */](Store_Errors.invalidModule);
-    }
-
-    const key = Object.keys(module)[0];
-    if (!key || !module[key]) throw new Errors["b" /* LodgerError */](Store_Errors.invalidModule);
-    debug('using module', key);
-    Store_modules[key] = Object.assign({}, module[key], {
-      namespaced
-    });
-  }
-
-}
-
-/***/ }),
-
-/***/ "5u1Y":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export get_bigrams */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return string_similarity; });
-const get_bigrams = function (string) {
-  var i, j, ref, s, v;
-  s = string.toLowerCase();
-  v = new Array(s.length - 1);
-
-  for (i = j = 0, ref = v.length; j <= ref; i = j += 1) {
-    v[i] = s.slice(i, i + 2);
-  }
-
-  return v;
-};
-const string_similarity = function (str1, str2) {
-  var hit_count, j, k, len, len1, pairs1, pairs2, union, x, y;
-
-  if (str1.length > 0 && str2.length > 0) {
-    pairs1 = get_bigrams(str1);
-    pairs2 = get_bigrams(str2);
-    union = pairs1.length + pairs2.length;
-    hit_count = 0;
-
-    for (j = 0, len = pairs1.length; j < len; j++) {
-      x = pairs1[j];
-
-      for (k = 0, len1 = pairs2.length; k < len1; k++) {
-        y = pairs2[k];
-
-        if (x === y) {
-          hit_count++;
-        }
-      }
-    }
-
-    if (hit_count > 0) {
-      return 2.0 * hit_count / union;
-    }
-  }
-
-  return 0.0;
-};
-
-/***/ }),
-
-/***/ "ABXj":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export traverse */
-/* unused harmony export no$ */
-/* unused harmony export spleet */
-/* unused harmony export slugify */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCriteriu; });
-/* unused harmony export getTaxonomyConfig */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return taxIsMultipleSelect; });
-/* harmony import */ var lodger_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("Jh6w");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("NOtv");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-// import { Taxonomii } from 'lodger/index'
-
-
-
-/**
- * Traverseaza un obiect cu o functie
- *
- * @param {object} obiectul de traversat
- * @param {function} fn - callback -> cheie, valoare
- */
-function traverse(o, fn) {
-  for (let i in o) {
-    fn.apply(this, [i, o[i]]);
-    if (o[i] !== null && typeof o[i] === "object") traverse(o[i], fn);
-  }
-}
-/**
- * Returneaza config-ul pentru o taxonomie sau default
- *
- * @param {string} taxonomie
- */
-
-
-const getTaxonomyConfig = tax => {
-  const {
-    taxonomii
-  } = lodger_config__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"];
-  const {
-    defaults
-  } = taxonomii;
-  if (!tax) return defaults;
-  const config = taxonomii[tax];
-  return config ? config : defaults;
-};
-/**
- * Criteriu default pentru o taxonmoie ceruta
- *
- * @param {string} taxonomie
- * @param {object} criteriuCerut - poate fi diferit decat default
- */
-
-
-const getCriteriu = (taxonomie, criteriuCerut) => {
-  if (typeof taxonomie !== 'string') throw new Error('taxonomie incorecta');
-  if (criteriuCerut && typeof criteriuCerut !== 'object') throw new Error('criteriu incorect');
-  const {
-    defaults
-  } = lodger_config__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"].taxonomii;
-  const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('functions:getCriteriu');
-  const criteriu = Object.assign({}, _objectSpread({}, defaults.criteriu), _objectSpread({}, getTaxonomyConfig(taxonomie).criteriu), _objectSpread({}, criteriuCerut)); // Object.assign(criteriu, getTaxonomyConfig(taxonomie).criteriu)
-  // debug(taxonomie, 'criteriu inainte de criteriuCerut', criteriu)
-  // debug(taxonomie, 'criteriu cerut', { ...criteriuCerut })
-  // if (criteriuCerut) {
-  //   debug('CRITERIU CERUT', criteriuCerut)
-  //   let sort = {}
-  //   if (criteriuCerut.sort) {
-  //     // let { key, direction } = criteriuCerut.sort
-  //     // if (key === 'la' && taxonomie === 'servicii') key = 'denumire'
-  //     sort = key ? { [key]: direction || 1 } : {}
-  //   }
-  //   Object.assign(criteriu, {...criteriuCerut }, { sort })
-  // }
-  // switch (taxonomie) {
-  //   case 'blocuri':
-  //   case 'incasari':
-  //   case 'cheltuieli':
-  //     Object.assign(criteriu.find, { asociatieId: g => g['asociatie/activa']._id })
-  //   case 'apartamente':
-  //     Object.assign(criteriu.find, { bloc: { $in: g => g['bloc/ids'] } })
-  // }
-  // servicii,furnizori, asociatii sunt globale, n-au nevoie de criteriu de cautare
-
-  debug(taxonomie, 'DUPA:', criteriu);
-  return criteriu;
-};
-/**
- * Scoate '$' de la inceputul unui string
- * @param {string} str
- */
-
-
-const no$ = str => {
-  if (typeof str !== 'string') return str;
-  if (str.indexOf('$') !== 0) return str;
-  return no$(str.replace('$', '').trim());
-};
-/**
- * Imparte un string de mutatie ('asociatie/INCASEAZA')
- * @param {string} str
- */
-
-
-const spleet = str => {
-  if (typeof str !== 'string' || str.indexOf('/') < 0) return str;
-  const split = String(str).split('/');
-  return {
-    what: split[0],
-    mutation: split[1]
-  };
-};
-/**
- * slug-ifica... destul de descriptiv :)
- * @param {string} text
- */
-
-
-const slugify = text => {
-  return text.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
-  .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-  .replace(/\-\-+/g, '-') // Replace multiple - with single -
-  .replace(/^-+/, '') // Trim - from start of text
-  .replace(/-+$/, ''); // Trim - from end of text
-};
-
-const taxIsMultipleSelect = tax => ['serviciu', 'contor'].indexOf(tax) > -1;
-
-
-
-/***/ }),
-
-/***/ "FOda":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var rxdb__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("p9ch");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("NOtv");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var pouchdb_adapter_memory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("b0B5");
-/* harmony import */ var pouchdb_adapter_idb__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("Wh65");
-/* harmony import */ var pouchdb_adapter_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("ezGW");
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-
-
-
-const debug = debug__WEBPACK_IMPORTED_MODULE_1___default()('lodger:db');
-const {
-  NODE_ENV
-} = process.env; // RxDB.QueryChangeDetector.enable()
-// RxDB.QueryChangeDetector.enableDebugging()
-// type Adapter = 'http' | 'idb' | 'memory'
-// const adapters = {
-//   production: ['http', 'idb'],
-//   development: ['memory']
-// }
-// Object.keys(adapters).forEach(env, () => {
-//   adapters[env].forEach((adapterType: Adapter) => {
-//     if (NODE_ENV !== env) return
-//     const adapter = `pouchdb-adapter-${adapterType}`
-//     RxDB.plugin(adapter)
-//   })
-// })
-
-switch (NODE_ENV) {
-  default:
-    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](pouchdb_adapter_memory__WEBPACK_IMPORTED_MODULE_2__[/* default */ "a"]);
-    break;
-
-  case 'production':
-    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](pouchdb_adapter_http__WEBPACK_IMPORTED_MODULE_4__[/* default */ "a"]);
-    rxdb__WEBPACK_IMPORTED_MODULE_0__[/* plugin */ "c"](pouchdb_adapter_idb__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"]);
-    break;
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (function (_x, _x2) {
-  return _ref.apply(this, arguments);
-});
-
-function _ref() {
-  _ref = _asyncToGenerator(function* (collections, config) {
-    debug('Initing');
-    const db = yield rxdb__WEBPACK_IMPORTED_MODULE_0__[/* create */ "a"](Object.assign({}, config)); // show leadership in title
-
-    db.waitForLeadership().then(() => {
-      if (NODE_ENV !== 'dev') return;
-      document.title = `♛ ${document.title}`;
-    });
-    yield Promise.all(collections.map(c => db.collection(c)));
-    return db;
-  });
-  return _ref.apply(this, arguments);
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
-
-/***/ }),
-
-/***/ "Jh6w":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// import { version } from './package'
-const version = __webpack_require__("kiQV").version;
-
-const taxonomii = {
-  defaults: {
-    criteriu: {
-      limit: 25,
-      index: 0,
-      sort: {},
-      find: null
-    }
-  },
-  asociatii: {
-    criteriu: {
-      limit: 100
-    }
-  }
-};
-const config = {
-  version,
-  taxonomii
-};
-/* harmony default export */ __webpack_exports__["a"] = (config);
-
-/***/ }),
-
-/***/ "LORn":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return LodgerError; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return FormError; });
-/**
- * Error logger
- */
-class LodgerError extends Error {
-  constructor(m, details) {
-    if (details) {
-      m = m.replace('%%', `"${JSON.stringify(details)}"`);
-    }
-
-    super(m); // Set the prototype explicitly.
-
-    Object.setPrototypeOf(this, LodgerError.prototype);
-  }
-
-}
-/**
- * Error logger for forms
- */
-
-
-class FormError extends LodgerError {
-  constructor(m, details) {
-    super(m, details); // Set the prototype explicitly.
-
-    Object.setPrototypeOf(this, FormError.prototype);
-  }
-
-}
-
-
+var _default = formItemTypes;
+exports.default = _default;
 
 /***/ }),
 
 /***/ "REmU":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-// CONCATENATED MODULE: ./src/lib/defs/formItemTypes.ts
-const formItemTypes_strings = ['text', 'textarea', 'select', 'search'];
-const formItemTypes_numbers = ['number', 'date-time', 'bani', 'date'];
-const formItemTypes_arrays = ['array', 'scari', 'servicii', 'furnizori', 'contactFields', 'contoare', 'distribuire', 'selApartamente'];
-const formItemTypes_objects = ['object'];
-const formItemTypes = {
-  strings: formItemTypes_strings,
-  numbers: formItemTypes_numbers,
-  arrays: formItemTypes_arrays,
-  objects: formItemTypes_objects
-};
-/* harmony default export */ var defs_formItemTypes = (formItemTypes);
-// EXTERNAL MODULE: ./node_modules/debug/src/browser.js
-var browser = __webpack_require__("NOtv");
-var browser_default = /*#__PURE__*/__webpack_require__.n(browser);
 
-// CONCATENATED MODULE: ./src/lib/helpers/forms.ts
-/* unused harmony export toRxDBtype */
-/* unused harmony export toSchemaField */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return pushFieldToSchema; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return handleOnSubmit; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return addCommonFieldsToSchema; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return assignRefIdsFromStore; });
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.toRxDBtype = toRxDBtype;
+exports.handleOnSubmit = handleOnSubmit;
+exports.assignRefIdsFromStore = assignRefIdsFromStore;
+exports.addCommonFieldsToSchema = exports.pushFieldToSchema = exports.toSchemaField = void 0;
 
- // import { Taxonomii } from '../../index';
+var _formItemTypes = _interopRequireDefault(__webpack_require__("P7Hp"));
 
-const debug = browser_default()('lodger:forms');
+var _debug = _interopRequireDefault(__webpack_require__("NOtv"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import { Taxonomii } from '../../index';
+const debug = (0, _debug.default)('lodger:forms');
 /**
  * Converteste tipurile campurilor 'noastre' in primare
  *
@@ -2508,7 +2485,7 @@ function toRxDBtype(type) {
     numbers,
     arrays,
     objects
-  } = defs_formItemTypes;
+  } = _formItemTypes.default;
   if (!type || strings.indexOf(type) > -1) return _default;
   if (objects.indexOf(type) > -1) return 'object';
   if (numbers.indexOf(type) > -1) return 'number';
@@ -2576,6 +2553,8 @@ const toSchemaField = formItem => {
  */
 
 
+exports.toSchemaField = toSchemaField;
+
 const pushFieldToSchema = (formItem, schema) => {
   if (!formItem || !schema) throw new TypeError('parametri insuficienti');
   if (typeof formItem !== 'object' || typeof schema !== 'object') throw new TypeError('parametri incorecti');
@@ -2607,6 +2586,8 @@ const pushFieldToSchema = (formItem, schema) => {
  * @returns {Object} eg { asociatieId: 'XXXX' }
  */
 
+
+exports.pushFieldToSchema = pushFieldToSchema;
 
 function assignRefIdsFromStore(context) {
   const {
@@ -2672,15 +2653,20 @@ const addCommonFieldsToSchema = (schema, commonFields = [{
   });
 };
 
-
+exports.addCommonFieldsToSchema = addCommonFieldsToSchema;
 
 /***/ }),
 
 /***/ "huy0":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return buildOpts; });
+/* WEBPACK VAR INJECTION */(function(process) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.buildOpts = void 0;
 const {
   NODE_ENV
 } = process.env;
@@ -2693,6 +2679,7 @@ const buildOpts = {
   },
   usePersistedState: false
 };
+exports.buildOpts = buildOpts;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
 
 /***/ }),
@@ -2701,6 +2688,153 @@ const buildOpts = {
 /***/ (function(module) {
 
 module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first API for HOAs","main":"dist/index.js","repository":"https://github.com/doriandrn/lodger-api.git","author":"Dorian Tudorache <dorian.snaz@gmail.com>","license":"MIT","scripts":{"test":"jest","type-check":"tsc --noEmit","type-check:watch":"npm run type-check -- --watch","build:types":"tsc --emitDeclarationOnly","build:js":"rollup -c","build":"yarn build:types && yarn build:js"},"devDependencies":{"@babel/core":"^7.2.0","@babel/plugin-proposal-class-properties":"^7.2.1","@babel/plugin-proposal-object-rest-spread":"^7.2.0","@babel/plugin-syntax-dynamic-import":"^7.2.0","@babel/plugin-transform-runtime":"^7.2.0","@babel/preset-env":"^7.2.0","@babel/preset-es2015":"^7.0.0-beta.53","@babel/preset-typescript":"^7.1.0","@types/debug":"^0.0.31","@types/faker":"^4.1.4","@types/jest":"^23.3.10","@types/node":"^10.12.10","babel-jest":"^23.6.0","babel-loader":"^8.0.4","debug":"^4.1.0","deep-equal":"^1.0.1","faker":"^4.1.0","fs":"^0.0.1-security","fx":"^9.0.1","jest":"^23.6.0","json2yaml":"^1.1.0","rollup":"^0.67.4","rollup-plugin-babel":"^4.0.3","rollup-plugin-commonjs":"^9.2.0","rollup-plugin-node-builtins":"^2.1.2","rollup-plugin-node-globals":"^1.4.0","rollup-plugin-node-resolve":"^3.4.0","rollup-plugin-typescript":"^1.0.0","ts-jest":"^23.10.5","ts-loader":"^5.3.1","typescript":"^3.1.6","webpack-cli":"^3.1.2"},"dependencies":{"@babel/runtime":"^7.2.0","awesome-typescript-loader":"^5.2.1","pouchdb-adapter-http":"^7.0.0","pouchdb-adapter-idb":"^7.0.0","pouchdb-adapter-memory":"^7.0.0","rxdb":"^8.0.4","rxjs":"^6.3.3","source-map-loader":"^0.2.4","vue":"^2.5.17","vuex":"^3.0.1","vuex-persistedstate":"^2.5.4","vuex-toast":"^0.1.3","webpack":"^4.26.1"}};
+
+/***/ }),
+
+/***/ "pOft":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+const state = {
+  open: false,
+  content: null,
+  data: null
+};
+const getters = {
+  open: state => state.open,
+  content: state => state.content,
+  data: state => state.data
+};
+const mutations = {
+  OPEN: (state, content) => {
+    if (content) state.content = content;
+    state.open = true;
+  },
+  DATA: (state, data) => {
+    state.data = data;
+  },
+  CLOSE: state => {
+    state.open = false;
+    state.content = null;
+    state.data = null;
+  }
+};
+const actions = {
+  open: ({
+    commit
+  }, content) => {
+    // console.log('CC', content)
+    switch (typeof content) {
+      case 'object':
+        commit('DATA', content.data);
+        commit('OPEN', content.id);
+        return;
+
+      case 'string':
+        commit('DATA', content);
+        break;
+    }
+
+    commit('OPEN', content);
+  },
+  close: ({
+    commit,
+    dispatch,
+    getters,
+    rootGetters
+  }) => {
+    const prompt = rootGetters['modal/content'] === 'prompt';
+    commit('CLOSE');
+    if (prompt) dispatch('prompt/cancel', null, {
+      root: true
+    });
+  }
+};
+var _default = {
+  state,
+  actions,
+  mutations,
+  getters
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ "tzzb":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.modules = exports.actions = exports.state = void 0;
+
+var _lodger = _interopRequireDefault(__webpack_require__("Jh6w"));
+
+var _modal = _interopRequireDefault(__webpack_require__("pOft"));
+
+var _prompt = _interopRequireDefault(__webpack_require__("Ljsz"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * MODULES
+ */
+// TOAST
+// import { createModule } from 'vuex-toast'
+// MODAL
+const {
+  version
+} = _lodger.default;
+const state = {
+  locale: 'ro',
+  version
+};
+exports.state = state;
+const actions = {
+  notify: ({
+    dispatch
+  }, notificare) => {
+    dispatch('@@toast/ADD_TOAST_MESSAGE', notificare);
+  }
+};
+exports.actions = actions;
+const modules = {
+  // toast: createModule({ dismissInterval: 5000 }),
+  modal: _modal.default,
+  prompt: _prompt.default
+};
+exports.modules = modules;
+
+/***/ }),
+
+/***/ "uPxy":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sharedStoreMethods = void 0;
+
+/**
+ * @param { methoName: action }
+ */
+const sharedStoreMethods = {
+  selected: 'select',
+  last: 'set_last'
+};
+exports.sharedStoreMethods = sharedStoreMethods;
 
 /***/ })
 

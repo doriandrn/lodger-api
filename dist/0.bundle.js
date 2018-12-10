@@ -1,19 +1,22 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[0],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[0],{
 
 /***/ "WuGB":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "methods", function() { return methods; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.methods = exports.actions = exports.plural = exports.fields = void 0;
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 const plural = 'apartamente';
+exports.plural = plural;
 const selectedApGetter = 'apartament/activeDoc';
 const fields = [{
   id: '_id',
@@ -121,9 +124,11 @@ const fields = [{
   notInForm: true,
   ref: 'cheltuieli'
 }];
+exports.fields = fields;
 const actions = {
   confirm: 'adaugaAp'
 };
+exports.actions = actions;
 const methods = {
   incaseaza(data) {
     var _this = this;
@@ -139,7 +144,7 @@ const methods = {
   }
 
 };
-
+exports.methods = methods;
 
 /***/ })
 

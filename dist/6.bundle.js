@@ -1,12 +1,15 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[6],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[6],{
 
 /***/ "aBzF":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "campuri", function() { return campuri; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.actiuni = exports.campuri = void 0;
 const campuri = [{
   id: 'subiect',
   required: true
@@ -22,9 +25,11 @@ const campuri = [{
   type: 'textarea',
   placeholder: 'Părerea / Sugestia / Critica ta'
 }];
+exports.campuri = campuri;
 const actiuni = {
   confirm: 'trimiteFeedback'
 };
+exports.actiuni = actiuni;
 
 /***/ })
 

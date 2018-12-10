@@ -1,13 +1,15 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[7],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[7],{
 
 /***/ "UdaM":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actiuni", function() { return actiuni; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.plural = exports.actiuni = exports.fields = void 0;
 const fields = [{
   id: 'name',
   required: true,
@@ -22,10 +24,13 @@ const fields = [{
 }, {
   id: 'idN'
 }];
+exports.fields = fields;
 const actiuni = {
   confirm: 'adaugaFurnizor'
 };
+exports.actiuni = actiuni;
 const plural = 'furnizori';
+exports.plural = plural;
 
 /***/ })
 

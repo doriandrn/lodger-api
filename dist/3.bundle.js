@@ -1,12 +1,16 @@
-(window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || []).push([[3],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[3],{
 
 /***/ "0jyb":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plural", function() { return plural; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fields", function() { return fields; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fields = exports.plural = void 0;
+
 /**
  * o cheltuiala = parte dintr-o factura
  */
@@ -41,8 +45,9 @@ const fields = [{
   type: 'selApartamente',
   options: getters => getters['asociatie/apartamente']
 }];
+exports.fields = fields;
 const plural = 'cheltuieli';
-
+exports.plural = plural;
 
 /***/ })
 
