@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
+var __chunk_1 = require('./chunk-db601d79.js');
+var serviciu = require('./serviciu.js');
 var Vuex = _interopDefault(require('vuex'));
 var RxDB = require('rxdb');
 var memoryAdapter = _interopDefault(require('pouchdb-adapter-memory'));
@@ -11,30 +13,6 @@ var idbAdapter = _interopDefault(require('pouchdb-adapter-idb'));
 var httpAdapter = _interopDefault(require('pouchdb-adapter-http'));
 var Debug = _interopDefault(require('debug'));
 var Vue = _interopDefault(require('vue'));
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
 
 var fs = {};
 
@@ -732,9 +710,9 @@ const modules = {
 };
 
 var RootModule = /*#__PURE__*/Object.freeze({
-    state: state$2,
-    actions: actions$2,
-    modules: modules
+	state: state$2,
+	actions: actions$2,
+	modules: modules
 });
 
 Vue.use(Vuex);
@@ -1036,7 +1014,7 @@ switch (NODE_ENV$1) {
 }
 
 function DB (collections, config) {
-  return __awaiter(this, void 0, void 0, function* () {
+  return __chunk_1.__awaiter(this, void 0, void 0, function* () {
     debug$2('Initing');
     const db = yield RxDB.create(Object.assign({}, config)); // show leadership in title
 
@@ -1081,6 +1059,7 @@ const defaultSchema = {
   type: 'object',
   version: 0
 };
+const formsPath = process.env.NODE_ENV === 'dev' ? 'forms' : '.';
 /**
  * A valid RxJsonSchema out of the form
  */
@@ -1237,7 +1216,7 @@ class Form {
     const debug = Debug('lodger:Form');
     if (!name) throw new FormError('no name supplied for form');
     let form;
-    return Promise.resolve().then(() => require(`forms/${name}`)).then(formData => {
+    return Promise.resolve().then(() => require(`${formsPath}/${name}`)).then(formData => {
       form = Object.assign({}, formData);
       if (form.default) form = form.default;
       Object.assign(form, {
@@ -1330,8 +1309,6 @@ const string_similarity = function (str1, str2) {
   return 0.0;
 };
 
-const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
-
 /// <reference path="main.d.ts" />
 const {
   NODE_ENV: NODE_ENV$2
@@ -1379,8 +1356,8 @@ const subscribers = {
 
 
 function loadForms(taxonomies) {
-  return __awaiter(this, void 0, void 0, function* () {
-    return Object.assign({}, ...(yield Promise.all(taxonomies.map(tax => __awaiter(this, void 0, void 0, function* () {
+  return __chunk_1.__awaiter(this, void 0, void 0, function* () {
+    return Object.assign({}, ...(yield Promise.all(taxonomies.map(tax => __chunk_1.__awaiter(this, void 0, void 0, function* () {
       return {
         [tax]: yield Form.loadByName(tax)
       };
@@ -1399,17 +1376,17 @@ const subscribedTaxes = [];
 
 function initialSubscribe({
   taxonomie,
-  plural: plural$$1,
+  plural,
   collections,
   store
 }) {
-  return __awaiter(this, void 0, void 0, function* () {
+  return __chunk_1.__awaiter(this, void 0, void 0, function* () {
     // const debug = Debug('lodger:initialSubscribe')
     switch (taxonomie) {
       // insert predefined services
       case 'serviciu':
-        predefinite.forEach(denumire => __awaiter(this, void 0, void 0, function* () {
-          yield collections[plural$$1].insert({
+        serviciu.predefinite.forEach(denumire => __chunk_1.__awaiter(this, void 0, void 0, function* () {
+          yield collections[plural].insert({
             denumire
           });
         }));
@@ -1419,7 +1396,7 @@ function initialSubscribe({
       case 'utilizator':
         const {
           _id
-        } = yield collections[plural$$1].insert({
+        } = yield collections[plural].insert({
           name: 'Administrator',
           rol: 'admin'
         });
@@ -1473,7 +1450,7 @@ const vueHelper = new Vue({
   },
   methods: {
     getItem(taxonomie, id, subscriberName) {
-      return __awaiter(this, void 0, void 0, function* () {
+      return __chunk_1.__awaiter(this, void 0, void 0, function* () {
         let item;
         const debug = Debug('lodger:getItem');
         if (subscriberName === undefined) subscriberName = 'main';
@@ -1524,18 +1501,18 @@ class Lodger {
 
     taxonomii.forEach(tax => {
       const {
-        plural: plural$$1
+        plural
       } = forms[tax];
-      Object.defineProperty(this, plural$$1, {
+      Object.defineProperty(this, plural, {
         get() {
           // debug('getter tax apelat')
           return (subscriberName = 'main') => {
             try {
-              return vueHelper.subsData[subscriberName][plural$$1].items;
+              return vueHelper.subsData[subscriberName][plural].items;
             } catch (e) {
               throw new LodgerError('not yet defined. wait more! :) %%', {
                 subscriberName,
-                plural: plural$$1
+                plural
               });
             }
           };
@@ -1564,7 +1541,7 @@ class Lodger {
 
 
   put(taxonomy, data, subscriber) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       // const debug = Debug('lodger:put')
       if (!data || Object.keys(data).length < 1) throw new LodgerError(exports.Errors.missingData, data);
       const {
@@ -1573,10 +1550,10 @@ class Lodger {
         forms
       } = this;
       const {
-        plural: plural$$1
+        plural
       } = forms[taxonomy]; // if (!plural) throw new LodgerError(Errors.noPlural, taxonomy)
 
-      const colectie = db.collections[plural$$1];
+      const colectie = db.collections[plural];
       /**
        * If form submitted with an _id, must be an upsert
        */
@@ -1628,17 +1605,17 @@ class Lodger {
 
 
   trash(taxonomie, id) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       const {
         db,
         forms
       } = this;
       const debug = Debug('lodger:trash');
       const {
-        plural: plural$$1
+        plural
       } = forms[taxonomie];
-      if (!plural$$1) throw new LodgerError('wtf');
-      const col = db.collections[plural$$1];
+      if (!plural) throw new LodgerError('wtf');
+      const col = db.collections[plural];
       const doc = yield col.findOne(id);
       yield doc.remove();
       debug(`deleted ${taxonomie} ID ${id}`);
@@ -1655,7 +1632,7 @@ class Lodger {
 
 
   select(taxonomie, data) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       const debug = Debug('lodger:select');
       const {
         dispatch
@@ -1798,11 +1775,11 @@ class Lodger {
 
     taxonomii.forEach(taxonomie => {
       const {
-        plural: plural$$1
+        plural
       } = forms[taxonomie];
-      const colectie = collections[plural$$1];
-      if (!colectie) throw new LodgerError('invalid collection %%', plural$$1);
-      const criteriu = Object.assign({}, Object.assign({}, getCriteriu(plural$$1, JSON.parse(JSON.stringify(criteriuCerut || {}))))); // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
+      const colectie = collections[plural];
+      if (!colectie) throw new LodgerError('invalid collection %%', plural);
+      const criteriu = Object.assign({}, Object.assign({}, getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {}))))); // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
       // debug(`${taxonomie}: criteriu`, criteriu)
 
       let {
@@ -1817,22 +1794,22 @@ class Lodger {
       if (subscribedTaxes.indexOf(taxonomie) < 0) {
         initialSubscribe({
           taxonomie,
-          plural: plural$$1,
+          plural,
           collections,
           store
         });
       } // Define the data object container
 
 
-      if (!vueHelper.subsData[subscriberName][plural$$1]) {
+      if (!vueHelper.subsData[subscriberName][plural]) {
         const freshO = Object.assign({}, vueHelperObj);
         freshO.criteriu = Object.assign({}, criteriu);
-        Vue.set(vueHelper.subsData[subscriberName], plural$$1, freshO); // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
+        Vue.set(vueHelper.subsData[subscriberName], plural, freshO); // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
         // add watcher for criteriu and when it changes
         // fire this subscribe func again
 
         if (!taxIsMultipleSelect(taxonomie)) {
-          const everyKeyInCriteriu = vm => Object.assign({}, vm.subsData[subscriberName][plural$$1].criteriu);
+          const everyKeyInCriteriu = vm => Object.assign({}, vm.subsData[subscriberName][plural].criteriu);
 
           unwatch = vueHelper.$watch(everyKeyInCriteriu, (newC, oldC) => {
             if (!newC || deepEqual_1(newC, oldC)) return;
@@ -1844,14 +1821,14 @@ class Lodger {
         }
       } else {
         // vueHelper[subscriberName][plural].criteriu = criteriu
-        vueHelper.subsData[subscriberName][plural$$1].fetching = true; // this.unsubscribe(plural, subscriberName) // todo: update ot new sub model
+        vueHelper.subsData[subscriberName][plural].fetching = true; // this.unsubscribe(plural, subscriberName) // todo: update ot new sub model
       }
 
-      if (typeof unwatch === 'function') vueHelper.subsData[subscriberName][plural$$1].unwatch = unwatch;
-      subscriber[plural$$1] = colectie.find(find).limit(paging).sort(sort).$.subscribe(changes => __awaiter(this, void 0, void 0, function* () {
+      if (typeof unwatch === 'function') vueHelper.subsData[subscriberName][plural].unwatch = unwatch;
+      subscriber[plural] = colectie.find(find).limit(paging).sort(sort).$.subscribe(changes => __chunk_1.__awaiter(this, void 0, void 0, function* () {
         // DO NOT RETURN IF NO CHANGES!!!!!!!
         // debug(`${plural} for subscriber[${subscriberName}]`, changes)
-        const x = vueHelper.subsData[subscriberName][plural$$1];
+        const x = vueHelper.subsData[subscriberName][plural];
         const selectedId = getters[`${taxonomie}/selected`]; // update data objects inside
 
         x.docs = changes.map(change => Object.freeze(change)) || [];
@@ -1869,10 +1846,10 @@ class Lodger {
           debug('got active doc', taxonomie, x.items[selectedId]._id);
         } else {
           // ID is not in changes, lookup DB, otherwise it's invalid
-          const doc = yield collections[plural$$1].findOne(selectedId);
+          const doc = yield collections[plural].findOne(selectedId);
 
           if (!doc) {
-            throw new LodgerError('invalid id supplied', plural$$1, selectedId);
+            throw new LodgerError('invalid id supplied', plural, selectedId);
           } else {
             this._activeDocument = {
               doc,
@@ -1883,7 +1860,7 @@ class Lodger {
         } // vueHelper.$emit('updatedData', { subscriberName, plural })
 
 
-        debug(`new ${plural$$1}`, Object.keys(x.items).length);
+        debug(`new ${plural}`, Object.keys(x.items).length);
       }));
     });
     return subscriber;
@@ -1912,7 +1889,7 @@ class Lodger {
 
 
   setPreference(preference, value) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       const debug = Debug('lodger:set');
       const {
         store
@@ -1993,7 +1970,7 @@ class Lodger {
 
 
   static build(options) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       let {
         dbCon
       } = options || buildOpts;
@@ -2034,7 +2011,7 @@ class Lodger {
       store.subscribe(({
         type,
         payload
-      }, state) => __awaiter(this, void 0, void 0, function* () {
+      }, state) => __chunk_1.__awaiter(this, void 0, void 0, function* () {
         const path = type.split('/');
         if (path[1] !== 'select') return;
         const debug = Debug('lodger:SELECTstoreSubscriber');
@@ -2061,7 +2038,7 @@ class Lodger {
         });
         debug(`${tax} dep taxes:`, dependentTaxonomies); // call methods of references documents
 
-        referenceTaxonomies.forEach(refTax => __awaiter(this, void 0, void 0, function* () {
+        referenceTaxonomies.forEach(refTax => __chunk_1.__awaiter(this, void 0, void 0, function* () {
           const refdoc = store.getters[`${refTax}/activeDoc`]; // debug(`refdoc ${tax} (${refTax})`, refdoc)
 
           if (!refdoc) return;
@@ -2075,9 +2052,9 @@ class Lodger {
           dependentTaxonomies.forEach(dTax => {
             const subscriber = payload.subscriber || 'main';
             const {
-              plural: plural$$1
+              plural
             } = forms[dTax];
-            const holder = vueHelper.subsData[subscriber][plural$$1];
+            const holder = vueHelper.subsData[subscriber][plural];
             if (!holder || !holder.criteriu) return;
             debug('asignez', dTax, subscriber, reference);
             holder.criteriu.find = Object.assign({}, reference); // deselect
@@ -2122,7 +2099,7 @@ class Lodger {
 
 
   destroy() {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       yield this.unsubscribeAll();
       yield this.db.destroy();
     });
@@ -2136,7 +2113,7 @@ class Lodger {
 
 
   export(path, cryptedData, filename) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       const debug = Debug('lodger:export');
       const json = yield this.db.dump();
       const extension = 'ldb';
@@ -2159,7 +2136,7 @@ class Lodger {
 
 
   import() {
-    return __awaiter(this, void 0, void 0, function* () {});
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {});
   }
   /**
    * Unsubscribe a single taxonomy from a single sub.
@@ -2186,10 +2163,10 @@ class Lodger {
 
 
   unsubscribeAll(subscriberName = 'main') {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       const sub = subscribers[subscriberName];
       const debug = Debug('lodger:unsubAll');
-      return yield Promise.all(Object.keys(sub).map(subscriber => __awaiter(this, void 0, void 0, function* () {
+      return yield Promise.all(Object.keys(sub).map(subscriber => __chunk_1.__awaiter(this, void 0, void 0, function* () {
         yield sub[subscriber].unsubscribe();
         debug('unsubscribed', subscriber);
       })));
@@ -2223,14 +2200,14 @@ class Lodger {
     } = this;
     return (taxonomy, subscriberName) => {
       const {
-        plural: plural$$1
+        plural
       } = forms[taxonomy];
 
       try {
-        return vueHelper.subsData[subscriberName][plural$$1].items;
+        return vueHelper.subsData[subscriberName][plural].items;
       } catch (e) {
         throw new LodgerError('nu exista %%', {
-          plural: plural$$1,
+          plural,
           subscriberName
         });
       }

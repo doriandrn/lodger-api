@@ -9,6 +9,7 @@
     "@babel/typescript"
   ],
   "plugins": [
+    "@babel/transform-runtime",
     ["babel-plugin-dynamic-import-node", { "noInterop": true }],
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread",

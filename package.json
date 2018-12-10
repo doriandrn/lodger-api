@@ -2,7 +2,7 @@
   "name": "lodger",
   "version": "0.0.1",
   "description": "Offline-first API for HOAs",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "repository": "https://github.com/doriandrn/lodger-api.git",
   "author": "Dorian Tudorache <dorian.snaz@gmail.com>",
   "license": "MIT",

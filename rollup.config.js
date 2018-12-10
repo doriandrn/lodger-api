@@ -26,10 +26,23 @@ const extensions = [
 
 const name = 'Lodger';
 
+// import { Taxonomii } from '.src/index.ts'
+const taxonomii = ['asociatie', 'apartament', 'bloc', 'cheltuiala', 'contor', 'factura', 'furnizor', 'incasare', 'serviciu', 'utilizator']
+
+const input = []
+const formsPath = `./src/lib/forms`
+const ext = `ts`
+taxonomii.forEach(tax => input.push(`${formsPath}/${tax}.${ext}`))
+input.push('./src/index.ts')
+
 export default {
-  input: './src/index.ts',
-  // experimentalCodeSplitting: true,
-  inlineDynamicImports: true,
+  input,
+  experimentalCodeSplitting: true,
+  // inlineDynamicImports: true,
+  // optimizeChunks: true,
+  // manualChunks: [{
+  //   'forms/apartament': ['forms/apartament']
+  // }],
 
   // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
   // https://rollupjs.org/guide/en#external-e-external
@@ -68,7 +81,7 @@ export default {
         // left-hand side can be an absolute path, a path
         // relative to the current directory, or the name
         // of a module in node_modules
-        'forms/apartament': ['forms/apartament']
+        // 'forms/apartament': ['forms/apartament']
         // 'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
       }
     }),
@@ -80,16 +93,8 @@ export default {
   ],
 
   output: {
-    file: pkg.main,
-    format: 'cjs',
-    inlineDynamicImports: true,
-    // experimentalCodeSplitting: true,
-    // globals: {
-    //   rxdb: 'RxDB',
-    //   debug: 'Debug',
-    //   'pouchdb-adapter-memory': 'memoryAdapter',
-    //   'pouchdb-adapter-idb': 'idbAdapter',
-    //   'pouchdb-adapter-http': 'httpAdapter'
-    // },
+    // file: pkg.main,
+    dir: 'dist',
+    format: 'cjs'
   },
 };

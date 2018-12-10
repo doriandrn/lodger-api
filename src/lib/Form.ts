@@ -90,6 +90,8 @@ export interface LFormData {
   name: string
 }
 
+const formsPath = process.env.NODE_ENV === 'dev' ? 'forms' : '.'
+
 /**
  * A valid RxJsonSchema out of the form
  */
@@ -240,7 +242,7 @@ class Form {
     if (!name) throw new FormError('no name supplied for form')
     let form
 
-    return import(`forms/${name}`).then(formData => {
+    return import(`${formsPath}/${name}`).then(formData => {
       form = { ...formData }
       if (form.default) form = form.default
       Object.assign(form, { name })
