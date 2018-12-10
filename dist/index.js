@@ -240,7 +240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Taxonomii = exports.Errors = exports.Lodger = void 0;
+exports.Taxonomii = exports.Errors = exports.default = void 0;
 
 var _debug = _interopRequireDefault(__webpack_require__("NOtv"));
 
@@ -499,8 +499,8 @@ class Lodger {
     this.forms = forms;
     this.db = db;
     this.store = store;
-    const debug = (0, _debug.default)('lodger:constructor'); // const subscriberData = this.subscriberData.bind(this)
-
+    // const debug = Debug('lodger:constructor')
+    // const subscriberData = this.subscriberData.bind(this)
     taxonomii.forEach(tax => {
       const {
         plural
@@ -1275,7 +1275,7 @@ class Lodger {
 
 }
 
-exports.Lodger = Lodger;
+exports.default = Lodger;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("8oxB")))
 
 /***/ }),

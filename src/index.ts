@@ -182,14 +182,14 @@ const vueHelper = new Vue({
   }
 })
 
-export class Lodger {
+export default class Lodger {
   constructor (
     protected taxonomii: Taxonomii[],
     protected forms: Forms,
     protected db: RxDatabase,
     readonly store: LodgerStore
   ) {
-    const debug = Debug('lodger:constructor')
+    // const debug = Debug('lodger:constructor')
 
     // const subscriberData = this.subscriberData.bind(this)
 
