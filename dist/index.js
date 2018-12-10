@@ -1049,31 +1049,11 @@ function DB (collections, config) {
   });
 }
 
-function _interopRequireWildcard(obj) {
-  if (obj && obj.__esModule) {
-    return obj;
-  } else {
-    var newObj = {};
-
-    if (obj != null) {
-      for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {};
-
-          if (desc.get || desc.set) {
-            Object.defineProperty(newObj, key, desc);
-          } else {
-            newObj[key] = obj[key];
-          }
-        }
-      }
-    }
-
-    newObj.default = obj;
-    return newObj;
-  }
-}
-
+/**
+ * Forms for Lodger
+ * are quite diferrently structured
+ * than a normal JsonSchema
+ */
 /**
  * Form Errors Definition
  *
@@ -1257,7 +1237,7 @@ class Form {
     const debug = Debug('lodger:Form');
     if (!name) throw new FormError('no name supplied for form');
     let form;
-    return Promise.resolve().then(() => _interopRequireWildcard(require(`forms/${name}`))).then(formData => {
+    return Promise.resolve().then(() => require(`forms/${name}`)).then(formData => {
       form = Object.assign({}, formData);
       if (form.default) form = form.default;
       Object.assign(form, {
