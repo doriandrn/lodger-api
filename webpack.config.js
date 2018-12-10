@@ -12,10 +12,10 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: resolve('dist'),
-    chunkFilename: "[chunkhash].bundle.js",
-    libraryTarget: 'commonjs',
+    chunkFilename: "[name].bundle.js",
+    libraryTarget: 'umd',
     // library: 'Lodger',
-    // umdNamedDefine: true
+    umdNamedDefine: true
   },
 
   mode: 'production',
@@ -35,8 +35,8 @@ module.exports = {
 
   node: {
     fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
+    // net: 'empty',
+    // tls: 'empty'
   },
 
   optimization: {

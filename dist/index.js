@@ -1,4 +1,14 @@
-(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// install a JSONP callback for chunk loading
 /******/ 	function webpackJsonpCallback(data) {
 /******/ 		var chunkIds = data[0];
@@ -63,7 +73,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + {"0":"1ab8e600c47f28ac9bb2","1":"b346dcbf93affc3bba66","2":"57da15d58d6326b9b044","3":"1e5bcd19e37e2d3c8e9f","4":"58d9e66915750659cf99","5":"d3a9a2b8a4919271f3d4","6":"efc89d42a9aaebcd7091","7":"360e66c4af7210121ec9","8":"fe5e355b9dd60c5293a7","9":"c64ca41d74e8d1669b39","10":"fec54dceb23cd2fc5493","11":"d464955ec985121c8fe0"}[chunkId] + ".bundle.js"
+/******/ 		return __webpack_require__.p + "" + ({}[chunkId]||chunkId) + ".bundle.js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -2694,4 +2704,5 @@ module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first
 
 /***/ })
 
-/******/ })));
+/******/ });
+});
