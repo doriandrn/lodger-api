@@ -4,11 +4,12 @@
       "targets": {
         "node": "7"
       },
-      "modules": "commonjs"
+      "modules": false
     }],
     "@babel/typescript"
   ],
   "plugins": [
+    "babel-plugin-dynamic-import-node",
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread",
     "@babel/plugin-syntax-dynamic-import"

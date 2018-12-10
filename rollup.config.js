@@ -28,6 +28,7 @@ const name = 'Lodger';
 
 export default {
   input: './src/index.ts',
+  // experimentalCodeSplitting: true,
   inlineDynamicImports: true,
 
   // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
@@ -38,42 +39,42 @@ export default {
     'pouchdb-adapter-idb',
     'pouchdb-adapter-http',
     'rxdb',
-    'debug'
+    'debug',
+    'vue',
+    'vuex'
   ],
 
   plugins: [
     // Allows node_modules resolution
 
-    // resolve({
-    //   extensions,
-    //   preferBuiltins: false,
-    //   modules: false,
-    //   modulesOnly: false,
-    //   // customResolveOptions: {
-    //   //   forms: 'src/lib/forms/*'
-    //   // }
-    // }),
-
+    resolve({
+      modulesOnly: true,
+      extensions,
+      preferBuiltins: false
+      // customResolveOptions: {
+      //   forms: 'src/lib/forms/*'
+      // }
+    }),
 
     ts(),
 
-    // globals(),
+    // globImport(),
 
-    // Compile TypeScript/JavaScript files
-    babel(),
-    // Allow bundling cjs modules. Rollup doesn't understand cjs
+    // globals(),
     commonjs({
       include: ['node_modules/**/*', 'forms/*'],
+      ignore: ["conditional-runtime-dependency"],
       namedExports:  {
         // left-hand side can be an absolute path, a path
         // relative to the current directory, or the name
         // of a module in node_modules
+        'forms/apartament': ['forms/apartament']
         // 'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
       }
     }),
-    globImport(),
 
-
+    // Compile TypeScript/JavaScript files
+    babel({ extensions, include: ['src/**/*'], runtimeHelpers: true }),
 
     builtins()
   ],
@@ -81,12 +82,14 @@ export default {
   output: {
     file: pkg.main,
     format: 'cjs',
-    globals: {
-      rxdb: 'RxDB',
-      debug: 'Debug',
-      'pouchdb-adapter-memory': 'memoryAdapter',
-      'pouchdb-adapter-idb': 'idbAdapter',
-      'pouchdb-adapter-http': 'httpAdapter'
-    },
+    inlineDynamicImports: true,
+    // experimentalCodeSplitting: true,
+    // globals: {
+    //   rxdb: 'RxDB',
+    //   debug: 'Debug',
+    //   'pouchdb-adapter-memory': 'memoryAdapter',
+    //   'pouchdb-adapter-idb': 'idbAdapter',
+    //   'pouchdb-adapter-http': 'httpAdapter'
+    // },
   },
 };
