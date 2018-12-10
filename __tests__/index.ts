@@ -590,6 +590,31 @@ describe('Lodger', () => {
       })
     })
 
+    describe('.subscriberData getter', () => {
+
+      describe('positive', () => {
+        test('it creates the requested dummy objected if it s not defined in subsData', () => {
+          const data = lodger.subscriberData('asociatie', 'subscriber')
+          expect(data).toBeDefined()
+          expect(data.items).toBeDefined()
+        })
+
+        test('returns empty if not defined', () => {
+          const data = lodger.subscriberData('blabla', 'subscriber')
+          expect(data).toBeDefined()
+          expect(data.items).toBeDefined()
+        })
+
+        test('', () => {
+
+        })
+      })
+
+      describe('negative', () => {
+
+      })
+    })
+
     afterAll(async () => {
       if (!lodger) return
       await lodger.destroy()

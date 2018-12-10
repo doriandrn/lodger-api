@@ -90,7 +90,7 @@ export interface LFormData {
   name: string
 }
 
-const formsPath = process.env.NODE_ENV === 'dev' ? 'forms' : '.'
+const formsPath = ['dev', 'test'].indexOf(process.env.NODE_ENV) > -1 ? 'forms' : '.'
 
 /**
  * A valid RxJsonSchema out of the form

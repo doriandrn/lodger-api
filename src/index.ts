@@ -1,24 +1,23 @@
 /// <reference path="main.d.ts" />
 
 import Debug from 'debug'
-import { RxDatabase, RxCollectionCreator, RxDocument, isRxDocument } from 'rxdb'
+import { RxDatabase, RxCollectionCreator, RxDocument } from 'rxdb'
+import Vue from 'vue'
 
 import fs from 'fs'
 import yaml from 'json2yaml'
-import deepEqual from 'deep-equal'
+
+import vueHelper from '~/lib/R'
 
 import LodgerStore from '~/lib/Store'
 import { buildOpts, BuildOptions } from '~/lib/build/opts'
-import { getCriteriu, taxIsMultipleSelect } from '~/lib/helpers/functions'
+import { getCriteriu } from '~/lib/helpers/functions'
 import { handleOnSubmit, assignRefIdsFromStore } from '~/lib/helpers/forms'
 import DB from '~/lib/DB'
 import { Form } from '~/lib/Form'
 import { LodgerError } from '~/lib/Errors'
 
-import Vue from 'vue'
-
 import { string_similarity } from '~/lib/helpers/search'
-import { predefinite } from 'forms/serviciu'
 
 const { NODE_ENV } = process.env
 
@@ -71,117 +70,6 @@ async function loadForms (taxonomies: Taxonomii[]) {
 
 const plugins: LodgerPlugin[] = []
 
-const vueHelperObj: SubscriberData = {
-  docs: [],
-  items: {},
-  criteriu: {},
-  fetching: false
-}
-
-const subscribedTaxes: Taxonomie[] = []
-
-async function initialSubscribe ({ taxonomie, plural, collections, store }) {
-  // const debug = Debug('lodger:initialSubscribe')
-  switch (taxonomie) {
-    // insert predefined services
-    case 'serviciu':
-      predefinite.forEach(async denumire => { await collections[plural].insert({ denumire }) })
-      break
-
-    // insert admin user
-    case 'utilizator':
-      const { _id } = await collections[plural].insert({
-        name: 'Administrator',
-        rol: 'admin'
-      })
-      store.dispatch('utilizator/set_active', _id)
-      break
-  }
-
-  subscribedTaxes.push(taxonomie)
-}
-
-
-// Filters the documents array for the one with the id
-const _theDoc = (docs: RxDocument<Taxonomie, any>[], id: string) => {
-  if (!docs.length) throw new LodgerError('empty docs provided')
-  const doc = docs.filter(doc => doc._id === id)[0]
-  if (!(doc && isRxDocument(doc))) throw new LodgerError('no doc found %%', { id })
-  return doc
-}
-
-/**
- * Main holder for temporary items subscribed to
- *
- * -> a vue helper for reactivity
- * holds RX documents
- * and methods to accezss / manipulate them
- */
-const vueHelper = new Vue({
-  data () {
-    return {
-      subsData: {}
-    }
-  },
-  // created () {
-  //   const debug = Debug('lodger:helper:created')
-  //   this.$on('updatedData', data => {
-  //     debug('G', data)
-  //     // const { subscriberName, plural } = data
-  //   })
-  // },
-  computed: {
-    ids () {
-      return (tax: Plural<Taxonomie>, subName: string) => {
-        return Object.keys(this.subsData[subName][tax])
-      }
-    }
-  },
-  methods: {
-    async getItem (
-      taxonomie: Plural<Taxonomie>,
-      id: string,
-      subscriberName ?: string
-    ) {
-      let item: RxDocument<Taxonomie> | undefined
-      const debug = Debug('lodger:getItem')
-
-      if (subscriberName === undefined)
-        subscriberName = 'main'
-
-      const { subsData } = this
-
-      // // return item
-      // return new Promise(async (resolve, reject) => {
-      //   // await rxdb to update data first.
-      //   await this.$nextTick()
-
-      try {
-        const s = subsData[subscriberName][taxonomie]
-        // debug('S', subscriberName, taxonomie, s, s.docs.length)
-        if (s.docs && s.docs.length) return _theDoc(s.docs, id)
-      } catch (e) {
-        Object.keys(this.subsData).forEach(sub => {
-          if (item) return
-          // debug('trying sub', sub)
-          const s = subsData[sub][taxonomie]
-          // debug(`D[${sub}][${taxonomie}]:`, s)
-
-          if (!(s && s.docs && s.docs.length)) return
-          item = _theDoc(s.docs, id)
-          if (item) debug('item gasit din a 2a', { taxonomie, subscriberName, s, item })
-        })
-
-      } finally {
-        // item = await collections[plural].findOne(id).exec()
-      }
-      return item
-      // // })
-      // })
-    }
-  }
-})
-
 class Lodger {
   constructor (
     protected taxonomii: Taxonomii[],
@@ -190,8 +78,6 @@ class Lodger {
     readonly store: LodgerStore
   ) {
     // const debug = Debug('lodger:constructor')
-
-    // const subscriberData = this.subscriberData.bind(this)
 
     taxonomii.forEach(tax => {
       const { plural } = forms[tax]
@@ -237,7 +123,8 @@ class Lodger {
     subscriber ?: string
   ) {
     // const debug = Debug('lodger:put')
-    if (!data || Object.keys(data).length < 1) throw new LodgerError(Errors.missingData, data)
+    if (!data || Object.keys(data).length < 1)
+      throw new LodgerError(Errors.missingData, data)
 
     const {
       db,
@@ -457,7 +344,6 @@ class Lodger {
 
     if (!vueHelper.subsData[subscriberName]) {
       Vue.set(vueHelper.subsData, subscriberName, {})
-      // debug('D initializat subscriber: ', subscriberName)
     }
 
     taxonomii.forEach(taxonomie => {
@@ -469,39 +355,11 @@ class Lodger {
         ...getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})) )
       })
 
-      // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
-      // debug(`${taxonomie}: criteriu`, criteriu)
-
       let { limit, index, sort, find } = criteriu
       const paging = Number(limit || 0) * (index || 1)
-      let unwatch
 
       if (subscribedTaxes.indexOf(taxonomie) < 0) {
         initialSubscribe({ taxonomie, plural, collections, store })
-      }
-
-      // Define the data object container
-      if (!vueHelper.subsData[subscriberName][plural]) {
-        const freshO = Object.assign({}, vueHelperObj)
-        freshO.criteriu = Object.assign({}, criteriu)
-
-        Vue.set(vueHelper.subsData[subscriberName], plural, freshO)
-        // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
-
-        // add watcher for criteriu and when it changes
-        // fire this subscribe func again
-        if (!taxIsMultipleSelect(taxonomie)) {
-          const everyKeyInCriteriu: { [key in CriteriuKeys]: any } = (vm: Vue): Criteriu => ({ ...vm.subsData[subscriberName][plural].criteriu })
-
-          unwatch = vueHelper.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
-            if (!newC || deepEqual(newC, oldC) ) return
-            this.subscribe(taxonomie, newC, subscriberName)
-          }, { deep: true, immediate: false })
-        }
-      } else {
-        // vueHelper[subscriberName][plural].criteriu = criteriu
-        vueHelper.subsData[subscriberName][plural].fetching = true
-        // this.unsubscribe(plural, subscriberName) // todo: update ot new sub model
       }
 
       if (typeof unwatch === 'function')
@@ -575,14 +433,15 @@ class Lodger {
     if (!taxonomy || allowedTaxonomies.indexOf(taxonomy) < 0) {
       throw new LodgerError(Errors.invalidPreferenceIndex)
     }
+
     debug('setting preference', preference, value)
+
     switch (taxonomy) {
       case 'client':
         store.commit('preferences/update', {
           path: preference.replace('client.', ''),
           value
         })
-
         break
 
       case 'user':
@@ -649,8 +508,6 @@ class Lodger {
     }
     if (!forms) {
       throw new LodgerError('build failed. forms could not be inited.')
-    } else {
-      debug(forms)
     }
 
     debug(`Loaded ${Object.keys(forms).length} forms ok.`)
@@ -837,15 +694,23 @@ class Lodger {
 
   get subscriberData () {
     const { forms } = this
+    const debug = Debug('lodger:subscriberData')
 
     return (
       taxonomy: Taxonomii,
       subscriberName: string
     ) => {
       const { plural }  = forms[taxonomy]
+
       try {
         return vueHelper.subsData[subscriberName][plural].items
-      } catch (e) { throw new LodgerError('nu exista %%', { plural, subscriberName })}
+      } catch (e) {
+        if (!vueHelper.subsData)
+          Vue.set(vueHelper.subsData, subscriberName, {})
+
+
+        debug('nu exista %%', { plural, subscriberName })
+      }
     }
 
   }
