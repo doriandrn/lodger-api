@@ -4,6 +4,7 @@ import builtins from 'rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
+import globImport from 'rollup-plugin-glob-import'
 import pkg from './package.json'
 
 // function resolve (dir) {
@@ -42,32 +43,36 @@ export default {
 
   plugins: [
     // Allows node_modules resolution
-    ts(),
-    resolve({
-      extensions,
-      preferBuiltins: false,
-      // module: true,
-      // modulesOnly: true,
-      // customResolveOptions: {
-      //   forms: 'src/lib/forms/*'
-      // }
-    }),
 
-    globals(),
+    // resolve({
+    //   extensions,
+    //   preferBuiltins: false,
+    //   modules: false,
+    //   modulesOnly: false,
+    //   // customResolveOptions: {
+    //   //   forms: 'src/lib/forms/*'
+    //   // }
+    // }),
+
+
+    ts(),
+
+    // globals(),
 
     // Compile TypeScript/JavaScript files
     babel(),
-
     // Allow bundling cjs modules. Rollup doesn't understand cjs
     commonjs({
-      // include: ['node_modules/**/*', 'forms/*'],
+      include: ['node_modules/**/*', 'forms/*'],
       namedExports:  {
         // left-hand side can be an absolute path, a path
         // relative to the current directory, or the name
         // of a module in node_modules
-        'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
+        // 'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
       }
     }),
+    globImport(),
+
 
 
     builtins()
@@ -77,7 +82,6 @@ export default {
     file: pkg.main,
     format: 'cjs',
     globals: {
-      forms: 'forms',
       rxdb: 'RxDB',
       debug: 'Debug',
       'pouchdb-adapter-memory': 'memoryAdapter',

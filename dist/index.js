@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else {
-		var a = factory();
-		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	}
+		define("Lodger", [], factory);
+	else if(typeof exports === 'object')
+		exports["Lodger"] = factory();
+	else
+		root["Lodger"] = factory();
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// install a JSONP callback for chunk loading
@@ -215,7 +215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// on error function for async loading
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/
-/******/ 	var jsonpArray = window["webpackJsonp"] = window["webpackJsonp"] || [];
+/******/ 	var jsonpArray = window["webpackJsonpLodger"] = window["webpackJsonpLodger"] || [];
 /******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
 /******/ 	jsonpArray.push = webpackJsonpCallback;
 /******/ 	jsonpArray = jsonpArray.slice();
@@ -2687,7 +2687,7 @@ exports.buildOpts = buildOpts;
 /***/ "kiQV":
 /***/ (function(module) {
 
-module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first API for HOAs","main":"dist/index.js","repository":"https://github.com/doriandrn/lodger-api.git","author":"Dorian Tudorache <dorian.snaz@gmail.com>","license":"MIT","scripts":{"test":"jest","type-check":"tsc --noEmit","type-check:watch":"npm run type-check -- --watch","build:types":"tsc --emitDeclarationOnly","build:js":"rollup -c","build":"yarn build:types && yarn build:js"},"devDependencies":{"@babel/core":"^7.2.0","@babel/plugin-proposal-class-properties":"^7.2.1","@babel/plugin-proposal-object-rest-spread":"^7.2.0","@babel/plugin-syntax-dynamic-import":"^7.2.0","@babel/plugin-transform-runtime":"^7.2.0","@babel/preset-env":"^7.2.0","@babel/preset-es2015":"^7.0.0-beta.53","@babel/preset-typescript":"^7.1.0","@types/debug":"^0.0.31","@types/faker":"^4.1.4","@types/jest":"^23.3.10","@types/node":"^10.12.10","babel-jest":"^23.6.0","babel-loader":"^8.0.4","debug":"^4.1.0","deep-equal":"^1.0.1","faker":"^4.1.0","fs":"^0.0.1-security","fx":"^9.0.1","jest":"^23.6.0","json2yaml":"^1.1.0","rollup":"^0.67.4","rollup-plugin-babel":"^4.0.3","rollup-plugin-commonjs":"^9.2.0","rollup-plugin-node-builtins":"^2.1.2","rollup-plugin-node-globals":"^1.4.0","rollup-plugin-node-resolve":"^3.4.0","rollup-plugin-typescript":"^1.0.0","ts-jest":"^23.10.5","ts-loader":"^5.3.1","typescript":"^3.1.6","webpack-cli":"^3.1.2"},"dependencies":{"@babel/runtime":"^7.2.0","awesome-typescript-loader":"^5.2.1","pouchdb-adapter-http":"^7.0.0","pouchdb-adapter-idb":"^7.0.0","pouchdb-adapter-memory":"^7.0.0","rxdb":"^8.0.4","rxjs":"^6.3.3","source-map-loader":"^0.2.4","vue":"^2.5.17","vuex":"^3.0.1","vuex-persistedstate":"^2.5.4","vuex-toast":"^0.1.3","webpack":"^4.26.1"}};
+module.exports = {"name":"lodger","version":"0.0.1","description":"Offline-first API for HOAs","main":"dist/index.js","repository":"https://github.com/doriandrn/lodger-api.git","author":"Dorian Tudorache <dorian.snaz@gmail.com>","license":"MIT","scripts":{"test":"jest","type-check":"tsc --noEmit","type-check:watch":"npm run type-check -- --watch","build:types":"tsc --emitDeclarationOnly","build:js":"rollup -c","build":"yarn build:types && yarn build:js"},"devDependencies":{"@babel/core":"^7.2.0","@babel/plugin-proposal-class-properties":"^7.2.1","@babel/plugin-proposal-object-rest-spread":"^7.2.0","@babel/plugin-syntax-dynamic-import":"^7.2.0","@babel/plugin-transform-runtime":"^7.2.0","@babel/preset-env":"^7.2.0","@babel/preset-es2015":"^7.0.0-beta.53","@babel/preset-typescript":"^7.1.0","@types/debug":"^0.0.31","@types/faker":"^4.1.4","@types/jest":"^23.3.10","@types/node":"^10.12.10","babel-jest":"^23.6.0","babel-loader":"^8.0.4","debug":"^4.1.0","deep-equal":"^1.0.1","faker":"^4.1.0","fs":"^0.0.1-security","fx":"^9.0.1","jest":"^23.6.0","json2yaml":"^1.1.0","rollup":"^0.67.4","rollup-plugin-babel":"^4.0.3","rollup-plugin-commonjs":"^9.2.0","rollup-plugin-glob-import":"^0.3.0","rollup-plugin-node-builtins":"^2.1.2","rollup-plugin-node-globals":"^1.4.0","rollup-plugin-node-resolve":"^3.4.0","rollup-plugin-typescript":"^1.0.0","ts-jest":"^23.10.5","ts-loader":"^5.3.1","typescript":"^3.1.6","webpack-cli":"^3.1.2"},"dependencies":{"@babel/runtime":"^7.2.0","awesome-typescript-loader":"^5.2.1","pouchdb-adapter-http":"^7.0.0","pouchdb-adapter-idb":"^7.0.0","pouchdb-adapter-memory":"^7.0.0","rxdb":"^8.0.4","rxjs":"^6.3.3","source-map-loader":"^0.2.4","vue":"^2.5.17","vuex":"^3.0.1","vuex-persistedstate":"^2.5.4","vuex-toast":"^0.1.3","webpack":"^4.26.1"}};
 
 /***/ }),
 
