@@ -17,7 +17,10 @@ import { RootState } from './Store'
 
 type ItemReference = Plural<Taxonomie> | object
 
-export type Item = {
+type FormExcludables = 'db' | 'addForm' | 'editForm'
+type ItemExcludableFrom = FormExcludables[]
+
+export type LodgerFormItemCreator = {
   id: string,
   name?: string,
   label?: string
@@ -35,18 +38,16 @@ export type Item = {
   items?: object,
   indexRef?: boolean,
 
-  notInDb?: boolean // exclude field from DB schema
-  notInForm?: boolean // exclude field from client's end
+  excludeFrom?: ItemExcludableFrom
 
-  v: string // validation string
-  click: string
-  showInList: 'primary' | 'secondary' | 'details'
+  v?: string // validation string
+  click?: string
+  showInList?: 'primary' | 'secondary' | 'details'[]
 }
 
 // type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
 
-type Fields = Item[]
-type FormName = string
+
 type FormMethods = {
   [k: string]: () => Promise<any>
 }
@@ -64,14 +65,13 @@ enum Errors {
   missingPlural = 'A plural definition is required for %%'
 }
 
-interface LodgerFormCreator {
-  name: FormName
-  plural: Plural<Taxonomie>
-  fields: Fields
-  methods?: FormMethods
-  statics?: FormMethods
-  sync?: boolean
-}
+// interface LodgerFormCreator {
+//   name: FormName
+//   plural: Plural<Taxonomie>
+//   fields: Fields
+//
+//
+// }
 
 if (process.env.NODE_ENV === 'test') {
   Debug.enable('Form:*')
@@ -85,23 +85,30 @@ const defaultSchema: RxJsonSchema = {
   version: 0
 }
 
-export interface LFormData {
-  fields: Fields,
+export type LodgerFormCreator = {
   name: string
+  plural: Plural<Taxonomie>
+  fields: LodgerFormItemCreator[]
+
+  methods?: FormMethods
+  statics?: FormMethods
+  sync?: boolean
 }
+
+
 
 const formsPath = ['dev', 'test'].indexOf(process.env.NODE_ENV) > -1 ? 'forms' : '.'
 
 /**
  * A valid RxJsonSchema out of the form
  */
-const toRxSchema = (formData: LFormData) => {
+const toRxSchema = (formData: LodgerFormCreator) => {
   const { name, fields } = formData
   const schema: RxJsonSchema = JSON.parse(JSON.stringify(defaultSchema))
   schema.title = name
 
   fields
-    .filter(field => !field.notInDb)
+    .filter(field => !field.excludeFrom.indexOf('db'))
     .forEach(field => {
       pushFieldToSchema(field, schema)
     })
@@ -132,16 +139,20 @@ function toRxCollection (context: Form) {
   return { name, schema, methods, statics }
 }
 
+interface Form {
+  new (data: LodgerFormCreator): Form
+
+  schema: RxJsonSchema
+  indexables: string[]
+  collection: RxCollectionCreator
+}
+
 /**
  * Form class
  */
-class Form {
-  readonly schema: RxJsonSchema
-  readonly indexables: string[]
-  readonly collection: RxCollectionCreator
-
+class Form implements Form {
   constructor (
-    readonly data: LodgerFormCreator
+    data: LodgerFormCreator
   ) {
     this.indexables = lookupIndexables(data.fields)
     this.schema = toRxSchema(data)

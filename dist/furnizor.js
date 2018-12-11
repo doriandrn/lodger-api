@@ -19,8 +19,8 @@ const fields = [{
 const actiuni = {
   confirm: 'adaugaFurnizor'
 };
-const plural = 'furnizori';
+const plural$1 = 'furnizori';
 
 exports.fields = fields;
 exports.actiuni = actiuni;
-exports.plural = plural;
+exports.plural = plural$1;

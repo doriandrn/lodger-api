@@ -7,7 +7,7 @@ var __chunk_1 = require('./chunk-db601d79.js');
 const getter = 'modal/data';
 const modalOpen = 'modal/open';
 const modalContent = 'modal/content';
-const plural = 'asociatii';
+const plural$1 = 'asociatii';
 const fields = [{
   id: '_id',
   notInDb: true,
@@ -155,7 +155,7 @@ const setari = {
 };
 
 exports.fields = fields;
-exports.plural = plural;
+exports.plural = plural$1;
 exports.methods = methods;
 exports.statics = statics;
 exports.setari = setari;

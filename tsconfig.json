@@ -12,10 +12,10 @@
     "declaration": true,
     "target": "es6",
     "module": "esnext",
-    // "lib": [
-    //   "esnext",
-    //   "es2015"
-    // ],
+    "lib": [
+      "esnext",
+      "es2015"
+    ],
     "baseUrl": "./src/",
     "paths": {
       "~/*": [ "./src/*" ],

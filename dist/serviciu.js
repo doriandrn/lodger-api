@@ -24,7 +24,7 @@ const fields = [
   id: 'contoare',
   type: 'contoare'
 }];
-const plural = 'servicii';
+const plural$1 = 'servicii';
 const actions = {
   confirm: 'adaugaServiciu'
 };
@@ -32,7 +32,7 @@ const multipleSelect = true;
 const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
 
 exports.fields = fields;
-exports.plural = plural;
+exports.plural = plural$1;
 exports.actions = actions;
 exports.predefinite = predefinite;
 exports.multipleSelect = multipleSelect;

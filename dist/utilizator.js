@@ -33,7 +33,7 @@ const fields = [// {
   type: 'object',
   notInForm: true
 }];
-const plural = 'utilizatori';
+const plural$1 = 'utilizatori';
 const methods = {
   UPDATEAZA(campuri) {
     return __chunk_1.__awaiter(this, void 0, void 0, function* () {
@@ -61,6 +61,6 @@ const settings = {
 };
 
 exports.fields = fields;
-exports.plural = plural;
+exports.plural = plural$1;
 exports.methods = methods;
 exports.settings = settings;

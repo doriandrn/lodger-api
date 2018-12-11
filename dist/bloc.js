@@ -40,11 +40,11 @@ const fields = [{
   required: true,
   value: g => g['asociatie/active'] || g['asociatie/selected']
 }];
-const plural = 'blocuri';
+const plural$1 = 'blocuri';
 const actions = {
   confirm: 'adaugaBloc'
 };
 
-exports.plural = plural;
+exports.plural = plural$1;
 exports.fields = fields;
 exports.actions = actions;

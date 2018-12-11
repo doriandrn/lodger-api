@@ -40,7 +40,7 @@ const fields = [{
   index: true,
   value: g => g['asociatie/active'] || g['asociatie/selected']
 }];
-const plural = 'facturi';
+const plural$1 = 'facturi';
 
 exports.fields = fields;
-exports.plural = plural;
+exports.plural = plural$1;

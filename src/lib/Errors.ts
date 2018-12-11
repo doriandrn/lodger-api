@@ -26,7 +26,17 @@ class FormError extends LodgerError {
   }
 }
 
+class TaxonomyError extends LodgerError {
+  constructor(m: string, details?: any) {
+    super(m, details)
+
+    // Set the prototype explicitly.
+    Object.setPrototypeOf(this, FormError.prototype)
+  }
+}
+
 export {
   LodgerError,
-  FormError
+  FormError,
+  TaxonomyError
 }

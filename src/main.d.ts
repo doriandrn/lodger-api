@@ -9,6 +9,14 @@ declare module "*.json" {
 }
 
 declare global {
+
+  interface LodgerTaxonomyCreator<x extends Taxonomie> {
+    name: x,
+    plural: Plural<x>
+    form: LodgerForm<x>
+  }
+
+
   type Taxonomie = keyof typeof Taxonomii
 
   type ItemID = string | null

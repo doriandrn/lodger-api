@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var __chunk_1 = require('./chunk-db601d79.js');
 
-const plural = 'apartamente';
+const plural$1 = 'apartamente';
 const selectedApGetter = 'apartament/activeDoc';
 const fields = [{
   id: '_id',
@@ -128,6 +128,6 @@ const methods = {
 };
 
 exports.fields = fields;
-exports.plural = plural;
+exports.plural = plural$1;
 exports.actions = actions;
 exports.methods = methods;

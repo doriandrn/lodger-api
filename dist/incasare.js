@@ -44,8 +44,8 @@ const fields = [{
 const actions = {
   confirm: 'incaseaza'
 };
-const plural = 'incasari';
+const plural$1 = 'incasari';
 
 exports.fields = fields;
 exports.actions = actions;
-exports.plural = plural;
+exports.plural = plural$1;

@@ -1,10 +1,11 @@
 # Lodger (offline-first) API
 
-##### __lodger__ ```<comandă>``` parametri
+## __lodger__ ```<comandă>``` parametri
+
 ---
 
+### Descriere TIPURI
 
-#### Descriere TIPURI
 __M__ - Metodă
 __G__ - Getter (nu există parametri)
 __Gpm__ - Getter cu parametri

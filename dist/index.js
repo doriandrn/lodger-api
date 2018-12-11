@@ -6,13 +6,13 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var __chunk_1 = require('./chunk-db601d79.js');
 var serviciu = require('./serviciu.js');
+var Vue = _interopDefault(require('vue'));
 var Vuex = _interopDefault(require('vuex'));
 var RxDB = require('rxdb');
 var memoryAdapter = _interopDefault(require('pouchdb-adapter-memory'));
 var idbAdapter = _interopDefault(require('pouchdb-adapter-idb'));
 var httpAdapter = _interopDefault(require('pouchdb-adapter-http'));
-var Debug = _interopDefault(require('debug'));
-var Vue = _interopDefault(require('vue'));
+var Debug$1 = _interopDefault(require('debug'));
 
 var fs = {};
 
@@ -453,7 +453,7 @@ const getCriteriu = (taxonomie, criteriuCerut) => {
   const {
     defaults
   } = config.taxonomii;
-  const debug = Debug('functions:getCriteriu');
+  const debug = Debug$1('functions:getCriteriu');
   const criteriu = Object.assign({}, Object.assign({}, defaults.criteriu), Object.assign({}, getTaxonomyConfig(taxonomie).criteriu), Object.assign({}, criteriuCerut)); // Object.assign(criteriu, getTaxonomyConfig(taxonomie).criteriu)
   // debug(taxonomie, 'criteriu inainte de criteriuCerut', criteriu)
   // debug(taxonomie, 'criteriu cerut', { ...criteriuCerut })
@@ -482,6 +482,67 @@ const getCriteriu = (taxonomie, criteriuCerut) => {
 };
 
 const taxIsMultipleSelect = tax => ['serviciu', 'contor'].indexOf(tax) > -1;
+
+const getRxDocumentById = (docs, id) => {
+  if (!docs.length) throw new LodgerError('Empty docs provided: %%');
+  const doc = docs.filter(doc => doc._id === id)[0];
+  if (!(doc && RxDB.isRxDocument(doc))) throw new LodgerError('No document found %%', {
+    id
+  });
+  return doc;
+};
+
+var vueHelper = new Vue({
+  data() {
+    return {
+      subsData: {}
+    };
+  },
+
+  computed: {
+    ids() {
+      return (tax, subName) => {
+        return Object.keys(this.subsData[subName][tax]);
+      };
+    }
+
+  },
+  methods: {
+    getItem(taxonomie, id, subscriberName) {
+      return __chunk_1.__awaiter(this, void 0, void 0, function* () {
+        let item;
+        const debug = Debug('lodger:getItem');
+        if (subscriberName === undefined) subscriberName = 'main';
+        const {
+          subsData
+        } = this;
+
+        try {
+          const s = subsData[subscriberName][taxonomie];
+          if (s.docs && s.docs.length) return getRxDocumentById(s.docs, id);
+        } catch (e) {
+          Object.keys(this.subsData).forEach(sub => {
+            if (item) return;
+            const s = subsData[sub][taxonomie];
+            if (!(s && s.docs && s.docs.length)) return;
+            item = getRxDocumentById(s.docs, id);
+            if (item) debug('item gasit din a 2a', {
+              taxonomie,
+              subscriberName,
+              s,
+              item
+            });
+          });
+        } finally {// should never get here maybe because data displayed should be available.
+          // item = await collections[plural].findOne(id).exec()
+        }
+
+        return item;
+      });
+    }
+
+  }
+});
 
 const sharedStoreMethods = {
   selected: 'select',
@@ -716,7 +777,7 @@ var RootModule = /*#__PURE__*/Object.freeze({
 });
 
 Vue.use(Vuex);
-const debug = Debug('lodger:Store');
+const debug = Debug$1('lodger:Store');
 const modules$1 = {};
 var Errors;
 
@@ -812,7 +873,7 @@ const formItemTypes = {
   objects
 };
 
-const debug$1 = Debug('lodger:forms');
+const debug$1 = Debug$1('lodger:forms');
 
 function toRxDBtype(type) {
   const _default = 'string';
@@ -984,7 +1045,7 @@ const addCommonFieldsToSchema = (schema, commonFields = [{
   });
 };
 
-const debug$2 = Debug('lodger:db');
+const debug$2 = Debug$1('lodger:db');
 const {
   NODE_ENV: NODE_ENV$1
 } = process.env; // RxDB.QueryChangeDetector.enable()
@@ -1049,7 +1110,7 @@ var Errors$1;
 })(Errors$1 || (Errors$1 = {}));
 
 if (process.env.NODE_ENV === 'test') {
-  Debug.enable('Form:*');
+  Debug$1.enable('Form:*');
 }
 
 const defaultSchema = {
@@ -1059,7 +1120,7 @@ const defaultSchema = {
   type: 'object',
   version: 0
 };
-const formsPath = process.env.NODE_ENV === 'dev' ? 'forms' : '.';
+const formsPath = ['dev', 'test'].indexOf(process.env.NODE_ENV) > -1 ? 'forms' : '.';
 /**
  * A valid RxJsonSchema out of the form
  */
@@ -1161,7 +1222,7 @@ class Form {
       },
       name
     } = this;
-    const debug = Debug('lodger:Form.ts:componentData');
+    const debug = Debug$1('lodger:Form.ts:componentData');
     let $data = {};
     fields.forEach(camp => {
       const {
@@ -1213,20 +1274,29 @@ class Form {
 
 
   static loadByName(name) {
-    const debug = Debug('lodger:Form');
+    const debug = Debug$1('lodger:Form');
     if (!name) throw new FormError('no name supplied for form');
     let form;
-    return Promise.resolve().then(() => require(`${formsPath}/${name}`)).then(formData => {
-      form = Object.assign({}, formData);
+
+    try {
+      form = require("forms/" + name);
       if (form.default) form = form.default;
       Object.assign(form, {
         name
       });
       debug('✓', name);
-      return new Form(Object.assign({}, form));
-    }).catch(err => {
-      throw new FormError(err);
-    });
+      return new Form(form);
+    } catch (e) {
+      debug('Error', e);
+      throw new FormError(Errors$1.invalidRequested, name);
+    } // return import(`${formsPath}/${name}`).then(formData => {
+    //   form = { ...formData }
+    //   if (form.default) form = form.default
+    //   Object.assign(form, { name })
+    //   debug('✓', name)
+    //   return new Form({ ...form })
+    // }).catch(err => { throw new FormError(err) })
+
   }
 
   get name() {
@@ -1366,130 +1436,6 @@ function loadForms(taxonomies) {
 }
 
 const plugins = [];
-const vueHelperObj = {
-  docs: [],
-  items: {},
-  criteriu: {},
-  fetching: false
-};
-const subscribedTaxes = [];
-
-function initialSubscribe({
-  taxonomie,
-  plural,
-  collections,
-  store
-}) {
-  return __chunk_1.__awaiter(this, void 0, void 0, function* () {
-    // const debug = Debug('lodger:initialSubscribe')
-    switch (taxonomie) {
-      // insert predefined services
-      case 'serviciu':
-        serviciu.predefinite.forEach(denumire => __chunk_1.__awaiter(this, void 0, void 0, function* () {
-          yield collections[plural].insert({
-            denumire
-          });
-        }));
-        break;
-      // insert admin user
-
-      case 'utilizator':
-        const {
-          _id
-        } = yield collections[plural].insert({
-          name: 'Administrator',
-          rol: 'admin'
-        });
-        store.dispatch('utilizator/set_active', _id);
-        break;
-    }
-
-    subscribedTaxes.push(taxonomie);
-  });
-} // Filters the documents array for the one with the id
-
-
-const _theDoc = (docs, id) => {
-  if (!docs.length) throw new LodgerError('empty docs provided');
-  const doc = docs.filter(doc => doc._id === id)[0];
-  if (!(doc && RxDB.isRxDocument(doc))) throw new LodgerError('no doc found %%', {
-    id
-  });
-  return doc;
-};
-/**
- * Main holder for temporary items subscribed to
- *
- * -> a vue helper for reactivity
- * holds RX documents
- * and methods to accezss / manipulate them
- */
-
-
-const vueHelper = new Vue({
-  data() {
-    return {
-      subsData: {}
-    };
-  },
-
-  // created () {
-  //   const debug = Debug('lodger:helper:created')
-  //   this.$on('updatedData', data => {
-  //     debug('G', data)
-  //     // const { subscriberName, plural } = data
-  //   })
-  // },
-  computed: {
-    ids() {
-      return (tax, subName) => {
-        return Object.keys(this.subsData[subName][tax]);
-      };
-    }
-
-  },
-  methods: {
-    getItem(taxonomie, id, subscriberName) {
-      return __chunk_1.__awaiter(this, void 0, void 0, function* () {
-        let item;
-        const debug = Debug('lodger:getItem');
-        if (subscriberName === undefined) subscriberName = 'main';
-        const {
-          subsData
-        } = this; // // return item
-        // return new Promise(async (resolve, reject) => {
-        //   // await rxdb to update data first.
-        //   await this.$nextTick()
-
-        try {
-          const s = subsData[subscriberName][taxonomie]; // debug('S', subscriberName, taxonomie, s, s.docs.length)
-
-          if (s.docs && s.docs.length) return _theDoc(s.docs, id);
-        } catch (e) {
-          Object.keys(this.subsData).forEach(sub => {
-            if (item) return; // debug('trying sub', sub)
-
-            const s = subsData[sub][taxonomie]; // debug(`D[${sub}][${taxonomie}]:`, s)
-
-            if (!(s && s.docs && s.docs.length)) return;
-            item = _theDoc(s.docs, id);
-            if (item) debug('item gasit din a 2a', {
-              taxonomie,
-              subscriberName,
-              s,
-              item
-            });
-          });
-        } finally {// item = await collections[plural].findOne(id).exec()
-        }
-
-        return item; // // })
-        // })
-      });
-    }
-
-  }
-});
 
 class Lodger {
   constructor(taxonomii, forms, db, store) {
@@ -1497,8 +1443,7 @@ class Lodger {
     this.taxonomii = taxonomii;
     this.forms = forms;
     this.db = db;
-    this.store = store; // const subscriberData = this.subscriberData.bind(this)
-
+    this.store = store;
     taxonomii.forEach(tax => {
       const {
         plural
@@ -1610,7 +1555,7 @@ class Lodger {
         db,
         forms
       } = this;
-      const debug = Debug('lodger:trash');
+      const debug = Debug$1('lodger:trash');
       const {
         plural
       } = forms[taxonomie];
@@ -1633,7 +1578,7 @@ class Lodger {
 
   select(taxonomie, data) {
     return __chunk_1.__awaiter(this, void 0, void 0, function* () {
-      const debug = Debug('lodger:select');
+      const debug = Debug$1('lodger:select');
       const {
         dispatch
       } = this.store;
@@ -1672,7 +1617,7 @@ class Lodger {
       taxonomie,
       doc
     } = docHolder;
-    const debug = Debug('lodger:_activeDocument');
+    const debug = Debug$1('lodger:_activeDocument');
     const gName = `${taxonomie}/activeDoc`;
     const {
       store
@@ -1703,7 +1648,7 @@ class Lodger {
 
   search(input, searchTaxonomy) {
     if (!input) return;
-    const debug = Debug('lodger:search');
+    const debug = Debug$1('lodger:search');
     const searchMap = this.getters['searchMap'];
 
     if (!searchMap) {
@@ -1750,7 +1695,7 @@ class Lodger {
 
 
   subscribe(taxonomii, criteriuCerut, subscriberName = 'main') {
-    const debug = Debug('lodger:subscribe');
+    const debug = Debug$1('lodger:subscribe');
     const {
       db: {
         collections
@@ -1770,7 +1715,7 @@ class Lodger {
     const subscriber = subscribers[subscriberName];
 
     if (!vueHelper.subsData[subscriberName]) {
-      Vue.set(vueHelper.subsData, subscriberName, {}); // debug('D initializat subscriber: ', subscriberName)
+      Vue.set(vueHelper.subsData, subscriberName, {});
     }
 
     taxonomii.forEach(taxonomie => {
@@ -1779,9 +1724,7 @@ class Lodger {
       } = forms[taxonomie];
       const colectie = collections[plural];
       if (!colectie) throw new LodgerError('invalid collection %%', plural);
-      const criteriu = Object.assign({}, Object.assign({}, getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {}))))); // debug(`${taxonomie}: criteriu cerut`, { ...criteriuCerut })
-      // debug(`${taxonomie}: criteriu`, criteriu)
-
+      const criteriu = Object.assign({}, Object.assign({}, getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})))));
       let {
         limit,
         index,
@@ -1789,7 +1732,6 @@ class Lodger {
         find
       } = criteriu;
       const paging = Number(limit || 0) * (index || 1);
-      let unwatch;
 
       if (subscribedTaxes.indexOf(taxonomie) < 0) {
         initialSubscribe({
@@ -1798,30 +1740,6 @@ class Lodger {
           collections,
           store
         });
-      } // Define the data object container
-
-
-      if (!vueHelper.subsData[subscriberName][plural]) {
-        const freshO = Object.assign({}, vueHelperObj);
-        freshO.criteriu = Object.assign({}, criteriu);
-        Vue.set(vueHelper.subsData[subscriberName], plural, freshO); // debug(`setat gol D[${subscriberName}][${plural}]`, freshO)
-        // add watcher for criteriu and when it changes
-        // fire this subscribe func again
-
-        if (!taxIsMultipleSelect(taxonomie)) {
-          const everyKeyInCriteriu = vm => Object.assign({}, vm.subsData[subscriberName][plural].criteriu);
-
-          unwatch = vueHelper.$watch(everyKeyInCriteriu, (newC, oldC) => {
-            if (!newC || deepEqual_1(newC, oldC)) return;
-            this.subscribe(taxonomie, newC, subscriberName);
-          }, {
-            deep: true,
-            immediate: false
-          });
-        }
-      } else {
-        // vueHelper[subscriberName][plural].criteriu = criteriu
-        vueHelper.subsData[subscriberName][plural].fetching = true; // this.unsubscribe(plural, subscriberName) // todo: update ot new sub model
       }
 
       if (typeof unwatch === 'function') vueHelper.subsData[subscriberName][plural].unwatch = unwatch;
@@ -1890,7 +1808,7 @@ class Lodger {
 
   setPreference(preference, value) {
     return __chunk_1.__awaiter(this, void 0, void 0, function* () {
-      const debug = Debug('lodger:set');
+      const debug = Debug$1('lodger:set');
       const {
         store
       } = this;
@@ -1974,7 +1892,7 @@ class Lodger {
       let {
         dbCon
       } = options || buildOpts;
-      const debug = Debug('lodger:build');
+      const debug = Debug$1('lodger:build');
       debug(`building in ${NODE_ENV$2} mode ...`);
       const taxonomii = Object.keys(exports.Taxonomii);
       let forms;
@@ -1987,8 +1905,6 @@ class Lodger {
 
       if (!forms) {
         throw new LodgerError('build failed. forms could not be inited.');
-      } else {
-        debug(forms);
       }
 
       debug(`Loaded ${Object.keys(forms).length} forms ok.`);
@@ -2014,7 +1930,7 @@ class Lodger {
       }, state) => __chunk_1.__awaiter(this, void 0, void 0, function* () {
         const path = type.split('/');
         if (path[1] !== 'select') return;
-        const debug = Debug('lodger:SELECTstoreSubscriber');
+        const debug = Debug$1('lodger:SELECTstoreSubscriber');
         const tax = path[0];
         debug('payload', payload);
         if (!payload) return;
@@ -2080,7 +1996,7 @@ class Lodger {
 
 
   static use(plugin) {
-    const debug = Debug('lodger:use');
+    const debug = Debug$1('lodger:use');
 
     if (!plugin || typeof plugin !== 'object') {
       throw new LodgerError(exports.Errors.invalidPluginDefinition);
@@ -2114,7 +2030,7 @@ class Lodger {
 
   export(path, cryptedData, filename) {
     return __chunk_1.__awaiter(this, void 0, void 0, function* () {
-      const debug = Debug('lodger:export');
+      const debug = Debug$1('lodger:export');
       const json = yield this.db.dump();
       const extension = 'ldb';
       if (!path) path = `${require('os').homeDir}/downloads/`;
@@ -2165,7 +2081,7 @@ class Lodger {
   unsubscribeAll(subscriberName = 'main') {
     return __chunk_1.__awaiter(this, void 0, void 0, function* () {
       const sub = subscribers[subscriberName];
-      const debug = Debug('lodger:unsubAll');
+      const debug = Debug$1('lodger:unsubAll');
       return yield Promise.all(Object.keys(sub).map(subscriber => __chunk_1.__awaiter(this, void 0, void 0, function* () {
         yield sub[subscriber].unsubscribe();
         debug('unsubscribed', subscriber);
@@ -2198,6 +2114,7 @@ class Lodger {
     const {
       forms
     } = this;
+    const debug = Debug$1('lodger:subscriberData');
     return (taxonomy, subscriberName) => {
       const {
         plural
@@ -2206,7 +2123,8 @@ class Lodger {
       try {
         return vueHelper.subsData[subscriberName][plural].items;
       } catch (e) {
-        throw new LodgerError('nu exista %%', {
+        if (!vueHelper.subsData) Vue.set(vueHelper.subsData, subscriberName, {});
+        debug('nu exista %%', {
           plural,
           subscriberName
         });

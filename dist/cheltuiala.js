@@ -35,7 +35,7 @@ const fields = [{
   type: 'selApartamente',
   options: getters => getters['asociatie/apartamente']
 }];
-const plural = 'cheltuieli';
+const plural$1 = 'cheltuieli';
 
-exports.plural = plural;
+exports.plural = plural$1;
 exports.fields = fields;

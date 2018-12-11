@@ -1,6 +1,8 @@
 import { Taxonomii } from "index";
-import { RxDocument } from 'rxdb'
+import { RxDocument, RxCollection } from 'rxdb'
 import { Form } from './Form'
+import { TaxonomyError } from './Errors'
+import { RootState } from "./Store";
 
 /**
  * Taxonomy
@@ -9,9 +11,9 @@ import { Form } from './Form'
  *
  */
 
- interface LodgerTaxonomy<N extends string> {
-   new (): LodgerTaxonomy<N>,
-   readonly form: Form,
+ interface LodgerTaxonomy<N extends Taxonomie> {
+   new (name: N): LodgerTaxonomy<N>,
+   readonly form: Form | Promise<Form>,
 
    readonly name: N,
    readonly plural: Plural<N>,
@@ -19,28 +21,27 @@ import { Form } from './Form'
    readonly hasReference: Boolean,
    readonly referenceTaxonomies: LodgerTaxonomy<Taxonomie>[],
    readonly dependantTaxonomies: LodgerTaxonomy<Taxonomie>[],
+   collection: RxCollection<N>
    activeDocuments: {
      [k in SubscribersList]: RxDocument<N, any>
    },
-   readonly getters: Getters
+   readonly getters: GetterTree<Taxonomie, RootState>
+   sortOptions: SortOptions
  }
-
-//  interface LodgerTaxonomyCreator<T extends Taxonomii> {
-//    new (): LodgerTaxonomy<T>
-//  }
 
  interface LodgerTaxes {
    [k: keyof Taxonomii]: LodgerTaxonomy<k>
  }
 
- export class Taxonomy implements LodgerTaxonomy {
-
+ export class Taxonomy implements LodgerTaxonomy<Taxonomii> {
+  form: Form | Promise<Form>
 
   constructor (
-    name: Taxonomie
+    name: T
   ) {
     try {
-      this.form = Form.loadByName(name)
+      this.form = Promise.resolve(Form.loadByName(name))
+
     } catch (e) {
       throw new TaxonomyError('Wrong taxonomy: %%', name)
     }
