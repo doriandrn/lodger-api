@@ -15,8 +15,9 @@ import { FormError } from './Errors'
 import { GetterTree } from 'vuex'
 import { RootState } from './Store'
 
-type ItemReference = Plural<Taxonomie> | object
+const env = String(process.env.NODE_ENV)
 
+type ItemReference = Plural<Taxonomie> | object
 type FormExcludables = 'db' | 'addForm' | 'editForm'
 type ItemExcludableFrom = FormExcludables[]
 
@@ -48,10 +49,6 @@ export type LodgerFormItemCreator = {
 // type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
 
 
-type FormMethods = {
-  [k: string]: () => Promise<any>
-}
-
 /**
  * Form Errors Definition
  *
@@ -64,14 +61,6 @@ enum Errors {
   missingName = 'Forms should have a name',
   missingPlural = 'A plural definition is required for %%'
 }
-
-// interface LodgerFormCreator {
-//   name: FormName
-//   plural: Plural<Taxonomie>
-//   fields: Fields
-//
-//
-// }
 
 if (process.env.NODE_ENV === 'test') {
   Debug.enable('Form:*')
@@ -86,18 +75,22 @@ const defaultSchema: RxJsonSchema = {
 }
 
 export type LodgerFormCreator = {
-  name: string
+  name?: string
   plural: Plural<Taxonomie>
   fields: LodgerFormItemCreator[]
 
-  methods?: FormMethods
-  statics?: FormMethods
+  methods?: { [k: string]: () => void }
+  statics?: { [k: string]: () => void }
   sync?: boolean
 }
 
-
-
-const formsPath = ['dev', 'test'].indexOf(process.env.NODE_ENV) > -1 ? 'forms' : '.'
+/**
+ * path to forms -> load on the fly
+ */
+const formsPath = ['dev', 'test']
+  .indexOf(env) > -1 ?
+    'forms' :
+    '.'
 
 /**
  * A valid RxJsonSchema out of the form
@@ -108,7 +101,7 @@ const toRxSchema = (formData: LodgerFormCreator) => {
   schema.title = name
 
   fields
-    .filter(field => !field.excludeFrom.indexOf('db'))
+    .filter(field => field.excludeFrom && !field.excludeFrom.indexOf('db'))
     .forEach(field => {
       pushFieldToSchema(field, schema)
     })
@@ -122,7 +115,7 @@ const toRxSchema = (formData: LodgerFormCreator) => {
  * All indexabble fields
  * @returns {Array} the ids of all fields with index: true
  */
-const lookupIndexables = (fields: Fields) =>
+const lookupIndexables = (fields: LodgerFormItemCreator[]) =>
   fields
     .filter(field => field.index)
     .map(field => field.id)
@@ -133,15 +126,19 @@ const lookupIndexables = (fields: Fields) =>
 function toRxCollection (context: Form) {
   const {
     schema,
-    data: { plural, methods, statics }
+    plural,
+    methods,
+    statics
   } = context
   const name = plural
   return { name, schema, methods, statics }
 }
 
-interface Form {
-  new (data: LodgerFormCreator): Form
+export interface LodgerFormConstructor {
+  new (data: LodgerFormCreator): LodgerForm
+}
 
+interface LodgerForm {
   schema: RxJsonSchema
   indexables: string[]
   collection: RxCollectionCreator
@@ -150,13 +147,20 @@ interface Form {
 /**
  * Form class
  */
-class Form implements Form {
+class Form implements LodgerForm {
+  readonly schema: RxJsonSchema
+  readonly indexables: string[]
+  readonly collection: RxCollectionCreator
+  private fields: LodgerFormItemCreator[]
+
   constructor (
-    data: LodgerFormCreator
+    readonly data: LodgerFormCreator
   ) {
-    this.indexables = lookupIndexables(data.fields)
+    const { fields } = data
+    this.indexables = lookupIndexables(fields)
     this.schema = toRxSchema(data)
     this.collection = toRxCollection(this)
+    this.fields = fields
 
     // this.sortOptions = sortOptions({ indexables, name })
   }
@@ -189,51 +193,36 @@ class Form implements Form {
    * by the user in the end form
    * as it will turn reactive
    */
-  componentData (
+  value (
     isNewForm: boolean,
     getters?: GetterTree<any, RootState>
   ) {
-    const { data: { fields }, name } = this
-    const debug = Debug('lodger:Form.ts:componentData')
+    const { fields, name } = this
+    // const debug = Debug('Form:value')
     let $data = {} as any
 
     fields.forEach(camp => {
-      const {
-        label,
-        required,
-        click,
-        notInForm,
-        notInDb
-      } = camp
+      const { label, required, click, excludeFrom } = camp
       let { id, value } = camp
-      debug('camp.value (f)', value)
+
       let _def = camp.default
 
       if (click && !id) camp.id = click
 
-      // skip fields
-      if (isNewForm) {
-        if (!notInForm || notInDb) value = null
-      }
+      // skip excluded fields
+      if (isNewForm && excludeFrom && (excludeFrom.indexOf('db') || excludeFrom.indexOf('addForm')))
+        value = undefined
 
       // apply getters to funcs
-      if (typeof value === 'function' && getters) {
-        try {
-          value = value(getters)
-          debug('valoare dupa apel functie: ', value)
-        } catch (e) {
-          debug('failed to get val', label, getters)
-          value = null
-        }
-      }
-
-      if (typeof _def === 'function') _def = _def(getters)
+      value = typeof value === 'function' && getters ? value(getters) : undefined
+      _def = typeof _def === 'function' ? _def(getters) : undefined
 
       // label
       camp.label = label || `${name ? `${name}.new.` : ''}${id}`
 
       // validarea de required
-      if (required || (camp.v && camp.v.indexOf('required') < 0)) camp.v = `required|${camp.v || ''}`
+      if (required || (camp.v && camp.v.indexOf('required') < 0))
+        camp.v = `required|${camp.v || ''}`
 
       // valoarea finala
       $data[id] = null
@@ -261,28 +250,6 @@ class Form implements Form {
       return new Form({ ...form })
     }).catch(err => { throw new FormError(err) })
   }
-
-  get name () {
-    return this.data.name
-  }
-
-  get plural () {
-    return this.data.plural
-  }
-
-  /**
-   * Reference taxonomies of a taxonomy
-   *
-   * @returns {Array} taxonomii
-   */
-  get referenceTaxonomies () {
-    const { data: { fields } } = this
-
-    return <Taxonomie[]>fields
-      .filter(field => field.id.indexOf('Id') === field.id.length - 2)
-      .map(field => field.id.replace('Id', ''))
-  }
-
 
   /**
    * Items to be display to user,

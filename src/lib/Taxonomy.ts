@@ -3,6 +3,7 @@ import { RxDocument, RxCollection } from 'rxdb'
 import { Form } from './Form'
 import { TaxonomyError } from './Errors'
 import { RootState } from "./Store";
+import { GetterTree } from 'vuex'
 
 /**
  * Taxonomy
@@ -12,39 +13,88 @@ import { RootState } from "./Store";
  */
 
  interface LodgerTaxonomy<N extends Taxonomie> {
-   new (name: N): LodgerTaxonomy<N>,
-   readonly form: Form | Promise<Form>,
-
-   readonly name: N,
+  //  readonly form: Form,
+  //  readonly name: N,
    readonly plural: Plural<N>,
    readonly subscribed: Boolean,
    readonly hasReference: Boolean,
    readonly referenceTaxonomies: LodgerTaxonomy<Taxonomie>[],
    readonly dependantTaxonomies: LodgerTaxonomy<Taxonomie>[],
-   collection: RxCollection<N>
+   readonly getters: GetterTree<Taxonomie, RootState>,
+
+  //  collection: RxCollection<N>,
    activeDocuments: {
-     [k in SubscribersList]: RxDocument<N, any>
+     [k in keyof SubscribersList]: RxDocument<N, any>
    },
-   readonly getters: GetterTree<Taxonomie, RootState>
-   sortOptions: SortOptions
+   sortOptions: SortOptions,
+   subscribe: () => Promise<Subscriber>
  }
 
- interface LodgerTaxes {
-   [k: keyof Taxonomii]: LodgerTaxonomy<k>
+export interface LodgerTaxonomyCreator<N extends Taxonomie> {
+  new (name: N, form: Form, collection: RxCollection<N>): LodgerTaxonomy<N>,
+}
+
+ type LodgerTaxes = {
+   [k in Taxonomii]: () => LodgerTaxonomy<k>
  }
 
- export class Taxonomy implements LodgerTaxonomy<Taxonomii> {
-  form: Form | Promise<Form>
+export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
 
   constructor (
-    name: T
+    name: Taxonomie,
+    readonly form: Form,
+    collection: RxCollection<Taxonomie>
   ) {
-    try {
-      this.form = Promise.resolve(Form.loadByName(name))
+    // try {
+    //   this.form = Promise.resolve(Form.loadByName(name))
+    // } catch (e) {
+    //   throw new TaxonomyError('Wrong taxonomy: %%', name)
+    // }
 
-    } catch (e) {
-      throw new TaxonomyError('Wrong taxonomy: %%', name)
-    }
   }
- }
 
+    /**
+   * Reference taxonomies of a taxonomy
+   *
+   * @returns {Array} taxonomii
+   */
+  get referenceTaxonomies () {
+    const { data: { fields } } = this.form
+
+    return <Taxonomie[]>fields
+      .filter(field => field.id.indexOf('Id') === field.id.length - 2)
+      .map(field => field.id.replace('Id', ''))
+  }
+
+
+  get hasReference () {
+    return true
+  }
+
+  get subscribed () {
+    return true
+  }
+
+  /**
+   *
+   */
+  get plural () {
+    return this.form.plural
+  }
+}
+
+export class TaxonomiesHolder implements LodgerTaxes {
+
+  constructor (
+    taxonomii: Taxonomie[],
+    collections: RxCollection<Taxonomie>[]
+  ) {
+    taxonomii.forEach(async (tax: Taxonomie) => {
+      const form = await Form.loadByName(tax)
+      const { plural } = form
+      this[tax] = new Taxonomy(tax, form, collections[plural])
+    })
+  }
+}
+
+// const xx: LodgerTaxonomyCreator<Taxonomie> = new Taxonomy('asociatie', 'form', 'collection')

@@ -18,6 +18,7 @@ import { Form } from '~/lib/Form'
 import { LodgerError } from '~/lib/Errors'
 
 import { string_similarity } from '~/lib/helpers/search'
+import { TaxonomiesHolder } from './lib/Taxonomy';
 
 const { NODE_ENV } = process.env
 
@@ -72,15 +73,15 @@ const plugins: LodgerPlugin[] = []
 
 class Lodger {
   constructor (
-    protected taxonomii: Taxonomii[],
-    protected forms: Forms,
+    protected taxonomii: Taxonomy[],
+    // protected forms: Forms,
     protected db: RxDatabase,
     readonly store: LodgerStore
   ) {
     // const debug = Debug('lodger:constructor')
 
     taxonomii.forEach(tax => {
-      const { plural } = forms[tax]
+      const { plural } = taxonomii[tax]
 
       Object.defineProperty(this, plural, {
         get () {
@@ -179,10 +180,10 @@ class Lodger {
    * @param taxonomie
    * @param id
    */
-  async trash (taxonomie: Taxonomii, id: ItemID) {
-    const { db, forms } = this
+  async trash (taxonomie: Taxonomie, id: ItemID) {
+    const { db, taxonomii } = this
     const debug = Debug('lodger:trash')
-    const { plural } = forms[taxonomie]
+    const { plural } = taxonomii[taxonomie]
     if (!plural) throw new LodgerError('wtf')
     const col = db.collections[plural]
     const doc: RxDocument<Taxonomii> = await col.findOne(id)
@@ -499,22 +500,23 @@ class Lodger {
     const debug = Debug('lodger:build')
     debug(`building in ${NODE_ENV} mode ...`)
 
-    const taxonomii: Taxonomii[] = <Taxonomii[]>Object.keys(Taxonomii)
-    let forms: {[k in Taxonomie]: Form} | {}
-    try {
-      forms = await loadForms(taxonomii)
-    } catch (e) {
-      throw new LodgerError('loading forms failed %%', e)
-    }
-    if (!forms) {
-      throw new LodgerError('build failed. forms could not be inited.')
-    }
+    const taxonomii: = new TaxonomiesHolder(taxonomii, )
+      // <Taxonomii[]>
+    // let forms: {[k in Taxonomie]: Form} | {}
+    // try {
+    //   forms = await loadForms(taxonomii)
+    // } catch (e) {
+    //   throw new LodgerError('loading forms failed %%', e)
+    // }
+    // if (!forms) {
+    //   throw new LodgerError('build failed. forms could not be inited.')
+    // }
 
-    debug(`Loaded ${Object.keys(forms).length} forms ok.`)
+    debug(`Loaded ${Object.keys(taxonomii).length} taxes ok.`)
 
-    const _collections: RxCollectionCreator[] = taxonomii.map(tax => forms[tax].collection)
+    const _collections: RxCollectionCreator[] = taxonomii.map(tax => tax.collection)
     const db = await DB(_collections, dbCon)
-    const store = new LodgerStore({ taxonomii, forms })
+    const store = new LodgerStore(taxonomii)
     // const { collections } = await db
 
     if (options) Object.assign(buildOpts, { ...options })
@@ -579,7 +581,7 @@ class Lodger {
 
     return new Lodger(
       taxonomii,
-      forms,
+      // forms,
       db,
       store
     )

@@ -1,3 +1,5 @@
+import { LodgerFormCreator } from "../Form";
+
 interface Asociatie {
   _id: string
   name: string
@@ -9,6 +11,8 @@ interface Asociatie {
   servicii: [Serviciu],
   furnizori?: [Furnizor],
   tranzactii?: Tranzactie[]
+
+  initBalanta: () => void
 }
 
 const getter = 'modal/data'
@@ -93,7 +97,7 @@ const fields = [
   }
 ]
 
-const methods = <T>{
+const methods = {
   async initBalanta (data: {balanta: Bani}) {
     this.balanta = data.balanta
     await this.save()
@@ -166,7 +170,7 @@ const setari = {
   },
 }
 
-export {
+export <LodgerFormCreator>{
   fields,
   plural,
   methods,

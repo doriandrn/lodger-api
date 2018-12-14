@@ -34,3 +34,30 @@ describe('Taxonomy class', () => {
     })
   })
 })
+
+/**
+ *
+
+taxonomii: {
+  asociatie: {
+    referencesTaxonomies:
+  }
+}
+
+Taxonomies holder
++:
+  it creates a container that holds all requested taxonomies
+
+-:
+
+
+Taxonomy
+  .plural getter
+    +:
+      it returns the plural string based on name
+    -:
+      throws if invalid
+
+  subscribe
+
+*/
