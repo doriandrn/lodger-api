@@ -1,9 +1,58 @@
-import { Form, Errors } from '~/lib/Form'
-import { stub1, stub2, fields, name } from '@/__stubs__/playground'
+import {
+  Form,
+  Errors,
+  prepareRxSchema,
+  LodgerFormCreator,
+  LodgerFormConstructor
+} from '~/lib/Form'
+
+// import { stub1, stub2, fields, name } from '@/__stubs__/playground'
+
+/**
+ * DO NOT CHANGE ANY OF THESE
+ * as existing tests run on them
+ *
+ * Rather, create new / extend the stubs / vars and export them
+ */
+const name = 'xx'
+const plural = 'xxs'
+
+const methods = {
+  async lol () {},
+  syncMethod () {}
+}
+
+const fields = [
+  { id: 'x1' },
+  { id: 'x2', required: true, index: true },
+  { id: 'x3' }
+]
+
+const fieldsWithExcludedItems = [
+  ...fields,
+  { id: 'x4', excludeFrom: 'db' },
+  { id: 'x5', excludeFrom: 'db', required: true }
+]
+
+
+const stub1: LodgerFormCreator = {
+  name,
+  plural,
+  fields,
+  methods
+}
+
+const stub2: LodgerFormCreator = {
+  name,
+  fields: fieldsWithExcludedItems,
+  plural
+}
+
 
 describe('Form', () => {
-  const __stub1__ = new Form(stub1)
-  const __stub2__ = new Form(stub2)
+  const __stub1__: LodgerFormConstructor = new Form(stub1)
+  const __stub2__: LodgerFormConstructor = new Form(stub2)
+  console.error(__stub1__)
 
   describe('new()', () => {
     // describe('negative', () => {
@@ -17,7 +66,7 @@ describe('Form', () => {
 
   })
 
-  describe('.schema', () => {
+  describe('prepareRxSchema()', () => {
     test('is defined', () => {
       const { schema } = __stub1__
       expect(schema).toBeDefined()
@@ -49,12 +98,12 @@ describe('Form', () => {
       })
     })
 
-    test('excludes fields that have the notInDb property', () => {
+    test('excludes fields', () => {
       const { schema: { properties } } = __stub2__
       expect(properties).not.toHaveProperty('x5')
     })
 
-    test('indexed fields have index prop', () => {
+    test('indexed fields have -index- prop', () => {
       const { schema: { properties } } = __stub2__
       expect(properties.x2.index).toBeDefined()
     })
@@ -80,16 +129,16 @@ describe('Form', () => {
     })
   })
 
-  describe('.loadByName() - Loads a form by name', () => {
+  describe('.load() - Loads a form by name', () => {
     let form
     const formToLoadAndTest = 'asociatie'
     beforeAll(async () => {
-      form = await Form.loadByName(formToLoadAndTest)
+      form = await Form.load(formToLoadAndTest)
     })
     describe('negative', () => {
       test('throws if called with anything else than string', async () => {
         try {
-          await Form.loadByName('')
+          await Form.load('')
         } catch (e) {
           expect(e).toBeDefined()
         }
@@ -97,7 +146,7 @@ describe('Form', () => {
       })
       test('throws for unknown filenames', async () => {
         try {
-          await Form.loadByName('ceva')
+          await Form.load('ceva')
         } catch (e) {
           expect(e).toBeDefined()
         }

@@ -27,7 +27,7 @@ import { GetterTree } from 'vuex'
      [k in keyof SubscribersList]: RxDocument<N, any>
    },
    sortOptions: SortOptions,
-   subscribe: () => Promise<Subscriber>
+   subscribe: () => Promise<Subscriber> //wrapper to lodger.subscribe(tax)
  }
 
 export interface LodgerTaxonomyCreator<N extends Taxonomie> {
@@ -46,7 +46,7 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
     collection: RxCollection<Taxonomie>
   ) {
     // try {
-    //   this.form = Promise.resolve(Form.loadByName(name))
+    //   this.form = Promise.resolve(Form.load(name))
     // } catch (e) {
     //   throw new TaxonomyError('Wrong taxonomy: %%', name)
     // }
@@ -90,7 +90,7 @@ export class TaxonomiesHolder implements LodgerTaxes {
     collections: RxCollection<Taxonomie>[]
   ) {
     taxonomii.forEach(async (tax: Taxonomie) => {
-      const form = await Form.loadByName(tax)
+      const form = await Form.load(tax)
       const { plural } = form
       this[tax] = new Taxonomy(tax, form, collections[plural])
     })
@@ -98,3 +98,38 @@ export class TaxonomiesHolder implements LodgerTaxes {
 }
 
 // const xx: LodgerTaxonomyCreator<Taxonomie> = new Taxonomy('asociatie', 'form', 'collection')
+  /**
+   * gets the sorting options for tax
+   * @returns an object with each key used as a sorting option
+   */
+  // get sortOptions () {
+  //   const { indexables, name } = this
+
+  //   if (!['serviciu', 'contor'].indexOf(name)) {
+  //     indexables.push('la')
+  //   }
+
+  //   // TODO: !!! ia din common methods
+  //   const sorts = {}
+  //   indexables.forEach(indexable => {
+  //     const label = `sort.${indexable === 'name' ? 'az' : indexable}`
+  //     Object.assign(sorts, { [indexable]: { label } })
+  //   })
+
+  //   // debug(`${name} => sortable fields`, sorts)
+
+  //   return sorts
+  // }
+ /**
+   * Items to be display to user,
+   * @returns {Object} the keys of the fields: their position
+   *
+   */
+  // get __displayItemKeys () {
+  //   const { fields } = this.data
+
+  //   return Object.assign({}, ...fields
+  //     .filter(field => field.showInList)
+  //     .map(field => ({ [field.id]: field.showInList }) )
+  //   )
+  // }

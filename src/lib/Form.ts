@@ -4,18 +4,17 @@
  * than a normal JsonSchema
  */
 import Debug from 'debug'
-import { RxJsonSchema, RxCollectionCreator } from 'rxdb'
+import { RxJsonSchema, RxCollectionCreator, RxJsonSchemaTopLevel } from 'rxdb'
 import {
   pushFieldToSchema,
   addCommonFieldsToSchema
 } from './helpers/forms'
 
 import { FormItemTypes } from './defs/formItemTypes'
+import { env } from './defs/env'
 import { FormError } from './Errors'
 import { GetterTree } from 'vuex'
 import { RootState } from './Store'
-
-const env = String(process.env.NODE_ENV)
 
 type ItemReference = Plural<Taxonomie> | object
 type FormExcludables = 'db' | 'addForm' | 'editForm'
@@ -46,7 +45,7 @@ export type LodgerFormItemCreator = {
   showInList?: 'primary' | 'secondary' | 'details'[]
 }
 
-// type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
+export type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
 
 
 /**
@@ -74,7 +73,7 @@ const defaultSchema: RxJsonSchema = {
   version: 0
 }
 
-export type LodgerFormCreator = {
+export declare type LodgerFormCreator = {
   name?: string
   plural: Plural<Taxonomie>
   fields: LodgerFormItemCreator[]
@@ -95,18 +94,22 @@ const formsPath = ['dev', 'test']
 /**
  * A valid RxJsonSchema out of the form
  */
-const toRxSchema = (formData: LodgerFormCreator) => {
-  const { name, fields } = formData
+function prepareRxSchema (
+  form: LodgerFormCreator,
+  addCommonMethods ?: boolean
+) {
+  const { name, fields } = form
   const schema: RxJsonSchema = JSON.parse(JSON.stringify(defaultSchema))
   schema.title = name
 
   fields
-    .filter(field => field.excludeFrom && !field.excludeFrom.indexOf('db'))
+    .filter(field => !(field.excludeFrom && field.excludeFrom.indexOf('db')))
     .forEach(field => {
       pushFieldToSchema(field, schema)
     })
 
-  if (name !== 'serviciu') addCommonFieldsToSchema(schema)
+  if (addCommonMethods && name !== 'serviciu')
+    addCommonFieldsToSchema(schema)
 
   return schema
 }
@@ -120,72 +123,49 @@ const lookupIndexables = (fields: LodgerFormItemCreator[]) =>
     .filter(field => field.index)
     .map(field => field.id)
 
-/**
- * Makes a RxCollection valid collection from the form
- */
-function toRxCollection (context: Form) {
-  const {
-    schema,
-    plural,
-    methods,
-    statics
-  } = context
-  const name = plural
-  return { name, schema, methods, statics }
-}
+
 
 export interface LodgerFormConstructor {
   new (data: LodgerFormCreator): LodgerForm
 }
 
 interface LodgerForm {
-  schema: RxJsonSchema
+  name: string
   indexables: string[]
-  collection: RxCollectionCreator
+  collection: undefined | RxCollectionCreator
 }
 
 /**
  * Form class
  */
 class Form implements LodgerForm {
-  readonly schema: RxJsonSchema
+  readonly name: string
   readonly indexables: string[]
-  readonly collection: RxCollectionCreator
-  private fields: LodgerFormItemCreator[]
+
+  fields: LodgerFormItemCreator[]
+  collection: undefined | RxCollectionCreator
 
   constructor (
-    readonly data: LodgerFormCreator
+    data: LodgerFormCreator,
+    generateRxCollection : boolean = true
   ) {
-    const { fields } = data
+    const { fields, name, plural, methods, statics } = data
+    if (!name) throw new FormError('Form should have a name %%', data)
+    this.name = name
     this.indexables = lookupIndexables(fields)
-    this.schema = toRxSchema(data)
-    this.collection = toRxCollection(this)
+
     this.fields = fields
 
-    // this.sortOptions = sortOptions({ indexables, name })
-  }
-
-  /**
-   * gets the sorting options for tax
-   * @returns an object with each key used as a sorting option
-   */
-  get sortOptions () {
-    const { indexables, name } = this
-
-    if (!['serviciu', 'contor'].indexOf(name)) {
-      indexables.push('la')
+    if (generateRxCollection) {
+      const schema = prepareRxSchema(data)
+      const collection = {
+        name: plural,
+        schema,
+        methods,
+        statics
+      }
+      this.collection = collection
     }
-
-    // TODO: !!! ia din common methods
-    const sorts = {}
-    indexables.forEach(indexable => {
-      const label = `sort.${indexable === 'name' ? 'az' : indexable}`
-      Object.assign(sorts, { [indexable]: { label } })
-    })
-
-    // debug(`${name} => sortable fields`, sorts)
-
-    return sorts
   }
 
   /**
@@ -233,40 +213,27 @@ class Form implements LodgerForm {
   }
 
   /**
-   * Loads a known form by name
+   * Loads a 'known' form by name
    *
    * @param name
    */
-  static loadByName (name: string): Promise<Form> {
+  static load (name: string): Promise<Form> {
     const debug = Debug('lodger:Form')
     if (!name) throw new FormError('no name supplied for form')
     let form
 
-    return import(`${formsPath}/${name}`).then(formData => {
+    return import(`${formsPath}/${name}`).then((formData: LodgerFormCreator) => {
       form = { ...formData }
-      if (form.default) form = form.default
+      // if (form.default) form = form.default
       Object.assign(form, { name })
       debug('✓', name)
       return new Form({ ...form })
     }).catch(err => { throw new FormError(err) })
   }
-
-  /**
-   * Items to be display to user,
-   * @returns {Object} the keys of the fields: their position
-   *
-   */
-  get __displayItemKeys () {
-    const { fields } = this.data
-
-    return Object.assign({}, ...fields
-      .filter(field => field.showInList)
-      .map(field => ({ [field.id]: field.showInList }) )
-    )
-  }
 }
 
 export {
   Form,
-  Errors
+  Errors,
+  prepareRxSchema
 }

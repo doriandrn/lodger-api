@@ -98,7 +98,7 @@ var remedial = createCommonjsModule(function (module) {
             }
             return o + '"';
         };
-    } 
+    }
 
     if (!String.prototype.supplant) {
         String.prototype.supplant = function (o) {
@@ -181,10 +181,10 @@ var json2yaml = createCommonjsModule(function (module) {
             }
 
             output += '\n' + indentLevel + '- ' + handler(y);
-             
+
           });
           indentLevel = indentLevel.replace(/  /, '');
-          
+
           return output;
         }
       , "object": function (x) {
@@ -1273,7 +1273,7 @@ class Form {
    */
 
 
-  static loadByName(name) {
+  static load(name) {
     const debug = Debug$1('lodger:Form');
     if (!name) throw new FormError('no name supplied for form');
     let form;
@@ -1429,7 +1429,7 @@ function loadForms(taxonomies) {
   return __chunk_1.__awaiter(this, void 0, void 0, function* () {
     return Object.assign({}, ...(yield Promise.all(taxonomies.map(tax => __chunk_1.__awaiter(this, void 0, void 0, function* () {
       return {
-        [tax]: yield Form.loadByName(tax)
+        [tax]: yield Form.load(tax)
       };
     })))));
   });

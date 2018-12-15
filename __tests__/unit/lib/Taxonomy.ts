@@ -33,6 +33,10 @@ describe('Taxonomy class', () => {
 
     })
   })
+
+  describe('', () => {
+
+  })
 })
 
 /**

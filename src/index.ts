@@ -32,16 +32,9 @@ const subscribers: SubscribersList = {
 }
 
 enum Taxonomii {
-  asociatie = 'asociatie',
-  bloc = 'bloc',
-  apartament = 'apartament',
-  factura = 'factura',
-  incasare = 'incasare',
-  cheltuiala = 'cheltuiala',
-  serviciu = 'serviciu',
-  furnizor = 'furnizor',
-  // contor = 'contor',
-  utilizator = 'utilizator'
+  Apartament, Asociatie, Bloc, Cheltuiala,
+  Contor, Factura, Furnizor, Incasare,
+  Serviciu, Utilizator
 }
 
 
@@ -64,7 +57,7 @@ enum Errors {
 async function loadForms (taxonomies: Taxonomii[]) {
   return Object.assign({},
     ...await Promise.all(taxonomies.map(async (tax: Taxonomii) => {
-      return { [tax]: await Form.loadByName(tax) }
+      return { [tax]: await Form.load(tax) }
     }
   )))
 }
