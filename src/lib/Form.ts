@@ -6,11 +6,10 @@
 import Debug from 'debug'
 import { RxJsonSchema, RxCollectionCreator, RxJsonSchemaTopLevel } from 'rxdb'
 import {
-  pushFieldToSchema,
-  addCommonFieldsToSchema
+  prepareRxSchema,
 } from './helpers/forms'
 
-import { FormItemTypes } from './defs/formItemTypes'
+import { FormItemTypes } from './defs/forms/itemTypes'
 import { env } from './defs/env'
 import { FormError } from './Errors'
 import { GetterTree } from 'vuex'

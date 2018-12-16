@@ -18,19 +18,19 @@ describe('helpers/forms', () => {
         expect(toRxDBtype(undefined)).toBe('string')
       })
 
-      test('returneaza "number" pentru valorile aferente', () => {
+      test('returns "number"', () => {
         expect(toRxDBtype('dateTime')).toBe('number')
         expect(toRxDBtype('bani')).toBe('number')
         expect(toRxDBtype('date')).toBe('number')
         expect(toRxDBtype('number')).toBe('number')
       })
 
-      test('returneaza "array" pentru valorile aferente', () => {
+      test('returns "array"', () => {
         expect(toRxDBtype('furnizori')).toBe('array')
         expect(toRxDBtype('servicii')).toBe('array')
       })
 
-      test('returns object for object', () => {
+      test('returns object', () => {
         expect(toRxDBtype('object')).toBe('object')
       })
     })
@@ -83,10 +83,11 @@ describe('helpers/forms', () => {
       })
 
       test('type gets converted with .toRxDBtype()', () => {
-        expect(toSchemaField({
+        const field = toSchemaField({
           id,
           type: 'bani'
-        })[id].type).toBe('number')
+        })
+        expect(field[id].type).toBe('number')
       })
 
       test('adds references to fields', () => {
@@ -103,6 +104,7 @@ describe('helpers/forms', () => {
 
       test('excludes null/undefined keys', () => {
         Object.values(testField[id]).forEach(field => {
+          console.error(field)
           expect(field).toBeDefined()
         })
       })

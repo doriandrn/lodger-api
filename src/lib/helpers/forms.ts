@@ -1,5 +1,5 @@
 import { RxJsonSchema } from 'rxdb'
-import { FormItemTypes } from '../defs/forms/itemTypes'
+import { FormItemTypes, strings, arrays, objects, numbers } from '../defs/forms/itemTypes'
 import defaultSchema from '../defs/forms/schema'
 
 import { LodgerFormCreator, LodgerFormItemCreator } from 'lib/Form'
@@ -22,15 +22,13 @@ type RxDBType = 'string' | 'number' | 'array' | 'object'
 
 function toRxDBtype(type: FormItemTypes): RxDBType {
   const _default = 'string'
-  const { strings, numbers, arrays, objects } = formItemTypes
 
-  if (!type || strings.indexOf(type) > -1) return _default
-  if (objects.indexOf(type) > -1) return 'object'
-  if (numbers.indexOf(type) > -1) return 'number'
-  if (arrays.indexOf(type) > -1) return 'array'
+  if (!type || Object.keys(strings).indexOf(type) > -1) return _default
+  if (Object.keys(objects).indexOf(type) > -1) return 'object'
+  if (Object.keys(numbers).indexOf(type) > -1) return 'number'
+  if (Object.keys(arrays).indexOf(type) > -1) return 'array'
   return _default
 }
-
 
 /**
  * Makes a valid RxJsonSchema out of a Form
@@ -61,15 +59,14 @@ function prepareRxSchema (
  * @param field
  */
 const toSchemaField = (field: LodgerFormItemCreator) => {
-  if (!field.id)
-    throw new Error('Field missing id')
-
   const { id, step, indexRef, index } = field
+  if (!id) throw new Error('Invalid declaration for field')
+
   let { type, ref } = field
 
-  if (!id || !type) throw new Error('Invalid declaration for field')
-
   type = toRxDBtype(type)
+  const fieldData = { type }
+
   ref = ref ? {
     ref,
     items: { type: 'string' }
@@ -79,16 +76,15 @@ const toSchemaField = (field: LodgerFormItemCreator) => {
     Object.assign(ref, { index: indexRef })
   }
 
-  const fieldData = { type }
-
   // cheiImutabile.forEach(((cheie: string) => {
   //   if (!formItem[cheie]) return
   //   Object.assign(descriereCamp, { [cheie]: formItem[cheie] })
   // })
-  if (index) Object.assign(field, { index })
 
-  if (step) Object.assign(field, { multipleOf: step })
-  if (ref) Object.assign(field, ref)
+  if (index) Object.assign(fieldData, { index })
+
+  if (step) Object.assign(fieldData, { multipleOf: step })
+  if (ref) Object.assign(fieldData, ref)
 
   return { [id]: fieldData }
 }
