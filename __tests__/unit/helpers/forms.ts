@@ -19,7 +19,7 @@ describe('helpers/forms', () => {
       })
 
       test('returneaza "number" pentru valorile aferente', () => {
-        expect(toRxDBtype('date-time')).toBe('number')
+        expect(toRxDBtype('dateTime')).toBe('number')
         expect(toRxDBtype('bani')).toBe('number')
         expect(toRxDBtype('date')).toBe('number')
         expect(toRxDBtype('number')).toBe('number')

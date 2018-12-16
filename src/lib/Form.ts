@@ -65,14 +65,6 @@ if (process.env.NODE_ENV === 'test') {
   Debug.enable('Form:*')
 }
 
-const defaultSchema: RxJsonSchema = {
-  title: '',
-  properties: {},
-  required: [],
-  type: 'object',
-  version: 0
-}
-
 export declare type LodgerFormCreator = {
   name?: string
   plural: Plural<Taxonomie>
@@ -92,33 +84,10 @@ const formsPath = ['dev', 'test']
     '.'
 
 /**
- * A valid RxJsonSchema out of the form
- */
-function prepareRxSchema (
-  form: LodgerFormCreator,
-  addCommonMethods ?: boolean
-) {
-  const { name, fields } = form
-  const schema: RxJsonSchema = JSON.parse(JSON.stringify(defaultSchema))
-  schema.title = name
-
-  fields
-    .filter(field => !(field.excludeFrom && field.excludeFrom.indexOf('db')))
-    .forEach(field => {
-      pushFieldToSchema(field, schema)
-    })
-
-  if (addCommonMethods && name !== 'serviciu')
-    addCommonFieldsToSchema(schema)
-
-  return schema
-}
-
-/**
  * All indexabble fields
  * @returns {Array} the ids of all fields with index: true
  */
-const lookupIndexables = (fields: LodgerFormItemCreator[]) =>
+const indexables = (fields: LodgerFormItemCreator[]) =>
   fields
     .filter(field => field.index)
     .map(field => field.id)
@@ -141,7 +110,6 @@ interface LodgerForm {
 class Form implements LodgerForm {
   readonly name: string
   readonly indexables: string[]
-
   fields: LodgerFormItemCreator[]
   collection: undefined | RxCollectionCreator
 
@@ -151,9 +119,9 @@ class Form implements LodgerForm {
   ) {
     const { fields, name, plural, methods, statics } = data
     if (!name) throw new FormError('Form should have a name %%', data)
-    this.name = name
-    this.indexables = lookupIndexables(fields)
 
+    this.name = name
+    this.indexables = indexables(fields)
     this.fields = fields
 
     if (generateRxCollection) {
