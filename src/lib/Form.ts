@@ -72,6 +72,7 @@ export declare type LodgerFormCreator = {
   methods?: { [k: string]: () => void }
   statics?: { [k: string]: () => void }
   sync?: boolean
+  setari?: any
 }
 
 /**
@@ -118,6 +119,8 @@ class Form implements LodgerForm {
   ) {
     const { fields, name, plural, methods, statics } = data
     if (!name) throw new FormError('Form should have a name %%', data)
+    if (!fields || !Object.keys(fields).length)
+      throw new FormError('missing fields on form %%', name)
 
     this.name = name
     this.indexables = indexables(fields)
@@ -139,6 +142,8 @@ class Form implements LodgerForm {
    * Makes a Vue-ready $data {object} suitable to be completed
    * by the user in the end form
    * as it will turn reactive
+   *
+   * for new forms, values are all undefined
    */
   value (
     isNewForm: boolean,
@@ -184,15 +189,17 @@ class Form implements LodgerForm {
    *
    * @param name
    */
-  static load (name: string): Promise<Form> {
+  static load (name: string): Promise<Form> | Form {
     const debug = Debug('lodger:Form')
-    if (!name) throw new FormError('no name supplied for form')
-    const formPath = `${formsPath}/${name}`
+    if (!name)
+      throw new FormError('no name supplied for form')
+
+    const formPath: string = `${formsPath}/${name}`
 
     return import(formPath).then((formData: LodgerFormCreator) => {
+      console.error('FF', formData)
       if (!formData.fields) throw new FormError('invalid form file %%', name)
       Object.assign(formData, { name })
-      console.error('FF', formData)
       debug('✓', name)
       return new Form({ ...formData })
     }).catch(err => { throw new FormError(err) })

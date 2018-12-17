@@ -142,9 +142,13 @@ describe('Form', () => {
 
   describe('.load() - Loads a form by name', () => {
     let form
-    const formToLoadAndTest = 'asociatie'
+    const formToLoadAndTest = 'apartament'
     beforeAll(async () => {
-      form = await Form.load(formToLoadAndTest)
+      try {
+        form = await Form.load(formToLoadAndTest)
+      } catch (e) {
+        console.error('wtf', e)
+      }
     })
 
     describe('positive', () => {

@@ -43,8 +43,8 @@ function prepareRxSchema (
 
   fields
     .filter(field => !(field.excludeFrom &&
-        (field.excludeFrom.indexOf('db') > -1 ||
-        field.excludeFrom.indexOf('all') > -1)))
+      (field.excludeFrom.indexOf('db') > -1 ||
+      field.excludeFrom.indexOf('all') > -1)))
     .forEach(field => {
       pushFieldToSchema(field, schema)
     })
@@ -84,7 +84,6 @@ const toSchemaField = (field: LodgerFormItemCreator) => {
   // })
 
   if (index) Object.assign(fieldData, { index })
-
   if (step) Object.assign(fieldData, { multipleOf: step })
   if (ref) Object.assign(fieldData, ref)
 
@@ -135,8 +134,9 @@ function pushFieldToSchema (
 function assignRefIdsFromStore (context: any) {
   const { references, getters } = context
   if (!(references && references.length)) return
-  type cheieIdTaxonomie = (x: Taxonomie) => string
-  const refsObj: {[k: cheieIdTaxonomie]: any} = {}
+
+  const refsObj = {}
+
   references.map((tax: Taxonomie) => {
     refsObj[`${tax}Id`] = getters[`${tax}/selected`]
   })
@@ -150,7 +150,7 @@ function assignRefIdsFromStore (context: any) {
  * @param data
  */
 function handleOnSubmit (
-  data : LodgerForm,
+  data : FormValue,
   context ?: any
 ) {
   const manipulatedData: any = {}
@@ -171,10 +171,9 @@ function handleOnSubmit (
   const { referencesIds } = context
 
   Object.assign(manipulatedData, referencesIds)
-  // debug('data after hOS', manipulatedData)
+
   return manipulatedData
 }
-
 
 /**
  * Common fields for all taxonomies
