@@ -45,23 +45,49 @@ describe('Form', () => {
   beforeAll(() => {
     __stub1__ = new Form(stub1)
     __stub2__ = new Form(stub2)
-    console.error(__stub2__)
+    // console.error(__stub2__)
   })
 
 
-  describe('new()', () => {
-    // describe('negative', () => {
-    //   const name = 'aFormName'
-    //   const plural = 'formsCollection'
-    //   test('throws if fields is empty', () => {
-    //     const fields: Fields = []
-    //     expect(() => new Form({ fields }, name, plural)).toThrow()
+  describe('constructor()', () => {
+    describe('negative', () => {
+      const name = 'aFormName'
+      const plural = 'formsCollection'
+      test('throws if fields is empty', () => {
+        const fields: Fields = []
+        expect(() => new Form({ fields }, name, plural)).toThrow()
+      })
+    })
+
+  })
+
+  describe('indexable fields', () => {
+    // describe('positive', () => {
+    //   test('contains all fields\' ids with index: true', () => {
+    //     expect(__stub1__.indexables).toContainEqual(
+
+    //     )
+    //   })
+
+    //   test('contains keys from commmon methods', () => {
+
     //   })
     // })
-
   })
 
+  describe('.value()', () => {
+    describe('positive', () => {
+      // nu e  cel mai ok test, redo
+      test('it contains all keys, even excluded ones', () => {
+        expect(Object.keys(__stub1__.value()))
+        .toContainEqual(Object.keys(__stub1__.collection.schema.properties))
+      })
+    })
 
+    describe('negative', () => {
+
+    })
+  })
 
   describe('.collection', () => {
     describe('positive', () => {

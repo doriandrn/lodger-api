@@ -83,16 +83,6 @@ const formsPath = ['dev', 'test']
     'forms' :
     '.'
 
-/**
- * All indexabble fields
- * @returns {Array} the ids of all fields with index: true
- */
-const indexables = (fields: LodgerFormItemCreator[]) =>
-  fields
-    .filter(field => field.index)
-    .map(field => field.id)
-
-
 
 export interface LodgerFormConstructor {
   new (data: LodgerFormCreator): LodgerForm
@@ -100,8 +90,8 @@ export interface LodgerFormConstructor {
 
 interface LodgerForm {
   name: string
-  indexables: string[]
   collection: undefined | RxCollectionCreator
+  indexables ?: string[]
 }
 
 /**
@@ -111,7 +101,7 @@ class Form implements LodgerForm {
   name: string
   fields: LodgerFormItemCreator[]
   collection: undefined | RxCollectionCreator
-  readonly indexables: string[]
+  readonly indexables ?: string[]
 
   constructor (
     data: LodgerFormCreator,
@@ -123,7 +113,6 @@ class Form implements LodgerForm {
       throw new FormError('missing fields on form %%', name)
 
     this.name = name
-    this.indexables = indexables(fields)
     this.fields = fields
 
     if (generateRxCollection) {
@@ -135,6 +124,7 @@ class Form implements LodgerForm {
         statics
       }
       this.collection = collection
+      this.indexables = Object.keys(schema.properties).filter(prop => schema.properties[prop].index)
     }
   }
 
@@ -197,7 +187,6 @@ class Form implements LodgerForm {
     const formPath: string = `${formsPath}/${name}`
 
     return import(formPath).then((formData: LodgerFormCreator) => {
-      console.error('FF', formData)
       if (!formData.fields) throw new FormError('invalid form file %%', name)
       Object.assign(formData, { name })
       debug('✓', name)
