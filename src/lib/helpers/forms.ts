@@ -42,7 +42,9 @@ function prepareRxSchema (
   schema.title = name
 
   fields
-    .filter(field => !(field.excludeFrom && field.excludeFrom.indexOf('db')))
+    .filter(field => !(field.excludeFrom &&
+        (field.excludeFrom.indexOf('db') > -1 ||
+        field.excludeFrom.indexOf('all') > -1)))
     .forEach(field => {
       pushFieldToSchema(field, schema)
     })

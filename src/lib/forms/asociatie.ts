@@ -24,8 +24,7 @@ const plural = 'asociatii'
 const fields = [
   {
     id: '_id',
-    notInDb: true,
-    notInForm: true,
+    excludeFrom: 'all',
     value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter]._id,
   },
   {
@@ -59,14 +58,14 @@ const fields = [
     type: 'array',
     ref: 'incasari',
     value: g => g[getter].incasari,
-    notInForm: true
+    excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'utilizatori',
     type: 'array',
     ref: 'utilizatori',
     value: g => g[getter].utilizatori,
-    notInForm: true
+    excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'servicii',
@@ -74,26 +73,26 @@ const fields = [
     ref: 'servicii',
     value: g => g[getter].servicii,
     showInList: 'secondary',
-    notInForm: true
+    excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'furnizori',
     type: 'array',
     ref: 'furnizori',
     value: g => g[getter].furnizori,
-    notInForm: true
+    excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'filtreCheltuieli',
     value: g => g[getter].filtreCheltuieli,
     type: 'array',
-    notInForm: true
+    excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'preferinte',
     value: g => g[getter].preferinte,
     type: 'object',
-    notInForm: true
+    excludeFrom: ['addForm', 'editForm']
   }
 ]
 

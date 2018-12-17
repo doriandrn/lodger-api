@@ -6,7 +6,9 @@ import {
   LodgerFormConstructor
 } from '~/lib/Form'
 
-// import { stub1, stub2, fields, name } from '@/__stubs__/playground'
+
+import fields from '@/__fixtures__/forms/fields/normal'
+import fieldsWithExcludedItems from '@/__fixtures__/forms/fields/withExcludedItems'
 
 /**
  * DO NOT CHANGE ANY OF THESE
@@ -21,19 +23,6 @@ const methods = {
   async lol () {},
   syncMethod () {}
 }
-
-const fields = [
-  { id: 'x1' },
-  { id: 'x2', required: true, index: true },
-  { id: 'x3' }
-]
-
-const fieldsWithExcludedItems = [
-  ...fields,
-  { id: 'x4', excludeFrom: 'db' },
-  { id: 'x5', excludeFrom: 'db', required: true }
-]
-
 
 const stub1: LodgerFormCreator = {
   name,
@@ -50,9 +39,15 @@ const stub2: LodgerFormCreator = {
 
 
 describe('Form', () => {
-  const __stub1__: LodgerFormConstructor = new Form(stub1)
-  const __stub2__: LodgerFormConstructor = new Form(stub2)
-  console.error(__stub1__)
+  let __stub1__: LodgerFormConstructor
+  let __stub2__: LodgerFormConstructor
+
+  beforeAll(() => {
+    __stub1__ = new Form(stub1)
+    __stub2__ = new Form(stub2)
+    console.error(__stub2__)
+  })
+
 
   describe('new()', () => {
     // describe('negative', () => {
@@ -66,66 +61,82 @@ describe('Form', () => {
 
   })
 
-  describe('prepareRxSchema()', () => {
-    test('is defined', () => {
-      const { schema } = __stub1__
-      expect(schema).toBeDefined()
-    })
 
-    test('title matches name', () => {
-      const { schema } = __stub1__
-      expect(schema.title).toBe(name)
-    })
-
-    test('matches fields length', () => {
-      const { schema } = __stub1__
-      const keys = Object.keys(schema.properties)
-      expect(keys.length).toBe(fields.length)
-    })
-
-    describe('.required[]', () => {
-      const { schema } = __stub2__
-      const { required } = schema
-      // console.log(schema, typeof schema)
-
-      test('adds required fields', () => {
-        expect(required).toContain('x2')
-        expect(required).not.toContain('x5')
-      })
-
-      test('does NOT contain duplicates', () => {
-        expect(required).toEqual(['x2'])
-      })
-    })
-
-    test('excludes fields', () => {
-      const { schema: { properties } } = __stub2__
-      expect(properties).not.toHaveProperty('x5')
-    })
-
-    test('indexed fields have -index- prop', () => {
-      const { schema: { properties } } = __stub2__
-      expect(properties.x2.index).toBeDefined()
-    })
-
-    describe('adds common-shared fields', () => {
-      test('la - @ - time the doc was added', () => {
-        const { schema: { properties } } = __stub2__
-        expect(properties.x2.la).toBeDefined()
-      })
-    })
-
-  })
 
   describe('.collection', () => {
-    test('makes collection', () => {
-      const { collection } = __stub1__
-      expect(collection).toBeDefined()
+    describe('positive', () => {
+      test('makes collection', () => {
+        const { collection } = __stub1__
+        expect(collection).toBeDefined()
+        expect(collection.schema).toBeDefined()
+      })
+
+      test('methods are passed in if existing', () => {
+        const { collection } = __stub1__
+        expect(collection.methods).toEqual(stub1.methods)
+      })
+
+      test('statics are passed', () => {
+        const { collection } = __stub1__
+        expect(collection.statics).toEqual(stub1.statics)
+      })
     })
 
-    test('methods are passed in if existing', () => {
-      const { collection } = __stub1__
-      expect(collection.methods).toEqual(stub1.methods)
+    describe('schema', () => {
+      test('is defined', () => {
+        const { schema } = __stub1__.collection
+        expect(schema).toBeDefined()
+      })
+
+      test('title matches name', () => {
+        const { schema } = __stub1__.collection
+        expect(schema.title).toBe(name)
+      })
+
+      // test('matches fields length', () => {
+      //   const { schema } = __stub1__.collection
+      //   const keys = Object.keys(schema.properties)
+      //   expect(keys.length).toBe(fields.length)
+      // })
+
+      describe('.required[]', () => {
+
+        test('adds required fields', () => {
+          const { schema } = __stub2__.collection
+          const { required } = schema
+          expect(required).toContain('x2')
+          expect(required).not.toContain('x5')
+        })
+
+        test('does NOT contain duplicates', () => {
+          const { schema } = __stub2__.collection
+          const { required } = schema
+          expect(required).toEqual(['x2'])
+        })
+
+        test('excluded from db fields dont show up', () => {
+          const { schema } = __stub2__.collection
+          expect(schema.properties.x5).toBeUndefined()
+        })
+      })
+
+      test('excludes fields', () => {
+        const { schema: { properties } } = __stub2__.collection
+        expect(properties).not.toHaveProperty('x5')
+      })
+
+      test('indexable fields have -index- prop', () => {
+        const { schema: { properties } } = __stub2__.collection
+        expect(properties.x2.index).toBeDefined()
+      })
+
+      describe('adds common-shared fields', () => {
+        test('la - @ - time the doc was added', () => {
+          const { schema: { properties } } = __stub2__.collection
+          expect(properties.la).toBeDefined()
+        })
+      })
+
     })
   })
 
@@ -135,6 +146,21 @@ describe('Form', () => {
     beforeAll(async () => {
       form = await Form.load(formToLoadAndTest)
     })
+
+    describe('positive', () => {
+
+      test('returns a fully inited <Form> if found and ok', () => {
+        expect(form).toBeDefined()
+        expect(form.name).toBeDefined()
+        expect(form.collection).toBeDefined()
+      })
+
+      test('form name is the same  as requested', () => {
+        console.error(form)
+        expect(form.name).toBe(formToLoadAndTest)
+      })
+    })
+
     describe('negative', () => {
       test('throws if called with anything else than string', async () => {
         try {
@@ -152,15 +178,7 @@ describe('Form', () => {
         }
       })
     })
-    describe('positive', () => {
-
-      test('returns a fully inited <Form> if found and ok', () => {
-        expect(form).toBeDefined
-      })
-
-      test('form name is the same  as requested', () => {
-        expect(form.name).toBe(formToLoadAndTest)
-      })
-    })
   })
+
+
 })

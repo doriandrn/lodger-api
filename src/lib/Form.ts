@@ -4,7 +4,7 @@
  * than a normal JsonSchema
  */
 import Debug from 'debug'
-import { RxJsonSchema, RxCollectionCreator, RxJsonSchemaTopLevel } from 'rxdb'
+import { RxCollectionCreator } from 'rxdb'
 import {
   prepareRxSchema,
 } from './helpers/forms'
@@ -16,7 +16,7 @@ import { GetterTree } from 'vuex'
 import { RootState } from './Store'
 
 type ItemReference = Plural<Taxonomie> | object
-type FormExcludables = 'db' | 'addForm' | 'editForm'
+type FormExcludables = 'db' | 'addForm' | 'editForm' | 'all'
 type ItemExcludableFrom = FormExcludables[]
 
 export type LodgerFormItemCreator = {
@@ -107,10 +107,10 @@ interface LodgerForm {
  * Form class
  */
 class Form implements LodgerForm {
-  readonly name: string
-  readonly indexables: string[]
+  name: string
   fields: LodgerFormItemCreator[]
   collection: undefined | RxCollectionCreator
+  readonly indexables: string[]
 
   constructor (
     data: LodgerFormCreator,
@@ -124,7 +124,7 @@ class Form implements LodgerForm {
     this.fields = fields
 
     if (generateRxCollection) {
-      const schema = prepareRxSchema(data)
+      const schema = prepareRxSchema(data, true)
       const collection = {
         name: plural,
         schema,
@@ -187,14 +187,14 @@ class Form implements LodgerForm {
   static load (name: string): Promise<Form> {
     const debug = Debug('lodger:Form')
     if (!name) throw new FormError('no name supplied for form')
-    let form
+    const formPath = `${formsPath}/${name}`
 
-    return import(`${formsPath}/${name}`).then((formData: LodgerFormCreator) => {
-      form = { ...formData }
-      // if (form.default) form = form.default
-      Object.assign(form, { name })
+    return import(formPath).then((formData: LodgerFormCreator) => {
+      if (!formData.fields) throw new FormError('invalid form file %%', name)
+      Object.assign(formData, { name })
+      console.error('FF', formData)
       debug('✓', name)
-      return new Form({ ...form })
+      return new Form({ ...formData })
     }).catch(err => { throw new FormError(err) })
   }
 }

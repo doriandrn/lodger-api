@@ -104,7 +104,6 @@ describe('helpers/forms', () => {
 
       test('excludes null/undefined keys', () => {
         Object.values(testField[id]).forEach(field => {
-          console.error(field)
           expect(field).toBeDefined()
         })
       })
@@ -155,24 +154,5 @@ describe('helpers/forms', () => {
       })
     })
     describe('negative', () => {})
-  })
-
-  // TODO! ia din forms dupa nume si gaseste fiedl cu Id la sf
-  // describe('.getReferenceTaxonomy()', () => {
-  //   describe('positive', () => {
-  //     test('returns the item with', () => {
-
-  //     })
-  //   })
-  // })
-
-  describe('.dynamicFormData() -> renamed to componentData()', () => {
-    describe('positive', () => {
-
-    })
-
-    describe('negative', () => {
-
-    })
   })
 })
