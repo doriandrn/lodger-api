@@ -96,7 +96,7 @@ const toSchemaField = (field: LodgerFormItemCreator) => {
  *
  * @param {Object} formItem - campu'
  * @param {Object} schema - schema colectiei
- * @returns {object} schema modificata
+ * @returns {Object} schema modificata
  */
 function pushFieldToSchema (
   formItem: LodgerFormItemCreator,
@@ -128,7 +128,7 @@ function pushFieldToSchema (
  * si tot ce are nevoie de Id de altceva
  * se populeaza
  *
- * @param { references, getters }
+ * @param {Object} { references, getters }
  * @returns {Object} eg { asociatieId: 'XXXX' }
  */
 function assignRefIdsFromStore (context: any) {

@@ -4,8 +4,6 @@ const selectedApGetter = 'apartament/activeDoc'
 const fields = [
   {
     id: '_id',
-    notInDb: true, // skip it's already defiend by rxdb
-    notInForm: true,
     value: g => g[selectedApGetter]._id
   },
   {

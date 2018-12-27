@@ -1,19 +1,19 @@
 import { LodgerFormCreator } from "../Form";
 
-interface Asociatie {
-  _id: string
-  name: string
-  balanta: Bani
+// interface Asociatie = {
+//   _id: string
+//   name: string
+//   balanta: Bani
 
-  organizatie?: Organizatie,
-  // administratori: [Utilizator],
-  utilizatori?: [Utilizator],
-  servicii: [Serviciu],
-  furnizori?: [Furnizor],
-  tranzactii?: Tranzactie[]
+//   organizatie?: Organizatie,
+//   // administratori: [Utilizator],
+//   utilizatori?: [Utilizator],
+//   servicii: [Serviciu],
+//   furnizori?: [Furnizor],
+//   tranzactii?: Tranzactie[]
 
-  initBalanta: () => void
-}
+//   // initBalanta: () => void
+// }
 
 const getter = 'modal/data'
 const modalOpen = 'modal/open'
@@ -169,7 +169,7 @@ const setari = {
   },
 }
 
-export <LodgerFormCreator>{
+export {
   fields,
   plural,
   methods,

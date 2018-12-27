@@ -1,5 +1,5 @@
 /**
- * @param { methoName: action }
+ * @param {Object} { methodName: action }
  */
 export type SharedStoreMethods = {
   [k: string]: string | undefined,

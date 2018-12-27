@@ -6,7 +6,6 @@ describe('Taxonomy class', () => {
       test('it inits ok for a known tax', () => {
         const asociatie = new Taxonomy('asociatie')
         expect(asociatie).toBeDefined()
-        expect(asociatie.form).toBeDefined()
       })
     })
 
@@ -24,6 +23,7 @@ describe('Taxonomy class', () => {
           expect(e).toBeDefined()
         }
 
+        // this  should work actually
         try {
           new Taxonomy(3)
         } catch (e) {

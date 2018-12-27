@@ -14,13 +14,14 @@ import { buildOpts, BuildOptions } from '~/lib/build/opts'
 import { getCriteriu } from '~/lib/helpers/functions'
 import { handleOnSubmit, assignRefIdsFromStore } from '~/lib/helpers/forms'
 import DB from '~/lib/DB'
-import { Form } from '~/lib/Form'
+// import { Form } from '~/lib/Form'
 import { LodgerError } from '~/lib/Errors'
 
 import { string_similarity } from '~/lib/helpers/search'
-import { TaxonomiesHolder } from './lib/Taxonomy';
+import { TaxonomiesHolder, Taxonomy } from './lib/Taxonomy';
 
-const { NODE_ENV } = process.env
+import { env } from '~/lib/defs/env'
+import { Form } from './lib/Form';
 
 const subscribers: SubscribersList = {
   main: {},
@@ -37,6 +38,10 @@ enum Taxonomii {
   Serviciu, Utilizator
 }
 
+enum Forms {
+  Financiar, Preferinte
+}
+
 
 enum Errors {
   missingDB = 'Missing database',
@@ -50,24 +55,20 @@ enum Errors {
   couldNotWriteFile = 'Cannot write file'
 }
 
-/**
- * Loads all forms for taxonomies
- * @param taxonomies
- */
-async function loadForms (taxonomies: Taxonomii[]) {
-  return Object.assign({},
-    ...await Promise.all(taxonomies.map(async (tax: Taxonomii) => {
-      return { [tax]: await Form.load(tax) }
-    }
-  )))
-}
+type FormsHolder = { [k in Taxonomie | Forms]: Form }
+
 
 const plugins: LodgerPlugin[] = []
 
+/**
+ *
+ *
+ * @class Lodger
+ */
 class Lodger {
   constructor (
     protected taxonomii: Taxonomy[],
-    // protected forms: Forms,
+    forms: FormsHolder,
     protected db: RxDatabase,
     readonly store: LodgerStore
   ) {
@@ -108,8 +109,8 @@ class Lodger {
   /**
    * Adds / updates an entry in the DB
    *
-   * @param taxonomie
-   * @param data
+   * @param {Taxonomie} taxonomie
+   * @param {any} data - any -> usually Object
    */
   async put (
     taxonomy: Taxonomie,
@@ -121,14 +122,13 @@ class Lodger {
       throw new LodgerError(Errors.missingData, data)
 
     const {
-      db,
-      store,
-      forms
+      // db,
+      // store,
+      taxonomii
     } = this
 
-    const { plural } = forms[taxonomy]
+    const { collection } = taxonomii[taxonomy]
     // if (!plural) throw new LodgerError(Errors.noPlural, taxonomy)
-    const colectie = db.collections[plural]
 
     /**
      * If form submitted with an _id, must be an upsert
@@ -137,9 +137,9 @@ class Lodger {
       'upsert' :
       'insert'
 
-    const form = forms[taxonomy]
-    const references = form.referenceTaxonomies
-    const referencesIds = this.activeReferencesIds(references)
+    // const form = forms[taxonomy]
+    // const references = form.referenceTaxonomies
+    // const referencesIds = this.activeReferencesIds(references)
 
     /**
      * add references, default values, etc
@@ -150,9 +150,9 @@ class Lodger {
      * do the insert / upsert and following actions
      */
     try {
-      const doc = await colectie[method](internallyHandledData)
+      const doc = await collection[method](internallyHandledData)
       const id = doc._id
-      store.dispatch(`${taxonomy}/set_last`, id)
+      this.store.dispatch(`${taxonomy}/set_last`, id)
       this.select(taxonomy, { doc, id, subscriber })
 
       this.notify({
@@ -174,15 +174,11 @@ class Lodger {
    * @param id
    */
   async trash (taxonomie: Taxonomie, id: ItemID) {
-    const { db, taxonomii } = this
-    const debug = Debug('lodger:trash')
-    const { plural } = taxonomii[taxonomie]
-    if (!plural) throw new LodgerError('wtf')
-    const col = db.collections[plural]
-    const doc: RxDocument<Taxonomii> = await col.findOne(id)
-    await doc.remove()
-    debug(`deleted ${taxonomie} ID ${id}`)
-    return true
+    const { taxonomii } = this
+    const { collection } = taxonomii[taxonomie]
+
+    const doc: RxDocument<Taxonomii> = await collection.findOne(id)
+    return await doc.remove()
   }
 
   /**
@@ -489,30 +485,44 @@ class Lodger {
    *
    */
   static async build (options?: BuildOptions) {
-    let { dbCon } = options || buildOpts
     const debug = Debug('lodger:build')
-    debug(`building in ${NODE_ENV} mode ...`)
-
-    const taxonomii: = new TaxonomiesHolder(taxonomii, )
-      // <Taxonomii[]>
-    // let forms: {[k in Taxonomie]: Form} | {}
-    // try {
-    //   forms = await loadForms(taxonomii)
-    // } catch (e) {
-    //   throw new LodgerError('loading forms failed %%', e)
-    // }
-    // if (!forms) {
-    //   throw new LodgerError('build failed. forms could not be inited.')
-    // }
-
-    debug(`Loaded ${Object.keys(taxonomii).length} taxes ok.`)
-
-    const _collections: RxCollectionCreator[] = taxonomii.map(tax => tax.collection)
-    const db = await DB(_collections, dbCon)
-    const store = new LodgerStore(taxonomii)
-    // const { collections } = await db
-
+    // custom options
     if (options) Object.assign(buildOpts, { ...options })
+    const { dbCon } = options || buildOpts
+
+    debug(`Building in ${env} mode ...`)
+
+    // strings
+    const taxes: Taxonomie[] = Object.keys(Taxonomii).filter(tax => typeof Taxonomii[tax as any] === 'number')
+    const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
+
+    // objects initializers / clses
+    const forms: FormsHolder = Object.assign({},
+      ...await Promise.all(formsNames.map(formName =>
+        ({ [formName]: Form.load(formName) })
+      ))
+    )
+    debug('frms', forms)
+    const Taxonomies = Object.assign({}, ...taxes.map(tax => ( { [tax]: new Taxonomy(tax, forms[tax]) }) ))
+    debug('Txs', Object.keys(Taxonomies))
+    debug(`Loaded ${Object.keys(taxes).length} taxes ok.`)
+
+    const _collections: RxCollectionCreator[] = taxes.map(tax => {
+      // const f = Taxonomies[tax].form
+      const f = forms[tax]
+      const { name, plural, collection } = f
+      debug('C', name, plural, collection)
+      return collection
+    })
+    debug('cols', _collections)
+    const db = await DB(_collections, dbCon)
+    const store = new LodgerStore(taxes)
+
+    // bind collections to taxonomies
+    Object.keys(Taxonomies).forEach(tax => {
+      debug('t', tax)
+      Taxonomies[tax].collection = db.collections[Taxonomies[tax].plural]
+    })
 
     /**
      * When a taxonomy item gets SELECTED,
@@ -572,9 +582,11 @@ class Lodger {
       }
     })
 
+    debug('built')
+
     return new Lodger(
-      taxonomii,
-      // forms,
+      Taxonomies,
+      forms,
       db,
       store
     )

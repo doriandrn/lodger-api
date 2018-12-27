@@ -1,5 +1,5 @@
 import { Taxonomii } from "index";
-import { RxDocument, RxCollection } from 'rxdb'
+import { RxDocument, RxCollection, RxDatabase } from 'rxdb'
 import { Form } from './Form'
 import { TaxonomyError } from './Errors'
 import { RootState } from "./Store";
@@ -13,8 +13,6 @@ import { GetterTree } from 'vuex'
  */
 
  interface LodgerTaxonomy<N extends Taxonomie> {
-  //  readonly form: Form,
-  //  readonly name: N,
    readonly plural: Plural<N>,
    readonly subscribed: Boolean,
    readonly hasReference: Boolean,
@@ -22,11 +20,11 @@ import { GetterTree } from 'vuex'
    readonly dependantTaxonomies: LodgerTaxonomy<Taxonomie>[],
    readonly getters: GetterTree<Taxonomie, RootState>,
 
-  //  collection: RxCollection<N>,
+   collection: RxCollection<N>,
    activeDocuments: {
      [k in keyof SubscribersList]: RxDocument<N, any>
    },
-   sortOptions: SortOptions,
+  //  sortOptions: SortOptions,
    subscribe: () => Promise<Subscriber> //wrapper to lodger.subscribe(tax)
  }
 
@@ -35,37 +33,36 @@ export interface LodgerTaxonomyCreator<N extends Taxonomie> {
 }
 
  type LodgerTaxes = {
-   [k in Taxonomii]: () => LodgerTaxonomy<k>
+   [k in Taxonomii]: () => LodgerTaxonomy<Taxonomie>
  }
 
 export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
-
   constructor (
-    name: Taxonomie,
-    readonly form: Form,
-    collection: RxCollection<Taxonomie>
+    readonly name: Taxonomie,
+    readonly form: Form
   ) {
-    // try {
-    //   this.form = Promise.resolve(Form.load(name))
-    // } catch (e) {
-    //   throw new TaxonomyError('Wrong taxonomy: %%', name)
-    // }
-
   }
 
-    /**
+  get collection () {
+    return this.collection
+  }
+
+  set collection (col: RxCollection<Taxonomie>) {
+    this.collection = col
+  }
+
+  /**
    * Reference taxonomies of a taxonomy
    *
    * @returns {Array} taxonomii
    */
   get referenceTaxonomies () {
-    const { data: { fields } } = this.form
+    const { fields } = this.form
 
     return <Taxonomie[]>fields
       .filter(field => field.id.indexOf('Id') === field.id.length - 2)
       .map(field => field.id.replace('Id', ''))
   }
-
 
   get hasReference () {
     return true
@@ -83,10 +80,16 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   }
 }
 
+type LodgerTaxonomyCreatorContext = {
+  db: RxDatabase,
+  store: Store
+}
+
 export class TaxonomiesHolder implements LodgerTaxes {
 
   constructor (
     taxonomii: Taxonomie[],
+    context: LodgerTaxonomyCreatorContext,
     collections: RxCollection<Taxonomie>[]
   ) {
     taxonomii.forEach(async (tax: Taxonomie) => {
@@ -98,38 +101,38 @@ export class TaxonomiesHolder implements LodgerTaxes {
 }
 
 // const xx: LodgerTaxonomyCreator<Taxonomie> = new Taxonomy('asociatie', 'form', 'collection')
-  /**
-   * gets the sorting options for tax
-   * @returns an object with each key used as a sorting option
-   */
-  // get sortOptions () {
-  //   const { indexables, name } = this
+/**
+ * gets the sorting options for tax
+ * @returns an object with each key used as a sorting option
+ */
+// get sortOptions () {
+//   const { indexables, name } = this
 
-  //   if (!['serviciu', 'contor'].indexOf(name)) {
-  //     indexables.push('la')
-  //   }
+//   if (!['serviciu', 'contor'].indexOf(name)) {
+//     indexables.push('la')
+//   }
 
-  //   // TODO: !!! ia din common methods
-  //   const sorts = {}
-  //   indexables.forEach(indexable => {
-  //     const label = `sort.${indexable === 'name' ? 'az' : indexable}`
-  //     Object.assign(sorts, { [indexable]: { label } })
-  //   })
+//   // TODO: !!! ia din common methods
+//   const sorts = {}
+//   indexables.forEach(indexable => {
+//     const label = `sort.${indexable === 'name' ? 'az' : indexable}`
+//     Object.assign(sorts, { [indexable]: { label } })
+//   })
 
-  //   // debug(`${name} => sortable fields`, sorts)
+//   // debug(`${name} => sortable fields`, sorts)
 
-  //   return sorts
-  // }
- /**
-   * Items to be display to user,
-   * @returns {Object} the keys of the fields: their position
-   *
-   */
-  // get __displayItemKeys () {
-  //   const { fields } = this.data
+//   return sorts
+// }
+/**
+ * Items to be display to user,
+ * @returns {Object} the keys of the fields: their position
+ *
+ */
+// get __displayItemKeys () {
+//   const { fields } = this.data
 
-  //   return Object.assign({}, ...fields
-  //     .filter(field => field.showInList)
-  //     .map(field => ({ [field.id]: field.showInList }) )
-  //   )
-  // }
+//   return Object.assign({}, ...fields
+//     .filter(field => field.showInList)
+//     .map(field => ({ [field.id]: field.showInList }) )
+//   )
+// }

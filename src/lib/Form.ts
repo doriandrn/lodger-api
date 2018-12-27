@@ -102,6 +102,7 @@ class Form implements LodgerForm {
   fields: LodgerFormItemCreator[]
   collection: undefined | RxCollectionCreator
   readonly indexables ?: string[]
+  readonly plural : Plural<Taxonomie>
 
   constructor (
     data: LodgerFormCreator,
@@ -113,6 +114,7 @@ class Form implements LodgerForm {
       throw new FormError('missing fields on form %%', name)
 
     this.name = name
+    this.plural = plural
     this.fields = fields
 
     if (generateRxCollection) {
@@ -179,19 +181,23 @@ class Form implements LodgerForm {
    *
    * @param name
    */
-  static load (name: string): Promise<Form> | Form {
+  static async load (name: string): Promise<Form> {
     const debug = Debug('lodger:Form')
     if (!name)
       throw new FormError('no name supplied for form')
 
-    const formPath: string = `${formsPath}/${name}`
+    const formPath: string = `${formsPath}/${String(name).toLowerCase()}`
 
-    return import(formPath).then((formData: LodgerFormCreator) => {
-      if (!formData.fields) throw new FormError('invalid form file %%', name)
+    try {
+      const formData: LodgerFormCreator = await import(formPath)
       Object.assign(formData, { name })
       debug('✓', name)
-      return new Form({ ...formData })
-    }).catch(err => { throw new FormError(err) })
+      return new Form(formData)
+    } catch (err) {
+      debug('x', name)
+      throw new FormError(err)
+    }
+
   }
 }
 

@@ -41,12 +41,12 @@
     "isolatedModules": false
   },
   "include": [
-    "./src/**/*",
+    "src/**/*",
     "forms/*"
   ],
   "exclude": [
     "_oldstore",
-    "__tests__",
+    "__tests__/**/*",
     "node_modules/*"
   ]
 }

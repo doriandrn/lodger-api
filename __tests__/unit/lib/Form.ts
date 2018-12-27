@@ -89,6 +89,12 @@ describe('Form', () => {
     })
   })
 
+  describe('.plural getter', () => {
+    test('returns the collection name', () => {
+      expect(__stub1__.plural).toEqual(__stub1__.collection.name)
+    })
+  })
+
   describe('.collection', () => {
     describe('positive', () => {
       test('makes collection', () => {
