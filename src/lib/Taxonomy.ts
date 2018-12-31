@@ -1,7 +1,8 @@
 import { Taxonomii } from "index";
 import { RxDocument, RxCollection, RxDatabase } from 'rxdb'
 import { Form } from './Form'
-import { TaxonomyError } from './Errors'
+import LodgerConfig from 'lodger.config'
+// import { TaxonomyError } from './Errors'
 import { RootState } from "./Store";
 import { GetterTree } from 'vuex'
 
@@ -17,11 +18,13 @@ import { GetterTree } from 'vuex'
    readonly getters: GetterTree<Taxonomie, RootState>,
 
    collection: RxCollection<N>,
-   activeDocuments: {
-     [k in keyof SubscribersList]: RxDocument<N, any>
-   },
-  //  sortOptions: SortOptions,
+   actives: {
+    documents: { [k in keyof SubscribersList]: RxDocument<N, any> },
+    subscribers: LodgerSubscriber[]
+   }
+
    subscribe: () => Promise<Subscriber> //wrapper to lodger.subscribe(tax)
+   onFirstTimeInit: () => void
  }
 
 export interface LodgerTaxonomyCreator<N extends Taxonomie> {
@@ -35,12 +38,18 @@ export interface LodgerTaxonomyCreator<N extends Taxonomie> {
 /**
  * @class Taxonomy
  * @implements {Taxonomie} LodgerTaxonomy
+ *
  * @requires Form
  *
  * @param {Taxonomie} name - name of the form
  * @param {Form} form - the constructed form item
  */
 export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
+  actives = {
+    documents: {},
+    subscribers: []
+  }
+
   constructor (
     readonly name: Taxonomie,
     readonly form: Form
@@ -50,6 +59,7 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   /**
    * Binds a RXCollection to taxonomy
    *
+   * @memberof Taxonomy
    * @param {RxCollection<Taxonomie>} collection
    * @returns {RxCollection | undefined}
    */
@@ -63,7 +73,7 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
 
   /**
    * Reference taxonomies of a taxonomy
-   *
+   * @memberof Taxonomy
    * @returns {Array} taxonomii
    */
   get referenceTaxonomies () {
@@ -77,6 +87,8 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   /**
    * Checks for a reference taxonomy of taxonomy
    *
+   * @readonly
+   * @memberof Taxonomy
    * @returns {Boolean} has a reference taxonomy or not
    */
   get hasReference () {
@@ -84,19 +96,49 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   }
 
   /**
-   *
+   * @readonly
+   * @memberof Taxonomy
    * @returns {Boolean} if subscribed anywhere
    */
   get subscribed () {
-    return true
+    return this.actives.subscribers.length > 0
   }
 
   /**
+   * @readonly
+   * @memberof Taxonomy
    * @returns {String} plural of taxonomy
    */
   get plural () {
     return this.form.plural
   }
+
+  /**
+   * @readonly
+   * @memberof Taxonomy
+   * Taxonomy default config
+   */
+  get config () {
+    const { taxonomii } = LodgerConfig
+    const { defaults } = taxonomii
+    return taxonomii[this.plural] || defaults
+  }
+
+  get defaultCriteriu () {
+    return this.config.criteriu
+  }
+
+  /**
+   *
+   *
+   * @readonly
+   * @memberof Taxonomy
+   * @returns {Boolean} if taxonomy represents a multiple select choice
+   */
+  get isMultipleSelecct () {
+    return ['serviciu', 'contor'].indexOf(this.name) > -1
+  }
+
 }
 
 type LodgerTaxonomyCreatorContext = {
