@@ -11,7 +11,7 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "build:types": "tsc --emitDeclarationOnly",
-    "build:docs": "mkdir ./dist/docs/ && jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > dist/docs/index.md",
+    "build:docs": "rm -R ./dist/docs/ && mkdir ./dist/docs/ && jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > dist/docs/index.md",
     "build:js": "rollup -c",
     "build": "yarn build:types && yarn build:js"
   },

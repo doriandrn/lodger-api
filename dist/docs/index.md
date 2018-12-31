@@ -9,6 +9,8 @@
 <dd><p>Error logger for forms</p></dd>
 <dt><a href="#Form">Form</a></dt>
 <dd><p>Form class</p></dd>
+<dt><a href="#Taxonomy">Taxonomy</a></dt>
+<dd></dd>
 </dl>
 
 ## Members
@@ -332,6 +334,65 @@ as it will turn reactive</p>
 | --- |
 | name | 
 
+<a name="Taxonomy"></a>
+
+## Taxonomy
+**Kind**: global class  
+**Implements**: <code>Taxonomie</code>  
+**Requires**: <code>module:Form</code>  
+
+* [Taxonomy](#Taxonomy)
+    * [new Taxonomy(name, form)](#new_Taxonomy_new)
+    * [.collection](#Taxonomy+collection) ⇒ <code>RxCollection</code> \| <code>undefined</code>
+    * [.referenceTaxonomies](#Taxonomy+referenceTaxonomies) ⇒ <code>Array</code>
+    * [.hasReference](#Taxonomy+hasReference) ⇒ <code>Boolean</code>
+    * [.subscribed](#Taxonomy+subscribed) ⇒ <code>Boolean</code>
+    * [.plural](#Taxonomy+plural) ⇒ <code>String</code>
+
+<a name="new_Taxonomy_new"></a>
+
+### new Taxonomy(name, form)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>Taxonomie</code> | <p>name of the form</p> |
+| form | [<code>Form</code>](#Form) | <p>the constructed form item</p> |
+
+<a name="Taxonomy+collection"></a>
+
+### taxonomy.collection ⇒ <code>RxCollection</code> \| <code>undefined</code>
+<p>Binds a RXCollection to taxonomy</p>
+
+**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
+
+| Param | Type |
+| --- | --- |
+| collection | <code>RxCollection.&lt;Taxonomie&gt;</code> | 
+
+<a name="Taxonomy+referenceTaxonomies"></a>
+
+### taxonomy.referenceTaxonomies ⇒ <code>Array</code>
+<p>Reference taxonomies of a taxonomy</p>
+
+**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>Array</code> - <p>taxonomii</p>  
+<a name="Taxonomy+hasReference"></a>
+
+### taxonomy.hasReference ⇒ <code>Boolean</code>
+<p>Checks for a reference taxonomy of taxonomy</p>
+
+**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>Boolean</code> - <p>has a reference taxonomy or not</p>  
+<a name="Taxonomy+subscribed"></a>
+
+### taxonomy.subscribed ⇒ <code>Boolean</code>
+**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>Boolean</code> - <p>if subscribed anywhere</p>  
+<a name="Taxonomy+plural"></a>
+
+### taxonomy.plural ⇒ <code>String</code>
+**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>String</code> - <p>plural of taxonomy</p>  
 <a name="strings"></a>
 
 ## strings

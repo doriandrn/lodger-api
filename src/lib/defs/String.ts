@@ -23,6 +23,7 @@ String.prototype.stripLeading$ = function (): string {
 
 /**
  * Splits a mutation string (eg. 'asociatie/INCASEAZA')
+ * @memberof String
  * @returns {SplitObject}
  */
 String.prototype.spleet = function (): SplitObject {
@@ -37,6 +38,7 @@ String.prototype.spleet = function (): SplitObject {
 /**
  * Slugifies a string
  *
+ * @memberof String
  * @returns {String} the slug
  */
 String.prototype.slugify = function (): string {
