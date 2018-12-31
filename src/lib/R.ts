@@ -1,3 +1,6 @@
+import Vue from 'vue'
+import { getRxDocumentById } from './helpers/subscribers'
+
 /**
  * Main holder for temporary items subscribed to
  * RENDERLESS Vue Component
@@ -6,23 +9,41 @@
  * holds RX documents
  * and methods to accezss / manipulate them
  *
+ * @export
+ * @returns {Vue} data holder object
  */
-import Vue from 'vue'
-import { getRxDocumentById } from './helpers/subscribers'
-
 export default new Vue({
   data () { return {
     subsData: {}
   }},
 
   computed: {
+    /**
+     * Itmes ids of a requested taxonomy by it's plural
+     *
+     * @param {Plural<Taxonomie>} taxonomy
+     * @param {subscriberName} subscriberName
+     *
+     * @returns {ItemID[]} the IDs of contained items
+     */
     ids () {
-      return (tax: Plural<Taxonomie>, subName: string) => {
-        return Object.keys(this.subsData[subName][tax])
+      return (taxonomy: Plural<Taxonomie>, subName: string) => {
+        return Object.keys(this.subsData[subName][taxonomy])
       }
     }
   },
   methods: {
+    /**
+     * Gets an item from existing temporary items
+     * or looks it up in the DB
+     *
+     * @param {Plural<Taxonomie>} taxonomie
+     * @param {string} id
+     * @param {string} [subscriberName]
+     * @returns {object} the item
+     *
+     * @todo create a type for the returned item
+     */
     async getItem (
       taxonomie: Plural<Taxonomie>,
       id: string,

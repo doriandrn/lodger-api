@@ -5,7 +5,7 @@ import idbAdapter from 'pouchdb-adapter-idb'
 import httpAdapter from 'pouchdb-adapter-http'
 
 const debug = Debug('lodger:db')
-const { NODE_ENV } = process.env
+import { env } from 'defs/env'
 
 // RxDB.QueryChangeDetector.enable()
 // RxDB.QueryChangeDetector.enableDebugging()
@@ -25,7 +25,7 @@ const { NODE_ENV } = process.env
 //   })
 // })
 
-switch (NODE_ENV) {
+switch (env) {
   default:
     RxDB.plugin(memoryAdapter)
     break
@@ -36,6 +36,15 @@ switch (NODE_ENV) {
     break
 }
 
+/**
+ * RxDB instantiator
+ *
+ * @export
+ * @async
+ * @param {RxDB.RxCollectionCreator[]} collections
+ * @param {RxDB.RxDatabaseCreator} [config]
+ * @returns {RxDB} the fresh database
+ */
 export default async function (
   collections: RxDB.RxCollectionCreator[],
   config?: RxDB.RxDatabaseCreator
@@ -45,8 +54,9 @@ export default async function (
 
   // show leadership in title
   db.waitForLeadership().then(() => {
-    if (NODE_ENV !== 'dev') return
-    // document.title = `♛ ${document.title}`
+    if (env !== 'dev') return
+    if (process.browser) return
+    document.title = `♛ ${document.title}`
   })
   await Promise.all(collections.map(c => db.collection(c)))
   return db

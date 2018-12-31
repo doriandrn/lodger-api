@@ -5,13 +5,9 @@ import { TaxonomyError } from './Errors'
 import { RootState } from "./Store";
 import { GetterTree } from 'vuex'
 
-/**
- * Taxonomy
- *  get subscribed: Boolean
- *  get hasReference: Boolean
- *
- */
-
+ /**
+  * @interface LodgerTaxonomy
+  */
  interface LodgerTaxonomy<N extends Taxonomie> {
    readonly plural: Plural<N>,
    readonly subscribed: Boolean,
@@ -36,6 +32,14 @@ export interface LodgerTaxonomyCreator<N extends Taxonomie> {
    [k in Taxonomii]: () => LodgerTaxonomy<Taxonomie>
  }
 
+/**
+ * @class Taxonomy
+ * @implements {Taxonomie} LodgerTaxonomy
+ * @requires Form
+ *
+ * @param {Taxonomie} name - name of the form
+ * @param {Form} form - the constructed form item
+ */
 export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   constructor (
     readonly name: Taxonomie,
@@ -43,6 +47,12 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   ) {
   }
 
+  /**
+   * Binds a RXCollection to taxonomy
+   *
+   * @param {RxCollection<Taxonomie>} collection
+   * @returns {RxCollection | undefined}
+   */
   get collection () {
     return this.collection
   }
@@ -64,16 +74,25 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
       .map(field => field.id.replace('Id', ''))
   }
 
+  /**
+   * Checks for a reference taxonomy of taxonomy
+   *
+   * @returns {Boolean} has a reference taxonomy or not
+   */
   get hasReference () {
-    return true
-  }
-
-  get subscribed () {
     return true
   }
 
   /**
    *
+   * @returns {Boolean} if subscribed anywhere
+   */
+  get subscribed () {
+    return true
+  }
+
+  /**
+   * @returns {String} plural of taxonomy
    */
   get plural () {
     return this.form.plural
