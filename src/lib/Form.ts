@@ -48,9 +48,11 @@ export type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
 
 
 /**
- * Form Errors Definition
+ * Errors Definition
+ * @readonly
+ * @enum {string}
  *
- * TODO: account for translations
+ * @todo account for translations
  */
 enum Errors {
   invalidRequested = 'Invalid form requested: %%',

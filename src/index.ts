@@ -62,7 +62,6 @@ const plugins: LodgerPlugin[] = []
 
 /**
  *
- *
  * @class Lodger
  */
 class Lodger {
@@ -79,7 +78,6 @@ class Lodger {
 
       Object.defineProperty(this, plural, {
         get () {
-          // debug('getter tax apelat')
           return (subscriberName: string = 'main') => {
             try {
               return vueHelper.subsData[subscriberName][plural].items
@@ -90,16 +88,13 @@ class Lodger {
         }
       })
     })
-
-    // console.error(Object.getOwnPropertyNames(this))
-
-    // todo, remove on prod
-    // try { window.dh = vueHelper } catch (e) {}
   }
 
   /**
    * Notifies the user about an update/change
-   * - Store action wrapper -
+   *
+   * @kind Store action wrapper
+   * @param {LdgNotification} notification
    */
   notify (notification: LdgNotification) {
     // console.info(notification)

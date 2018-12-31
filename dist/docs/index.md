@@ -16,9 +16,6 @@
 <dl>
 <dt><a href="#strings">strings</a></dt>
 <dd><p>Private item types for FormItemCreator -&gt; RxDB</p></dd>
-<dt><a href="#Errors">Errors</a></dt>
-<dd><p>Form Errors Definition</p>
-<p>TODO: account for translations</p></dd>
 </dl>
 
 ## Constants
@@ -92,13 +89,13 @@ to be used before calling the constructor</p></dd>
 
 * [Lodger](#Lodger)
     * _instance_
+        * [.notify](#Lodger+notify)
         * [._activeDocument](#Lodger+_activeDocument)
         * [.taxonomiesWithoutReference](#Lodger+taxonomiesWithoutReference) ⇒ <code>Array</code>
         * [.plugins](#Lodger+plugins)
         * [.getters](#Lodger+getters)
         * [.preferences](#Lodger+preferences)
         * [.activeReferencesIds](#Lodger+activeReferencesIds) ⇒ <code>Object</code>
-        * [.notify()](#Lodger+notify)
         * [.put(taxonomie, data)](#Lodger+put)
         * [.trash(taxonomie, id)](#Lodger+trash)
         * [.select(taxonomie, id)](#Lodger+select)
@@ -112,6 +109,17 @@ to be used before calling the constructor</p></dd>
     * _static_
         * [.build(options)](#Lodger.build) ⇒ [<code>Lodger</code>](#Lodger)
         * [.use(plugin)](#Lodger.use)
+
+<a name="Lodger+notify"></a>
+
+### lodger.notify
+<p>Notifies the user about an update/change</p>
+
+**Kind**: instance Store action wrapper of [<code>Lodger</code>](#Lodger)  
+
+| Param | Type |
+| --- | --- |
+| notification | <code>LdgNotification</code> | 
 
 <a name="Lodger+_activeDocument"></a>
 
@@ -154,15 +162,6 @@ gets values from DB and store</p>
 get the referred ids</p>
 
 **Kind**: instance property of [<code>Lodger</code>](#Lodger)  
-<a name="Lodger+notify"></a>
-
-### lodger.notify()
-<p>Notifies the user about an update/change</p>
-<ul>
-<li>Store action wrapper -</li>
-</ul>
-
-**Kind**: instance method of [<code>Lodger</code>](#Lodger)  
 <a name="Lodger+put"></a>
 
 ### lodger.put(taxonomie, data)
@@ -341,11 +340,15 @@ as it will turn reactive</p>
 **Kind**: global variable  
 <a name="Errors"></a>
 
-## Errors
-<p>Form Errors Definition</p>
-<p>TODO: account for translations</p>
+## Errors : <code>enum</code>
+<p>Errors Definition</p>
 
-**Kind**: global variable  
+**Kind**: global enum  
+**Read only**: true  
+**Todo**
+
+- [ ] account for translations
+
 <a name="sharedStoreMethods"></a>
 
 ## sharedStoreMethods
