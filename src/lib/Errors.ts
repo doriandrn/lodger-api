@@ -17,6 +17,7 @@ class LodgerError extends Error {
 
 /**
  * Error logger for forms
+ * @implements {Error}
  */
 
 class FormError extends LodgerError {
@@ -33,7 +34,7 @@ class TaxonomyError extends LodgerError {
     super(m, details)
 
     // Set the prototype explicitly.
-    Object.setPrototypeOf(this, FormError.prototype)
+    Object.setPrototypeOf(this, TaxonomyError.prototype)
   }
 }
 

@@ -1,13 +1,18 @@
-
 type SplitObject = {
   what: string,
   mutation: string
 }
 
+/**
+ * String helpers extensions
+ *
+ * @interface String
+ */
 interface String {
   stripLeading$: () => string,
   spleet: () => SplitObject,
-  slugify: () => string
+  slugify: () => string,
+  toRxDBtype: () => RxDBType
 }
 
 /**
@@ -48,4 +53,70 @@ String.prototype.slugify = function (): string {
     .replace(/\-\-+/g, '-')         // Replace multiple - with single -
     .replace(/^-+/, '')             // Trim - from start of text
     .replace(/-+$/, '');            // Trim - from end of text
+}
+
+
+/**
+ * Accepted 'string's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+enum strings {
+  search, select, string, text, textarea
+}
+
+/**
+ * Accepted 'number's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+enum numbers {
+  bani, date, dateTime, number
+}
+
+/**
+ * Accepted 'array's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+enum arrays {
+  array, contactFields, contoare, distribuire,
+  furnizori, selApartamente, servicii, scari
+}
+
+/**
+ * Accepted 'object's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+enum objects {
+  object
+}
+
+type FormItemTypes = keyof typeof strings |
+  keyof typeof numbers |
+  keyof typeof arrays |
+  keyof typeof objects |
+  undefined
+
+type RxDBType = 'string' | 'number' | 'array' | 'object'
+
+/**
+ * Converts a LodgerField type to RxDB compatible one
+ *
+ * Explicatie:
+ * DB-ul nu stie decat de tipurile primare:
+ * -> boolean, string, number, array, object
+ * Schema noastra e mult mai detaliata
+ *
+ * @returns {string} - tipul primar, eg. 'string'
+ */
+String.prototype.toRxDBtype = function (): RxDBType {
+  const _default = 'string'
+
+  if (Object.keys(strings).indexOf(this) > -1) return _default
+  if (Object.keys(objects).indexOf(this) > -1) return 'object'
+  if (Object.keys(numbers).indexOf(this) > -1) return 'number'
+  if (Object.keys(arrays).indexOf(this) > -1) return 'array'
+  return _default
 }

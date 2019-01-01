@@ -2,7 +2,8 @@ import { Taxonomii } from "index";
 import { RxDocument, RxCollection, RxDatabase } from 'rxdb'
 import { Form } from './Form'
 import LodgerConfig from 'lodger.config'
-// import { TaxonomyError } from './Errors'
+import { TaxonomyError } from './Errors'
+import { predefinite } from 'forms/serviciu'
 import { RootState } from "./Store";
 import { GetterTree } from 'vuex'
 
@@ -18,10 +19,16 @@ import { GetterTree } from 'vuex'
    readonly getters: GetterTree<Taxonomie, RootState>,
 
    collection: RxCollection<N>,
+   storeModule: {}
+
    actives: {
     documents: { [k in keyof SubscribersList]: RxDocument<N, any> },
     subscribers: LodgerSubscriber[]
    }
+
+   put (data: Object): Promise<RxDocument<N>> | void
+   trash (id: string): Promise<Boolean>
+   select (id: string, subscriberName: string): void
 
    subscribe: () => Promise<Subscriber> //wrapper to lodger.subscribe(tax)
    onFirstTimeInit: () => void
@@ -45,27 +52,136 @@ export interface LodgerTaxonomyCreator<N extends Taxonomie> {
  * @param {Form} form - the constructed form item
  */
 export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
+  collection: RxCollection<Taxonomie>
   actives = {
     documents: {},
     subscribers: []
   }
 
+  /**
+   * Creates an instance of Taxonomy.
+   *
+   * @param {Taxonomie} name
+   * @param {Form} form
+   * @memberof Taxonomy
+   */
   constructor (
     readonly name: Taxonomie,
     readonly form: Form
   ) {
   }
 
-  /**
-   * Binds a RXCollection to taxonomy
-   *
-   * @memberof Taxonomy
-   * @param {RxCollection<Taxonomie>} collection
-   * @returns {RxCollection | undefined}
-   */
-  get collection () {
-    return this.collection
+  async subscribe (
+    subscriberName : string = 'main',
+    criteriuCerut ?: Criteriu,
+  ) {
+
   }
+
+  /**
+   * Inserts a new item in DB
+   *
+   * @param {Object} data
+   * @returns {RxDocument<Taxonomie>} the fresh document
+   * @memberof Taxonomy
+   */
+  async put (
+    data: { _id ?: string},
+  ) {
+    if (!data || Object.keys(data).length < 1)
+      throw new TaxonomyError(Errors.missingData, data)
+
+    const { collection } = this
+
+    /**
+     * If form submitted with an _id, must be an upsert
+     */
+    const method = data._id ?
+      'upsert' :
+      'insert'
+
+    // const form = forms[taxonomy]
+    // const references = form.referenceTaxonomies
+    // const referencesIds = this.activeReferencesIds(references)
+
+    /**
+     * add references, default values, etc
+     */
+    const internallyHandledData = handleOnSubmit(data, { referencesIds, store })
+
+    /**
+     * do the insert / upsert and following actions
+     */
+    try {
+      const doc = await collection[method](internallyHandledData)
+      const id = doc._id
+      this.store.dispatch(`${taxonomy}/set_last`, id)
+      this.select(taxonomy, { doc, id, subscriber })
+
+      this.notify({
+        type: 'success',
+        text: `pus ${taxonomy} ${id}`
+      })
+      return doc
+    } catch (e) {
+      this.notify({
+        type: 'error', text: String(e)
+      })
+    }
+  }
+
+  /**
+   * select an item
+   * brings in the active Document from DB
+   *
+   * @param taxonomie
+   * @param id
+   */
+  async select (
+    data: SelectedItemData
+  ) {
+    const { plural, store: { dispatch } } = this
+    const isObj = typeof data === 'object' && data !== null
+
+    const id = isObj && data.id ? data.id : data
+    const subscriber = isObj && data.subscriber ? data.subscriber : undefined
+
+    await dispatch(`${taxonomie}/select`, id)
+
+    // // deselect
+    // if (!id) {
+    //   await dispatch(`${taxonomie}/select`, undefined)
+    //   return
+    // }
+
+    // // delay this, await for changes from rxdbb
+    // const doc = isObj && data.doc ?
+    //   data.doc :
+    //   await vueHelper.getItem(plural, id, subscriber)
+
+    // debug('selected doc', doc._id)
+
+    // if (!doc) {
+    //   throw new LodgerError('invalid id supplied on select %%', id)
+    // } else {
+    //   this._activeDocument = { taxonomie, doc }
+    //   await dispatch(`${taxonomie}/select`, id)
+    // }
+
+    // on deselect, unsubscribe
+    // if (id === null) await this.unsubscribe(plural, subscriber) //todo: use data.subscribe .unsubscribe()
+  }
+
+  // /**
+  //  * Binds a RXCollection to taxonomy
+  //  *
+  //  * @memberof Taxonomy
+  //  * @param {RxCollection<Taxonomie>} collection
+  //  * @returns {RxCollection | undefined}
+  //  */
+  // get collection () {
+  //   return this.collection
+  // }
 
   set collection (col: RxCollection<Taxonomie>) {
     this.collection = col
@@ -136,10 +252,32 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
    * @returns {Boolean} if taxonomy represents a multiple select choice
    */
   get isMultipleSelecct () {
-    return ['serviciu', 'contor'].indexOf(this.name) > -1
+    return ['Serviciu', 'Contor'].indexOf(this.name) > -1
   }
 
+  async onFirstTimeSubscribe () {
+    const { name, collection, store } = this
+    switch (name) {
+      // insert predefined services
+      case 'Serviciu':
+        predefinite.forEach(async denumire => { await collection.insert({ denumire }) })
+        break
+
+      // insert admin user
+      case 'Utilizator':
+        const { _id } = await collection.insert({
+          name: 'Administrator',
+          rol: 'admin'
+        })
+        store.dispatch('utilizator/set_active', _id)
+        break
+    }
+
+    subscribedTaxes.push(name)
+  }
 }
+
+const subscribedTaxes: Taxonomie[] = []
 
 type LodgerTaxonomyCreatorContext = {
   db: RxDatabase,
@@ -147,6 +285,7 @@ type LodgerTaxonomyCreatorContext = {
 }
 
 export class TaxonomiesHolder implements LodgerTaxes {
+  subscribedTaxes = []
 
   constructor (
     taxonomii: Taxonomie[],

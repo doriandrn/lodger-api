@@ -148,30 +148,6 @@ declare global {
     doc: RxDocument<Taxonomie>
   }
 
-  type Sort = {}
-  type Find = {} | null
-
-  type Criteriu = {
-    limit?: number,
-    index?: number,
-    sort?: Sort,
-    find?: Find
-  }
-
-  type CriteriuKeys = keyof Criteriu
-
-  type Subscriber = {
-    [k: string]: {
-      unsubscribe: () => void
-    }
-  }
-
-  type SubscriberData = {
-    docs: RxDocument<Taxonomie>[],
-    items: {},
-    fetching: boolean,
-    criteriu?: Criteriu,
-  }
 
   type SubscribersList = { [k: string]: Subscriber }
   type SubscribersDataHolder = { [k: string]: SubscriberData }

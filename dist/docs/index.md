@@ -7,30 +7,29 @@
 <dd><p>Error logger</p></dd>
 <dt><a href="#FormError">FormError</a></dt>
 <dd><p>Error logger for forms</p></dd>
+<dt><a href="#Field">Field</a></dt>
+<dd></dd>
 <dt><a href="#Form">Form</a></dt>
-<dd><p>Form class</p></dd>
+<dd></dd>
+<dt><a href="#Schema">Schema</a></dt>
+<dd></dd>
+<dt><a href="#Subscriber">Subscriber</a></dt>
+<dd></dd>
 <dt><a href="#Taxonomy">Taxonomy</a></dt>
 <dd></dd>
-</dl>
-
-## Members
-
-<dl>
-<dt><a href="#strings">strings</a></dt>
-<dd><p>Private item types for FormItemCreator -&gt; RxDB</p></dd>
 </dl>
 
 ## Constants
 
 <dl>
+<dt><a href="#plugins">plugins</a></dt>
+<dd><p>Plugins</p></dd>
 <dt><a href="#sharedStoreMethods">sharedStoreMethods</a></dt>
 <dd></dd>
-<dt><a href="#formsPath">formsPath</a></dt>
-<dd><p>path to forms -&gt; load on the fly</p></dd>
 <dt><a href="#fields">fields</a></dt>
 <dd><p>o cheltuiala = parte dintr-o factura</p></dd>
-<dt><a href="#vueHelperObj">vueHelperObj</a></dt>
-<dd><p>More like a schema of a simple holder item</p></dd>
+<dt><a href="#commonFields">commonFields</a></dt>
+<dd><p>Common fields for all taxonomies</p></dd>
 <dt><a href="#state">state</a></dt>
 <dd><p>Preferences MODULE</p></dd>
 </dl>
@@ -59,18 +58,6 @@ se populeaza</p></dd>
 <dd><p>Manipulates the final data before submitting the form to the DB</p></dd>
 <dt><a href="#addCommonFieldsToSchema">addCommonFieldsToSchema(schema, commonFields)</a></dt>
 <dd><p>Common fields for all taxonomies</p></dd>
-<dt><a href="#traverse">traverse(obiectul, fn)</a></dt>
-<dd><p>Traverseaza un obiect cu o functie</p></dd>
-<dt><a href="#getTaxonomyConfig">getTaxonomyConfig(taxonomie)</a></dt>
-<dd><p>Returneaza config-ul pentru o taxonomie sau default</p></dd>
-<dt><a href="#getCriteriu">getCriteriu(taxonomie, criteriuCerut)</a></dt>
-<dd><p>Criteriu default pentru o taxonmoie ceruta</p></dd>
-<dt><a href="#no$">no$(str)</a></dt>
-<dd><p>Scoate &#39;$&#39; de la inceputul unui string</p></dd>
-<dt><a href="#spleet">spleet(str)</a></dt>
-<dd><p>Imparte un string de mutatie (&#39;asociatie/INCASEAZA&#39;)</p></dd>
-<dt><a href="#slugify">slugify(text)</a></dt>
-<dd><p>slug-ifica... destul de descriptiv :)</p></dd>
 <dt><a href="#createEmptyStoreModule">createEmptyStoreModule()</a></dt>
 <dd><p>Creates an empty store module</p></dd>
 <dt><a href="#setupSharedMethods">setupSharedMethods(taxonomy)</a></dt>
@@ -84,6 +71,65 @@ se populeaza</p></dd>
 to be used before calling the constructor</p></dd>
 </dl>
 
+## Interfaces
+
+<dl>
+<dt><a href="#String">String</a></dt>
+<dd><p>String helpers extensions</p></dd>
+<dt><a href="#LodgerSchema">LodgerSchema</a></dt>
+<dd></dd>
+</dl>
+
+<a name="String"></a>
+
+## String
+<p>String helpers extensions</p>
+
+**Kind**: global interface  
+
+* [String](#String)
+    * [.stripLeading$()](#String+stripLeading$) ⇒ [<code>String</code>](#String)
+    * [.spleet()](#String+spleet) ⇒ <code>SplitObject</code>
+    * [.slugify()](#String+slugify) ⇒ [<code>String</code>](#String)
+    * [.toRxDBtype()](#String+toRxDBtype) ⇒ <code>string</code>
+
+<a name="String+stripLeading$"></a>
+
+### string.stripLeading$() ⇒ [<code>String</code>](#String)
+<p>Removes the '$' at the begining of a string</p>
+
+**Kind**: instance method of [<code>String</code>](#String)  
+**Returns**: [<code>String</code>](#String) - <p>the parsed string</p>  
+<a name="String+spleet"></a>
+
+### string.spleet() ⇒ <code>SplitObject</code>
+<p>Splits a mutation string (eg. 'asociatie/INCASEAZA')</p>
+
+**Kind**: instance method of [<code>String</code>](#String)  
+<a name="String+slugify"></a>
+
+### string.slugify() ⇒ [<code>String</code>](#String)
+<p>Slugifies a string</p>
+
+**Kind**: instance method of [<code>String</code>](#String)  
+**Returns**: [<code>String</code>](#String) - <p>the slug</p>  
+<a name="String+toRxDBtype"></a>
+
+### string.toRxDBtype() ⇒ <code>string</code>
+<p>Converts a LodgerField type to RxDB compatible one</p>
+<p>Explicatie:
+DB-ul nu stie decat de tipurile primare:
+-&gt; boolean, string, number, array, object
+Schema noastra e mult mai detaliata</p>
+
+**Kind**: instance method of [<code>String</code>](#String)  
+**Returns**: <code>string</code> - <ul>
+<li>tipul primar, eg. 'string'</li>
+</ul>  
+<a name="LodgerSchema"></a>
+
+## LodgerSchema
+**Kind**: global interface  
 <a name="Lodger"></a>
 
 ## Lodger
@@ -98,11 +144,9 @@ to be used before calling the constructor</p></dd>
         * [.getters](#Lodger+getters)
         * [.preferences](#Lodger+preferences)
         * [.activeReferencesIds](#Lodger+activeReferencesIds) ⇒ <code>Object</code>
-        * [.put(taxonomie, data)](#Lodger+put)
         * [.trash(taxonomie, id)](#Lodger+trash)
-        * [.select(taxonomie, id)](#Lodger+select)
         * [.search(input)](#Lodger+search)
-        * [.subscribe()](#Lodger+subscribe) ⇒ <code>Subscriber</code>
+        * [.subscribe()](#Lodger+subscribe) ⇒ [<code>Subscriber</code>](#Subscriber)
         * [.setPreference()](#Lodger+setPreference)
         * [.destroy()](#Lodger+destroy)
         * [.export()](#Lodger+export)
@@ -164,35 +208,10 @@ gets values from DB and store</p>
 get the referred ids</p>
 
 **Kind**: instance property of [<code>Lodger</code>](#Lodger)  
-<a name="Lodger+put"></a>
-
-### lodger.put(taxonomie, data)
-<p>Adds / updates an entry in the DB</p>
-
-**Kind**: instance method of [<code>Lodger</code>](#Lodger)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| taxonomie | <code>Taxonomie</code> |  |
-| data | <code>any</code> | <p>any -&gt; usually Object</p> |
-
 <a name="Lodger+trash"></a>
 
 ### lodger.trash(taxonomie, id)
 <p>Removes a Document from the DB</p>
-
-**Kind**: instance method of [<code>Lodger</code>](#Lodger)  
-
-| Param |
-| --- |
-| taxonomie | 
-| id | 
-
-<a name="Lodger+select"></a>
-
-### lodger.select(taxonomie, id)
-<p>select an item
-brings in the active Document from DB</p>
 
 **Kind**: instance method of [<code>Lodger</code>](#Lodger)  
 
@@ -214,7 +233,7 @@ brings in the active Document from DB</p>
 
 <a name="Lodger+subscribe"></a>
 
-### lodger.subscribe() ⇒ <code>Subscriber</code>
+### lodger.subscribe() ⇒ [<code>Subscriber</code>](#Subscriber)
 <p>Updateaza datele subscriberi-lor,
 date folosite de getteri pentru a fi
 afisate in interfata</p>
@@ -301,28 +320,93 @@ Todo!</p>
 <p>Error logger for forms</p>
 
 **Kind**: global class  
+**Implements**: <code>Error</code>  
+<a name="Field"></a>
+
+## Field
+**Kind**: global class  
+**Implements**: <code>SchemaField</code>  
+
+* [Field](#Field)
+    * [.exports.Field](#Field.exports.Field)
+        * [new exports.Field(field)](#new_Field.exports.Field_new)
+
+<a name="Field.exports.Field"></a>
+
+### Field.exports.Field
+**Kind**: static class of [<code>Field</code>](#Field)  
+<a name="new_Field.exports.Field_new"></a>
+
+#### new exports.Field(field)
+<p>Creates an instance of Field.</p>
+
+
+| Param | Type |
+| --- | --- |
+| field | <code>LodgerFormItemCreator</code> | 
+
 <a name="Form"></a>
 
 ## Form
-<p>Form class</p>
-
 **Kind**: global class  
+**Implements**: <code>LodgerForm</code>  
 
 * [Form](#Form)
+    * [new Form()](#new_Form_new)
     * _instance_
-        * [.value()](#Form+value)
+        * [.value(isNewForm)](#Form+value) ⇒ <code>Object</code>
+        * [.handleOnSubmit(data)](#Form+handleOnSubmit)
     * _static_
+        * [.Form](#Form.Form)
+            * [new Form(data, [generateRxCollection])](#new_Form.Form_new)
         * [.load(name)](#Form.load)
+
+<a name="new_Form_new"></a>
+
+### new Form()
+<p>Forms are read from within the <code>lib/forms/</code> directory</p>
 
 <a name="Form+value"></a>
 
-### form.value()
+### form.value(isNewForm) ⇒ <code>Object</code>
 <p>Makes a Vue-ready $data {object} suitable to be completed
 by the user in the end form
 as it will turn reactive</p>
-<p>for new forms, values are all undefined</p>
 
 **Kind**: instance method of [<code>Form</code>](#Form)  
+**Summary**: <p>for new forms, values are all undefined</p>  
+**Returns**: <code>Object</code> - <p>data item (Vue $data - ready)</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| isNewForm | <code>Boolean</code> | <p>mostly used for 'add' forms</p> |
+
+<a name="Form+handleOnSubmit"></a>
+
+### form.handleOnSubmit(data)
+<p>Manipulates the final data before submitting the form to the DB</p>
+
+**Kind**: instance method of [<code>Form</code>](#Form)  
+
+| Param |
+| --- |
+| data | 
+
+<a name="Form.Form"></a>
+
+### Form.Form
+**Kind**: static class of [<code>Form</code>](#Form)  
+<a name="new_Form.Form_new"></a>
+
+#### new Form(data, [generateRxCollection])
+<p>Creates an instance of Form.</p>
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| data | <code>LodgerFormCreator</code> |  | <p>Form input data</p> |
+| [generateRxCollection] | <code>boolean</code> | <code>true</code> | <p>some forms don't require this</p> |
+
 <a name="Form.load"></a>
 
 ### Form.load(name)
@@ -334,6 +418,78 @@ as it will turn reactive</p>
 | --- |
 | name | 
 
+<a name="Schema"></a>
+
+## Schema
+**Kind**: global class  
+**Implements**: [<code>LodgerSchema</code>](#LodgerSchema)  
+
+* [Schema](#Schema)
+    * _instance_
+        * [.addField(field)](#Schema+addField)
+    * _static_
+        * [.Schema](#Schema.Schema)
+            * [new Schema(form, [addCommonMethods])](#new_Schema.Schema_new)
+
+<a name="Schema+addField"></a>
+
+### schema.addField(field)
+**Kind**: instance method of [<code>Schema</code>](#Schema)  
+
+| Param | Type |
+| --- | --- |
+| field | <code>LodgerFormItemCreator</code> | 
+
+<a name="Schema.Schema"></a>
+
+### Schema.Schema
+**Kind**: static class of [<code>Schema</code>](#Schema)  
+<a name="new_Schema.Schema_new"></a>
+
+#### new Schema(form, [addCommonMethods])
+<p>Constructs a valid RxJsonSchema out of a Lodger Form Data item</p>
+
+**Returns**: <code>RxJsonSchema</code> - <p>schema</p>  
+
+| Param | Type |
+| --- | --- |
+| form | <code>LodgerFormCreator</code> | 
+| [addCommonMethods] | <code>boolean</code> | 
+
+<a name="Subscriber"></a>
+
+## Subscriber
+**Kind**: global class  
+**Implements**: <code>LodgerSubscriber</code>  
+**Requires**: <code>module:Vue</code>  
+
+* [Subscriber](#Subscriber)
+    * [new Subscriber()](#new_Subscriber_new)
+    * [.exports.Subscriber](#Subscriber.exports.Subscriber)
+        * [new exports.Subscriber(name, taxonomy, criteriu)](#new_Subscriber.exports.Subscriber_new)
+
+<a name="new_Subscriber_new"></a>
+
+### new Subscriber()
+<p>Creates a new subscriber for a specific taxonomy</p>
+
+<a name="Subscriber.exports.Subscriber"></a>
+
+### Subscriber.exports.Subscriber
+**Kind**: static class of [<code>Subscriber</code>](#Subscriber)  
+<a name="new_Subscriber.exports.Subscriber_new"></a>
+
+#### new exports.Subscriber(name, taxonomy, criteriu)
+<p>Creates an instance of Subscriber.</p>
+
+**Returns**: <code>Unwatcher</code> - <p>unwatch</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | <p>eg. 'registru'</p> |
+| taxonomy | [<code>Taxonomy</code>](#Taxonomy) |  |
+| criteriu | <code>Criteriu</code> | <p>initial sort / filter criteria if it shall not use the default one</p> |
+
 <a name="Taxonomy"></a>
 
 ## Taxonomy
@@ -343,11 +499,13 @@ as it will turn reactive</p>
 
 * [Taxonomy](#Taxonomy)
     * [new Taxonomy(name, form)](#new_Taxonomy_new)
-    * [.collection](#Taxonomy+collection) ⇒ <code>RxCollection</code> \| <code>undefined</code>
     * [.referenceTaxonomies](#Taxonomy+referenceTaxonomies) ⇒ <code>Array</code>
     * [.hasReference](#Taxonomy+hasReference) ⇒ <code>Boolean</code>
     * [.subscribed](#Taxonomy+subscribed) ⇒ <code>Boolean</code>
-    * [.plural](#Taxonomy+plural) ⇒ <code>String</code>
+    * [.plural](#Taxonomy+plural) ⇒ [<code>String</code>](#String)
+    * [.isMultipleSelecct](#Taxonomy+isMultipleSelecct) ⇒ <code>Boolean</code>
+    * [.put(data)](#Taxonomy+put) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
+    * [.select(taxonomie, id)](#Taxonomy+select)
 
 <a name="new_Taxonomy_new"></a>
 
@@ -357,17 +515,6 @@ as it will turn reactive</p>
 | --- | --- | --- |
 | name | <code>Taxonomie</code> | <p>name of the form</p> |
 | form | [<code>Form</code>](#Form) | <p>the constructed form item</p> |
-
-<a name="Taxonomy+collection"></a>
-
-### taxonomy.collection ⇒ <code>RxCollection</code> \| <code>undefined</code>
-<p>Binds a RXCollection to taxonomy</p>
-
-**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
-
-| Param | Type |
-| --- | --- |
-| collection | <code>RxCollection.&lt;Taxonomie&gt;</code> | 
 
 <a name="Taxonomy+referenceTaxonomies"></a>
 
@@ -383,22 +530,56 @@ as it will turn reactive</p>
 
 **Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
 **Returns**: <code>Boolean</code> - <p>has a reference taxonomy or not</p>  
+**Read only**: true  
 <a name="Taxonomy+subscribed"></a>
 
 ### taxonomy.subscribed ⇒ <code>Boolean</code>
 **Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
 **Returns**: <code>Boolean</code> - <p>if subscribed anywhere</p>  
+**Read only**: true  
 <a name="Taxonomy+plural"></a>
 
-### taxonomy.plural ⇒ <code>String</code>
+### taxonomy.plural ⇒ [<code>String</code>](#String)
 **Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
-**Returns**: <code>String</code> - <p>plural of taxonomy</p>  
+**Returns**: [<code>String</code>](#String) - <p>plural of taxonomy</p>  
+**Read only**: true  
+<a name="Taxonomy+isMultipleSelecct"></a>
+
+### taxonomy.isMultipleSelecct ⇒ <code>Boolean</code>
+**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>Boolean</code> - <p>if taxonomy represents a multiple select choice</p>  
+**Read only**: true  
+<a name="Taxonomy+put"></a>
+
+### taxonomy.put(data) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
+<p>Inserts a new item in DB</p>
+
+**Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>RxDocument.&lt;Taxonomie&gt;</code> - <p>the fresh document</p>  
+
+| Param | Type |
+| --- | --- |
+| data | <code>Object</code> | 
+
+<a name="Taxonomy+select"></a>
+
+### taxonomy.select(taxonomie, id)
+<p>select an item
+brings in the active Document from DB</p>
+
+**Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
+
+| Param |
+| --- |
+| taxonomie | 
+| id | 
+
 <a name="strings"></a>
 
-## strings
-<p>Private item types for FormItemCreator -&gt; RxDB</p>
+## strings : <code>enum</code>
+<p>Accepted 'string's for a LodgerSchema field</p>
 
-**Kind**: global variable  
+**Kind**: global enum  
 <a name="Errors"></a>
 
 ## Errors : <code>enum</code>
@@ -410,6 +591,12 @@ as it will turn reactive</p>
 
 - [ ] account for translations
 
+<a name="plugins"></a>
+
+## plugins
+<p>Plugins</p>
+
+**Kind**: global constant  
 <a name="sharedStoreMethods"></a>
 
 ## sharedStoreMethods
@@ -419,22 +606,16 @@ as it will turn reactive</p>
 | --- | --- | --- |
 | { | <code>Object</code> | <p>methodName: action }</p> |
 
-<a name="formsPath"></a>
-
-## formsPath
-<p>path to forms -&gt; load on the fly</p>
-
-**Kind**: global constant  
 <a name="fields"></a>
 
 ## fields
 <p>o cheltuiala = parte dintr-o factura</p>
 
 **Kind**: global constant  
-<a name="vueHelperObj"></a>
+<a name="commonFields"></a>
 
-## vueHelperObj
-<p>More like a schema of a simple holder item</p>
+## commonFields
+<p>Common fields for all taxonomies</p>
 
 **Kind**: global constant  
 <a name="state"></a>
@@ -528,74 +709,6 @@ se populeaza</p>
 | --- |
 | schema | 
 | commonFields | 
-
-<a name="traverse"></a>
-
-## traverse(obiectul, fn)
-<p>Traverseaza un obiect cu o functie</p>
-
-**Kind**: global function  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| obiectul | <code>object</code> | <p>de traversat</p> |
-| fn | <code>function</code> | <p>callback -&gt; cheie, valoare</p> |
-
-<a name="getTaxonomyConfig"></a>
-
-## getTaxonomyConfig(taxonomie)
-<p>Returneaza config-ul pentru o taxonomie sau default</p>
-
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| taxonomie | <code>string</code> | 
-
-<a name="getCriteriu"></a>
-
-## getCriteriu(taxonomie, criteriuCerut)
-<p>Criteriu default pentru o taxonmoie ceruta</p>
-
-**Kind**: global function  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| taxonomie | <code>string</code> |  |
-| criteriuCerut | <code>object</code> | <p>poate fi diferit decat default</p> |
-
-<a name="no$"></a>
-
-## no$(str)
-<p>Scoate '$' de la inceputul unui string</p>
-
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| str | <code>string</code> | 
-
-<a name="spleet"></a>
-
-## spleet(str)
-<p>Imparte un string de mutatie ('asociatie/INCASEAZA')</p>
-
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| str | <code>string</code> | 
-
-<a name="slugify"></a>
-
-## slugify(text)
-<p>slug-ifica... destul de descriptiv :)</p>
-
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| text | <code>string</code> | 
 
 <a name="createEmptyStoreModule"></a>
 

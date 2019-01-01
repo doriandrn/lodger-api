@@ -5,11 +5,7 @@
  */
 import Debug from 'debug'
 import { RxCollectionCreator } from 'rxdb'
-import {
-  prepareRxSchema,
-} from './helpers/forms'
 
-import { FormItemTypes } from './defs/forms/itemTypes'
 import { env } from './defs/env'
 import { FormError } from './Errors'
 import { GetterTree } from 'vuex'
@@ -44,7 +40,6 @@ export type LodgerFormItemCreator = {
   showInList?: 'primary' | 'secondary' | 'details'[]
 }
 
-export type cheiImutabile = 'primary' | 'index' | 'encrypted' | 'required'
 
 
 /**
@@ -62,11 +57,10 @@ enum Errors {
   missingPlural = 'A plural definition is required for %%'
 }
 
-if (process.env.NODE_ENV === 'test') {
+if (env === 'test')
   Debug.enable('Form:*')
-}
 
-export declare type LodgerFormCreator = {
+export type LodgerFormCreator = {
   name?: string
   plural: Plural<Taxonomie>
   fields: LodgerFormItemCreator[]
@@ -77,18 +71,12 @@ export declare type LodgerFormCreator = {
   setari?: any
 }
 
-/**
- * path to forms -> load on the fly
- */
-const formsPath = ['dev', 'test']
-  .indexOf(env) > -1 ?
-    'forms' :
-    '.'
+const formsPath = ['dev', 'test'].indexOf(env) > -1 ? 'forms' : '.'
 
 
-export interface LodgerFormConstructor {
-  new (data: LodgerFormCreator): LodgerForm
-}
+// export interface LodgerFormConstructor {
+//   new (data: LodgerFormCreator): LodgerForm
+// }
 
 interface LodgerForm {
   name: string
@@ -97,7 +85,10 @@ interface LodgerForm {
 }
 
 /**
- * Form class
+ * Forms are read from within the `lib/forms/` directory
+ *
+ * @class Form
+ * @implements {LodgerForm}
  */
 class Form implements LodgerForm {
   name: string
@@ -106,6 +97,14 @@ class Form implements LodgerForm {
   readonly indexables ?: string[]
   readonly plural : Plural<Taxonomie>
 
+  /**
+   * Creates an instance of Form.
+   *
+   * @param {LodgerFormCreator} data - Form input data
+   * @param {boolean} [generateRxCollection=true] - some forms don't require this
+   *
+   * @memberof Form
+   */
   constructor (
     data: LodgerFormCreator,
     generateRxCollection : boolean = true
@@ -120,7 +119,7 @@ class Form implements LodgerForm {
     this.fields = fields
 
     if (generateRxCollection) {
-      const schema = prepareRxSchema(data, true)
+      const schema = new Schema(data, true)
       const collection = {
         name: plural,
         schema,
@@ -137,7 +136,10 @@ class Form implements LodgerForm {
    * by the user in the end form
    * as it will turn reactive
    *
-   * for new forms, values are all undefined
+   * @summary for new forms, values are all undefined
+   *
+   * @param {Boolean} isNewForm - mostly used for 'add' forms
+   * @returns {Object} data item (Vue $data - ready)
    */
   value (
     isNewForm: boolean,
@@ -176,6 +178,37 @@ class Form implements LodgerForm {
     })
 
     return $data
+  }
+
+  /**
+   * Manipulates the final data before submitting the form to the DB
+   *
+   * @param data
+   */
+  handleOnSubmit (
+    data : FormValue,
+    context ?: any
+  ) {
+    const manipulatedData: any = {}
+
+    // not data.denumire pt servicii :/
+    if (!data.la && !data.denumire) data.la = Date.now()
+    Object.keys(data).forEach(what => {
+      let value = data[what]
+      if (value === null || value === 'undefined') {
+        debug('fara val', what)
+        return
+      }
+
+      manipulatedData[what] = value
+    })
+
+    if (!context) return manipulatedData
+    const { referencesIds } = context
+
+    Object.assign(manipulatedData, referencesIds)
+
+    return manipulatedData
   }
 
   /**

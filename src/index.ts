@@ -32,17 +32,31 @@ const subscribers: SubscribersList = {
   // altSubscriber: { ... }
 }
 
+/**
+ * Taxonomies
+ *
+ * @enum {number}
+ */
 enum Taxonomii {
   Apartament, Asociatie, Bloc, Cheltuiala,
   Contor, Factura, Furnizor, Incasare,
   Serviciu, Utilizator
 }
 
+/**
+ * Forms, includes each for Taxonomies
+ *
+ * @enum {number}
+ */
 enum Forms {
   Financiar, Preferinte
 }
 
-
+/**
+ * Errors
+ *
+ * @enum {number}
+ */
 enum Errors {
   missingDB = 'Missing database',
   invalidPluginDefinition = 'Invalid plugin definition',
@@ -57,7 +71,9 @@ enum Errors {
 
 type FormsHolder = { [k in Taxonomie | Forms]: Form }
 
-
+/**
+ * Plugins
+ */
 const plugins: LodgerPlugin[] = []
 
 /**
@@ -101,66 +117,7 @@ class Lodger {
     // this.store.dispatch('notify', notification)
   }
 
-  /**
-   * Adds / updates an entry in the DB
-   *
-   * @param {Taxonomie} taxonomie
-   * @param {any} data - any -> usually Object
-   */
-  async put (
-    taxonomy: Taxonomie,
-    data: any,
-    subscriber ?: string
-  ) {
-    // const debug = Debug('lodger:put')
-    if (!data || Object.keys(data).length < 1)
-      throw new LodgerError(Errors.missingData, data)
 
-    const {
-      // db,
-      // store,
-      taxonomii
-    } = this
-
-    const { collection } = taxonomii[taxonomy]
-    // if (!plural) throw new LodgerError(Errors.noPlural, taxonomy)
-
-    /**
-     * If form submitted with an _id, must be an upsert
-     */
-    const method = data._id ?
-      'upsert' :
-      'insert'
-
-    // const form = forms[taxonomy]
-    // const references = form.referenceTaxonomies
-    // const referencesIds = this.activeReferencesIds(references)
-
-    /**
-     * add references, default values, etc
-     */
-    const internallyHandledData = handleOnSubmit(data, { referencesIds, store })
-
-    /**
-     * do the insert / upsert and following actions
-     */
-    try {
-      const doc = await collection[method](internallyHandledData)
-      const id = doc._id
-      this.store.dispatch(`${taxonomy}/set_last`, id)
-      this.select(taxonomy, { doc, id, subscriber })
-
-      this.notify({
-        type: 'success',
-        text: `pus ${taxonomy} ${id}`
-      })
-      return doc
-    } catch (e) {
-      this.notify({
-        type: 'error', text: String(e)
-      })
-    }
-  }
 
   /**
    * Removes a Document from the DB
@@ -176,53 +133,7 @@ class Lodger {
     return await doc.remove()
   }
 
-  /**
-   * select an item
-   * brings in the active Document from DB
-   *
-   * @param taxonomie
-   * @param id
-   */
-  async select (
-    taxonomie: Taxonomie,
-    data: SelectedItemData
-  ) {
-    const debug = Debug('lodger:select')
-    const { dispatch } = this.store
-    const form  = this.forms[taxonomie]
-    if (!form) throw new LodgerError('invalid taxonomy %%', taxonomie)
 
-    const { plural } = form
-    const isObj = typeof data === 'object' && data !== null
-
-    const id = isObj && data.id ? data.id : data
-    const subscriber = isObj && data.subscriber ? data.subscriber : undefined
-
-    await dispatch(`${taxonomie}/select`, id)
-
-    // // deselect
-    // if (!id) {
-    //   await dispatch(`${taxonomie}/select`, undefined)
-    //   return
-    // }
-
-    // // delay this, await for changes from rxdbb
-    // const doc = isObj && data.doc ?
-    //   data.doc :
-    //   await vueHelper.getItem(plural, id, subscriber)
-
-    // debug('selected doc', doc._id)
-
-    // if (!doc) {
-    //   throw new LodgerError('invalid id supplied on select %%', id)
-    // } else {
-    //   this._activeDocument = { taxonomie, doc }
-    //   await dispatch(`${taxonomie}/select`, id)
-    // }
-
-    // on deselect, unsubscribe
-    // if (id === null) await this.unsubscribe(plural, subscriber) //todo: use data.subscribe .unsubscribe()
-  }
 
   /**
    * Active document for taxonomy
