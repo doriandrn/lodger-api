@@ -74,9 +74,8 @@ interface Notification {
 }
 
 /**
- * The API
  *
- * @class Lodger
+ * @class Lodger - The API
  * @implements {LodgerAPI}
  * @requires <rxdb> RxDatabase
  * @requires <vuex> VueX
@@ -102,6 +101,14 @@ class Lodger {
   }
   plugins: LodgerPlugin[] = []
 
+  /**
+   * Creates an instance of Lodger.
+   * @param {Taxonomy[]} taxonomies
+   * @param {FormsHolder} forms
+   * @param {RxDatabase} db
+   * @param {LodgerStore} store
+   * @memberof Lodger
+   */
   constructor (
     protected taxonomies: Taxonomy[],
     forms: FormsHolder,

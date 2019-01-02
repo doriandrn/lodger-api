@@ -2,7 +2,7 @@
 
 <dl>
 <dt><a href="#Lodger">Lodger</a></dt>
-<dd></dd>
+<dd><p>Lodger - The API</p></dd>
 <dt><a href="#Field">Field</a></dt>
 <dd></dd>
 <dt><a href="#Form">Form</a></dt>
@@ -104,12 +104,14 @@ Schema noastra e mult mai detaliata</p>
 <a name="Lodger"></a>
 
 ## Lodger
+<p>Lodger - The API</p>
+
 **Kind**: global class  
 **Implements**: <code>LodgerAPI</code>  
 **Requires**: <code>module:&lt;rxdb&gt;</code>, <code>module:&lt;vuex&gt;</code>  
 
 * [Lodger](#Lodger)
-    * [new Lodger()](#new_Lodger_new)
+    * [new Lodger(taxonomies, forms, db, store)](#new_Lodger_new)
     * _instance_
         * [.notify](#Lodger+notify)
         * [.taxonomiesWithoutReference](#Lodger+taxonomiesWithoutReference) ⇒ <code>Array</code>
@@ -127,8 +129,16 @@ Schema noastra e mult mai detaliata</p>
 
 <a name="new_Lodger_new"></a>
 
-### new Lodger()
-<p>The API</p>
+### new Lodger(taxonomies, forms, db, store)
+<p>Creates an instance of Lodger.</p>
+
+
+| Param | Type |
+| --- | --- |
+| taxonomies | [<code>Array.&lt;Taxonomy&gt;</code>](#Taxonomy) | 
+| forms | <code>FormsHolder</code> | 
+| db | <code>RxDatabase</code> | 
+| store | <code>LodgerStore</code> | 
 
 <a name="Lodger+notify"></a>
 
@@ -527,7 +537,7 @@ as it will turn reactive</p>
 <a name="Taxonomy+trash"></a>
 
 ### taxonomy.trash(id) ⇒ <code>RxDocument.&lt;T&gt;</code>
-<p>Removes a Document by ID from the DB</p>
+<p>Removes a Document by ID from the collection</p>
 
 **Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
 **Returns**: <code>RxDocument.&lt;T&gt;</code> - <p>removed document</p>  

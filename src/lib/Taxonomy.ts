@@ -112,7 +112,7 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
   }
 
   /**
-   * Removes a Document by ID from the DB
+   * Removes a Document by ID from the collection
    *
    * @param {string} id
    * @returns {RxDocument<T>} removed document
