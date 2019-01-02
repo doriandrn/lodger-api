@@ -52,7 +52,7 @@ type LodgerTaxes = {
 
 /**
  * @class Taxonomy
- * @implements {Taxonomie} LodgerTaxonomy
+ * @implements {LodgerTaxonomy}
  *
  * @requires Form
  *
@@ -124,10 +124,11 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
   }
 
   /**
-   * Inserts a new item in DB
+   * Inserts/upserts a new item in DB
    *
    * @param {Object} data
    * @returns {RxDocument<Taxonomie>} the fresh document
+   *
    * @memberof Taxonomy
    */
   async put (

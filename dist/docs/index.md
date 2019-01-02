@@ -449,7 +449,7 @@ as it will turn reactive</p>
 
 ## Taxonomy
 **Kind**: global class  
-**Implements**: <code>Taxonomie</code>  
+**Implements**: <code>LodgerTaxonomy</code>  
 **Requires**: <code>module:Form</code>  
 
 * [Taxonomy](#Taxonomy)
@@ -549,7 +549,7 @@ as it will turn reactive</p>
 <a name="Taxonomy+put"></a>
 
 ### taxonomy.put(data) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
-<p>Inserts a new item in DB</p>
+<p>Inserts/upserts a new item in DB</p>
 
 **Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
 **Returns**: <code>RxDocument.&lt;Taxonomie&gt;</code> - <p>the fresh document</p>  
