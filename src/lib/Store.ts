@@ -3,7 +3,7 @@ import Vuex, { ModuleTree, Module, StoreOptions } from 'vuex'
 
 import { Taxonomii } from '../index'
 import { setupSharedMethods } from './helpers/store'
-import { LodgerError } from './Errors';
+import { LodgerError } from './Error';
 import * as RootModule from './store/index'
 import Debug from 'debug'
 

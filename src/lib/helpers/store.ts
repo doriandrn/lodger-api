@@ -1,6 +1,6 @@
 import { Module, ActionTree, GetterTree, MutationTree } from 'vuex'
-import { LodgerError } from '../Errors';
-import { taxIsMultipleSelect } from './functions';
+import LodgerError from '../Error';
+
 import { sharedStoreMethods } from 'defs/sharedStoreMethods'
 
 // const namespaced: boolean = true

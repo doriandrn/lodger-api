@@ -1,3 +1,10 @@
+interface Utilizator {
+  _id: string,
+  nume?: string,
+  contact?: DateContact,
+  preferinte?: PreferinteUtilizator
+}
+
 const getter = `utilizator/activeDoc`
 
 const fields = [

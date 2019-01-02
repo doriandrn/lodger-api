@@ -44,10 +44,7 @@ declare global {
 
   type Bani = number
 
-  interface Incasare {
-    suma: Bani,
-    deLa: ItemID
-  }
+
 
   type DistribuirePeApartamente = object
 
@@ -69,12 +66,7 @@ declare global {
 
   type PreferinteUtilizator = JSON | object | null
 
-  interface Utilizator {
-    _id: string,
-    nume?: string,
-    contact?: DateContact,
-    preferinte?: PreferinteUtilizator
-  }
+
 
   interface Furnizor {
     nume: string,
@@ -119,18 +111,13 @@ declare global {
     subscriber?: string
   }
 
-  interface LodgerPlugin {
-    name: string
-  }
+
 
 
   /**
    * An user notification
    */
-  type LdgNotification = {
-    type: 'error' | 'success' | 'info' | 'warn',
-    text: string
-  }
+
 
   type SearchResults = {
     [k: string]: Result[]
@@ -149,7 +136,6 @@ declare global {
   }
 
 
-  type SubscribersList = { [k: string]: Subscriber }
   type SubscribersDataHolder = { [k: string]: SubscriberData }
 
   type GettersDBTaxonomii = {

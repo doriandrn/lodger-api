@@ -1,13 +1,26 @@
 import { Getter } from 'vuex'
-const gi = `incasare/activeDoc`
 
-const fields: Fields = [
-  {
-    id: 'apartamentId', //aka DE LA
-    required: true,
-    type: 'search',
-    ref: 'apartamente'
-  },
+/**
+ * Monede
+ *
+ * @enum {number}
+ */
+enum Monede {
+  RON, EUR, USD
+}
+
+interface Incasare {
+  suma: Bani,
+  nrChitanta: number
+  moneda: Monede
+
+  apartamentId: ID<Apartament>
+  blocId: ID<Bloc>
+  asociatieId: ID<Asociatie>
+}
+
+
+const fields: Fields<Incasare> = [
   {
     id: 'suma',
     type: 'bani',
@@ -21,15 +34,21 @@ const fields: Fields = [
     type: 'number',
     default: 1,
     index: true,
-    value: getters => Number(getters['incasare/activeDoc'].nrUltimaChitanta || 0) + 1
+    value: ({ activeDocument }) => (activeDocument.nrUltimaChitanta || 0) + 1
   },
   {
     id: 'moneda',
     notInForm: true,
     required: true,
-    value: getters => getters['incasare/activeDoc'].moneda
+    value: ({ activeDocument }) => activeDocument.moneda
   },
 
+  {
+    id: 'apartamentId', //aka DE LA
+    required: true,
+    type: 'search',
+    ref: 'apartamente'
+  },
   // ASTEA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
   // TREBUIE SA FIGUREZE
   /// !!!!!!!!!!!!!!!!

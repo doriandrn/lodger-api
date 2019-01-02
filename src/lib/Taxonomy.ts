@@ -1,46 +1,53 @@
 import { Taxonomii } from "index";
 import { RxDocument, RxCollection, RxDatabase } from 'rxdb'
 import { Form } from './Form'
+import { Subscriber } from './Subscriber'
 import LodgerConfig from 'lodger.config'
-import { TaxonomyError } from './Errors'
+import TaxonomyError from './Error'
 import { predefinite } from 'forms/serviciu'
 import { RootState } from "./Store";
-import { GetterTree } from 'vuex'
+import { GetterTree, ActionTree, Dispatch } from 'vuex'
 
  /**
   * @interface LodgerTaxonomy
   */
  interface LodgerTaxonomy<N extends Taxonomie> {
-   readonly plural: Plural<N>,
-   readonly subscribed: Boolean,
-   readonly hasReference: Boolean,
-   readonly referenceTaxonomies: LodgerTaxonomy<Taxonomie>[],
-   readonly dependantTaxonomies: LodgerTaxonomy<Taxonomie>[],
-   readonly getters: GetterTree<Taxonomie, RootState>,
+  readonly plural: Plural<N>,
+  readonly subscribed: Boolean,
+  readonly hasReference: Boolean,
+  readonly referenceTaxonomies: LodgerTaxonomy<Taxonomie>[],
+  readonly dependantTaxonomies: LodgerTaxonomy<Taxonomie>[],
 
-   collection: RxCollection<N>,
-   storeModule: {}
+  collection: RxCollection<N>,
+  store: {
+    getters: GetterTree<Taxonomie, RootState>,
+    dispatch: Dispatch
+  }
 
-   actives: {
-    documents: { [k in keyof SubscribersList]: RxDocument<N, any> },
-    subscribers: LodgerSubscriber[]
-   }
+  actives: {
+    documents: RxDocument<N, any>[],
+    subscribers: {
+      [k in keyof SubscribersList]: Subscriber[]
+    }
+  }
 
-   put (data: Object): Promise<RxDocument<N>> | void
-   trash (id: string): Promise<Boolean>
-   select (id: string, subscriberName: string): void
+  put (data: Object): Promise<RxDocument<N>> | void
+  trash (id: string): Promise<Boolean>
+  select (id: string, subscriberName: string): void
 
-   subscribe: () => Promise<Subscriber> //wrapper to lodger.subscribe(tax)
-   onFirstTimeInit: () => void
- }
+  subscribe (name: string, criteriu ?: Criteriu): Promise<Subscriber<N>>
+  unsubscribeAll: (subscriberName?: string) => void
+
+  onFirstTimeInit: () => void
+}
 
 export interface LodgerTaxonomyCreator<N extends Taxonomie> {
   new (name: N, form: Form, collection: RxCollection<N>): LodgerTaxonomy<N>,
 }
 
- type LodgerTaxes = {
-   [k in Taxonomii]: () => LodgerTaxonomy<Taxonomie>
- }
+type LodgerTaxes = {
+  [k in Taxonomii]: () => LodgerTaxonomy<Taxonomie>
+}
 
 /**
  * @class Taxonomy
@@ -54,8 +61,8 @@ export interface LodgerTaxonomyCreator<N extends Taxonomie> {
 export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   collection: RxCollection<Taxonomie>
   actives = {
-    documents: {},
-    subscribers: []
+    documents: [],
+    subscribers: {}
   }
 
   /**
@@ -71,11 +78,48 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   ) {
   }
 
-  async subscribe (
+  /**
+   *
+   *
+   * @param {string} [subscriberName='main']
+   * @param {Criteriu} [criteriuCerut]
+   * @returns
+   * @memberof Taxonomy
+   */
+  subscribe (
     subscriberName : string = 'main',
-    criteriuCerut ?: Criteriu,
-  ) {
+    criteriuCerut ?: Criteriu
+  ): Promise<Subscriber> {
+    return new Subscriber(subscriberName, this).subscribe(criteriuCerut)
+  }
 
+  /**
+   * Kills all active listeners for a given subscriber name
+   *
+   * @param {string} [subscriberName='main']
+   * @returns
+   * @memberof Taxonomy
+   */
+  unsubscribeAll (subscriberName: string = 'main') {
+    const subscribers = this.actives.subscribers[subscriberName]
+
+    return Promise.all(
+      Object.keys(subscribers).map(async subscriber => {
+        await subscribers[subscriber].unsubscribe()
+      })
+    )
+  }
+
+  /**
+   * Removes a Document by ID from the DB
+   *
+   * @param {string} id
+   * @returns {void}
+   * @memberof Taxonomy
+   */
+  async trash (id: string) {
+    const doc: RxDocument<Taxonomii> = await this.collection.findOne(id)
+    return await doc.remove()
   }
 
   /**
@@ -91,7 +135,7 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
     if (!data || Object.keys(data).length < 1)
       throw new TaxonomyError(Errors.missingData, data)
 
-    const { collection } = this
+    const { collection, form } = this
 
     /**
      * If form submitted with an _id, must be an upsert
@@ -100,23 +144,21 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
       'upsert' :
       'insert'
 
-    // const form = forms[taxonomy]
-    // const references = form.referenceTaxonomies
-    // const referencesIds = this.activeReferencesIds(references)
-
     /**
      * add references, default values, etc
      */
-    const internallyHandledData = handleOnSubmit(data, { referencesIds, store })
+    const finalData = form.value(true)
+
+    // const internallyHandledData = handleOnSubmit(data, { referencesIds, store })
 
     /**
      * do the insert / upsert and following actions
      */
     try {
-      const doc = await collection[method](internallyHandledData)
+      const doc = await collection[method](finalData)
       const id = doc._id
-      this.store.dispatch(`${taxonomy}/set_last`, id)
-      this.select(taxonomy, { doc, id, subscriber })
+      this.store.dispatch(`set_last`, id)
+      this.select({ doc, id, subscriber })
 
       this.notify({
         type: 'success',
@@ -251,7 +293,7 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
    * @memberof Taxonomy
    * @returns {Boolean} if taxonomy represents a multiple select choice
    */
-  get isMultipleSelecct () {
+  get isMultipleSelect () {
     return ['Serviciu', 'Contor'].indexOf(this.name) > -1
   }
 
@@ -299,6 +341,28 @@ export class TaxonomiesHolder implements LodgerTaxes {
     })
   }
 }
+// /**
+//  * Pt taxonomia ceruta
+//  * ia formul
+//  * si tot ce are nevoie de Id de altceva
+//  * se populeaza
+//  *
+//  * @param {Object} { references, getters }
+//  * @returns {Object} eg { asociatieId: 'XXXX' }
+//  */
+// function assignRefIdsFromStore (context: any) {
+//   const { references, getters } = context
+//   if (!(references && references.length)) return
+
+//   const refsObj = {}
+
+//   references.map((tax: Taxonomie) => {
+//     refsObj[`${tax}Id`] = getters[`${tax}/selected`]
+//   })
+
+//   return refsObj
+// }
+
 
 // const xx: LodgerTaxonomyCreator<Taxonomie> = new Taxonomy('asociatie', 'form', 'collection')
 /**
@@ -335,4 +399,36 @@ export class TaxonomiesHolder implements LodgerTaxes {
 //     .filter(field => field.showInList)
 //     .map(field => ({ [field.id]: field.showInList }) )
 //   )
+// }
+
+
+// // Filters the documents array for the one with the id
+// export const getRxDocumentById = (docs: RxDocument<Taxonomie, any>[], id: string) => {
+//   if (!docs.length)
+//     throw new LodgerError('Empty docs provided: %%')
+//   const doc = docs.filter(doc => doc._id === id)[0]
+//   if (!(doc && isRxDocument(doc)))
+//     throw new LodgerError('No document found %%', { id })
+//   return doc
+// }
+
+//
+  /**
+   * Active document for taxonomy
+  */
+//  protected set _activeDocument (docHolder: ActiveDocumentHolder) {
+//   let { taxonomie, doc } = docHolder
+//   const debug = Debug('lodger:_activeDocument')
+//   const gName = `${taxonomie}/activeDoc`
+//   const { store } = this
+
+//   if (!store.getters.hasOwnProperty(gName)) {
+//     Object.defineProperty(store.getters, gName, {
+//       configurable: false,
+//       get () { return doc },
+//       set (newDoc) { doc = newDoc }
+//     })
+//   } else {
+//     store.getters[gName] = doc
+//   }
 // }

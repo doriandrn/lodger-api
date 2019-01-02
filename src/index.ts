@@ -1,36 +1,20 @@
 /// <reference path="main.d.ts" />
 
 import Debug from 'debug'
-import { RxDatabase, RxCollectionCreator, RxDocument } from 'rxdb'
-import Vue from 'vue'
+import { RxDatabase, RxDatabaseCreator, RxCollectionCreator, RxDocument } from 'rxdb'
 
 import fs from 'fs'
 import yaml from 'json2yaml'
 
-import vueHelper from '~/lib/R'
-
 import LodgerStore from '~/lib/Store'
-import { buildOpts, BuildOptions } from '~/lib/build/opts'
-import { getCriteriu } from '~/lib/helpers/functions'
-import { handleOnSubmit, assignRefIdsFromStore } from '~/lib/helpers/forms'
 import DB from '~/lib/DB'
-// import { Form } from '~/lib/Form'
-import { LodgerError } from '~/lib/Errors'
+import LodgerError from '~/lib/Error'
 
 import { string_similarity } from '~/lib/helpers/search'
-import { TaxonomiesHolder, Taxonomy } from './lib/Taxonomy';
+import { Taxonomy } from '~/lib/Taxonomy'
 
 import { env } from '~/lib/defs/env'
-import { Form } from './lib/Form';
-
-const subscribers: SubscribersList = {
-  main: {},
-  registru: {},
-  listeDePlata: {},
-  statistici: {},
-  playground: {}
-  // altSubscriber: { ... }
-}
+import { Form } from '~/lib/Form'
 
 /**
  * Taxonomies
@@ -53,9 +37,9 @@ enum Forms {
 }
 
 /**
- * Errors
+ * Errors definitions
  *
- * @enum {number}
+ * @enum {string}
  */
 enum Errors {
   missingDB = 'Missing database',
@@ -71,89 +55,71 @@ enum Errors {
 
 type FormsHolder = { [k in Taxonomie | Forms]: Form }
 
-/**
- * Plugins
- */
-const plugins: LodgerPlugin[] = []
+type BuildOptions = {
+  dbCon: RxDatabaseCreator,
+  usePersistedState?: boolean
+  modules?: LodgerModule[]
+}
+
+interface LodgerPlugin {
+  name: string
+  install (): void
+}
+
+type NotificationType = 'error' | 'success' | 'info' | 'warn'
+
+interface Notification {
+  type: NotificationType,
+  text: string
+}
 
 /**
+ * The API
  *
  * @class Lodger
+ * @implements {LodgerAPI}
+ * @requires RxDatabase,Vuex
  */
 class Lodger {
+  subscribers: SubscribersList = {
+    main: {},
+    registru: {},
+    listeDePlata: {},
+    statistici: {},
+    playground: {}
+    // altSubscriber: { ... }
+  }
+
+  buildOpts: BuildOptions = {
+    dbCon: {
+      name: 'Lodger/',
+      adapter: 'memory',
+      password: 'l0dg3rp4$$',
+      ignoreDuplicate: Boolean(env === 'test')
+    },
+    usePersistedState: false
+  }
+  plugins: LodgerPlugin[] = []
+
   constructor (
-    protected taxonomii: Taxonomy[],
+    protected taxonomies: Taxonomy[],
     forms: FormsHolder,
     protected db: RxDatabase,
     readonly store: LodgerStore
   ) {
-    // const debug = Debug('lodger:constructor')
-
-    taxonomii.forEach(tax => {
-      const { plural } = taxonomii[tax]
-
-      Object.defineProperty(this, plural, {
-        get () {
-          return (subscriberName: string = 'main') => {
-            try {
-              return vueHelper.subsData[subscriberName][plural].items
-            } catch (e) {
-              throw new LodgerError('not yet defined. wait more! :) %%', { subscriberName, plural })
-            }
-          }
-        }
-      })
-    })
   }
 
   /**
    * Notifies the user about an update/change
    *
    * @kind Store action wrapper
-   * @param {LdgNotification} notification
+   * @param {Notification} notification
+   * @memberof Lodger
    */
-  notify (notification: LdgNotification) {
-    // console.info(notification)
-    // this.store.dispatch('notify', notification)
+  notify (notification: Notification) {
+    this.store.dispatch('notify', notification)
   }
 
-
-
-  /**
-   * Removes a Document from the DB
-   *
-   * @param taxonomie
-   * @param id
-   */
-  async trash (taxonomie: Taxonomie, id: ItemID) {
-    const { taxonomii } = this
-    const { collection } = taxonomii[taxonomie]
-
-    const doc: RxDocument<Taxonomii> = await collection.findOne(id)
-    return await doc.remove()
-  }
-
-
-
-  /**
-   * Active document for taxonomy
-  */
-  protected set _activeDocument (docHolder: ActiveDocumentHolder) {
-    let { taxonomie, doc } = docHolder
-    const debug = Debug('lodger:_activeDocument')
-    const gName = `${taxonomie}/activeDoc`
-    const { store } = this
-
-    if (!store.getters.hasOwnProperty(gName)) {
-      Object.defineProperty(store.getters, gName, {
-        configurable: false,
-        get () { return doc },
-        set (newDoc) { doc = newDoc }
-      })
-    } else {
-      store.getters[gName] = doc
-    }
-  }
 
   /**
    * Cauta in searchMap
@@ -201,105 +167,26 @@ class Lodger {
   }
 
    /**
-   * Updateaza datele subscriberi-lor,
-   * date folosite de getteri pentru a fi
-   * afisate in interfata
+   * Subscribes to multiple taxonomies with
+   * same criteria
    *
-   * TODO: de exportat de -aici
-   *
-   * Usage: subscribes DB changes to a given variable (binder)
-   * @returns {Subscriber}
+   * @memberof Lodger
+   * @returns {void}
    *
    */
   subscribe (
-    taxonomii: Taxonomii | Taxonomii[],
+    taxonomii: Taxonomy[],
     criteriuCerut ?: Criteriu,
     subscriberName : string = 'main',
   ) {
-    const debug = Debug('lodger:subscribe')
-
-    const {
-      db: { collections },
-      store,
-      forms
-     } = <Lodger>this
-
-     const { getters } = store
-
-    // always have it as an array
-    taxonomii = typeof taxonomii === 'string' ?
-      Array(taxonomii) :
-      taxonomii
-
-    debug('--- SUBSCRIBING ---\n', taxonomii, '\ncriteriu cerut: ', criteriuCerut)
-
-    if (!subscribers[subscriberName])
-      Object.assign(subscribers, { [subscriberName]: {} })
-
-    const subscriber = <Subscriber>subscribers[subscriberName]
-
-    if (!vueHelper.subsData[subscriberName]) {
-      Vue.set(vueHelper.subsData, subscriberName, {})
-    }
+    // // always have it as an array
+    // taxonomii = typeof taxonomii === 'string' ?
+    //   Array(taxonomii) :
+    //   taxonomii
 
     taxonomii.forEach(taxonomie => {
-      const { plural } = forms[taxonomie]
-      const colectie = collections[plural]
-      if (!colectie) throw new LodgerError('invalid collection %%', plural)
-
-      const criteriu = Object.assign({}, {
-        ...getCriteriu(plural, JSON.parse(JSON.stringify(criteriuCerut || {})) )
-      })
-
-      let { limit, index, sort, find } = criteriu
-      const paging = Number(limit || 0) * (index || 1)
-
-      if (subscribedTaxes.indexOf(taxonomie) < 0) {
-        initialSubscribe({ taxonomie, plural, collections, store })
-      }
-
-      if (typeof unwatch === 'function')
-        vueHelper.subsData[subscriberName][plural].unwatch = unwatch
-
-      subscriber[plural] = colectie
-        .find(find)
-        .limit(paging)
-        .sort(sort)
-        .$
-        .subscribe(async (changes: RxDocument<any>[]) => {
-          // DO NOT RETURN IF NO CHANGES!!!!!!!
-          // debug(`${plural} for subscriber[${subscriberName}]`, changes)
-          const x = vueHelper.subsData[subscriberName][plural]
-          const selectedId = getters[`${taxonomie}/selected`]
-
-          // update data objects inside
-          x.docs = changes.map(change => Object.freeze(change)) || []
-          x.items = Object.assign({},
-            ...changes.map((item: RxDocument<Taxonomie>) => ({ [item._id]: item._data }))
-          )
-          x.fetching = false
-
-          // set the active document from selected id
-          if (x.items[selectedId]) {
-            const doc = changes.filter(change => change._id === selectedId)[0]
-            this._activeDocument = { doc, taxonomie }
-            debug('got active doc', taxonomie, x.items[selectedId]._id)
-          } else {
-            // ID is not in changes, lookup DB, otherwise it's invalid
-            const doc = await collections[plural].findOne(selectedId)
-            if (!doc) {
-              throw new LodgerError('invalid id supplied', plural, selectedId)
-            } else {
-              this._activeDocument = { doc, taxonomie }
-            }
-            // an invalid ID was provided,  maybe?
-          }
-          // vueHelper.$emit('updatedData', { subscriberName, plural })
-          debug(`new ${plural}`, Object.keys(x.items).length)
-        })
-      })
-
-    return subscriber
+      taxonomie.subscribe(subscriberName, criteriuCerut)
+    })
   }
 
   /**
@@ -347,13 +234,6 @@ class Lodger {
   }
 
   /**
-   * Active plugins list
-   */
-  private get plugins () {
-    return plugins
-  }
-
-  /**
    * Lodger Getters
    * All UI connects with this
    * combines DB & Store getters
@@ -393,7 +273,7 @@ class Lodger {
   static async build (options?: BuildOptions) {
     const debug = Debug('lodger:build')
     // custom options
-    if (options) Object.assign(buildOpts, { ...options })
+    if (options) Object.assign(this.buildOpts, { ...options })
     const { dbCon } = options || buildOpts
 
     debug(`Building in ${env} mode ...`)
@@ -512,7 +392,7 @@ class Lodger {
     }
     const { name } = plugin
     debug('using plugin', name)
-    plugins.push(plugin)
+    this.plugins.push(plugin)
   }
 
   /**
@@ -553,39 +433,6 @@ class Lodger {
 
   }
 
-  /**
-   * Unsubscribe a single taxonomy from a single sub.
-   * DEPRECATED
-   *
-   */
-  // async unsubscribe (taxPlural: Plural<Taxonomie>, subscriberName: string = 'main') {
-  //   const sub: Subscriber = subscribers[subscriberName]
-  //   const debug = Debug('lodger:unsub')
-  //   // debug('sub', sub)
-  //   if (!sub[taxPlural]) {
-  //     throw new LodgerError('subscriber nedefinit', {taxPlural, subscriberName})
-  //   }
-  //   await sub[taxPlural].unsubscribe()
-
-  //   // unwatch & delete the data obj
-  //   await vueHelper.subsData[subscriberName][taxPlural].unwatch()
-  //   Vue.set(vueHelper.subsData[subscriberName], taxPlural, null)
-  // }
-
-  /**
-   * Kills all active listeners for a given subscriber name
-   * @param subscriberName
-   */
-  async unsubscribeAll (subscriberName: string = 'main') {
-    const sub = subscribers[subscriberName]
-    const debug = Debug('lodger:unsubAll')
-    return await Promise.all(
-      Object.keys(sub).map(async subscriber => {
-        await sub[subscriber].unsubscribe()
-        debug('unsubscribed', subscriber)
-      })
-    )
-  }
 
   protected get subscribedTaxes () {
     return subscribedTaxes
@@ -605,28 +452,6 @@ class Lodger {
     })
   }
 
-  get subscriberData () {
-    const { forms } = this
-    const debug = Debug('lodger:subscriberData')
-
-    return (
-      taxonomy: Taxonomii,
-      subscriberName: string
-    ) => {
-      const { plural }  = forms[taxonomy]
-
-      try {
-        return vueHelper.subsData[subscriberName][plural].items
-      } catch (e) {
-        if (!vueHelper.subsData)
-          Vue.set(vueHelper.subsData, subscriberName, {})
-
-
-        debug('nu exista %%', { plural, subscriberName })
-      }
-    }
-
-  }
 }
 
 export {
