@@ -106,7 +106,7 @@ Schema noastra e mult mai detaliata</p>
 ## Lodger
 **Kind**: global class  
 **Implements**: <code>LodgerAPI</code>  
-**Requires**: <code>module:RxDatabase,Vuex</code>  
+**Requires**: <code>module:&lt;rxdb&gt;</code>, <code>module:&lt;vuex&gt;</code>  
 
 * [Lodger](#Lodger)
     * [new Lodger()](#new_Lodger_new)
@@ -116,7 +116,6 @@ Schema noastra e mult mai detaliata</p>
         * [.getters](#Lodger+getters)
         * [.preferences](#Lodger+preferences)
         * [.activeReferencesIds](#Lodger+activeReferencesIds) ⇒ <code>Object</code>
-        * [.search(input)](#Lodger+search)
         * [.subscribe()](#Lodger+subscribe) ⇒ <code>void</code>
         * [.setPreference()](#Lodger+setPreference)
         * [.destroy()](#Lodger+destroy)
@@ -171,17 +170,6 @@ gets values from DB and store</p>
 get the referred ids</p>
 
 **Kind**: instance property of [<code>Lodger</code>](#Lodger)  
-<a name="Lodger+search"></a>
-
-### lodger.search(input)
-<p>Cauta in searchMap</p>
-
-**Kind**: instance method of [<code>Lodger</code>](#Lodger)  
-
-| Param | Description |
-| --- | --- |
-| input | <p>string de cautat</p> |
-
 <a name="Lodger+subscribe"></a>
 
 ### lodger.subscribe() ⇒ <code>void</code>
@@ -456,16 +444,19 @@ as it will turn reactive</p>
 
 * [Taxonomy](#Taxonomy)
     * [new Taxonomy(name, form)](#new_Taxonomy_new)
-    * [.referenceTaxonomies](#Taxonomy+referenceTaxonomies) ⇒ <code>Array</code>
-    * [.hasReference](#Taxonomy+hasReference) ⇒ <code>Boolean</code>
-    * [.subscribed](#Taxonomy+subscribed) ⇒ <code>Boolean</code>
-    * [.plural](#Taxonomy+plural) ⇒ [<code>String</code>](#String)
-    * [.isMultipleSelect](#Taxonomy+isMultipleSelect) ⇒ <code>Boolean</code>
-    * [.subscribe([subscriberName], [criteriuCerut])](#Taxonomy+subscribe) ⇒ <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code>
-    * [.unsubscribeAll([subscriberName])](#Taxonomy+unsubscribeAll) ⇒ <code>Promise</code>
-    * [.trash(id)](#Taxonomy+trash) ⇒ <code>RxDocument.&lt;T&gt;</code>
-    * [.put(data)](#Taxonomy+put) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
-    * [.select(taxonomie, id)](#Taxonomy+select)
+    * _instance_
+        * [.referenceTaxonomies](#Taxonomy+referenceTaxonomies) ⇒ <code>Array</code>
+        * [.hasReference](#Taxonomy+hasReference) ⇒ <code>Boolean</code>
+        * [.subscribed](#Taxonomy+subscribed) ⇒ <code>Boolean</code>
+        * [.plural](#Taxonomy+plural) ⇒ [<code>String</code>](#String)
+        * [.isMultipleSelect](#Taxonomy+isMultipleSelect) ⇒ <code>Boolean</code>
+        * [.subscribe([subscriberName], [criteriuCerut])](#Taxonomy+subscribe) ⇒ <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code>
+        * [.unsubscribeAll([subscriberName])](#Taxonomy+unsubscribeAll) ⇒ <code>Promise</code>
+        * [.trash(id)](#Taxonomy+trash) ⇒ <code>RxDocument.&lt;T&gt;</code>
+        * [.put(data)](#Taxonomy+put) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
+        * [.select(taxonomie, id)](#Taxonomy+select)
+    * _static_
+        * [.search(input)](#Taxonomy.search)
 
 <a name="new_Taxonomy_new"></a>
 
@@ -569,6 +560,17 @@ brings in the active Document from DB</p>
 | --- |
 | taxonomie | 
 | id | 
+
+<a name="Taxonomy.search"></a>
+
+### Taxonomy.search(input)
+<p>Cauta in searchMap</p>
+
+**Kind**: static method of [<code>Taxonomy</code>](#Taxonomy)  
+
+| Param | Description |
+| --- | --- |
+| input | <p>string de cautat</p> |
 
 <a name="Taxonomii"></a>
 

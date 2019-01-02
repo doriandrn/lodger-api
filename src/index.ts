@@ -78,7 +78,8 @@ interface Notification {
  *
  * @class Lodger
  * @implements {LodgerAPI}
- * @requires RxDatabase,Vuex
+ * @requires <rxdb> RxDatabase
+ * @requires <vuex> VueX
  */
 class Lodger {
   subscribers: SubscribersList = {
@@ -124,6 +125,7 @@ class Lodger {
   /**
    * Cauta in searchMap
    * @param input - string de cautat
+   * @alias Taxonomy.search
    */
   search (
     input: string,
