@@ -1,6 +1,9 @@
-/**
- * o cheltuiala = parte dintr-o factura
- */
+interface Cheltuiala {
+  catre: Furnizor,
+  suma: Bani,
+  dataScadenta: Date,
+  distribuire: Distribuire
+}
 
 const fields = [
   {

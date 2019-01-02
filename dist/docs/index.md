@@ -20,8 +20,6 @@
 <dl>
 <dt><a href="#sharedStoreMethods">sharedStoreMethods</a></dt>
 <dd></dd>
-<dt><a href="#fields">fields</a></dt>
-<dd><p>o cheltuiala = parte dintr-o factura</p></dd>
 <dt><a href="#commonFields">commonFields</a></dt>
 <dd><p>Common fields for all taxonomies</p></dd>
 <dt><a href="#state">state</a></dt>
@@ -624,12 +622,6 @@ brings in the active Document from DB</p>
 | --- | --- | --- |
 | { | <code>Object</code> | <p>methodName: action }</p> |
 
-<a name="fields"></a>
-
-## fields
-<p>o cheltuiala = parte dintr-o factura</p>
-
-**Kind**: global constant  
 <a name="commonFields"></a>
 
 ## commonFields
