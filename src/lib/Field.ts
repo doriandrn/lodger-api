@@ -2,7 +2,7 @@ import { RxJsonSchemaTopLevel } from "rxdb";
 import { LodgerFormItemCreator } from "./Form";
 
 interface SchemaField extends RxJsonSchemaTopLevel {
-  new (field: LodgerFormItemCreator): RxJsonSchemaTopLevel
+  toRxJSONSchema (): RxJsonSchemaTopLevel
 }
 
 // enum cheiImutabile { 'primary' | 'index' | 'encrypted' | 'required'
@@ -10,8 +10,9 @@ interface SchemaField extends RxJsonSchemaTopLevel {
 /**
  *
  *
- * @class Field
+ * @class Form Field Item
  * @implements {SchemaField}
+ * @extends RxJsonSchemaTopLevel
  */
 export class Field implements SchemaField {
 
@@ -21,7 +22,19 @@ export class Field implements SchemaField {
    * @param {LodgerFormItemCreator} field
    * @memberof Field
    */
-  constructor (field: LodgerFormItemCreator) {
+  constructor (
+    private field: LodgerFormItemCreator
+  ) {
+  }
+
+  /**
+   *
+   *
+   * @returns {RxJsonSchemaTopLevel}
+   * @memberof Field
+   */
+  toRxJSONSchema () {
+    const { field } = this
     const { id, step, indexRef, index } = field
     if (!id) throw new Error('Invalid declaration for field')
 
@@ -49,9 +62,5 @@ export class Field implements SchemaField {
     if (ref) Object.assign(fieldData, ref)
 
     return { [id]: fieldData }
-  }
-
-  toRxJSONSchema () {
-
   }
 }

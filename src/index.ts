@@ -75,7 +75,7 @@ interface Notification {
 
 /**
  *
- * @class Lodger - The API
+ * @class The main API
  * @implements {LodgerAPI}
  * @requires <rxdb> RxDatabase
  * @requires <vuex> VueX

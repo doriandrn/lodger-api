@@ -9,7 +9,7 @@ import { Field } from './Field'
  */
 interface LodgerSchema extends RxJsonSchema {
   addField (field: RxJsonSchemaTopLevel): void
-  new (formData: LodgerForm): RxJsonSchema
+  // new (formData: LodgerForm): RxJsonSchema
 }
 
 /**
@@ -32,6 +32,7 @@ const commonFields: LodgerFormItemCreator[] = [
  *
  *
  * @class Schema
+ * @extends {RxJsonSchema}
  * @implements {LodgerSchema}
  */
 export default class Schema implements LodgerSchema {

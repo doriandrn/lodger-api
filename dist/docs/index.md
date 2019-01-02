@@ -2,12 +2,12 @@
 
 <dl>
 <dt><a href="#Lodger">Lodger</a></dt>
-<dd><p>Lodger - The API</p></dd>
-<dt><a href="#Field">Field</a></dt>
-<dd></dd>
+<dd><p>The main API</p></dd>
+<dt><a href="#Field">Field</a> ⇐ <code>RxJsonSchemaTopLevel</code></dt>
+<dd><p>Form Field Item</p></dd>
 <dt><a href="#Form">Form</a></dt>
 <dd></dd>
-<dt><a href="#Schema">Schema</a></dt>
+<dt><a href="#Schema">Schema</a> ⇐ <code>RxJsonSchema</code></dt>
 <dd></dd>
 <dt><a href="#Subscriber">Subscriber</a></dt>
 <dd></dd>
@@ -104,7 +104,7 @@ Schema noastra e mult mai detaliata</p>
 <a name="Lodger"></a>
 
 ## Lodger
-<p>Lodger - The API</p>
+<p>The main API</p>
 
 **Kind**: global class  
 **Implements**: <code>LodgerAPI</code>  
@@ -245,21 +245,20 @@ Todo!</p>
 
 <a name="Field"></a>
 
-## Field
+## Field ⇐ <code>RxJsonSchemaTopLevel</code>
+<p>Form Field Item</p>
+
 **Kind**: global class  
+**Extends**: <code>RxJsonSchemaTopLevel</code>  
 **Implements**: <code>SchemaField</code>  
 
-* [Field](#Field)
-    * [.exports.Field](#Field.exports.Field)
-        * [new exports.Field(field)](#new_Field.exports.Field_new)
+* [Field](#Field) ⇐ <code>RxJsonSchemaTopLevel</code>
+    * [new exports.Field(field)](#new_Field_new)
+    * [.toRxJSONSchema()](#Field+toRxJSONSchema) ⇒ <code>RxJsonSchemaTopLevel</code>
 
-<a name="Field.exports.Field"></a>
+<a name="new_Field_new"></a>
 
-### Field.exports.Field
-**Kind**: static class of [<code>Field</code>](#Field)  
-<a name="new_Field.exports.Field_new"></a>
-
-#### new exports.Field(field)
+### new exports.Field(field)
 <p>Creates an instance of Field.</p>
 
 
@@ -267,6 +266,10 @@ Todo!</p>
 | --- | --- |
 | field | <code>LodgerFormItemCreator</code> | 
 
+<a name="Field+toRxJSONSchema"></a>
+
+### field.toRxJSONSchema() ⇒ <code>RxJsonSchemaTopLevel</code>
+**Kind**: instance method of [<code>Field</code>](#Field)  
 <a name="Form"></a>
 
 ## Form
@@ -342,11 +345,12 @@ as it will turn reactive</p>
 
 <a name="Schema"></a>
 
-## Schema
+## Schema ⇐ <code>RxJsonSchema</code>
 **Kind**: global class  
+**Extends**: <code>RxJsonSchema</code>  
 **Implements**: [<code>LodgerSchema</code>](#LodgerSchema)  
 
-* [Schema](#Schema)
+* [Schema](#Schema) ⇐ <code>RxJsonSchema</code>
     * [.module.exports](#Schema.module.exports)
         * [new module.exports(form, [addCommonMethods])](#new_Schema.module.exports_new)
     * [.addField(field)](#Schema.addField)
