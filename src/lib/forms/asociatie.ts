@@ -1,19 +1,28 @@
-import { LodgerFormCreator } from "../Form";
+import { RxDocument } from "rxdb";
 
-// interface Asociatie = {
-//   _id: string
-//   name: string
-//   balanta: Bani
+declare global {
 
-//   organizatie?: Organizatie,
-//   // administratori: [Utilizator],
-//   utilizatori?: [Utilizator],
-//   servicii: [Serviciu],
-//   furnizori?: [Furnizor],
-//   tranzactii?: Tranzactie[]
+  /**
+   *
+   *
+   * @interface Asociatie
+   */
+  interface Asociatie {
+    _id: string
+    name: string
+    balanta: Bani
 
-//   // initBalanta: () => void
-// }
+    organizatie?: Organizatie,
+    // administratori: [Utilizator],
+    utilizatori?: [Utilizator],
+    servicii: [Serviciu],
+    furnizori?: [Furnizor],
+    tranzactii?: Tranzactie[]
+
+    initBalanta: () => void
+    incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
+  }
+}
 
 const getter = 'modal/data'
 const modalOpen = 'modal/open'

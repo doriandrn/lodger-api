@@ -15,6 +15,7 @@ import { Taxonomy } from '~/lib/Taxonomy'
 
 import { env } from '~/lib/defs/env'
 import { Form } from '~/lib/Form'
+import { Store } from 'vuex';
 
 /**
  * Taxonomies
@@ -33,7 +34,7 @@ enum Taxonomii {
  * @enum {number}
  */
 enum Forms {
-  Financiar, Preferinte
+  Feedback, Financiar, Preferinte
 }
 
 /**
@@ -61,16 +62,33 @@ type BuildOptions = {
   modules?: LodgerModule[]
 }
 
+/**
+ *
+ *
+ * @interface LodgerPlugin
+ */
 interface LodgerPlugin {
   name: string
   install (): void
 }
 
-type NotificationType = 'error' | 'success' | 'info' | 'warn'
-
-interface Notification {
-  type: NotificationType,
+type Notification = {
+  type: 'error' | 'success' | 'info' | 'warn',
   text: string
+}
+
+/**
+ * @kind Store action wrapper
+ * fallsback to console
+ *
+ * @param {Notification} notification
+ */
+function notify (notification: Notification) {
+  if (this && typeof this.dispatch === 'function' && this.actions.notify) {
+    this.dispatch('notify', notification)
+    return
+  }
+  console.log(notification.text)
 }
 
 /**
@@ -78,9 +96,19 @@ interface Notification {
  * @class The main API
  * @implements {LodgerAPI}
  * @requires <rxdb> RxDatabase
- * @requires <vuex> VueX
  */
 class Lodger {
+  /**
+   * @requires <vuex> VueX
+   */
+  store = new Store({})
+
+  /**
+   * Predefined subscribers
+   *
+   * @type {SubscribersList}
+   * @memberof Lodger
+   */
   subscribers: SubscribersList = {
     main: {},
     registru: {},
@@ -88,6 +116,11 @@ class Lodger {
     statistici: {},
     playground: {}
     // altSubscriber: { ... }
+  }
+
+  taxonomies: {
+    [k in keyof Taxonomie]: Taxonomy<Taxonomie>
+    // withoutReference: Taxonomy<Taxonomie>[]
   }
 
   buildOpts: BuildOptions = {
@@ -103,18 +136,15 @@ class Lodger {
 
   /**
    * Creates an instance of Lodger.
-   * @param {Taxonomy[]} taxonomies
    * @param {FormsHolder} forms
    * @param {RxDatabase} db
-   * @param {LodgerStore} store
    * @memberof Lodger
    */
   constructor (
-    protected taxonomies: Taxonomy[],
     forms: FormsHolder,
-    protected db: RxDatabase,
-    readonly store: LodgerStore
+    protected db: RxDatabase
   ) {
+    this.notify = notify.bind(this.store)
   }
 
   /**
@@ -125,7 +155,7 @@ class Lodger {
    * @memberof Lodger
    */
   notify (notification: Notification) {
-    this.store.dispatch('notify', notification)
+    store.dispatch('notify', notification)
   }
 
 

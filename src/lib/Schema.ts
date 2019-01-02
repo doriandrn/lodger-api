@@ -1,5 +1,5 @@
 import { RxJsonSchema, RxJsonSchemaTopLevel } from "rxdb";
-import { LodgerFormCreator, LodgerFormItemCreator } from "./Form";
+import { LodgerFormCreator, FieldCreator } from "./Form";
 import { Field } from './Field'
 
 /**
@@ -16,7 +16,7 @@ interface LodgerSchema extends RxJsonSchema {
  * Common fields for all taxonomies
  *
  */
-const commonFields: LodgerFormItemCreator[] = [
+const commonFields: FieldCreator[] = [
   // Data adaugarii / when added
   {
     id: 'la',
@@ -73,7 +73,7 @@ export default class Schema implements LodgerSchema {
   /**
    *
    *
-   * @param {LodgerFormItemCreator} field
+   * @param {FieldCreator} field
    * @memberof Schema
    */
   addField (field: RxJsonSchemaTopLevel) {

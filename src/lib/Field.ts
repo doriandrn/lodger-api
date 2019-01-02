@@ -1,11 +1,41 @@
 import { RxJsonSchemaTopLevel } from "rxdb";
-import { LodgerFormItemCreator } from "./Form";
 
 interface SchemaField extends RxJsonSchemaTopLevel {
   toRxJSONSchema (): RxJsonSchemaTopLevel
 }
 
+type ItemReference = Plural<Taxonomie> | object
+type ItemExcludableFrom = FormExcludables[]
+type FormExcludables = 'db' | 'addForm' | 'editForm' | 'all'
+
 // enum cheiImutabile { 'primary' | 'index' | 'encrypted' | 'required'
+
+type FieldCreator = {
+  id: string,
+  name?: string,
+
+  label?: string
+  placeholder?: string
+
+  type?: FormItemTypes
+  required?: boolean
+  encrypted?: boolean
+
+  default?: any
+  value?: any
+
+  step?: number,
+  index?: boolean,
+  ref?: ItemReference
+  items?: object
+  indexRef?: boolean
+
+  excludeFrom?: ItemExcludableFrom
+
+  v?: string // validation string
+  click?: string
+  showInList?: 'primary' | 'secondary' | 'details'[]
+}
 
 /**
  *
@@ -19,11 +49,11 @@ export class Field implements SchemaField {
   /**
    * Creates an instance of Field.
    *
-   * @param {LodgerFormItemCreator} field
+   * @param {FieldCreator} field
    * @memberof Field
    */
   constructor (
-    private field: LodgerFormItemCreator
+    private field: FieldCreator
   ) {
   }
 

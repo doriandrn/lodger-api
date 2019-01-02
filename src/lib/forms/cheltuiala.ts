@@ -1,9 +1,19 @@
-interface Cheltuiala {
-  catre: Furnizor,
-  suma: Bani,
-  dataScadenta: Date,
-  distribuire: Distribuire
+declare global {
+  type Bani = {
+    suma: number
+    moneda: Monede
+  }
+
+  interface Cheltuiala {
+    catre: Furnizor,
+    suma: Bani,
+    dataScadenta: Date,
+    distribuire: Distribuire
+
+    readonly apartamenteEligibile: []
+  }
 }
+
 
 const fields = [
   {
@@ -25,13 +35,6 @@ const fields = [
     required: true,
     index: true,
     showInList: 'secondary'
-  },
-  {
-    id: 'moneda',
-    notInForm: true,
-    required: true,
-    showInList: 'secondary',
-    value: getters => getters['asociatie/activa'].moneda
   },
   {
     id: 'modDistribuire',

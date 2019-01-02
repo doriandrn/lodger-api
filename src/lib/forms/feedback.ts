@@ -1,4 +1,6 @@
-export const campuri = [
+import { FieldCreator } from "../Form";
+
+export const fields: FieldCreator[] = [
   {
     id: 'subiect',
     required: true
@@ -17,7 +19,3 @@ export const campuri = [
     placeholder: 'Părerea / Sugestia / Critica ta'
   }
 ]
-
-export const actiuni = {
-  confirm: 'trimiteFeedback'
-}

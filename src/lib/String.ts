@@ -71,7 +71,7 @@ enum strings {
  * @enum {number}
  */
 enum numbers {
-  bani, date, dateTime, number
+  date, dateTime, number
 }
 
 /**
@@ -90,7 +90,7 @@ enum arrays {
  * @enum {number}
  */
 enum objects {
-  object
+  bani, object
 }
 
 type FormItemTypes = keyof typeof strings |

@@ -49,6 +49,16 @@ to be used before calling the constructor</p></dd>
 <dd><p>String helpers extensions</p></dd>
 </dl>
 
+<a name="notify"></a>
+
+## notify
+**Kind**: global Store action wrapper
+fallsback to console  
+
+| Param | Type |
+| --- | --- |
+| notification | <code>Notification</code> | 
+
 <a name="LodgerSchema"></a>
 
 ## LodgerSchema
@@ -106,10 +116,10 @@ Schema noastra e mult mai detaliata</p>
 
 **Kind**: global class  
 **Implements**: <code>LodgerAPI</code>  
-**Requires**: <code>module:&lt;rxdb&gt;</code>, <code>module:&lt;vuex&gt;</code>  
+**Requires**: <code>module:&lt;rxdb&gt;</code>  
 
 * [Lodger](#Lodger)
-    * [new Lodger(taxonomies, forms, db, store)](#new_Lodger_new)
+    * [new Lodger(forms, db)](#new_Lodger_new)
     * _instance_
         * [.notify](#Lodger+notify)
         * [.taxonomiesWithoutReference](#Lodger+taxonomiesWithoutReference) ⇒ <code>Array</code>
@@ -127,16 +137,14 @@ Schema noastra e mult mai detaliata</p>
 
 <a name="new_Lodger_new"></a>
 
-### new Lodger(taxonomies, forms, db, store)
+### new Lodger(forms, db)
 <p>Creates an instance of Lodger.</p>
 
 
 | Param | Type |
 | --- | --- |
-| taxonomies | [<code>Array.&lt;Taxonomy&gt;</code>](#Taxonomy) | 
 | forms | <code>FormsHolder</code> | 
 | db | <code>RxDatabase</code> | 
-| store | <code>LodgerStore</code> | 
 
 <a name="Lodger+notify"></a>
 
@@ -262,7 +270,7 @@ Todo!</p>
 
 | Param | Type |
 | --- | --- |
-| field | <code>LodgerFormItemCreator</code> | 
+| field | <code>FieldCreator</code> | 
 
 <a name="Field+toRxJSONSchema"></a>
 
@@ -376,7 +384,7 @@ as it will turn reactive</p>
 
 | Param | Type |
 | --- | --- |
-| field | <code>LodgerFormItemCreator</code> | 
+| field | <code>FieldCreator</code> | 
 
 <a name="Subscriber"></a>
 

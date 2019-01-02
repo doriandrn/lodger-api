@@ -15,23 +15,25 @@ type ItemReference = Plural<Taxonomie> | object
 type FormExcludables = 'db' | 'addForm' | 'editForm' | 'all'
 type ItemExcludableFrom = FormExcludables[]
 
-export type LodgerFormItemCreator = {
+export type FieldCreator = {
   id: string,
   name?: string,
-  label?: string
 
-  type?: FormItemTypes,
-  required?: boolean,
-  encrypted?: boolean,
+  label?: string
+  placeholder?: string
+
+  type?: FormItemTypes
+  required?: boolean
+  encrypted?: boolean
 
   default?: any
   value?: any
 
   step?: number,
   index?: boolean,
-  ref?: ItemReference,
-  items?: object,
-  indexRef?: boolean,
+  ref?: ItemReference
+  items?: object
+  indexRef?: boolean
 
   excludeFrom?: ItemExcludableFrom
 
@@ -63,7 +65,7 @@ if (env === 'test')
 export type LodgerFormCreator = {
   name?: string
   plural: Plural<Taxonomie>
-  fields: LodgerFormItemCreator[]
+  fields: FieldCreator[]
 
   methods?: { [k: string]: () => void }
   statics?: { [k: string]: () => void }
@@ -92,7 +94,7 @@ interface LodgerForm {
  */
 class Form implements LodgerForm {
   name: string
-  fields: LodgerFormItemCreator[]
+  fields: FieldCreator[]
   collection: undefined | RxCollectionCreator
 
   readonly indexables ?: string[]

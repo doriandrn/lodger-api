@@ -1,3 +1,30 @@
+declare global {
+  /**
+   *
+   *
+   * @interface Apartament
+   */
+  interface Apartament {
+    _id : string
+    nr : number
+    balanta: Bani
+
+    proprietar ?: string
+    suprafata ?: number
+    locatari ?: number
+    camere ?: number
+    etaj ?: number
+    contoare ?: Contor[]
+    incasari ?: Incasare[]
+    cheltuieli ?: Cheltuiala[]
+
+    blocId: string
+    asociatieId: string
+
+    incaseaza (): void
+  }
+}
+
 const plural = 'apartamente'
 const selectedApGetter = 'apartament/activeDoc'
 
@@ -122,10 +149,6 @@ const fields = [
   }
 ]
 
-const actions = {
-  confirm: 'adaugaAp'
-}
-
 const methods = {
   async incaseaza (data: Incasare) {
     if (!this.balanta) this.balanta = 0
@@ -140,6 +163,5 @@ const methods = {
 export {
   fields,
   plural,
-  actions,
   methods
 }
