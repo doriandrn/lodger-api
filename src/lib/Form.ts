@@ -7,7 +7,7 @@ import Debug from 'debug'
 import { RxCollectionCreator } from 'rxdb'
 
 import { env } from './defs/env'
-import { FormError } from './Errors'
+import FormError from './Error'
 import { GetterTree } from 'vuex'
 import { RootState } from './Store'
 
@@ -94,6 +94,7 @@ class Form implements LodgerForm {
   name: string
   fields: LodgerFormItemCreator[]
   collection: undefined | RxCollectionCreator
+
   readonly indexables ?: string[]
   readonly plural : Plural<Taxonomie>
 
@@ -144,7 +145,7 @@ class Form implements LodgerForm {
   value (
     isNewForm: boolean,
     getters?: GetterTree<any, RootState>
-  ) {
+  ): FormValue {
     const { fields, name } = this
     // const debug = Debug('Form:value')
     let $data = {} as any
@@ -177,7 +178,7 @@ class Form implements LodgerForm {
       $data[id] = value !== null && value !== undefined ? value : _def
     })
 
-    return $data
+    return this.handleOnSubmit($data)
   }
 
   /**
@@ -186,8 +187,7 @@ class Form implements LodgerForm {
    * @param data
    */
   handleOnSubmit (
-    data : FormValue,
-    context ?: any
+    data : FormValue
   ) {
     const manipulatedData: any = {}
 
@@ -196,7 +196,6 @@ class Form implements LodgerForm {
     Object.keys(data).forEach(what => {
       let value = data[what]
       if (value === null || value === 'undefined') {
-        debug('fara val', what)
         return
       }
 

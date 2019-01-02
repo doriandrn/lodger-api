@@ -33,6 +33,8 @@ type Criteriu = {
   filter?: FilterOptions
 }
 
+type RxCriteriu = { [key in keyof Criteriu]: any }
+
 /**
  * Creates a new subscriber for a specific taxonomy
  *
@@ -62,7 +64,7 @@ export class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
    */
   constructor (
     readonly name: string, // subscriber name
-    protected taxonomy: Taxonomy
+    protected taxonomy: Taxonomy<N>
   ) {
     // define the subscriber if it doesn't exist
     if (!R.subsData[name])
@@ -84,10 +86,10 @@ export class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
    * Helper to get R's criteria keys to pass in to watcher
    *
    * @readonly
-   * @type {{ [key in keyof Criteriu]: any }}
+   * @type {RxCriteriu}
    * @memberof Subscriber
    */
-  get everyKeyInCriteriu (): { [key in keyof Criteriu]: any } {
+  get everyKeyInCriteriu (): RxCriteriu {
     return (vm: Vue): Criteriu => ({ ...vm.subsData[name][plural].criteriu })
   }
 
@@ -140,7 +142,7 @@ export class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
     let { limit, index, sort, find } = criteriu
     const paging = Number(limit || 0) * (index || 1)
 
-    this._reference = collection
+    return this._reference = collection
       .find(find)
       .limit(paging)
       .sort(sort)

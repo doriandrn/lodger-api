@@ -1,5 +1,5 @@
 import { Taxonomii } from "index";
-import { RxDocument, RxCollection, RxDatabase } from 'rxdb'
+import { RxDocument, RxCollection, RxDatabase, RxDocumentBase, RxQuery } from 'rxdb'
 import { Form } from './Form'
 import { Subscriber } from './Subscriber'
 import LodgerConfig from 'lodger.config'
@@ -15,25 +15,26 @@ import { GetterTree, ActionTree, Dispatch } from 'vuex'
   readonly plural: Plural<N>,
   readonly subscribed: Boolean,
   readonly hasReference: Boolean,
-  readonly referenceTaxonomies: LodgerTaxonomy<Taxonomie>[],
-  readonly dependantTaxonomies: LodgerTaxonomy<Taxonomie>[],
+  readonly referenceTaxonomies: Taxonomy<Taxonomie>[],
+  readonly dependantTaxonomies: Taxonomy<Taxonomie>[],
+  readonly searchMap: SearchMap<N>
 
   collection: RxCollection<N>,
   store: {
     getters: GetterTree<Taxonomie, RootState>,
     dispatch: Dispatch
   }
-
   actives: {
-    documents: RxDocument<N, any>[],
+    readonly documents: RxDocument<N, any>[],
     subscribers: {
-      [k in keyof SubscribersList]: Subscriber[]
+      [k in keyof SubscribersList]: Subscriber<N>[]
     }
   }
 
   put (data: Object): Promise<RxDocument<N>> | void
-  trash (id: string): Promise<Boolean>
+  trash (id: string): Promise<RxDocument<N>>
   select (id: string, subscriberName: string): void
+  search (input: string): Promise<SearchResults>
 
   subscribe (name: string, criteriu ?: Criteriu): Promise<Subscriber<N>>
   unsubscribeAll: (subscriberName?: string) => void
@@ -58,8 +59,8 @@ type LodgerTaxes = {
  * @param {Taxonomie} name - name of the form
  * @param {Form} form - the constructed form item
  */
-export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
-  collection: RxCollection<Taxonomie>
+export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
+  collection: RxCollection<T>
   actives = {
     documents: [],
     subscribers: {}
@@ -73,23 +74,23 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
    * @memberof Taxonomy
    */
   constructor (
-    readonly name: Taxonomie,
+    readonly name: T,
     readonly form: Form
   ) {
   }
 
   /**
-   *
+   * Subscribes
    *
    * @param {string} [subscriberName='main']
    * @param {Criteriu} [criteriuCerut]
-   * @returns
+   * @returns {Promise<Subscriber<T>>} the unwatcher for subscriber
    * @memberof Taxonomy
    */
   subscribe (
     subscriberName : string = 'main',
     criteriuCerut ?: Criteriu
-  ): Promise<Subscriber> {
+  ): Promise<Subscriber<T>> {
     return new Subscriber(subscriberName, this).subscribe(criteriuCerut)
   }
 
@@ -97,7 +98,7 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
    * Kills all active listeners for a given subscriber name
    *
    * @param {string} [subscriberName='main']
-   * @returns
+   * @returns {Promise}
    * @memberof Taxonomy
    */
   unsubscribeAll (subscriberName: string = 'main') {
@@ -114,11 +115,11 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
    * Removes a Document by ID from the DB
    *
    * @param {string} id
-   * @returns {void}
+   * @returns {RxDocument<T>} removed document
    * @memberof Taxonomy
    */
   async trash (id: string) {
-    const doc: RxDocument<Taxonomii> = await this.collection.findOne(id)
+    const doc: RxQuery<T, RxDocument<T>> = await this.collection.findOne(id)
     return await doc.remove()
   }
 
@@ -225,9 +226,9 @@ export class Taxonomy implements LodgerTaxonomy<Taxonomie> {
   //   return this.collection
   // }
 
-  set collection (col: RxCollection<Taxonomie>) {
-    this.collection = col
-  }
+  // set collection (col: RxCollection<Taxonomie>) {
+  //   this.collection = col
+  // }
 
   /**
    * Reference taxonomies of a taxonomy

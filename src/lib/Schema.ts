@@ -34,7 +34,7 @@ const commonFields: LodgerFormItemCreator[] = [
  * @class Schema
  * @implements {LodgerSchema}
  */
-class Schema implements LodgerSchema {
+export default class Schema implements LodgerSchema {
   title = ''
   properties = {}
   type = 'object'
