@@ -1,6 +1,26 @@
 import { Getter } from 'vuex'
 
-const fields: Fields = [
+type DistribuirePeApartamente = object
+
+type Distribuire = {
+  mod: DistribuirePeApartamente,
+  apartamente: Apartament[]
+}
+
+declare global {
+  interface Factura {
+    suma: Bani
+    nrFactura  ?: number
+    dataScadenta ?: Date
+    distribuire ?: Distribuire
+
+    furnizorId: string
+    asociatieId: string
+
+  }
+}
+
+const fields:  = [
   {
     id: 'furnizorId', //aka DE LA
     required: true,
@@ -27,12 +47,12 @@ const fields: Fields = [
     type: 'date',
     showInList: 'secondary'
   },
-  {
-    id: 'moneda',
-    notInForm: true,
-    required: true,
-    value: getters => getters['asociatie/moneda']
-  },
+  // {
+  //   id: 'moneda',
+  //   notInForm: true,
+  //   required: true,
+  //   value: getters => getters['asociatie/moneda']
+  // },
 
   // ASTA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
   // TREBUIE SA FIGUREZE

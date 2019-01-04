@@ -1,40 +1,50 @@
 import { RxJsonSchemaTopLevel } from "rxdb";
+import { GetterTree } from "vuex";
+import { RootState } from "./Store";
 
 interface SchemaField extends RxJsonSchemaTopLevel {
   toRxJSONSchema (): RxJsonSchemaTopLevel
 }
 
-type ItemReference = Plural<Taxonomie> | object
-type ItemExcludableFrom = FormExcludables[]
-type FormExcludables = 'db' | 'addForm' | 'editForm' | 'all'
+type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
 
+// Can be used to pass in the field additional params for when calculating the value
+type FieldGivenContext = {
+  getters: GetterTree<N, RootState>,
+  selectedDoc,
+  activeDoc
+}
 // enum cheiImutabile { 'primary' | 'index' | 'encrypted' | 'required'
 
-type FieldCreator = {
-  id: string,
-  name?: string,
+declare global {
+  type ID<X extends Taxonomie> = string
 
-  label?: string
-  placeholder?: string
+  type FieldCreator = {
+    id: string, // item's identifier, correlates to DB
+    name?: string //
 
-  type?: FormItemTypes
-  required?: boolean
-  encrypted?: boolean
+    label?: string
+    placeholder?: string
 
-  default?: any
-  value?: any
+    type?: FormItemTypes
+    required?: boolean
+    encrypted?: boolean
 
-  step?: number,
-  index?: boolean,
-  ref?: ItemReference
-  items?: object
-  indexRef?: boolean
+    default?: any
+    value?: (context: FieldGivenContext) => any | any
 
-  excludeFrom?: ItemExcludableFrom
+    step?: number,
+    index?: boolean,
+    ref?: ItemReference
+    items?: object
+    indexRef?: boolean
 
-  v?: string // validation string
-  click?: string
-  showInList?: 'primary' | 'secondary' | 'details'[]
+    excludeFrom?: ItemExcludableFrom | ItemExcludableFrom[]
+
+    v?: string // validation string
+    click?: string
+    showInList?: 'primary' | 'secondary' | 'details'[]
+  }
 }
 
 /**

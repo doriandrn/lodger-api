@@ -19,10 +19,12 @@ declare global {
     furnizori?: [Furnizor],
     tranzactii?: Tranzactie[]
 
-    initBalanta: () => void
+    initBalanta (): void
     incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
+    toggleServiciu: (serviciu: ID<Serviciu>)
   }
 }
+
 
 const getter = 'modal/data'
 const modalOpen = 'modal/open'
@@ -30,7 +32,7 @@ const modalContent = 'modal/content'
 
 const plural = 'asociatii'
 
-const fields = [
+const fields: FieldCreator[] = [
   {
     id: '_id',
     excludeFrom: 'all',

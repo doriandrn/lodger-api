@@ -10,38 +10,7 @@ import { env } from './defs/env'
 import FormError from './Error'
 import { GetterTree } from 'vuex'
 import { RootState } from './Store'
-
-type ItemReference = Plural<Taxonomie> | object
-type FormExcludables = 'db' | 'addForm' | 'editForm' | 'all'
-type ItemExcludableFrom = FormExcludables[]
-
-export type FieldCreator = {
-  id: string,
-  name?: string,
-
-  label?: string
-  placeholder?: string
-
-  type?: FormItemTypes
-  required?: boolean
-  encrypted?: boolean
-
-  default?: any
-  value?: any
-
-  step?: number,
-  index?: boolean,
-  ref?: ItemReference
-  items?: object
-  indexRef?: boolean
-
-  excludeFrom?: ItemExcludableFrom
-
-  v?: string // validation string
-  click?: string
-  showInList?: 'primary' | 'secondary' | 'details'[]
-}
-
+import Schema from './Schema'
 
 
 /**
@@ -81,10 +50,14 @@ const formsPath = ['dev', 'test'].indexOf(env) > -1 ? 'forms' : '.'
 // }
 
 interface LodgerForm {
-  name: string
-  collection: undefined | RxCollectionCreator
-  indexables ?: string[]
+  // name: string
+  // collection: undefined | RxCollectionCreator
+  // indexables ?: string[]
+
+  value (newForm: boolean): FormValue
 }
+
+type FormValue = any
 
 /**
  * Forms are read from within the `lib/forms/` directory
@@ -204,10 +177,10 @@ class Form implements LodgerForm {
       manipulatedData[what] = value
     })
 
-    if (!context) return manipulatedData
-    const { referencesIds } = context
+    // if (!context) return manipulatedData
+    // const { referencesIds } = context
 
-    Object.assign(manipulatedData, referencesIds)
+    // Object.assign(manipulatedData, referencesIds)
 
     return manipulatedData
   }
@@ -239,6 +212,5 @@ class Form implements LodgerForm {
 
 export {
   Form,
-  Errors,
-  prepareRxSchema
+  Errors
 }
