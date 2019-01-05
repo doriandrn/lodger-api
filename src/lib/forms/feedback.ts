@@ -1,5 +1,3 @@
-import { FieldCreator } from "../Form";
-
 export const fields: FieldCreator[] = [
   {
     id: 'subiect',

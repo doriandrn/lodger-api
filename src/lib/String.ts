@@ -1,18 +1,60 @@
+import { JsonSchemaTypes } from "rxdb";
+
 type SplitObject = {
   what: string,
   mutation: string
 }
 
+declare global {
+  /**
+   * String helpers extensions
+   *
+   * @interface String
+   */
+   interface String {
+    stripLeading$: () => string,
+    spleet: () => SplitObject,
+    slugify: () => string,
+    toRxDBtype: () => JsonSchemaTypes
+  }
+}
+
+
 /**
- * String helpers extensions
+ * Accepted 'string's for a LodgerSchema field
  *
- * @interface String
+ * @enum {number}
  */
-interface String {
-  stripLeading$: () => string,
-  spleet: () => SplitObject,
-  slugify: () => string,
-  toRxDBtype: () => RxDBType
+enum strings {
+  search, select, string, text, textarea
+}
+
+/**
+ * Accepted 'number's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+enum numbers {
+  date, dateTime, number
+}
+
+/**
+ * Accepted 'array's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+enum arrays {
+  array, contactFields, contoare, distribuire,
+  furnizori, selApartamente, servicii, scari
+}
+
+/**
+ * Accepted 'object's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+enum objects {
+  bani, object
 }
 
 /**
@@ -55,52 +97,6 @@ String.prototype.slugify = function (): string {
     .replace(/-+$/, '');            // Trim - from end of text
 }
 
-
-/**
- * Accepted 'string's for a LodgerSchema field
- *
- * @enum {number}
- */
-enum strings {
-  search, select, string, text, textarea
-}
-
-/**
- * Accepted 'number's for a LodgerSchema field
- *
- * @enum {number}
- */
-enum numbers {
-  date, dateTime, number
-}
-
-/**
- * Accepted 'array's for a LodgerSchema field
- *
- * @enum {number}
- */
-enum arrays {
-  array, contactFields, contoare, distribuire,
-  furnizori, selApartamente, servicii, scari
-}
-
-/**
- * Accepted 'object's for a LodgerSchema field
- *
- * @enum {number}
- */
-enum objects {
-  bani, object
-}
-
-type FormItemTypes = keyof typeof strings |
-  keyof typeof numbers |
-  keyof typeof arrays |
-  keyof typeof objects |
-  undefined
-
-type RxDBType = 'string' | 'number' | 'array' | 'object'
-
 /**
  * Converts a LodgerField type to RxDB compatible one
  *
@@ -111,7 +107,7 @@ type RxDBType = 'string' | 'number' | 'array' | 'object'
  *
  * @returns {string} - tipul primar, eg. 'string'
  */
-String.prototype.toRxDBtype = function (): RxDBType {
+String.prototype.toRxDBtype = function (): JsonSchemaTypes {
   const _default = 'string'
 
   if (Object.keys(strings).indexOf(this) > -1) return _default
@@ -119,4 +115,11 @@ String.prototype.toRxDBtype = function (): RxDBType {
   if (Object.keys(numbers).indexOf(this) > -1) return 'number'
   if (Object.keys(arrays).indexOf(this) > -1) return 'array'
   return _default
+}
+
+export {
+  strings,
+  numbers,
+  arrays,
+  objects
 }
