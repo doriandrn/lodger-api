@@ -16,7 +16,7 @@
       "esnext",
       "es2015"
     ],
-    "baseUrl": "./src/",
+    "baseUrl": "src",
     "paths": {
       "~/*": [ "./src/*" ],
       "~/lib/*": [ "lib/*" ],

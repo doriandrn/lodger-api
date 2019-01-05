@@ -55,7 +55,7 @@ export default async function (
   // show leadership in title
   db.waitForLeadership().then(() => {
     if (env !== 'dev') return
-    if (process.browser) return
+    if (!process.browser && env !== 'dev') return
     document.title = `♛ ${document.title}`
   })
   await Promise.all(collections.map(c => db.collection(c)))

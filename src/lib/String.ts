@@ -117,6 +117,8 @@ String.prototype.toRxDBtype = function (): JsonSchemaTypes {
   return _default
 }
 
+export default String
+
 export {
   strings,
   numbers,

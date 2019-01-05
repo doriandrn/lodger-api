@@ -11,7 +11,7 @@ import FormError from './Error'
 import { GetterTree } from 'vuex'
 import { RootState } from './Store'
 import Schema from './Schema'
-
+import { Field } from './Field'
 
 /**
  * Errors Definition
@@ -31,10 +31,13 @@ enum Errors {
 if (env === 'test')
   Debug.enable('Form:*')
 
-export type LodgerFormCreator = {
+type FieldsSchema = {}
+type FieldsCreator<T extends FieldsSchema, any> = FieldCreator<T>[]
+
+export type LodgerFormCreator<T> = {
   name?: string
   plural: Plural<Taxonomie>
-  fields: FieldCreator[]
+  fields: Field<T>[]
 
   methods?: { [k: string]: () => void }
   statics?: { [k: string]: () => void }
@@ -42,22 +45,27 @@ export type LodgerFormCreator = {
   setari?: any
 }
 
-const formsPath = ['dev', 'test'].indexOf(env) > -1 ? 'forms' : '.'
-
+const formsPath = ['dev', 'test']
+  .indexOf(env) > -1 ? 'forms' : '.'
 
 // export interface LodgerFormConstructor {
 //   new (data: LodgerFormCreator): LodgerForm
 // }
 
-interface LodgerForm {
+/**
+ *
+ *
+ * @interface LodgerForm
+ */
+interface LodgerForm<I> {
   // name: string
   // collection: undefined | RxCollectionCreator
   // indexables ?: string[]
 
-  value (newForm: boolean): FormValue
+  value (newForm: boolean): FormValue<I>
 }
 
-type FormValue = any
+type FormValue<I> = I
 
 /**
  * Forms are read from within the `lib/forms/` directory
@@ -65,9 +73,9 @@ type FormValue = any
  * @class Form
  * @implements {LodgerForm}
  */
-class Form implements LodgerForm {
+class Form<I> implements LodgerForm<I> {
   name: string
-  fields: FieldCreator[]
+  fields: Field<I>[]
   collection: undefined | RxCollectionCreator
 
   readonly indexables ?: string[]

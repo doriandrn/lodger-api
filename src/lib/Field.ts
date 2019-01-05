@@ -1,7 +1,7 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
 import { GetterTree } from "vuex";
 import { RootState } from "./Store";
-import { strings, numbers, arrays, objects } from './String'
+import String, { strings, numbers, arrays, objects } from './String'
 
 type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
 type ReferenceTaxonomy = Plural<Taxonomie>
@@ -12,7 +12,6 @@ type FieldGivenContext<N> = {
   selectedDoc ?: RxDocument<N>,
   activeDoc ?: RxDocument<N>
 }
-
 
 type FieldTypes = keyof typeof strings |
   keyof typeof numbers |
@@ -68,6 +67,7 @@ interface FormField<T> extends RxJsonSchemaTopLevel {
  *
  * @class Form Field Item
  * @implements {SchemaField}
+ * @requires [String]
  * @extends RxJsonSchemaTopLevel
  */
 export class Field<T> implements FormField<T> {
@@ -75,18 +75,18 @@ export class Field<T> implements FormField<T> {
   type: JsonSchemaTypes
 
   ref ?: ReferenceTaxonomy
-  items ?: {}
+  items ?: { type: 'string' }
   index ?: boolean
   multipleOf ?: number
 
   /**
    * Creates an instance of Field.
    *
-   * @param {FieldCreator} data
+   * @param {FieldCreator<T>} data
    * @memberof Field
    */
   constructor (
-    data: FieldCreator
+    data: FieldCreator<T>
   ) {
     const { id, ref, indexRef, type, step } = data
     this.type = String(type || '').toRxDBtype()
@@ -94,6 +94,7 @@ export class Field<T> implements FormField<T> {
 
     // transform the ref
     if (ref) {
+      this.ref = ref
       this.items = { type: 'string' }
       if (indexRef) this.index = indexRef
     }
