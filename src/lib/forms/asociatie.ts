@@ -10,14 +10,15 @@ declare global {
   interface Asociatie {
     _id: string
     name: string
-    balanta: Bani
 
     organizatie?: Organizatie,
-    // administratori: [Utilizator],
-    utilizatori?: [Utilizator],
-    servicii: [Serviciu],
-    furnizori?: [Furnizor],
+    utilizatori?: Utilizator[]
+    servicii: Serviciu[]
+    furnizori?: Furnizor[]
     tranzactii?: Tranzactie[]
+
+    readonly administratori: () => [Utilizator]
+    readonly balanta: () => Bani
 
     initBalanta (): void
     incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
@@ -25,14 +26,13 @@ declare global {
   }
 }
 
-
 const getter = 'modal/data'
 const modalOpen = 'modal/open'
 const modalContent = 'modal/content'
 
 const plural = 'asociatii'
 
-const fields: FieldCreator[] = [
+const fields: FieldCreator<Asociatie>[] = [
   {
     id: '_id',
     excludeFrom: 'all',
