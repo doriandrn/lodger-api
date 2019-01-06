@@ -19,15 +19,15 @@
     "baseUrl": "src",
     "paths": {
       "~/*": [ "/*" ],
-      "~/lib/*": [ "lib/*" ],
+      // "~/lib/*": [ "lib/*" ],
       "forms/*": [ "lib/forms/*" ],
       "defs/*": [ "lib/defs/*" ],
       "helpers/*": [ "lib/helpers/*" ],
       "@/*": [ "/*" ],
     },
-    "rootDirs": [
-      "./"
-    ],
+    // "rootDirs": [
+    //   "./"
+    // ],
     "types": [
       "node",
       "debug",
@@ -40,13 +40,13 @@
     "experimentalDecorators": true,
     "isolatedModules": false
   },
-  "include": [
-    "src/**/*",
-    "forms/*"
-  ],
+  // "include": [
+  //   "src/**/*"
+  //   // "forms/*"
+  // ],
   "exclude": [
-    "_oldstore",
     "__tests__/**/*",
+    "__fixtures__/**/*",
     "node_modules/*"
   ]
 }

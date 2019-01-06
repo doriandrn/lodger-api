@@ -3,7 +3,7 @@
 import Debug from 'debug'
 import { RxDatabase, RxDatabaseCreator, RxCollectionCreator, RxDocument } from 'rxdb'
 
-import fs from 'fs'
+import fs, { PathLike } from 'fs'
 import yaml from 'json2yaml'
 
 import LodgerStore from '~/lib/Store'
@@ -77,6 +77,14 @@ type Notification = {
   text: string
 }
 
+interface LodgerTaxes {
+  withoutReference: () => Taxonomy<Taxonomie>[]
+}
+
+type TaxesList = {
+  [k in Taxonomii]: Taxonomy<Taxonomie>
+}
+
 /**
  * @kind Store action wrapper
  * fallsback to console
@@ -91,13 +99,20 @@ function notify (notification: Notification) {
   console.log(notification.text)
 }
 
+interface LodgerAPI {
+  put (taxonomie: Taxonomie, data: {}): Promise<RxDocument<Taxonomie>>
+  export (path: PathLike, cryptData ?: boolean, filename ?: string): Promise<void>
+
+  destroy (): Promise<void>
+}
+
 /**
  *
  * @class The main API
  * @implements {LodgerAPI}
  * @requires <rxdb> RxDatabase
  */
-class Lodger {
+class Lodger implements LodgerAPI {
   /**
    * @requires <vuex> VueX
    */
@@ -130,20 +145,12 @@ class Lodger {
     forms: FormsHolder,
     protected db: RxDatabase
   ) {
-    this.notify = notify.bind(this.store)
+    notify.bind(this.store)
   }
 
-  /**
-   * Notifies the user about an update/change
-   *
-   * @kind Store action wrapper
-   * @param {Notification} notification
-   * @memberof Lodger
-   */
-  notify (notification: Notification) {
-    store.dispatch('notify', notification)
+  put (taxonomie, data) {
+    return this[taxonomie].put
   }
-
 
   /**
    * Cauta in searchMap

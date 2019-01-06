@@ -11,7 +11,6 @@ const delay = (value) => new Promise(resolve =>
   setTimeout(() => resolve(), value)
 )
 
-
 Debug.enable('lodger:*')
 
 describe('Lodger', () => {
