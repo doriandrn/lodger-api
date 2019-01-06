@@ -1,6 +1,7 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
 import { GetterTree } from "vuex";
 import { RootState } from "./Store";
+import FieldError from './Error'
 import String, { strings, numbers, arrays, objects } from './String'
 
 type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
@@ -30,26 +31,39 @@ declare global {
     label ?: string // what the user sees
     placeholder ?: string // sample data
 
-    type ?: FieldTypes // our form types. DEFAULT: string
-    required ?: boolean // is this field required?
-    encrypted ?: boolean
+    // values
+    default?: any | Function
+    value?: (context ?: FieldGivenContext<T>) => any
 
-    default?: (context: FieldGivenContext<T>) => any | any
-    value?: (context: FieldGivenContext<T>) => any | any
+    // field description
+    type ?: FieldTypes // our form types. DEFAULT: 'string'
+    required ?: boolean // if the field is required
+    encrypted ?: boolean // encrypt field's value
+    index ?: boolean // should be indexable <=> sorts & search
+    excludeFrom ?: ItemExcludableFrom | ItemExcludableFrom[]
 
-    step ?: number // incrementer for number inputs, step or multipleOf
-    index ?: boolean // should be indexed / searchable
-    name ?: string // used for grouping radios
+    name ?: string // used for grouping checkboxes / radio groups
     options ?: Array<any> | Object // for selects and other multiple options els
 
+    // numeric inputs
+    step ?: number // incrementer for number inputs, step or multipleOf
+    min ?: number
+    max ?: number
+
+    v ?: string // validation string (for vee-validate)
+
+    // references
     ref ?: ReferenceTaxonomy // referenceTaxonomy
     indexRef ?: boolean // index by references?
 
-    v ?: string // validation string for vee-validate
-
-    excludeFrom ?: ItemExcludableFrom | ItemExcludableFrom[]
-    click ?: string
+    // frontend stuff
     showInList ?: 'primary' | 'secondary' | 'details'[]
+    onclick ?: {
+      [method: string]: string
+    }
+    oninput ?: {
+      [method: string]: string
+    }
   }
 }
 
@@ -58,12 +72,12 @@ declare global {
  * @extends RxJsonSchemaTopLevel
  */
 interface FormField<T> extends RxJsonSchemaTopLevel {
-  toRxJSONSchema (): RxJsonSchemaTopLevel
-  onclick ?: (context: FieldGivenContext<T>) => void
+  rxSchema (): RxJsonSchemaTopLevel
+  value (context ?: FieldGivenContext<T>): any
+  onclick ?: (context ?: FieldGivenContext<T>) => void
 }
 
 /**
- *
  *
  * @class Form Field Item
  * @implements {SchemaField}
@@ -71,13 +85,19 @@ interface FormField<T> extends RxJsonSchemaTopLevel {
  * @extends RxJsonSchemaTopLevel
  */
 export class Field<T> implements FormField<T> {
-  id: keyof T
-  type: JsonSchemaTypes
+  readonly id: keyof T
+  readonly type: JsonSchemaTypes
 
-  ref ?: ReferenceTaxonomy
-  items ?: { type: 'string' }
-  index ?: boolean
-  multipleOf ?: number
+  readonly ref ?: ReferenceTaxonomy
+  readonly items ?: { type: 'string' }
+  readonly index ?: boolean
+  readonly multipleOf ?: number
+  readonly v ?: string
+
+  readonly storage ?: 'db' | 'store'  = 'db' // where to store data, in db or store
+
+  readonly default?: any
+  readonly value : (context ?: FieldGivenContext<T>) => any
 
   /**
    * Creates an instance of Field.
@@ -88,7 +108,7 @@ export class Field<T> implements FormField<T> {
   constructor (
     data: FieldCreator<T>
   ) {
-    const { id, ref, indexRef, type, step } = data
+    const { id, ref, indexRef, type, step, required, v, value } = data
     this.type = String(type || '').toRxDBtype()
     this.id = id
 
@@ -98,45 +118,46 @@ export class Field<T> implements FormField<T> {
       this.items = { type: 'string' }
       if (indexRef) this.index = indexRef
     }
-    if (step) this.multipleOf = step
+
+    // steps for numbers
+    if (step !== undefined) {
+      if (this.type !== 'number')
+        throw new FieldError('Type must be "number" for .step')
+      this.multipleOf = step
+    }
+
+    // hook in required to validation string
+    if (v) {
+      this.v = required && v.indexOf('required') < 0 ?
+        v :
+        `required|${v}`
+    }
+
+    // assign default value
+    this.default = typeof data.default === 'function' ?
+      data.default() :
+      data.default
+
+    // bind the value function
+    this.value = () => undefined
+    if (value && typeof value === 'function')
+      this.value = value.bind(this)
   }
 
-  get fieldData () {
+  rxSchema () {
     return {}
   }
 
-  /**
-   *
-   *
-   * @returns {RxJsonSchemaTopLevel}
-   * @memberof Field
-   */
-  toRxJSONSchema () {
-    // const { data, ref } = this
-    // const { id, step, index } = data
-    // if (!id) throw new Error('Invalid declaration for field')
+  // /**
+  //  * Field value calculator
+  //  *
+  //  * @param {FieldGivenContext<T>} context
+  //  * @returns {*}
+  //  * @memberof Field
+  //  */
+  // value (context ?: FieldGivenContext<T>): any {
+  //   if (!context) return
+  //   return this.value
+  // }
 
-    // type = String(type).toRxDBtype()
-    // const fieldData = { type }
-
-    // ref = ref ? {
-    //   ref,
-    //   items: { type: 'string' }
-    // } : undefined
-
-    // if (ref && indexRef) {
-    //   Object.assign(ref, { index: indexRef })
-    // }
-
-    // cheiImutabile.forEach(((cheie: string) => {
-    //   if (!formItem[cheie]) return
-    //   Object.assign(descriereCamp, { [cheie]: formItem[cheie] })
-    // })
-
-    // if (index) Object.assign(fieldData, { index })
-    // if (step) Object.assign(fieldData, { multipleOf: step })
-    // if (ref) Object.assign(fieldData, ref)
-
-    return { [this.id]: this.fieldData }
-  }
 }

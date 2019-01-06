@@ -54,7 +54,7 @@ enum Errors {
   couldNotWriteFile = 'Cannot write file'
 }
 
-type FormsHolder = { [k in Taxonomie | Forms]: Form }
+type FormsHolder = { [k in Taxonomie & Forms]: Form<k> }
 
 type BuildOptions = {
   dbCon: RxDatabaseCreator,
@@ -103,24 +103,10 @@ class Lodger {
    */
   store = new Store({})
 
-  /**
-   * Predefined subscribers
-   *
-   * @type {SubscribersList}
-   * @memberof Lodger
-   */
-  subscribers: SubscribersList = {
-    main: {},
-    registru: {},
-    listeDePlata: {},
-    statistici: {},
-    playground: {}
-    // altSubscriber: { ... }
-  }
-
   taxonomies: {
     [k in keyof Taxonomie]: Taxonomy<Taxonomie>
-    // withoutReference: Taxonomy<Taxonomie>[]
+
+    // withoutReference ?: () => Taxonomy<Taxonomie>[]
   }
 
   buildOpts: BuildOptions = {
@@ -214,17 +200,12 @@ class Lodger {
    *
    */
   subscribe (
-    taxonomii: Taxonomy[],
+    taxonomii: Taxonomii[],
     criteriuCerut ?: Criteriu,
     subscriberName : string = 'main',
   ) {
-    // // always have it as an array
-    // taxonomii = typeof taxonomii === 'string' ?
-    //   Array(taxonomii) :
-    //   taxonomii
-
     taxonomii.forEach(taxonomie => {
-      taxonomie.subscribe(subscriberName, criteriuCerut)
+      this.taxonomies[taxonomie].subscribe(subscriberName, criteriuCerut)
     })
   }
 
@@ -236,7 +217,7 @@ class Lodger {
    */
   get taxonomiesWithoutReference () {
     const { forms } = this
-    return this.taxonomii.filter(tax => {
+    return this.taxonomies.filter(tax => {
       const refs = forms[tax].referenceTaxonomies
       return !(refs && refs.length)
     })
@@ -496,5 +477,6 @@ class Lodger {
 export {
   Lodger,
   Errors,
-  Taxonomii
+  Taxonomii,
+  notify
 }

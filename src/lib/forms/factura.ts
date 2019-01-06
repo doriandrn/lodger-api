@@ -1,5 +1,3 @@
-import { Getter } from 'vuex'
-
 type DistribuirePeApartamente = object
 
 type Distribuire = {
@@ -20,7 +18,7 @@ declare global {
   }
 }
 
-const fields:  = [
+const fields: FieldCreator<Factura>[]  = [
   {
     id: 'furnizorId', //aka DE LA
     required: true,
@@ -54,17 +52,12 @@ const fields:  = [
   //   value: getters => getters['asociatie/moneda']
   // },
 
-  // ASTA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
-  // TREBUIE SA FIGUREZE
-  // asociatieId = idul asociatiei apului
-  /// !!!!!!!!!!!!!!!!
-
   {
     id: 'asociatieId',
     notInForm: true,
     required: true,
     index: true,
-    value: (g: Getter<AsociatieState, RootState>) => g['asociatie/active'] || g['asociatie/selected']
+    value: (g) => g['asociatie/active'] || g['asociatie/selected']
   }
 ]
 

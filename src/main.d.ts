@@ -10,11 +10,11 @@ declare module "*.json" {
 
 declare global {
 
-  interface LodgerTaxonomyCreator<x extends Taxonomie> {
-    name: x,
-    plural: Plural<x>
-    form: LodgerForm<x>
-  }
+  // interface LodgerTaxonomyCreator<x extends Taxonomie> {
+  //   name: x,
+  //   plural: Plural<x>
+  //   form: LodgerForm<x>
+  // }
 
 
   type Taxonomie = keyof typeof Taxonomii
@@ -42,48 +42,13 @@ declare global {
     sociale?: [Social]
   }
 
-  type Bani = number
-
-
-
-  type DistribuirePeApartamente = object
-
-  type Distribuire = {
-    mod: DistribuirePeApartamente,
-    apartamente: Apartament[]
-  }
-
-  interface Cheltuiala {
-    catre: Furnizor,
-    suma: Bani,
-    dataScadenta: Date,
-    distribuire: Distribuire
-  }
-
-  interface Contor {
-
-  }
-
   type PreferinteUtilizator = JSON | object | null
 
 
 
-  interface Furnizor {
-    nume: string,
-    organizatie?: Organizatie
-  }
-
-  type Serviciu = {
-    denumire: string,
-    furnizori: [Furnizor],
-    contoare: [Contor]
-  }
-
   type Tranzactie = [Incasare & Cheltuiala]
 
-  interface Apartament {
-    _id: string
-  }
+
 
   enum Languages {
     en,
@@ -114,31 +79,9 @@ declare global {
 
 
 
-  /**
-   * An user notification
-   */
-
-
-  type SearchResults = {
-    [k: string]: Result[]
-  }
-
-  // a search result
-  type Result = {
-    id: string,
-    value: string,
-    relevance: number,
-  }
-
   type ActiveDocumentHolder = {
     taxonomie: Taxonomie,
     doc: RxDocument<Taxonomie>
   }
 
-
-  type SubscribersDataHolder = { [k: string]: SubscriberData }
-
-  type GettersDBTaxonomii = {
-    [k in Taxonomii]: () => RxCollection<any>
-  }
 }

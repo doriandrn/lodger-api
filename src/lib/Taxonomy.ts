@@ -1,4 +1,4 @@
-import { Taxonomii } from "index";
+import { Taxonomii, notify } from "index";
 import { RxDocument, RxCollection, RxDatabase, RxDocumentBase, RxQuery } from 'rxdb'
 import { Form } from './Form'
 import { Subscriber } from './Subscriber'
@@ -17,7 +17,6 @@ import { GetterTree, ActionTree, Dispatch } from 'vuex'
   readonly hasReference: Boolean,
   readonly referenceTaxonomies: Taxonomy<Taxonomie>[],
   readonly dependantTaxonomies: Taxonomy<Taxonomie>[],
-  readonly searchMap: SearchMap<N>
 
   collection: RxCollection<N>,
   store: {
@@ -43,11 +42,18 @@ import { GetterTree, ActionTree, Dispatch } from 'vuex'
 }
 
 export interface LodgerTaxonomyCreator<N extends Taxonomie> {
-  new (name: N, form: Form, collection: RxCollection<N>): LodgerTaxonomy<N>,
+  new (name: N, form: Form<N>, collection: RxCollection<N>): LodgerTaxonomy<N>,
 }
 
-type LodgerTaxes = {
-  [k in Taxonomii]: () => LodgerTaxonomy<Taxonomie>
+type SearchResults = {
+  [k: string]: Result[]
+}
+
+// a search result
+type Result = {
+  id: string,
+  value: string,
+  relevance: number
 }
 
 /**
@@ -60,11 +66,16 @@ type LodgerTaxes = {
  * @param {Form} form - the constructed form item
  */
 export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
-  collection: RxCollection<T>
-  actives = {
-    documents: [],
-    subscribers: {}
+  documents: {
+    active ?: RxDocument<T>
+    selected ?: RxDocument<T>
+
+    all: RxDocument<T>[]
   }
+  subscribers: SubscriberList
+  readonly collection: RxCollection<T>
+  searchMap: Map<string, string>
+  searchResults: SearchResults
 
   /**
    * Creates an instance of Taxonomy.
@@ -75,7 +86,7 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
    */
   constructor (
     readonly name: T,
-    readonly form: Form
+    readonly form: Form<T>
   ) {
   }
 
@@ -162,13 +173,13 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
       this.store.dispatch(`set_last`, id)
       this.select({ doc, id, subscriber })
 
-      this.notify({
+      notify({
         type: 'success',
         text: `pus ${taxonomy} ${id}`
       })
       return doc
     } catch (e) {
-      this.notify({
+      notify({
         type: 'error', text: String(e)
       })
     }

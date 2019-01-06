@@ -1,4 +1,12 @@
-const fields = [
+declare global {
+  type Serviciu = {
+    denumire: string,
+    furnizori: Furnizor[],
+    contoare: Contor[]
+  }
+}
+
+const fields: FieldCreator<Serviciu>[] = [
   /**
    * desi globale, serviciile sunt pt asociatii.
    * excludem asta din db, pastram pt referinta

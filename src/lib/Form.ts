@@ -8,8 +8,6 @@ import { RxCollectionCreator } from 'rxdb'
 
 import { env } from './defs/env'
 import FormError from './Error'
-import { GetterTree } from 'vuex'
-import { RootState } from './Store'
 import Schema from './Schema'
 import { Field } from './Field'
 
@@ -61,11 +59,19 @@ interface LodgerForm<I> {
   // name: string
   // collection: undefined | RxCollectionCreator
   // indexables ?: string[]
+  fields : Field<I>[]
+  readonly captureTimestamp: boolean
 
   value (newForm: boolean): FormValue<I>
 }
 
-type FormValue<I> = I
+type FormValue<I> = {
+  [k in keyof I]: any
+}
+
+type FormFields<I> = {
+  [k in keyof I]: Field<I>
+}
 
 /**
  * Forms are read from within the `lib/forms/` directory
@@ -74,9 +80,9 @@ type FormValue<I> = I
  * @implements {LodgerForm}
  */
 class Form<I> implements LodgerForm<I> {
-  name: string
-  fields: Field<I>[]
-  collection: undefined | RxCollectionCreator
+  name : string
+  fields : FormFields<I>
+  collection ?: RxCollectionCreator
 
   readonly indexables ?: string[]
   readonly plural : Plural<Taxonomie>
@@ -90,7 +96,7 @@ class Form<I> implements LodgerForm<I> {
    * @memberof Form
    */
   constructor (
-    data: LodgerFormCreator,
+    data: LodgerFormCreator<I>,
     generateRxCollection : boolean = true
   ) {
     const { fields, name, plural, methods, statics } = data
@@ -100,7 +106,7 @@ class Form<I> implements LodgerForm<I> {
 
     this.name = name
     this.plural = plural
-    this.fields = fields
+    this.fields = { ...fields.map(field => ({ [field.id]: new Field(field) }) ) }
 
     if (generateRxCollection) {
       const schema = new Schema(data, true)
@@ -115,82 +121,106 @@ class Form<I> implements LodgerForm<I> {
     }
   }
 
+
   /**
    * Makes a Vue-ready $data {object} suitable to be completed
-   * by the user in the end form
-   * as it will turn reactive
+   * by the user in the frontend -> new form
+   * (as it will turn reactive)
    *
-   * @summary for new forms, values are all undefined
-   *
-   * @param {Boolean} isNewForm - mostly used for 'add' forms
-   * @returns {Object} data item (Vue $data - ready)
+   * @readonly
+   * @memberof Form
+   * @returns {Object}
    */
-  value (
-    isNewForm: boolean,
-    getters?: GetterTree<any, RootState>
-  ): FormValue {
-    const { fields, name } = this
-    // const debug = Debug('Form:value')
-    let $data = {} as any
-
-    fields.forEach(camp => {
-      const { label, required, click, excludeFrom } = camp
-      let { id, value } = camp
-
-      let _def = camp.default
-
-      if (click && !id) camp.id = click
-
-      // skip excluded fields
-      if (isNewForm && excludeFrom && (excludeFrom.indexOf('db') || excludeFrom.indexOf('addForm')))
-        value = undefined
-
-      // apply getters to funcs
-      value = typeof value === 'function' && getters ? value(getters) : undefined
-      _def = typeof _def === 'function' ? _def(getters) : undefined
-
-      // label
-      camp.label = label || `${name ? `${name}.new.` : ''}${id}`
-
-      // validarea de required
-      if (required || (camp.v && camp.v.indexOf('required') < 0))
-        camp.v = `required|${camp.v || ''}`
-
-      // valoarea finala
-      $data[id] = null
-      $data[id] = value !== null && value !== undefined ? value : _def
-    })
-
-    return this.handleOnSubmit($data)
+  get data () {
+    return Object.assign({}, ...Object.keys(this.fields))
   }
 
   /**
-   * Manipulates the final data before submitting the form to the DB
+   * Everytime the value is accessed
+   * if 'la' field is present
    *
-   * @param data
+   * @readonly
+   * @memberof Form
    */
-  handleOnSubmit (
-    data : FormValue
-  ) {
-    const manipulatedData: any = {}
+  get capureTimestamp () {
+    return Object.keys(this.data).indexOf('la') > -1
+  }
 
-    // not data.denumire pt servicii :/
-    if (!data.la && !data.denumire) data.la = Date.now()
-    Object.keys(data).forEach(what => {
-      let value = data[what]
-      if (value === null || value === 'undefined') {
-        return
-      }
+  /**
+   * Quick access to all fields' ids
+   *
+   * @readonly
+   * @memberof Form
+   * @returns {string[]}
+   */
+  get fieldsIds () {
+    return Object.keys(this.fields)
+  }
 
-      manipulatedData[what] = value
+  /**
+   *
+   * @summary for new forms, values are all undefined
+   *
+   * @returns {Object} data item (Vue $data - ready)
+   */
+  value (
+    context ?: FormContext<I>
+  ): FormValue<I> {
+    // const debug = Debug('Form:value')
+    let $data = {} as any
+
+    this.fieldsIds.forEach(fieldId => {
+      const field = this.fields[fieldId]
+      $data[fieldId] = field.value(context)
+      // const { label, required, click, excludeFrom } = camp
+      // let { id, value } = camp
+
+      // let _def = camp.default
+
+      // if (click && !id) camp.id = click
+
+      // // skip excluded fields
+      // if (isNewForm && excludeFrom && (excludeFrom.indexOf('db') || excludeFrom.indexOf('addForm')))
+      //   value = undefined
+
+      // // apply getters to funcs
+      // value = typeof value === 'function' && getters ? value(getters) : undefined
+      // _def = typeof _def === 'function' ? _def(getters) : undefined
+
+      // // label
+      // camp.label = label || `${name ? `${name}.new.` : ''}${id}`
+
+      // // validarea de required
+      // if (required || (camp.v && camp.v.indexOf('required') < 0))
+      //   camp.v = `required|${camp.v || ''}`
+
+      // // valoarea finala
+      // $data[id] = null
+      // $data[id] = value !== null && value !== undefined ? value : _def
     })
 
-    // if (!context) return manipulatedData
-    // const { referencesIds } = context
+    return $data
+    // const manipulatedData: any = {}
 
-    // Object.assign(manipulatedData, referencesIds)
+    // // not data.denumire pt servicii :/
+    // if (!data.la && !data.denumire) data.la = Date.now()
+    // Object.keys(data).forEach(what => {
+    //   let value = data[what]
+    //   if (value === null || value === 'undefined') {
+    //     return
+    //   }
 
-    return manipulatedData
+    //   manipulatedData[what] = value
+    // })
+
+    // // if (!context) return manipulatedData
+    // // const { referencesIds } = context
+
+    // // Object.assign(manipulatedData, referencesIds)
+
+    // return manipulatedData
+
+    // return this.handleOnSubmit($data)
   }
 
   /**
@@ -198,7 +228,7 @@ class Form<I> implements LodgerForm<I> {
    *
    * @param name
    */
-  static async load (name: string): Promise<Form> {
+  static async load (name: n extends keyof Forms): Promise<Form<Taxonomie>> {
     const debug = Debug('lodger:Form')
     if (!name)
       throw new FormError('no name supplied for form')

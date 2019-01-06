@@ -3,7 +3,7 @@ import Vuex, { ModuleTree, Module, StoreOptions } from 'vuex'
 
 import { Taxonomii } from '../index'
 import { setupSharedMethods } from './helpers/store'
-import { LodgerError } from './Error';
+import StoreError from './Error';
 import * as RootModule from './store/index'
 import Debug from 'debug'
 
@@ -35,7 +35,7 @@ export const customOpts = (
    * TODO: make this a method ?!
    */
   if (!(taxonomii && taxonomii.length))
-    throw new LodgerError('No taxes supplied')
+    throw new StoreError('No taxes supplied')
 
   taxonomii.forEach((tax: Taxonomii) => {
     const { plural } = forms[tax]
@@ -78,10 +78,10 @@ export default class LodgerStore extends Vuex.Store<RootState> {
    */
   static use (module: {[k: string]: Module<any, RootState>}, namespaced: boolean = true) {
     if (!module || typeof module !== 'object') {
-      throw new LodgerError(Errors.invalidModule)
+      throw new StoreError(Errors.invalidModule)
     }
     const key = Object.keys(module)[0]
-    if (!key || !module[key]) throw new LodgerError(Errors.invalidModule)
+    if (!key || !module[key]) throw new StoreError(Errors.invalidModule)
 
     debug('using module', key)
 

@@ -14,7 +14,9 @@ declare global {
     locatari ?: number
     camere ?: number
     etaj ?: number
+    scara ?: number | string
     contoare ?: Contor[]
+
     incasari ?: Incasare[]
     cheltuieli ?: Cheltuiala[]
 
@@ -22,13 +24,14 @@ declare global {
     asociatieId: string
 
     incaseaza (): void
+
   }
 }
 
 const plural = 'apartamente'
 const selectedApGetter = 'apartament/activeDoc'
 
-const fields = [
+const fields: FieldCreator<Apartament>[] = [
   {
     id: '_id',
     value: g => g[selectedApGetter]._id
@@ -57,7 +60,9 @@ const fields = [
   {
     id: 'proprietar',
     placeholder: 'Ion Barbu',
-    transform: 'capitalize',
+    oninput: {
+      transform: 'capitalize'
+    },
     showInList: 'primary',
     v: 'alpha_spaces|max:32',
     value: g => g[selectedApGetter].proprietar
@@ -65,7 +70,7 @@ const fields = [
   {
     id: 'suprafata',
     type: 'number',
-    showInList: 'details',
+    showInList: ['details'],
     default: null, // TODO: ia de la apartamentul de la etajul de dedesubt, in functie de cate ap sunt
     step: 0.01,
     value: g => g[selectedApGetter].suprafata
@@ -74,7 +79,7 @@ const fields = [
     id: 'locatari',
     index: true,
     type: 'number',
-    showInList: 'details',
+    showInList: ['details'],
     default: 2,
     min: 0,
     max: 10,
