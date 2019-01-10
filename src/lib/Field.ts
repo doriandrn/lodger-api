@@ -64,6 +64,7 @@ declare global {
     oninput ?: {
       [method: string]: string
     }
+    focus ?: boolean // if this should be the first option to focus on
   }
 }
 

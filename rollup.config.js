@@ -30,14 +30,16 @@ const name = 'Lodger';
 const taxonomii = ['asociatie', 'apartament', 'bloc', 'cheltuiala', 'contor', 'factura', 'furnizor', 'incasare', 'serviciu', 'utilizator']
 
 const input = []
-const formsPath = `./src/lib/forms`
+const formsPath = `./src/forms`
 const ext = `ts`
 taxonomii.forEach(tax => input.push(`${formsPath}/${tax}.${ext}`))
 input.push('./src/index.ts')
 
 export default {
   input,
-  experimentalCodeSplitting: true,
+  // experimentalCodeSplitting: true,
+
+
   // inlineDynamicImports: true,
   // optimizeChunks: true,
   // manualChunks: [{

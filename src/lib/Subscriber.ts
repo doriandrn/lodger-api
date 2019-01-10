@@ -1,39 +1,30 @@
-import Vue from 'vue'
-import deepEqual from 'deep-equal'
-import { RxDocument } from 'rxdb'
-import { Taxonomy } from "./Taxonomy"
-import SubscriberError from './Error'
+import { Subscription } from 'rxjs'
+import { RxCollection } from 'rxdb'
 import R from './R'
 
-type Unwatcher = Function
+declare global {
+  type Criteriu = {
+    limit?: number,
+    index?: number,
+    sort?: SortOptions,
+    filter?: FilterOptions
+  }
+}
 
 /**
- *
+ * A single subscriber for a Taxonomy (and form maybe?)
  *
  * @interface LodgerSubscriber
  * @template T
  */
-interface LodgerSubscriber<T extends Taxonomie> {
-  name: string
+interface LodgerSubscriber<I> {
+  readonly criteriu: Criteriu
+  readonly component: R<I>
 
-  docs: RxDocument<T>[]
-  items: {}
-  fetching: boolean
-  selected: RxDocument<T>[] | undefined
-  readonly ids: string[]
-
-  criteriu: Criteriu
-  subscribe (): Unwatcher
+  subscribe (criteriu ?: Criteriu): Subscription
+  selectDocument (id ?: string): void
+  kill (): void
 }
-
-type Criteriu = {
-  limit?: number,
-  index?: number,
-  sort?: SortOptions,
-  filter?: FilterOptions
-}
-
-type RxCriteriu = { [key in keyof Criteriu]: any }
 
 /**
  * Creates a new subscriber for a specific taxonomy
@@ -42,17 +33,11 @@ type RxCriteriu = { [key in keyof Criteriu]: any }
  * @implements {LodgerSubscriber}
  * @requires Vue,R
  */
-export class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
-  docs = []
-  items = {}
-  fetching = false
-  readonly ids: string[]
-
-  criteriu: Criteriu = {}
-  selected: RxDocument<N>[] | undefined
-
-  _reference: any
-  _subscribed: Boolean = false
+export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
+  readonly _reference: any
+  readonly _subscribed: Boolean = false
+  readonly component: R<N>
+  subscribe : (criteriu: Criteriu) => Subscription
 
   /**
    * Creates an instance of Subscriber.
@@ -63,114 +48,31 @@ export class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
    * @memberof Subscriber
    */
   constructor (
-    readonly name: string, // subscriber name
-    protected taxonomy: Taxonomy<N>
+    protected collection: RxCollection<N>
   ) {
-    // define the subscriber if it doesn't exist
-    if (!R.subsData[name])
-      Vue.set(R.subsData, name, {})
+    this.component = new R({
+      inject: {
+        collection
+      }
+    })
+    this.subscribe = this.component.subscribe
+  }
 
-    // call first time hooks.
-    if (!taxonomy.subscribed) {
-      this.criteriu = taxonomy.config.criteriu
-      this.firstInitHook()
+  get criteriu () {
+    return this.component.criteriu
+  }
+
+  get data () {
+    const { component } = this
+    return {
+      ids: component.ids,
+      items: component.items,
+      documents: {
+        active: component.activeDoc,
+        selected: component.selectedDoc
+      }
     }
-
-    // Skip taxonomies with multiple select
-    if (taxonomy.isMultipleSelect) return
-
-    this.init()
   }
 
-  /**
-   * Helper to get R's criteria keys to pass in to watcher
-   *
-   * @readonly
-   * @type {RxCriteriu}
-   * @memberof Subscriber
-   */
-  get everyKeyInCriteriu (): RxCriteriu {
-    return (vm: Vue): Criteriu => ({ ...vm.subsData[name][plural].criteriu })
-  }
-
-  /**
-   * Init function
-   *
-   * @memberof Subscriber
-   */
-  init () {
-    const holder = R.subsData[name][plural]
-
-    if (holder) {
-      holder.fetching = true
-      return
-    }
-
-    this.docs = holder.docs
-    this.items = holder.items
-    this.fetching = holder.fetching
-
-    holder.criteriu =
-    this.criteriu = holder.criteriu
-
-    this.ids = holder.ids(plural, name)
-
-    holder.$watch(everyKeyInCriteriu, (newC: Criteriu, oldC: Criteriu) => {
-      if (!newC || deepEqual(newC, oldC) ) return
-      this.subscribe(newC)
-    }, { deep: true, immediate: false })
-  }
-
-  /**
-   * Assign this defaults as reactives
-   *
-   * @memberof Subscriber
-   */
-  firstInitHook () {
-    Vue.set(R[this.name], this.plural, Object.assign({}, { ...this }))
-  }
-
-  /**
-   * (re)Subscribes with given Criteria
-   *
-   * @param {Criteriu} [criteriu]
-   * @memberof Subscriber
-   */
-  subscribe (criteriu: Criteriu = this.criteriu) {
-    if (criteriu) this.criteriu = criteriu
-    const { name, taxonomy: { collection, plural } } = this
-    let { limit, index, sort, find } = criteriu
-    const paging = Number(limit || 0) * (index || 1)
-
-    return this._reference = collection
-      .find(find)
-      .limit(paging)
-      .sort(sort)
-      .$
-      .subscribe(async (changes: RxDocument<any>[]) => {
-        // DO NOT RETURN IF NO CHANGES!!!!!!!
-        // debug(`${plural} for subscriber[${subscriberName}]`, changes)
-        const data = R.subsData[name][plural]
-        const selectedId = this.selected ? this.selected._id : undefined
-
-        // update data objects inside
-        data.docs = changes.map(change => Object.freeze(change)) || []
-        data.items = Object.assign({},
-          ...changes.map((item: RxDocument<Taxonomie>) => ({ [item._id]: item._data }))
-        )
-
-        try {
-          const doc = data.items[selectedId] ?
-            changes.filter(change => change._id === selectedId)[0] :
-            await collection.findOne(selectedId)
-          this.selected = doc
-        } catch (e) {
-          // an invalid ID was provided,  maybe?
-          throw new SubscriberError('invalid ID supplied', { plural, selectedId })
-        }
-
-        data.fetching = false
-        if (!this._subscribed) this._subscribed = true
-      })
-  }
+  kill () {}
 }

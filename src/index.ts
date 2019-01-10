@@ -1,5 +1,3 @@
-/// <reference path="main.d.ts" />
-
 import Debug from 'debug'
 import { RxDatabase, RxDatabaseCreator, RxCollectionCreator, RxDocument } from 'rxdb'
 

@@ -19,8 +19,8 @@
     "baseUrl": "src",
     "paths": {
       "~/*": [ "/*" ],
-      // "~/lib/*": [ "lib/*" ],
-      "forms/*": [ "lib/forms/*" ],
+      "~/lib/*": [ "lib/*" ],
+      // "forms/*": [ "forms/*" ],
       "defs/*": [ "lib/defs/*" ],
       "helpers/*": [ "lib/helpers/*" ],
       "@/*": [ "/*" ],

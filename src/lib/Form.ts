@@ -29,13 +29,11 @@ enum Errors {
 if (env === 'test')
   Debug.enable('Form:*')
 
-type FieldsSchema = {}
-type FieldsCreator<T extends FieldsSchema, any> = FieldCreator<T>[]
 
 export type LodgerFormCreator<T> = {
   name?: string
-  plural: Plural<Taxonomie>
-  fields: Field<T>[]
+  plural: Plural<string>
+  fields: FieldCreator<T>[]
 
   methods?: { [k: string]: () => void }
   statics?: { [k: string]: () => void }
@@ -46,21 +44,21 @@ export type LodgerFormCreator<T> = {
 const formsPath = ['dev', 'test']
   .indexOf(env) > -1 ? 'forms' : '.'
 
-// export interface LodgerFormConstructor {
-//   new (data: LodgerFormCreator): LodgerForm
-// }
-
 /**
  *
  *
  * @interface LodgerForm
  */
-interface LodgerForm<I> {
-  // name: string
+interface LodgerForm<N extends string, I> {
+  name: N
   // collection: undefined | RxCollectionCreator
   // indexables ?: string[]
   fields : Field<I>[]
+  store: {}
   readonly captureTimestamp: boolean
+
+  readonly isActive: boolean
+  readonly isTaxonomy: boolean
 
   value (newForm: boolean): FormValue<I>
 }
@@ -79,10 +77,10 @@ type FormFields<I> = {
  * @class Form
  * @implements {LodgerForm}
  */
-class Form<I> implements LodgerForm<I> {
-  name : string
-  fields : FormFields<I>
-  collection ?: RxCollectionCreator
+class Form<N extends string, I> implements LodgerForm<N, I> {
+  readonly name : N
+  protected fields : FormFields<I>
+  protected collection ?: RxCollectionCreator
 
   readonly indexables ?: string[]
   readonly plural : Plural<Taxonomie>
@@ -97,7 +95,6 @@ class Form<I> implements LodgerForm<I> {
    */
   constructor (
     data: LodgerFormCreator<I>,
-    generateRxCollection : boolean = true
   ) {
     const { fields, name, plural, methods, statics } = data
     if (!name) throw new FormError('Form should have a name %%', data)
@@ -108,7 +105,7 @@ class Form<I> implements LodgerForm<I> {
     this.plural = plural
     this.fields = { ...fields.map(field => ({ [field.id]: new Field(field) }) ) }
 
-    if (generateRxCollection) {
+    if (this.isTaxonomy) {
       const schema = new Schema(data, true)
       const collection = {
         name: plural,
@@ -119,6 +116,10 @@ class Form<I> implements LodgerForm<I> {
       this.collection = collection
       this.indexables = Object.keys(schema.properties).filter(prop => schema.properties[prop].index)
     }
+  }
+
+  get isTaxonomy () {
+    return false
   }
 
 

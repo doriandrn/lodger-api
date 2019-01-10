@@ -1,39 +1,47 @@
 import { Taxonomii, notify } from "index";
 import { RxDocument, RxCollection, RxDatabase, RxDocumentBase, RxQuery } from 'rxdb'
 import { Form } from './Form'
-import { Subscriber } from './Subscriber'
+import Subscriber from './Subscriber'
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from './Error'
+
 import { predefinite } from 'forms/serviciu'
 import { RootState } from "./Store";
-import { GetterTree, ActionTree, Dispatch } from 'vuex'
+import { GetterTree, ActionTree, Dispatch, Store } from 'vuex'
+
 
  /**
+  * Taxonomy item
+  *
   * @interface LodgerTaxonomy
   */
- interface LodgerTaxonomy<N extends Taxonomie> {
+ interface LodgerTaxonomy<N extends Taxonomie, S> {
   readonly plural: Plural<N>,
-  readonly subscribed: Boolean,
   readonly hasReference: Boolean,
-  readonly referenceTaxonomies: Taxonomy<Taxonomie>[],
-  readonly dependantTaxonomies: Taxonomy<Taxonomie>[],
+  // readonly referenceTaxonomies: Taxonomy<Taxonomie>[],
+  // readonly dependantTaxonomies: Taxonomy<Taxonomie>[],
 
-  collection: RxCollection<N>,
-  store: {
-    getters: GetterTree<Taxonomie, RootState>,
-    dispatch: Dispatch
-  }
-  actives: {
-    readonly documents: RxDocument<N, any>[],
-    subscribers: {
-      [k in keyof SubscribersList]: Subscriber<N>[]
-    }
-  }
+  readonly collection: RxCollection<N>,
+  readonly store: Store<S>
 
   put (data: Object): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N>>
   select (id: string, subscriberName: string): void
-  search (input: string): Promise<SearchResults>
+}
+
+
+/**
+ *
+ *
+ * @interface SubscribableTaxonomy
+ * @extends {LodgerTaxonomy<any, S>}
+ * @template N
+ * @template S
+ */
+interface SubscribableTaxonomy<N, S> extends LodgerTaxonomy<any, S> {
+  readonly subscribers: SubscriberList<N>
+  readonly data: SubscriberDataHolder
+  readonly subscribed: boolean,
 
   subscribe (name: string, criteriu ?: Criteriu): Promise<Subscriber<N>>
   unsubscribeAll: (subscriberName?: string) => void
@@ -41,8 +49,16 @@ import { GetterTree, ActionTree, Dispatch } from 'vuex'
   onFirstTimeInit: () => void
 }
 
-export interface LodgerTaxonomyCreator<N extends Taxonomie> {
-  new (name: N, form: Form<N>, collection: RxCollection<N>): LodgerTaxonomy<N>,
+
+interface SearchableTaxonomy extends SubscribableTaxonomy {
+  searchMap: Map<string, string>
+  searchResults: SearchResults
+
+  search (input: string): Promise<SearchResults>
+}
+
+type SubscriberList<N> = {
+  [k: string]: Subscriber<N>[]
 }
 
 type SearchResults = {
@@ -65,17 +81,7 @@ type Result = {
  * @param {Taxonomie} name - name of the form
  * @param {Form} form - the constructed form item
  */
-export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
-  documents: {
-    active ?: RxDocument<T>
-    selected ?: RxDocument<T>
-
-    all: RxDocument<T>[]
-  }
-  subscribers: SubscriberList
-  readonly collection: RxCollection<T>
-  searchMap: Map<string, string>
-  searchResults: SearchResults
+class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
 
   /**
    * Creates an instance of Taxonomy.
@@ -85,41 +91,9 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
    * @memberof Taxonomy
    */
   constructor (
-    readonly name: T,
-    readonly form: Form<T>
+    protected collection: RxCollection<T>,
+    protected store: Store<T>
   ) {
-  }
-
-  /**
-   * Subscribes
-   *
-   * @param {string} [subscriberName='main']
-   * @param {Criteriu} [criteriuCerut]
-   * @returns {Promise<Subscriber<T>>} the unwatcher for subscriber
-   * @memberof Taxonomy
-   */
-  subscribe (
-    subscriberName : string = 'main',
-    criteriuCerut ?: Criteriu
-  ): Promise<Subscriber<T>> {
-    return new Subscriber(subscriberName, this).subscribe(criteriuCerut)
-  }
-
-  /**
-   * Kills all active listeners for a given subscriber name
-   *
-   * @param {string} [subscriberName='main']
-   * @returns {Promise}
-   * @memberof Taxonomy
-   */
-  unsubscribeAll (subscriberName: string = 'main') {
-    const subscribers = this.actives.subscribers[subscriberName]
-
-    return Promise.all(
-      Object.keys(subscribers).map(async subscriber => {
-        await subscribers[subscriber].unsubscribe()
-      })
-    )
   }
 
   /**
@@ -266,14 +240,7 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
     return true
   }
 
-  /**
-   * @readonly
-   * @memberof Taxonomy
-   * @returns {Boolean} if subscribed anywhere
-   */
-  get subscribed () {
-    return this.actives.subscribers.length > 0
-  }
+
 
   /**
    * @readonly
@@ -310,6 +277,67 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
     return ['Serviciu', 'Contor'].indexOf(this.name) > -1
   }
 
+
+}
+
+class STaxonomy extends Taxonomy implements SubscribableTaxonomy {
+  protected subscribers: SubscriberList
+
+  constructor () {
+
+  }
+
+
+  /**
+   * Returns all data from subscribers
+   *
+   * @readonly
+   * @memberof Taxonomy
+   */
+  get data () {
+    return
+  }
+
+  /**
+   * @readonly
+   * @memberof Taxonomy
+   * @returns {Boolean} if subscribed anywhere
+   */
+  get subscribed () {
+    return this.subscribers.length > 0
+  }
+  /**
+   * Subscribes
+   *
+   * @param {string} [subscriberName='main']
+   * @param {Criteriu} [criteriuCerut]
+   * @returns {Promise<Subscriber<T>>} the unwatcher for subscriber
+   * @memberof Taxonomy
+   */
+  subscribe (
+    subscriberName : string = 'main',
+    criteriuCerut ?: Criteriu
+  ): Promise<Subscriber<T>> {
+    return new Subscriber(subscriberName, this).subscribe(criteriuCerut)
+  }
+
+  /**
+   * Kills all active listeners for a given subscriber name
+   *
+   * @param {string} [subscriberName='main']
+   * @returns {Promise}
+   * @memberof Taxonomy
+   */
+  unsubscribeAll (subscriberName: string = 'main') {
+    const subscribers = this.actives.subscribers[subscriberName]
+
+    return Promise.all(
+      Object.keys(subscribers).map(async subscriber => {
+        await subscribers[subscriber].unsubscribe()
+      })
+    )
+  }
+
   async onFirstTimeSubscribe () {
     const { name, collection, store } = this
     switch (name) {
@@ -332,28 +360,7 @@ export class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
   }
 }
 
-const subscribedTaxes: Taxonomie[] = []
 
-type LodgerTaxonomyCreatorContext = {
-  db: RxDatabase,
-  store: Store
-}
-
-export class TaxonomiesHolder implements LodgerTaxes {
-  subscribedTaxes = []
-
-  constructor (
-    taxonomii: Taxonomie[],
-    context: LodgerTaxonomyCreatorContext,
-    collections: RxCollection<Taxonomie>[]
-  ) {
-    taxonomii.forEach(async (tax: Taxonomie) => {
-      const form = await Form.load(tax)
-      const { plural } = form
-      this[tax] = new Taxonomy(tax, form, collections[plural])
-    })
-  }
-}
 // /**
 //  * Pt taxonomia ceruta
 //  * ia formul

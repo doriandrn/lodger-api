@@ -3,26 +3,28 @@ import { RxDocument } from "rxdb";
 declare global {
 
   /**
-   *
+   * Taxonomy: Asociatie
    *
    * @interface Asociatie
    */
   interface Asociatie {
     _id: string
     name: string
+    moneda: string
 
+    servicii: Serviciu[]
     organizatie?: Organizatie,
     utilizatori?: Utilizator[]
-    servicii: Serviciu[]
     furnizori?: Furnizor[]
     tranzactii?: Tranzactie[]
+    incasari?: Incasare[]
 
     readonly administratori: () => [Utilizator]
     readonly balanta: () => Bani
 
     initBalanta (): void
     incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
-    toggleServiciu: (serviciu: ID<Serviciu>)
+    toggleServiciu: (serviciu: ID<'Serviciu'>) => void
   }
 }
 
@@ -36,7 +38,7 @@ const fields: FieldCreator<Asociatie>[] = [
   {
     id: '_id',
     excludeFrom: 'all',
-    value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter]._id,
+    value: ({ getters }) => getters[modalOpen] && getters[modalContent] === 'asociatie.new' ? null : getters[getter]._id,
   },
   {
     id: 'name',
@@ -44,15 +46,17 @@ const fields: FieldCreator<Asociatie>[] = [
     focus: true,
     index: true,
     showInList: 'primary',
-    value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter].name,
+    value: ({ getters }) => getters[modalOpen] && getters[modalContent] === 'asociatie.new' ? null : getters[getter].name,
     v: 'max:32|min:3',
-    transform: 'capitalize'
+    oninput: {
+      transform: 'capitalize'
+    }
   },
   {
     id: 'organizatie',
     type: 'object'
     // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
-    // value: g => g[modalOpen] && g[modalContent] === 'asociatie.new' ? null : g[getter].idN,
+    // value: ({ getters }) => getters[modalOpen] && getters[modalContent] === 'asociatie.new' ? null : getters[getter].idN,
   },
   {
     id: 'moneda',
@@ -61,28 +65,28 @@ const fields: FieldCreator<Asociatie>[] = [
   {
     id: 'balanta',
     type: 'number',
-    value: g => g[getter].balanta,
-    showInList: 'details'
+    value: ({ getters }) => getters[getter].balanta,
+    showInList: ['details']
   },
   {
     id: 'incasari',
     type: 'array',
     ref: 'incasari',
-    value: g => g[getter].incasari,
+    value: ({ getters }) => getters[getter].incasari,
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'utilizatori',
     type: 'array',
     ref: 'utilizatori',
-    value: g => g[getter].utilizatori,
+    value: ({ getters }) => getters[getter].utilizatori,
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'servicii',
     type: 'array',
     ref: 'servicii',
-    value: g => g[getter].servicii,
+    value: ({ getters }) => getters[getter].servicii,
     showInList: 'secondary',
     excludeFrom: ['addForm', 'editForm']
   },
@@ -90,18 +94,18 @@ const fields: FieldCreator<Asociatie>[] = [
     id: 'furnizori',
     type: 'array',
     ref: 'furnizori',
-    value: g => g[getter].furnizori,
+    value: ({ getters }) => getters[getter].furnizori,
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'filtreCheltuieli',
-    value: g => g[getter].filtreCheltuieli,
+    value: ({ getters }) => getters[getter].filtreCheltuieli,
     type: 'array',
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'preferinte',
-    value: g => g[getter].preferinte,
+    value: ({ getters }) => getters[getter].preferinte,
     type: 'object',
     excludeFrom: ['addForm', 'editForm']
   }
