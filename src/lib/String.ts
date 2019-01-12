@@ -16,6 +16,7 @@ declare global {
     spleet: () => SplitObject,
     slugify: () => string,
     toRxDBtype: () => JsonSchemaTypes
+    plural: () => string
   }
 }
 
@@ -65,7 +66,7 @@ enum objects {
  */
 String.prototype.stripLeading$ = function (): string {
   if (this.indexOf('$') !== 0) return String(this)
-  return this.replace('$', '').trim().stripLeading$()
+  return String(this.replace('$', '').trim().stripLeading$())
 }
 
 /**
@@ -109,12 +110,21 @@ String.prototype.slugify = function (): string {
  */
 String.prototype.toRxDBtype = function (): JsonSchemaTypes {
   const _default = 'string'
+  const _this = this.toString()
 
-  if (Object.keys(strings).indexOf(this) > -1) return _default
-  if (Object.keys(objects).indexOf(this) > -1) return 'object'
-  if (Object.keys(numbers).indexOf(this) > -1) return 'number'
-  if (Object.keys(arrays).indexOf(this) > -1) return 'array'
+  if (Object.keys(strings).indexOf(_this) > -1) return _default
+  if (Object.keys(objects).indexOf(_this) > -1) return 'object'
+  if (Object.keys(numbers).indexOf(_this) > -1) return 'number'
+  if (Object.keys(arrays).indexOf(_this) > -1) return 'array'
   return _default
+}
+
+
+/**
+ * Plurals. @todo use Intl
+ */
+String.prototype.plural = function () : string {
+  return String(`${this}i`)
 }
 
 export default String

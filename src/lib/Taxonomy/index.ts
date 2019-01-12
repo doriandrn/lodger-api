@@ -1,6 +1,6 @@
 import { RxDocument, RxCollection } from 'rxdb'
 import LodgerConfig from 'lodger.config'
-import TaxonomyError from './Error'
+import TaxonomyError from '../Error'
 
 /**
   * Taxonomy item
@@ -8,17 +8,13 @@ import TaxonomyError from './Error'
   * @interface LodgerTaxonomy
   */
  interface LodgerTaxonomy<N extends Taxonomie, S> {
-  readonly plural: Plural<N>,
-  readonly hasReference: Boolean,
-  // readonly referenceTaxonomies: Taxonomy<Taxonomie>[],
-  // readonly dependantTaxonomies: Taxonomy<Taxonomie>[],
+  readonly hasReference: boolean,
 
   readonly collection: RxCollection<N>,
   readonly store: Store<S>
 
   put (data: Object): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N>>
-  select (id: string, subscriberName: string): void
 }
 
 
@@ -32,6 +28,8 @@ import TaxonomyError from './Error'
  * @param {Form} form - the constructed form item
  */
 export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
+  referenceTaxonomies?: Taxonomy<Taxonomie>[]
+
   /**
    * Creates an instance of Taxonomy.
    *
@@ -41,8 +39,13 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    */
   constructor (
     protected collection: RxCollection<T>,
-    protected store: Store<T>
+    readonly store: Store<T>
   ) {
+    store.registerModule(this.name, {})
+  }
+
+  get name () {
+    return this.collection.name
   }
 
   /**
@@ -68,7 +71,7 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
     data: { _id ?: string},
   ) {
     if (!data || Object.keys(data).length < 1)
-      throw new TaxonomyError(Errors.missingData, data)
+      throw new TaxonomyError('Missing fields %%', data)
 
     /**
      * If form submitted with an _id, must be an upsert
@@ -164,13 +167,13 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    * @memberof Taxonomy
    * @returns {Array} taxonomii
    */
-  get referenceTaxonomies () {
-    const { fields } = this.form
+  // get referenceTaxonomies () {
+  //   const { fields } = this.form
 
-    return <Taxonomie[]>fields
-      .filter(field => field.id.indexOf('Id') === field.id.length - 2)
-      .map(field => field.id.replace('Id', ''))
-  }
+  //   return <Taxonomie[]>fields
+  //     .filter(field => field.id.indexOf('Id') === field.id.length - 2)
+  //     .map(field => field.id.replace('Id', ''))
+  // }
 
   /**
    * Checks for a reference taxonomy of taxonomy
@@ -180,7 +183,7 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    * @returns {Boolean} has a reference taxonomy or not
    */
   get hasReference () {
-    return true
+    return this.referenceTaxonomies.length > -1
   }
 
 
@@ -190,9 +193,9 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    * @memberof Taxonomy
    * @returns {String} plural of taxonomy
    */
-  get plural () {
-    return this.form.plural
-  }
+  // get plural () {
+  //   return this.form.plural
+  // }
 
   /**
    * @readonly
@@ -219,6 +222,4 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
   get isMultipleSelect () {
     return ['Serviciu', 'Contor'].indexOf(this.name) > -1
   }
-
-
 }

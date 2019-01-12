@@ -27,7 +27,7 @@
     "@babel/runtime": "^7.2.0",
     "@types/debug": "^0.0.31",
     "@types/faker": "^4.1.4",
-    "@types/jest": "^23.3.11",
+    "@types/jest": "^23.3.12",
     "@types/node": "^10.12.18",
     "awesome-typescript-loader": "^5.2.1",
     "babel-jest": "^23.6.0",
@@ -42,8 +42,8 @@
     "jsdoc-babel": "^0.5.0",
     "jsdoc-to-markdown": "^4.0.1",
     "json2yaml": "^1.1.0",
-    "rollup": "^1.0.1",
-    "rollup-plugin-babel": "^4.2.0",
+    "rollup": "^1.1.0",
+    "rollup-plugin-babel": "^4.3.0",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-glob-import": "^0.3.1",
     "rollup-plugin-node-builtins": "^2.1.2",
@@ -52,7 +52,7 @@
     "rollup-plugin-typescript": "^1.0.0",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^23.10.5",
-    "ts-loader": "^5.3.2",
+    "ts-loader": "^5.3.3",
     "typescript": "^3.2.2"
   },
   "dependencies": {
@@ -61,7 +61,7 @@
     "pouchdb-adapter-memory": "^7.0.0",
     "rxdb": "^8.0.4",
     "rxjs": "^6.3.3",
-    "vue": "^2.5.21",
+    "vue": "^2.5.22",
     "vue-class-component": "^6.3.2",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4"

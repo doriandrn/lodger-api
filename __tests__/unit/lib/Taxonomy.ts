@@ -1,6 +1,17 @@
-import { Taxonomy } from '~/lib/Taxonomy'
+import Taxonomy from '~/lib/Taxonomy/index'
+import STaxonomy from '~/lib/Taxonomy/Subscribable'
+import DB from '~/lib/DB'
+import collections from '../../__fixtures__/taxes/collections'
+import testdbsetup from '../../__fixtures__/db/test'
+
 
 describe('Taxonomy class', () => {
+  let db
+
+  beforeAll(async () => {
+    db = await DB(collections, testdbsetup)
+  })
+
   describe('constructor', () => {
     describe('positive', () => {
       test('it inits ok for a known tax', () => {
@@ -34,8 +45,10 @@ describe('Taxonomy class', () => {
     })
   })
 
-  describe('', () => {
+  describe('@extends', () => {
+    describe('Subscribable Taxonomy', () => {
 
+    })
   })
 })
 

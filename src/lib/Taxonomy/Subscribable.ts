@@ -1,4 +1,5 @@
 import Taxonomy from './'
+import Subscriber from '../Subscriber'
 
 /**
  *
@@ -19,13 +20,16 @@ interface SubscribableTaxonomy<N, S> {
   onFirstTimeInit: () => void
 }
 
-class STaxonomy extends Taxonomy implements SubscribableTaxonomy {
+type SubscriberList<N> = {
+  [k: string]: Subscriber<N>[]
+}
+
+export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy {
   protected subscribers: SubscriberList
 
   constructor () {
     super()
   }
-
 
   /**
    * Returns all data from subscribers
@@ -43,7 +47,7 @@ class STaxonomy extends Taxonomy implements SubscribableTaxonomy {
    * @returns {Boolean} if subscribed anywhere
    */
   get subscribed () {
-    return this.subscribers.length > 0
+    return Object.keys(this.subscribers).length > 0
   }
   /**
    * Subscribes
@@ -57,7 +61,8 @@ class STaxonomy extends Taxonomy implements SubscribableTaxonomy {
     subscriberName : string = 'main',
     criteriuCerut ?: Criteriu
   ): Promise<Subscriber<T>> {
-    return new Subscriber(subscriberName, this).subscribe(criteriuCerut)
+    const { collection, store } = this
+    this.subscribers[subscriberName] = new Subscriber(collection, store).subscribe(criteriuCerut)
   }
 
   /**
@@ -95,6 +100,5 @@ class STaxonomy extends Taxonomy implements SubscribableTaxonomy {
         break
     }
 
-    subscribedTaxes.push(name)
   }
 }

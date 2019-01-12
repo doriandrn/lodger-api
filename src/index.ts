@@ -114,15 +114,15 @@ class Lodger implements LodgerAPI {
   /**
    * @requires <vuex> VueX
    */
-  store = new Store({})
+  protected store = new Store({})
 
-  taxonomies: {
-    [k in keyof Taxonomie]: Taxonomy<Taxonomie>
+  readonly taxonomies: {
+    [k in keyof Taxonomii]: Taxonomy<Taxonomie>
 
     // withoutReference ?: () => Taxonomy<Taxonomie>[]
   }
 
-  buildOpts: BuildOptions = {
+  private buildOpts: BuildOptions = {
     dbCon: {
       name: 'Lodger/',
       adapter: 'memory',
@@ -131,7 +131,7 @@ class Lodger implements LodgerAPI {
     },
     usePersistedState: false
   }
-  plugins: LodgerPlugin[] = []
+  protected plugins: LodgerPlugin[] = []
 
   /**
    * Creates an instance of Lodger.
@@ -147,54 +147,10 @@ class Lodger implements LodgerAPI {
   }
 
   put (taxonomie, data) {
-    return this[taxonomie].put
+    this[taxonomie].put(data)
   }
 
-  /**
-   * Cauta in searchMap
-   * @param input - string de cautat
-   * @alias Taxonomy.search
-   */
-  search (
-    input: string,
-    searchTaxonomy ?: Taxonomie
-  ) {
-    if (!input) return
-    const debug = Debug('lodger:search')
 
-    const searchMap = this.getters['searchMap']
-    if (!searchMap) {
-      debug('no search map found in getters, search not working !!')
-      return
-    }
-    const results: SearchResults = {}
-
-    Object.assign(results, {
-      clear: () => {
-        Object.keys(results).forEach(result => results[result] = [])
-      }
-    })
-
-    Object.keys(searchMap).forEach(tax => {
-      if (searchTaxonomy && searchTaxonomy !== tax) return
-      const iterator = searchMap[tax].entries()
-      results[tax] = []
-
-      for (let [key, value] of iterator) {
-        if (typeof value === 'function') continue
-        const relevance = string_similarity(String(input), value)
-        results[tax]
-          .push({ id: key, relevance, value })
-      }
-
-      results[tax] = results[tax]
-        .sort((a, b) => Number(a.relevance) - Number(b.relevance))
-        .reverse()
-        .slice(0, 6)
-    })
-
-    return results
-  }
 
    /**
    * Subscribes to multiple taxonomies with

@@ -1,8 +1,15 @@
-// import { version } from './package'
 const version = require('../package.json').version
+import { env } from 'defs/env'
+import { RxDatabaseCreator } from 'rxdb';
 
 type LodgerConfig = {
   version: string,
+  build: {
+    db: RxDatabaseCreator
+  },
+  store?: {
+    persist: false
+  },
   taxonomii: {
     defaults: {
       criteriu: Criteriu
@@ -10,6 +17,15 @@ type LodgerConfig = {
     [k: string]: {
       criteriu: Criteriu
     }
+  }
+}
+
+const build = {
+  db: {
+    name: 'Lodger/',
+    adapter: 'memory',
+    password: 'l0dg3rp4$$',
+    ignoreDuplicate: Boolean(env === 'test')
   }
 }
 
@@ -31,7 +47,8 @@ const taxonomii = {
 
 const config: LodgerConfig = {
   version,
-  taxonomii
+  taxonomii,
+  build
 }
 
 export default config

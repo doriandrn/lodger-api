@@ -5,7 +5,7 @@
 		}
 	],
 	"settings": {
-		"workbench.colorTheme": "Tomorrow Night Blue",
+		"workbench.colorTheme": "DuoTone Dark Forest",
 		"terminal.integrated.scrollback": 10000
 	}
 }

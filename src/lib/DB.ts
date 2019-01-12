@@ -1,16 +1,13 @@
 import * as RxDB from 'rxdb'
-import Debug from 'debug'
+
 import memoryAdapter from 'pouchdb-adapter-memory'
 import idbAdapter from 'pouchdb-adapter-idb'
 import httpAdapter from 'pouchdb-adapter-http'
 
-const debug = Debug('lodger:db')
 import { env } from 'defs/env'
 
 // RxDB.QueryChangeDetector.enable()
 // RxDB.QueryChangeDetector.enableDebugging()
-
-// type Adapter = 'http' | 'idb' | 'memory'
 
 // const adapters = {
 //   production: ['http', 'idb'],
@@ -36,28 +33,30 @@ switch (env) {
     break
 }
 
-/**
- * RxDB instantiator
- *
- * @export
- * @async
- * @param {RxDB.RxCollectionCreator[]} collections
- * @param {RxDB.RxDatabaseCreator} [config]
- * @returns {RxDB} the fresh database
- */
-export default async function (
-  collections: RxDB.RxCollectionCreator[],
-  config?: RxDB.RxDatabaseCreator
-) {
-  debug('Initing')
-  const db = await RxDB.create(Object.assign({}, config))
+export default RxDB
 
-  // show leadership in title
-  db.waitForLeadership().then(() => {
-    if (env !== 'dev') return
-    if (!process.browser && env !== 'dev') return
-    document.title = `♛ ${document.title}`
-  })
-  await Promise.all(collections.map(c => db.collection(c)))
-  return db
-}
+// /**
+//  * RxDB instantiator
+//  *
+//  * @export
+//  * @async
+//  * @param {RxDB.RxCollectionCreator[]} collections
+//  * @param {RxDB.RxDatabaseCreator} [config]
+//  * @returns {RxDB} the fresh database
+//  */
+// export default async function (
+//   collections: RxDB.RxCollectionCreator[],
+//   config?: RxDB.RxDatabaseCreator
+// ) {
+//   debug('Initing')
+//   const db =
+
+//   // show leadership in title
+//   db.waitForLeadership().then(() => {
+//     if (env !== 'dev') return
+//     if (!process.browser && env !== 'dev') return
+//     document.title = `♛ ${document.title}`
+//   })
+//   await Promise.all(collections.map(c => db.collection(c)))
+//   return db
+// }

@@ -34,11 +34,13 @@ export type LodgerFormCreator<T> = {
   name?: string
   plural: Plural<string>
   fields: FieldCreator<T>[]
+}
 
+type LodgerSchemaCreator = {
   methods?: { [k: string]: () => void }
   statics?: { [k: string]: () => void }
   sync?: boolean
-  setari?: any
+  settings?: any
 }
 
 const formsPath = ['dev', 'test']
@@ -72,13 +74,12 @@ type FormFields<I> = {
 }
 
 /**
- * Forms are read from within the `lib/forms/` directory
+ * Lodder Form class
  *
  * @class Form
  * @implements {LodgerForm}
  */
 class Form<N extends string, I> implements LodgerForm<N, I> {
-  readonly name : N
   protected fields : FormFields<I>
   protected collection ?: RxCollectionCreator
 
@@ -94,28 +95,29 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    * @memberof Form
    */
   constructor (
-    data: LodgerFormCreator<I>,
+    readonly name : N,
+    fields: FieldCreator<I>[],
+    // data: LodgerFormCreator<I>,
   ) {
-    const { fields, name, plural, methods, statics } = data
-    if (!name) throw new FormError('Form should have a name %%', data)
-    if (!fields || !Object.keys(fields).length)
+    // const { plural, methods, statics } = data
+    // if (!name) throw new FormError('Form should have a name %%', data)
+    if (!fields.length)
       throw new FormError('missing fields on form %%', name)
 
-    this.name = name
-    this.plural = plural
+    this.plural = String(name).plural()
     this.fields = { ...fields.map(field => ({ [field.id]: new Field(field) }) ) }
 
-    if (this.isTaxonomy) {
-      const schema = new Schema(data, true)
-      const collection = {
-        name: plural,
-        schema,
-        methods,
-        statics
-      }
-      this.collection = collection
-      this.indexables = Object.keys(schema.properties).filter(prop => schema.properties[prop].index)
-    }
+    // if (this.isTaxonomy) {
+    //   const schema = new Schema(data, true)
+    //   const collection = {
+    //     name: plural,
+    //     schema,
+    //     methods,
+    //     statics
+    //   }
+    //   this.collection = collection
+    //   this.indexables = Object.keys(schema.properties).filter(prop => schema.properties[prop].index)
+    // }
   }
 
   get isTaxonomy () {
@@ -159,9 +161,9 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
   }
 
   /**
+   * Gets the value of current active form
    *
    * @summary for new forms, values are all undefined
-   *
    * @returns {Object} data item (Vue $data - ready)
    */
   value (
@@ -173,6 +175,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
     this.fieldsIds.forEach(fieldId => {
       const field = this.fields[fieldId]
       $data[fieldId] = field.value(context)
+
       // const { label, required, click, excludeFrom } = camp
       // let { id, value } = camp
 
@@ -229,18 +232,18 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    *
    * @param name
    */
-  static async load (name: n extends keyof Forms): Promise<Form<Taxonomie>> {
+  static async load (name: string): Promise<Form<any, D>> {
     const debug = Debug('lodger:Form')
-    if (!name)
-      throw new FormError('no name supplied for form')
+    // if (!name)
+    //   throw new FormError('no name supplied for form')
 
     const formPath: string = `${formsPath}/${String(name).toLowerCase()}`
 
     try {
-      const formData: LodgerFormCreator = await import(formPath)
-      Object.assign(formData, { name })
+      const formData: LodgerFormCreator<D> = await import(formPath)
+      // Object.assign(formData, { name })
       debug('✓', name)
-      return new Form(formData)
+      return new Form(name, formData.fields)
     } catch (err) {
       debug('x', name)
       throw new FormError(err)
