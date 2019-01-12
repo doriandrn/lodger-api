@@ -36,7 +36,7 @@ export type LodgerFormCreator<T> = {
   fields: FieldCreator<T>[]
 }
 
-type LodgerSchemaCreator = {
+export type LodgerSchemaCreator = {
   methods?: { [k: string]: () => void }
   statics?: { [k: string]: () => void }
   sync?: boolean

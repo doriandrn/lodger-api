@@ -1,6 +1,7 @@
 import { RxDocument, RxCollection } from 'rxdb'
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
+import notify from '../helpers/notify'
 
 /**
   * Taxonomy item
@@ -29,6 +30,7 @@ import TaxonomyError from '../Error'
  */
 export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
   referenceTaxonomies?: Taxonomy<Taxonomie>[]
+  dependantTaxonomies?: Taxonomy<Taxonomie>[]
 
   /**
    * Creates an instance of Taxonomy.
@@ -44,6 +46,12 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
     store.registerModule(this.name, {})
   }
 
+  /**
+   * name getter
+   *
+   * @readonly
+   * @memberof Taxonomy
+   */
   get name () {
     return this.collection.name
   }
@@ -92,7 +100,7 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
 
       notify({
         type: 'success',
-        text: `pus ${taxonomy} ${id}`
+        text: `pus ${this.name} ${id}`
       })
       return doc
     } catch (e) {

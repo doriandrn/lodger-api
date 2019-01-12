@@ -1,15 +1,15 @@
 import Debug from 'debug'
 import { RxDatabase, RxDatabaseCreator, RxCollectionCreator, RxDocument } from 'rxdb'
-
 import fs, { PathLike } from 'fs'
 import yaml from 'json2yaml'
 
-import LodgerStore from '~/lib/Store'
-import DB from '~/lib/DB'
+import config from './lodger.config'
 import LodgerError from '~/lib/Error'
 
-import { string_similarity } from '~/lib/helpers/search'
-import { Taxonomy } from '~/lib/Taxonomy'
+import DB from '~/lib/DB'
+import Taxonomy from '~/lib/Taxonomy'
+
+import notify from 'helpers/notify'
 
 import { env } from '~/lib/defs/env'
 import { Form } from '~/lib/Form'
@@ -55,8 +55,7 @@ enum Errors {
 type FormsHolder = { [k in Taxonomie & Forms]: Form<k> }
 
 type BuildOptions = {
-  dbCon: RxDatabaseCreator,
-  usePersistedState?: boolean
+  db: RxDatabaseCreator,
   modules?: LodgerModule[]
 }
 
@@ -70,31 +69,12 @@ interface LodgerPlugin {
   install (): void
 }
 
-type Notification = {
-  type: 'error' | 'success' | 'info' | 'warn',
-  text: string
-}
-
 interface LodgerTaxes {
   withoutReference: () => Taxonomy<Taxonomie>[]
 }
 
 type TaxesList = {
   [k in Taxonomii]: Taxonomy<Taxonomie>
-}
-
-/**
- * @kind Store action wrapper
- * fallsback to console
- *
- * @param {Notification} notification
- */
-function notify (notification: Notification) {
-  if (this && typeof this.dispatch === 'function' && this.actions.notify) {
-    this.dispatch('notify', notification)
-    return
-  }
-  console.log(notification.text)
 }
 
 interface LodgerAPI {
@@ -122,15 +102,7 @@ class Lodger implements LodgerAPI {
     // withoutReference ?: () => Taxonomy<Taxonomie>[]
   }
 
-  private buildOpts: BuildOptions = {
-    dbCon: {
-      name: 'Lodger/',
-      adapter: 'memory',
-      password: 'l0dg3rp4$$',
-      ignoreDuplicate: Boolean(env === 'test')
-    },
-    usePersistedState: false
-  }
+
   protected plugins: LodgerPlugin[] = []
 
   /**
@@ -251,15 +223,13 @@ class Lodger implements LodgerAPI {
    * @returns {Lodger}
    *
    */
-  static async build (options?: BuildOptions) {
+  static async build (options: BuildOptions = { ... config.build }) {
+    const db = await DB.create(options.db)
     const debug = Debug('lodger:build')
-    // custom options
-    if (options) Object.assign(this.buildOpts, { ...options })
-    const { dbCon } = options || buildOpts
 
     debug(`Building in ${env} mode ...`)
 
-    // strings
+    // strings only from  enums
     const taxes: Taxonomie[] = Object.keys(Taxonomii).filter(tax => typeof Taxonomii[tax as any] === 'number')
     const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
 
@@ -274,22 +244,16 @@ class Lodger implements LodgerAPI {
     debug('Txs', Object.keys(Taxonomies))
     debug(`Loaded ${Object.keys(taxes).length} taxes ok.`)
 
-    const _collections: RxCollectionCreator[] = taxes.map(tax => {
-      // const f = Taxonomies[tax].form
-      const f = forms[tax]
-      const { name, plural, collection } = f
-      debug('C', name, plural, collection)
-      return collection
-    })
-    debug('cols', _collections)
-    const db = await DB(_collections, dbCon)
-    const store = new LodgerStore(taxes)
+    // const _collections: RxCollectionCreator[] = taxes.map(tax => {
+    //   // const f = Taxonomies[tax].form
+    //   const f = forms[tax]
+    //   const { name, plural, collection } = f
+    //   debug('C', name, plural, collection)
+    //   return collection
+    // })
+    // debug('cols', _collections)
+    // const db = await DB(_collections, dbCon)
 
-    // bind collections to taxonomies
-    Object.keys(Taxonomies).forEach(tax => {
-      debug('t', tax)
-      Taxonomies[tax].collection = db.collections[Taxonomies[tax].plural]
-    })
 
     /**
      * When a taxonomy item gets SELECTED,
@@ -354,8 +318,7 @@ class Lodger implements LodgerAPI {
     return new Lodger(
       Taxonomies,
       forms,
-      db,
-      store
+      db
     )
   }
 

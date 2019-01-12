@@ -1,47 +1,31 @@
+import vue from 'vue'
+
 import Taxonomy from '~/lib/Taxonomy/index'
 import STaxonomy from '~/lib/Taxonomy/Subscribable'
 import DB from '~/lib/DB'
-import collections from '../../__fixtures__/taxes/collections'
-import testdbsetup from '../../__fixtures__/db/test'
+import vuex from 'vuex'
 
+import collections from '../../../__fixtures__/taxes/collections'
+import testdbsetup from '../../../__fixtures__/db/test'
+vue.use(vuex)
 
 describe('Taxonomy class', () => {
-  let db
+  let db, cols, store
 
   beforeAll(async () => {
-    db = await DB(collections, testdbsetup)
+    db = await DB.create(testdbsetup)
+    await Promise.all(collections.map(col => db.collection(col)))
+
+    cols = await db.collections
+    store = new vuex.Store({})
   })
 
   describe('constructor', () => {
-    describe('positive', () => {
-      test('it inits ok for a known tax', () => {
-        const asociatie = new Taxonomy('asociatie')
-        expect(asociatie).toBeDefined()
-      })
-    })
-
-    describe('negative', () => {
-      test('it throws for an unknown taxonomy', () => {
-        try {
-          new Taxonomy('masina')
-        } catch (e) {
-          expect(e).toBeDefined()
-        }
-
-        try {
-          new Taxonomy()
-        } catch (e) {
-          expect(e).toBeDefined()
-        }
-
-        // this  should work actually
-        try {
-          new Taxonomy(3)
-        } catch (e) {
-          expect(e).toBeDefined()
-        }
-      })
-
+    test('it inits ok for a known tax', () => {
+      const sosete = new Taxonomy(cols['sosete'], store)
+      console.info('sosete', Object.keys(sosete))
+      expect(sosete).toBeDefined()
+      expect(sosete.name).toBe('sosete')
     })
   })
 
@@ -49,6 +33,14 @@ describe('Taxonomy class', () => {
     describe('Subscribable Taxonomy', () => {
 
     })
+
+    describe('Searchable Taxonomy', () => {
+
+    })
+  })
+
+  afterAll(async () => {
+    await db.destroy()
   })
 })
 
