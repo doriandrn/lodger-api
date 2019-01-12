@@ -2,9 +2,9 @@
  * @param {Object} { methodName: action }
  */
 export type SharedStoreMethods = {
-  [k: string]: string | undefined,
-  selected?: string | undefined,
-  last?: string | undefined,
+  [k: string]: string,
+  // selected?: string | undefined,
+  last: string
 }
 
 export const sharedStoreMethods: SharedStoreMethods = {

@@ -1,3 +1,5 @@
+import consola from 'consola'
+
 type Notification = {
   type: 'error' | 'success' | 'info' | 'warn',
   text: string
@@ -9,15 +11,16 @@ type Notification = {
  *
  * @param {Notification} notification
  */
-export default function (notification: Notification) {
+function notify (notification: Notification) {
   // Bound to store
   if (this && typeof this.dispatch === 'function' && this.actions.notify) {
     this.dispatch('notify', notification)
     return
   }
 
-  // Simple
-  let { type, text } = notification
-  type = typeof console[type] === 'function' ? type : 'log'
-  console[type](text)
+  // Simple -> Consola
+  const { type, text } = notification
+  consola[type](text)
 }
+
+export default notify

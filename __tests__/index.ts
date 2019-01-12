@@ -323,35 +323,7 @@ describe('Lodger', () => {
             debug('PUT FAILED', e)
           }
         })
-        test('item gets added ok', () => {
-          expect(asoc).toBeDefined()
-        })
 
-        test('item is assigned an _id', () => {
-          const { _id } = asoc
-          expect(_id).toBeDefined()
-        })
-
-        test(`getter 'asociatie/last' is the item's id`, () => {
-          const { _id } = asoc
-          const lastAddedId = lodger.getters['asociatie/last']
-          expect(lastAddedId).toBe(_id)
-        })
-
-        test('item gets selected immediately after', () => {
-          const { _id } = asoc
-          expect(lodger.getters['asociatie/selected']).toBe(_id)
-        })
-
-        test('updates the current item if _id is provided and ok', async () => {
-          const asocnew = Object.assign({}, {
-            _id: asoc._id,
-            name: 'New aso',
-            moneda
-          })
-          const { _id } = await lodger.put(testTax, asocnew)
-          expect(_id).toEqual(asoc._id)
-        })
       })
 
       describe('negative', () => {

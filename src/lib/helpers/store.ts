@@ -1,9 +1,7 @@
 import { Module, ActionTree, GetterTree, MutationTree } from 'vuex'
 import LodgerError from '../Error';
 
-import { sharedStoreMethods } from 'defs/sharedStoreMethods'
-
-// const namespaced: boolean = true
+import { sharedStoreMethods, SharedStoreMethods } from 'defs/sharedStoreMethods'
 
 interface RootState {
   [key: string]: any
@@ -34,20 +32,6 @@ function createEmptyStoreModule () {
   }
 }
 
-// const otherActions = (taxonomy, actionName) => {
-//   switch (actionName) {
-//     case 'select':
-//       return [
-//         `${taxonomy}/set_referencesIds`
-//       ]
-
-//     default:
-//       return []
-//   }
-
-// }
-
-
 /**
   * Shared methods across taxonomies, called individually
   *
@@ -55,62 +39,30 @@ function createEmptyStoreModule () {
   * @requires sharedMethods
   */
 function setupSharedMethods (
-  sharedMethods: SharedStoreMethods = sharedStoreMethods,
-  module: Module<EmptyState, RootState> = createEmptyStoreModule(),
-  moduleName ?: Taxonomii | string,
-  plural ?: Plural
+  sharedMethods: SharedStoreMethods = sharedStoreMethods
 ) {
   if (typeof sharedMethods !== 'object') {
     throw new LodgerError('invalid methods supplied')
   }
 
-  // pt servicii si contoare
-  const isMultiple: boolean = taxIsMultipleSelect(moduleName)
+  const module: Module<any, RootState> = createEmptyStoreModule()
 
   Object.keys(sharedMethods).forEach(methodName => {
-    const action : string | undefined = sharedMethods[methodName]
-    const multipleSelect : boolean = isMultiple && action === 'select'
+    const action : string = sharedMethods[methodName]
+    const MUTATION: string = String(action).toUpperCase()
 
-    module.state[methodName] = undefined
-    module.getters[methodName] = (S: RootState, G: GetterTree<RootState, any>) => {
-      if (multipleSelect) {
-        const doc = G[`${moduleName}/activeDoc`]
-        return doc ? doc[plural] : undefined
-      } else {
-        return S[methodName] && S[methodName].id ? S[methodName].id : S[methodName]
-      }
-    }
-    module.actions[action] = ({ commit, dispatch }, data) => {
-      commit(action, data)
-
-      // const otherActionsToDispatch = otherActions(moduleName, methodName)
-
-      // otherActionsToDispatch.forEach(action => {
-      //   dispatch(action, )
-      // })
-    }
-    module.mutations[action] = (s, data) => {
-      s[methodName] = data
-    }
+    Object.assign(module, {
+      state: { [methodName]: undefined },
+      getters: { [methodName]: (S: RootState) => S[methodName] },
+      actions: { [action]: ({ commit }, data) => commit(MUTATION, data) },
+      mutations: { [MUTATION]: (s, data) => s[methodName] = data }
+    })
   })
 
-  // module.getters['activeDoc'] = (S: RootState) => S.doc || {}
-
-  return <Module<SharedStoreMethods, RootState>>module
-}
-
-/**
- * Loads a taxonomy's store data from it's filename in store
- */
-function setupFromFile (taxonomy: Taxonomii) {
-  return <Module<Taxonomie, RootState>>{
-
-  }
+  return <Module<any, RootState>>module
 }
 
 export {
-  sharedStoreMethods,
   createEmptyStoreModule,
-  setupSharedMethods,
-  setupFromFile
+  setupSharedMethods
 }

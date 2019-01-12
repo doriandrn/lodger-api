@@ -33,6 +33,7 @@
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-dynamic-import-node": "^2.2.0",
+    "consola": "^2.3.2",
     "debug": "^4.1.1",
     "deep-equal": "^1.0.1",
     "faker": "^4.1.0",

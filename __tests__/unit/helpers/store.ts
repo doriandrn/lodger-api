@@ -12,7 +12,7 @@ const taxonomies = ['car', 'plane']
 describe('helpers for store', () => {
   describe('.createEmptyStoreModule', () => {
     describe('positive', () => {
-    const _module = createEmptyStoreModule()
+      const _module = createEmptyStoreModule()
       test('it returns an empty Vuex-ready module', () => {
         expect(_module.state).toBeDefined()
         expect(_module.getters).toEqual({})
@@ -32,11 +32,6 @@ describe('helpers for store', () => {
     })
   })
 
-  describe('.setupFromFile()', () => {
-    describe('positive', () => {
-
-    })
-  })
 
   describe('.setupSharedMethods()', () => {
     describe('positive', () => {
@@ -48,6 +43,7 @@ describe('helpers for store', () => {
       })
 
       const { state, actions, mutations, namespaced, getters } = Xmodule
+
       test('it adds the named method to state', () => {
         expect(Object.keys(state)).toContain('selected')
       })
@@ -68,7 +64,7 @@ describe('helpers for store', () => {
       })
 
       test('mutations has the action', () => {
-        expect(mutations.select).toBeDefined()
+        expect(mutations.SELECT).toBeDefined()
       })
 
       test('returns a valid Vuex module if no module supplied', () => {
