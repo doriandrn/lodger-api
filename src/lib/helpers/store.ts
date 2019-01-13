@@ -51,12 +51,10 @@ function setupSharedMethods (
     const action : string = sharedMethods[methodName]
     const MUTATION: string = String(action).toUpperCase()
 
-    Object.assign(module, {
-      state: { [methodName]: undefined },
-      getters: { [methodName]: (S: RootState) => S[methodName] },
-      actions: { [action]: ({ commit }, data) => commit(MUTATION, data) },
-      mutations: { [MUTATION]: (s, data) => s[methodName] = data }
-    })
+    Object.assign(module.state, { [methodName]: undefined })
+    Object.assign(module.getters, { [methodName]: (S: RootState) => S[methodName] })
+    Object.assign(module.actions, { [action]: ({ commit }, data) => commit(MUTATION, data) })
+    Object.assign(module.mutations, { [MUTATION]: (s, data) => s[methodName] = data })
   })
 
   return <Module<any, RootState>>module

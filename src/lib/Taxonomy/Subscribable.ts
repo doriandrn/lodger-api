@@ -28,7 +28,7 @@ export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy 
   protected subscribers: SubscriberList
 
   constructor () {
-    super()
+    super(...arguments)
   }
 
   /**

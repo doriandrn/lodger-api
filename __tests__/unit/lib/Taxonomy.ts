@@ -1,29 +1,41 @@
 import vue from 'vue'
+import vuex from 'vuex'
+
+import DB from '~/lib/DB'
 
 import Taxonomy from '~/lib/Taxonomy/index'
-import STaxonomy from '~/lib/Taxonomy/Subscribable'
-import DB from '~/lib/DB'
-import vuex from 'vuex'
+import SubscribableTaxonomy from '~/lib/Taxonomy/Subscribable'
 
 import collections from '../../../__fixtures__/taxes/collections'
 import testdbsetup from '../../../__fixtures__/db/test'
+
 vue.use(vuex)
 
+async function init () {
+  const db = await DB.create(Object.assign({}, { ...testdbsetup }, {
+    name: `${testdbsetup.name}/${Date.now()}`
+  }))
+  await Promise.all([ ...collections ].map(col => db.collection(col)))
+
+  const cols = db.collections
+  const store = new vuex.Store({})
+
+  return { db, cols, store }
+}
+
 describe('Taxonomy class', () => {
-  let db, cols, store,
-    taxes = {}
+  let db, store, cols,
+    taxes = {}, $tax
 
   beforeAll(async () => {
-    db = await DB.create(testdbsetup)
-    await Promise.all(collections.map(col => db.collection(col)))
-
-    cols = await db.collections
-    store = new vuex.Store({})
-
+    const i = await init()
+    db = i.db
+    store = i.store
+    cols = i.cols
     Object.keys(cols).map(col => {
       taxes[col] = new Taxonomy(cols[col], store)
     })
-    console.info('taxes', Object.keys(taxes))
+    $tax = taxes['sosete']
   })
 
   describe('constructor', () => {
@@ -35,11 +47,9 @@ describe('Taxonomy class', () => {
   })
 
   describe('.put()', () => {
-    let soseta, _id, $tax
+    let soseta, _id
 
     beforeAll(async () => {
-      const _tax = 'sosete'
-      $tax = taxes[_tax]
       soseta = await $tax.put({ name: 'verde', lungime: 2 })
       _id = soseta._id
     })
@@ -52,11 +62,14 @@ describe('Taxonomy class', () => {
       expect(soseta._id).toBeDefined()
     })
 
-    test(`getter 'last' is the item's id`, () => {
+    test(`getter 'last' is the last added item's id`, async () => {
       const { _id } = soseta
-      console.log('g', $tax.getters)
-      const lastAddedId = $tax.getters['sosete/last']
+
+      const lastAddedId = $tax.getters['last']
       expect(lastAddedId).toBe(_id)
+
+      const x = await $tax.put({ name: 'gigi', lungime: 5 })
+      expect(x._id).toBe($tax.getters.last)
     })
 
     // test('(!!) if added from same subscriber, item gets selected immediately after', () => {
@@ -78,9 +91,51 @@ describe('Taxonomy class', () => {
     })
   })
 
+  describe('.trash()', () => {
+    let _id
+
+    beforeAll(async () => {
+      const x = await $tax.put({ name: 'xx', lungime: 4 })
+      _id = x._id
+    })
+    test('removes ok the item by its id', () => {
+      expect(async () => { await $tax.trash(_id) }).not.toThrow()
+    })
+
+    test('store last id updates to previous id', () => {
+      expect(_id).not.toEqual($tax.getters.last)
+    })
+  })
+
   describe('@extends', () => {
     describe('Subscribable Taxonomy', () => {
+      let _db, _store, _cols,
+        _taxes = {}, _$tax
 
+      beforeAll(async () => {
+        console.error('pppp')
+        const i = await init()
+        console.error('bbbb')
+        _db = i.db
+        _store = i.store
+        _cols = i.cols
+
+        Object.keys(_cols).map(col => {
+          taxes[col] = new SubscribableTaxonomy(_cols[col], _store)
+        })
+        console.error('tx', taxes)
+        _$tax = _taxes['sosete']
+      })
+
+      describe('ctor', () => {
+        test('creates ok the tax', () => {
+          expect(_$tax.name).toEqual('sosete')
+        })
+      })
+
+      afterAll(async () => {
+        await _db.destroy()
+      })
     })
 
     describe('Searchable Taxonomy', () => {
@@ -92,30 +147,3 @@ describe('Taxonomy class', () => {
     await db.destroy()
   })
 })
-
-/**
- *
-
-taxonomii: {
-  asociatie: {
-    referencesTaxonomies:
-  }
-}
-
-Taxonomies holder
-+:
-  it creates a container that holds all requested taxonomies
-
--:
-
-
-Taxonomy
-  .plural getter
-    +:
-      it returns the plural string based on name
-    -:
-      throws if invalid
-
-  subscribe
-
-*/

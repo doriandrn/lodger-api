@@ -3,7 +3,6 @@
  */
 export type SharedStoreMethods = {
   [k: string]: string,
-  // selected?: string | undefined,
   last: string
 }
 

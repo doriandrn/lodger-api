@@ -1,8 +1,11 @@
 import { RxDocument, RxCollection } from 'rxdb'
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
+import { GetterTree } from 'vuex'
+
 import notify from '../helpers/notify'
-import { setupSharedMethods } from '../helpers/store';
+
+import { setupSharedMethods } from '../helpers/store'
 
 /**
   * Taxonomy item
@@ -29,8 +32,9 @@ import { setupSharedMethods } from '../helpers/store';
  * @param {Form} form - the constructed form item
  */
 export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
-  referenceTaxonomies?: Taxonomy<Taxonomie>[]
-  dependantTaxonomies?: Taxonomy<Taxonomie>[]
+  private referenceTaxonomies?: Taxonomy<Taxonomie>[]
+  private dependantTaxonomies?: Taxonomy<Taxonomie>[]
+  readonly getters: GetterTree<> = {}
 
   /**
    * Creates an instance of Taxonomy.
@@ -43,10 +47,17 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
     protected collection: RxCollection<T>,
     readonly store: Store<T>
   ) {
-    store.registerModule(this.name, setupSharedMethods())
-    console.log(Object.keys(store.getters))
-    // console.log(store)
-    // console.log(m)
+    const { name } = this
+    store.registerModule(name, setupSharedMethods())
+    Object.keys(this.store.getters)
+      .filter(key => key.startsWith(name))
+      .map(key => {
+        const shortKey = key.replace(`${name}/`, '')
+        const { store } = this
+        Object.defineProperty(this.getters, shortKey, {
+          get () { return store.getters[key] }
+        })
+      })
   }
 
   /**
@@ -59,9 +70,6 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
     return this.collection.name
   }
 
-  get getters () {
-    return this.store.getters
-  }
 
   /**
    * Removes a Document by ID from the collection
@@ -96,23 +104,22 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
       'insert'
 
 
+    const { name } = this
     /**
      * do the insert / upsert and following actions
      */
     try {
       const doc = await this.collection[method](data)
       const id = doc._id
-      this.store.dispatch(`set_last`, id)
+      this.store.dispatch(`${name}/set_last`, id)
 
       notify({
         type: 'success',
-        text: `pus ${this.name} ${id}`
+        text: `pus ${name} ${id}`
       })
       return doc
     } catch (e) {
-      notify({
-        type: 'error', text: String(e)
-      })
+      notify({ type: 'error', text: String(e) })
     }
   }
 
@@ -124,7 +131,7 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
   get config () {
     const { taxonomii } = LodgerConfig
     const { defaults } = taxonomii
-    return taxonomii[this.plural] || defaults
+    return taxonomii[this.name] || defaults
   }
 
   get defaultCriteriu () {
