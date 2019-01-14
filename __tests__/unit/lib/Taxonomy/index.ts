@@ -4,18 +4,17 @@ import vuex from 'vuex'
 import DB from '~/lib/DB'
 
 import Taxonomy from '~/lib/Taxonomy/index'
-import SubscribableTaxonomy from '~/lib/Taxonomy/Subscribable'
 
-import collections from '../../../__fixtures__/taxes/collections'
-import testdbsetup from '../../../__fixtures__/db/test'
+import collections from '@/__fixtures__/taxes/collections'
+import testdbsetup from '@/__fixtures__/db/test'
 
 vue.use(vuex)
 
-async function init () {
+export async function init () {
   const db = await DB.create(Object.assign({}, { ...testdbsetup }, {
     name: `${testdbsetup.name}/${Date.now()}`
   }))
-  await Promise.all([ ...collections ].map(col => db.collection(col)))
+  await Promise.all(collections.map(col => db.collection(col)))
 
   const cols = db.collections
   const store = new vuex.Store({})
@@ -36,6 +35,10 @@ describe('Taxonomy class', () => {
       taxes[col] = new Taxonomy(cols[col], store)
     })
     $tax = taxes['sosete']
+  })
+
+  afterAll(async () => {
+    await db.destroy()
   })
 
   describe('constructor', () => {
@@ -105,45 +108,5 @@ describe('Taxonomy class', () => {
     test('store last id updates to previous id', () => {
       expect(_id).not.toEqual($tax.getters.last)
     })
-  })
-
-  describe('@extends', () => {
-    describe('Subscribable Taxonomy', () => {
-      let _db, _store, _cols,
-        _taxes = {}, _$tax
-
-      beforeAll(async () => {
-        console.error('pppp')
-        const i = await init()
-        console.error('bbbb')
-        _db = i.db
-        _store = i.store
-        _cols = i.cols
-
-        Object.keys(_cols).map(col => {
-          taxes[col] = new SubscribableTaxonomy(_cols[col], _store)
-        })
-        console.error('tx', taxes)
-        _$tax = _taxes['sosete']
-      })
-
-      describe('ctor', () => {
-        test('creates ok the tax', () => {
-          expect(_$tax.name).toEqual('sosete')
-        })
-      })
-
-      afterAll(async () => {
-        await _db.destroy()
-      })
-    })
-
-    describe('Searchable Taxonomy', () => {
-
-    })
-  })
-
-  afterAll(async () => {
-    await db.destroy()
   })
 })

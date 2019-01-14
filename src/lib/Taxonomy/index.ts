@@ -12,14 +12,9 @@ import { setupSharedMethods } from '../helpers/store'
   *
   * @interface LodgerTaxonomy
   */
- interface LodgerTaxonomy<N extends Taxonomie, S> {
-  readonly hasReference: boolean,
-
-  readonly collection: RxCollection<N>,
-  readonly store: Store<S>
-
+ interface LodgerTaxonomy<N extends Taxonomie> {
   put (data: Object): Promise<RxDocument<N>> | void
-  trash (id: string): Promise<RxDocument<N>>
+  trash (id: string): Promise<RxDocument<N> | null>
 }
 
 /**
@@ -32,8 +27,8 @@ import { setupSharedMethods } from '../helpers/store'
  * @param {Form} form - the constructed form item
  */
 export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
-  private referenceTaxonomies?: Taxonomy<Taxonomie>[]
-  private dependantTaxonomies?: Taxonomy<Taxonomie>[]
+  // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
+  // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
   readonly getters: GetterTree<> = {}
 
   /**
@@ -79,7 +74,7 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    * @memberof Taxonomy
    */
   async trash (id: string) {
-    await this.collection.findOne(id).remove()
+    return await this.collection.findOne(id).remove()
   }
 
   /**
@@ -91,7 +86,7 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    * @memberof Taxonomy
    */
   async put (
-    data: { _id ?: string},
+    data: { _id ?: string },
   ) {
     if (!data || Object.keys(data).length < 1)
       throw new TaxonomyError('Missing data %%', data)
@@ -103,8 +98,8 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
       'upsert' :
       'insert'
 
-
     const { name } = this
+
     /**
      * do the insert / upsert and following actions
      */

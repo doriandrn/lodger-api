@@ -33,13 +33,14 @@ declare global {
 
     // values
     default?: any | Function
-    value?: (context ?: FieldGivenContext<T>) => any
+    value?: (context : FieldGivenContext<T>) => any
 
     // field description
     type ?: FieldTypes // our form types. DEFAULT: 'string'
     required ?: boolean // if the field is required
     encrypted ?: boolean // encrypt field's value
     index ?: boolean // should be indexable <=> sorts & search
+    primary ?: boolean // skip _id field and make this primary instead
     excludeFrom ?: ItemExcludableFrom | ItemExcludableFrom[]
 
     name ?: string // used for grouping checkboxes / radio groups

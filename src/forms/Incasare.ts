@@ -9,18 +9,19 @@ enum Monede {
   RON, EUR, USD
 }
 
-interface Incasare {
-  suma: Bani,
-  nrChitanta: number
-  moneda: Monede
+declare global {
+  interface Incasare {
+    suma: Bani,
+    nrChitanta: number
+    moneda: Monede
 
-  apartamentId: ID<Apartament>
-  blocId: ID<Bloc>
-  asociatieId: ID<Asociatie>
+    apartamentId: string
+    blocId: string
+    asociatieId: string
+  }
 }
 
-
-const fields: Fields<Incasare> = [
+const fields: FieldCreator<Incasare>[] = [
   {
     id: 'suma',
     type: 'bani',
@@ -36,12 +37,7 @@ const fields: Fields<Incasare> = [
     index: true,
     value: ({ activeDocument }) => (activeDocument.nrUltimaChitanta || 0) + 1
   },
-  {
-    id: 'moneda',
-    notInForm: true,
-    required: true,
-    value: ({ activeDocument }) => activeDocument.moneda
-  },
+
 
   {
     id: 'apartamentId', //aka DE LA
@@ -68,14 +64,9 @@ const fields: Fields<Incasare> = [
   }
 ]
 
-const actions = {
-  confirm: 'incaseaza'
-}
-
 const plural = 'incasari'
 
 export {
   fields,
-  actions,
   plural
 }

@@ -1,12 +1,29 @@
+declare global {
+  type Scara = {
+    id: number
+    etaje: number
+    lift: boolean
+    mansarda: boolean
+  }
+  interface Bloc {
+    _id: string
+    name: string
+    scari ?: Scara[]
+    adresa: string
+
+    asociatieId: string
+  }
+}
+
 const bs = 'bloc/activeDoc'
 
-const fields = [
-  {
-    id: '_id',
-    notInDb: true,
-    notInForm: true,
-    value: g => g[bs]._id
-  },
+const fields: FieldCreator<Bloc>[] = [
+  // {
+  //   id: '_id',
+  //   notInDb: true,
+  //   notInForm: true,
+  //   value: g => g[bs]._id
+  // },
   {
     id: 'name',
     placeholder: 'ex. M11, COCOR-2, A3...',
@@ -46,12 +63,7 @@ const fields = [
 
 const plural = 'blocuri'
 
-const actions = {
-  confirm: 'adaugaBloc'
-}
-
 export {
   plural,
-  fields,
-  actions
+  fields
 }

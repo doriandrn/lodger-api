@@ -1,6 +1,11 @@
 import { RxDocument } from "rxdb";
 
 declare global {
+  type Organizatie = {
+    nume: string,
+    cif?: number,
+    rocif?: boolean
+  }
 
   /**
    * Taxonomy: Asociatie
@@ -10,7 +15,6 @@ declare global {
   interface Asociatie {
     _id: string
     name: string
-    moneda: string
 
     servicii: Serviciu[]
     organizatie?: Organizatie,
@@ -19,8 +23,21 @@ declare global {
     tranzactii?: Tranzactie[]
     incasari?: Incasare[]
 
-    readonly administratori: () => [Utilizator]
-    readonly balanta: () => Bani
+    readonly administratori: Utilizator[]
+    readonly balanta: Bani
+
+    preferinte: {
+      moneda: string
+
+      sfarsitLuna: number
+      genereazaListeAutomat: boolean
+
+      filtre: {
+        [k: Taxonomie]: {
+          [f: string]: any
+        }
+      }
+    }
 
     initBalanta (): void
     incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
@@ -28,35 +45,24 @@ declare global {
   }
 }
 
-const getter = 'modal/data'
-const modalOpen = 'modal/open'
-const modalContent = 'modal/content'
-
 const plural = 'asociatii'
 
 const fields: FieldCreator<Asociatie>[] = [
-  {
-    id: '_id',
-    excludeFrom: 'all',
-    value: ({ getters }) => getters[modalOpen] && getters[modalContent] === 'asociatie.new' ? null : getters[getter]._id,
-  },
   {
     id: 'name',
     required: true,
     focus: true,
     index: true,
     showInList: 'primary',
-    value: ({ getters }) => getters[modalOpen] && getters[modalContent] === 'asociatie.new' ? null : getters[getter].name,
+    value: ({ activeDoc }) => activeDoc.name,
     v: 'max:32|min:3',
-    oninput: {
-      transform: 'capitalize'
-    }
+    oninput: { transform: 'capitalize' }
   },
   {
     id: 'organizatie',
-    type: 'object'
+    type: 'object',
+    value: ({ activeDoc }) => activeDoc.organizatie
     // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
-    // value: ({ getters }) => getters[modalOpen] && getters[modalContent] === 'asociatie.new' ? null : getters[getter].idN,
   },
   {
     id: 'moneda',
@@ -65,28 +71,28 @@ const fields: FieldCreator<Asociatie>[] = [
   {
     id: 'balanta',
     type: 'number',
-    value: ({ getters }) => getters[getter].balanta,
+    value: ({ activeDoc }) => activeDoc.balanta,
     showInList: ['details']
   },
   {
     id: 'incasari',
     type: 'array',
     ref: 'incasari',
-    value: ({ getters }) => getters[getter].incasari,
+    value: ({ activeDoc }) => activeDoc.incasari,
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'utilizatori',
     type: 'array',
     ref: 'utilizatori',
-    value: ({ getters }) => getters[getter].utilizatori,
+    value: ({ activeDoc }) => activeDoc.utilizatori,
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'servicii',
     type: 'array',
     ref: 'servicii',
-    value: ({ getters }) => getters[getter].servicii,
+    value: ({ activeDoc }) => activeDoc.servicii,
     showInList: 'secondary',
     excludeFrom: ['addForm', 'editForm']
   },
@@ -94,18 +100,18 @@ const fields: FieldCreator<Asociatie>[] = [
     id: 'furnizori',
     type: 'array',
     ref: 'furnizori',
-    value: ({ getters }) => getters[getter].furnizori,
+    value: ({ activeDoc }) => activeDoc.furnizori,
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'filtreCheltuieli',
-    value: ({ getters }) => getters[getter].filtreCheltuieli,
+    value: ({ activeDoc }) => activeDoc.filtreCheltuieli,
     type: 'array',
     excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'preferinte',
-    value: ({ getters }) => getters[getter].preferinte,
+    value: ({ activeDoc }) => activeDoc.preferinte,
     type: 'object',
     excludeFrom: ['addForm', 'editForm']
   }
@@ -113,6 +119,7 @@ const fields: FieldCreator<Asociatie>[] = [
 
 const methods = {
   async initBalanta (data: {balanta: Bani}) {
+    if (this.balanta !== undefined) return
     this.balanta = data.balanta
     await this.save()
   },
@@ -191,3 +198,42 @@ export {
   statics,
   setari
 }
+
+// export const campuri = [
+//   {
+//     id: 'balanta',
+//     label: 'asociatie.init.balanta',
+//     required: true,
+//     type: 'bani',
+//     '@change': 'asociatie/initBalanta',
+//     value (getters) { return getters['asociatie/balanta'] }
+//   },
+//   {
+//     id: 'dataDinLunaListe',
+//     label: 'asociatie.init.dataDinLuna',
+//     required: true,
+//     type: 'number',
+//     max: 28,
+//     min: 1
+//   }
+// ]
+// export const setari = {
+//   regionale: {
+//     campuri: [
+//       {
+//         id: 'limba',
+//         type: 'select',
+//         '@change': 'schimbaLimba',
+//         value: g => g.locale,
+//         options: g => g.limbiChoose
+//       },
+//       {
+//         id: 'moneda',
+//         type: 'select',
+//         value: g => g.moneda,
+//         options: g => g.monede
+//       }
+//     ]
+//   }
+// }
+

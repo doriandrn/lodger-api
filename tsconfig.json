@@ -23,7 +23,7 @@
       // "forms/*": [ "forms/*" ],
       "defs/*": [ "lib/defs/*" ],
       "helpers/*": [ "lib/helpers/*" ],
-      "@/*": [ "/*" ],
+      "@/*": [ "../*" ],
     },
     // "rootDirs": [
     //   "./"
@@ -45,8 +45,9 @@
   //   // "forms/*"
   // ],
   "exclude": [
-    "__tests__/**/*",
-    "__fixtures__/**/*",
+    "dist/**/*",
+    // "__tests__/**/*",
+    // "__fixtures__/**/*",
     "node_modules/*"
   ]
 }

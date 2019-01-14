@@ -3,6 +3,8 @@ declare global {
     denumire: string,
     furnizori: Furnizor[],
     contoare: Contor[]
+
+    asociatieId: string
   }
 }
 
@@ -13,20 +15,20 @@ const fields: FieldCreator<Serviciu>[] = [
    */
   {
     id: 'asociatieId',
-    notInDb: true
+    excludeFrom: 'db'
   },
 
   {
     id: 'denumire',
     required: true,
     showInList: 'primary',
-    isPrimary: true,
+    primary: true,
     index: true
   },
   {
     id: 'furnizori',
     type: 'array',
-    notInForm: true
+    excludeFrom: ['addForm', 'editForm']
   },
   {
     id: 'contoare',
@@ -36,18 +38,18 @@ const fields: FieldCreator<Serviciu>[] = [
 
 const plural = 'servicii'
 
-const actions = {
-  confirm: 'adaugaServiciu'
-}
-
-const multipleSelect = true
-
-const predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer']
+const predefinite =
+  [
+    'apa',
+    'electricitate',
+    'gaze',
+    'termoficare',
+    'internet',
+    'evacuare-gunoi-menajer'
+  ]
 
 export {
   fields,
   plural,
-  actions,
-  predefinite,
-  multipleSelect
+  predefinite
 }

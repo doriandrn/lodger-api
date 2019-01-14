@@ -1,15 +1,27 @@
+type DateContact = {
+  emailPublic?: string,
+  telefonPublic?: string,
+  alteEmailuri: [string],
+  alteTelefoane?: [string],
+  sociale?: [Social]
+}
+
+type Social = {
+  retea: string,
+  username: string
+}
+
 declare global {
   interface Utilizator {
-    _id: string,
-    nume?: string,
-    contact?: DateContact,
-    preferinte?: PreferinteUtilizator
+    _id: string
+    name: string
+    rol: 'dev' | 'admin' | 'presedinte' | 'locator'
+    contact?: DateContact
+    preferinte: PreferinteUtilizator
   }
 }
 
-const getter = `utilizator/activeDoc`
-
-const fields: FieldCreator[] = [
+const fields: FieldCreator<Utilizator>[] = [
   // {
   //   id: '_id',
   //   notInDb: true,
@@ -21,26 +33,24 @@ const fields: FieldCreator[] = [
     required: true,
     primary: true,
     showInList: 'primary',
-    value: g => g[getter].nume
+    value: ({ activeDoc }) => activeDoc.name
   },
   {
-    id: 'emailPublic',
-    value: g => g[getter].emailPublic
+    id: 'contact',
+    type: 'contactFields',
+    excludeFrom: 'addForm',
+    value: ({ activeDoc }) => activeDoc.contact
   },
   {
     id: 'rol',
     required: true,
-    notInForm: true
-  },
-  {
-    id: 'alteDetaliiContact',
-    type: 'contactFields',
-    notInForm: true
+    excludeFrom: [],
+    value: ({ activeDoc }) => activeDoc.rol
   },
   {
     id: 'preferinte',
     type: 'object',
-    notInForm: true
+    excludeFrom: [],
   }
 ]
 

@@ -1,4 +1,10 @@
-export const fields: FieldCreator[] = [
+interface Feedback {
+  subiect: string,
+  tip: string,
+  mesaj:  string
+}
+
+export const fields: FieldCreator<Feedback>[] = [
   {
     id: 'subiect',
     required: true

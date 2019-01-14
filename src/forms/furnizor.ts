@@ -1,4 +1,12 @@
-export const fields = [
+declare global {
+  interface Furnizor {
+    name: string
+    servicii: Serviciu[]
+    organizatie?: Organizatie
+  }
+}
+
+export const fields: FieldCreator<Furnizor>[] = [
   {
     id: 'name',
     required: true,
@@ -9,16 +17,13 @@ export const fields = [
     id: 'servicii',
     type: 'servicii',
     required: true,
-    servicii: g => g['asociatie/activeDoc'].servicii,
+    value: ({ activeDoc }) => activeDoc.servicii,
     ref: 'serviciu'
   },
   {
-    id: 'idN'
+    id: 'organizatie',
+    type: 'organizatie'
   }
 ]
-
-export const actiuni = {
-  confirm: 'adaugaFurnizor'
-}
 
 export const plural = 'furnizori'
