@@ -1,4 +1,4 @@
-import { RxDocument } from "rxdb";
+import { RxDocument, RxCollectionCreator } from "rxdb";
 
 declare global {
   type Organizatie = {
@@ -117,7 +117,7 @@ const fields: FieldCreator<Asociatie>[] = [
   }
 ]
 
-const methods = {
+const methods: RxCollectionCreator.methods = {
   async initBalanta (data: {balanta: Bani}) {
     if (this.balanta !== undefined) return
     this.balanta = data.balanta
@@ -127,7 +127,7 @@ const methods = {
     if (!this.balanta) this.balanta = 0
     let incasari = this.incasari || []
     this.balanta += data.suma
-    incasari.push(data.id)
+    incasari.push(data._id)
     this.incasari = incasari
     await this.save()
   },

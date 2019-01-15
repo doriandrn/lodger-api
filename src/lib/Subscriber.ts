@@ -50,11 +50,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   constructor (
     protected collection: RxCollection<N>
   ) {
-    this.component = new R({
-      inject: {
-        collection
-      }
-    })
+    this.component = new R()
     this.subscribe = this.component.subscribe
   }
 
@@ -75,4 +71,5 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   }
 
   kill () {}
+  selectDocument () {}
 }

@@ -24,6 +24,8 @@
 <dd><p>Common fields for all taxonomies</p></dd>
 <dt><a href="#state">state</a></dt>
 <dd><p>Preferences MODULE</p></dd>
+<dt><a href="#get_bigrams">get_bigrams</a></dt>
+<dd><p>Helpers</p></dd>
 </dl>
 
 ## Functions
@@ -33,22 +35,25 @@
 <dd><p>Creates an empty store module</p></dd>
 <dt><a href="#setupSharedMethods">setupSharedMethods(taxonomy)</a></dt>
 <dd><p>Shared methods across taxonomies, called individually</p></dd>
-<dt><a href="#setupFromFile">setupFromFile()</a></dt>
-<dd><p>Loads a taxonomy&#39;s store data from it&#39;s filename in store</p></dd>
-<dt><a href="#use">use(module, namespaced)</a></dt>
-<dd><p>Use a store module
-to be used before calling the constructor</p></dd>
 </dl>
 
 ## Interfaces
 
 <dl>
+<dt><a href="#LodgerForm">LodgerForm</a></dt>
+<dd></dd>
 <dt><a href="#LodgerSchema">LodgerSchema</a></dt>
 <dd></dd>
-<dt><a href="#String">String</a></dt>
-<dd><p>String helpers extensions</p></dd>
+<dt><a href="#LodgerTaxonomy">LodgerTaxonomy</a></dt>
+<dd><p>Taxonomy item</p></dd>
+<dt><a href="#SubscribableTaxonomy">SubscribableTaxonomy</a> ⇐ <code>LodgerTaxonomy&lt;any,</code></dt>
+<dd></dd>
 </dl>
 
+<a name="LodgerForm"></a>
+
+## LodgerForm
+**Kind**: global interface  
 <a name="notify"></a>
 
 ## notify
@@ -63,52 +68,19 @@ fallsback to console
 
 ## LodgerSchema
 **Kind**: global interface  
-<a name="String"></a>
+<a name="LodgerTaxonomy"></a>
 
-## String
-<p>String helpers extensions</p>
+## LodgerTaxonomy
+<p>Taxonomy item</p>
 
 **Kind**: global interface  
+<a name="SubscribableTaxonomy"></a>
 
-* [String](#String)
-    * [.stripLeading$()](#String+stripLeading$) ⇒ [<code>String</code>](#String)
-    * [.spleet()](#String+spleet) ⇒ <code>SplitObject</code>
-    * [.slugify()](#String+slugify) ⇒ [<code>String</code>](#String)
-    * [.toRxDBtype()](#String+toRxDBtype) ⇒ <code>string</code>
-
-<a name="String+stripLeading$"></a>
-
-### string.stripLeading$() ⇒ [<code>String</code>](#String)
-<p>Removes the '$' at the begining of a string</p>
-
-**Kind**: instance method of [<code>String</code>](#String)  
-**Returns**: [<code>String</code>](#String) - <p>the parsed string</p>  
-<a name="String+spleet"></a>
-
-### string.spleet() ⇒ <code>SplitObject</code>
-<p>Splits a mutation string (eg. 'asociatie/INCASEAZA')</p>
-
-**Kind**: instance method of [<code>String</code>](#String)  
-<a name="String+slugify"></a>
-
-### string.slugify() ⇒ [<code>String</code>](#String)
-<p>Slugifies a string</p>
-
-**Kind**: instance method of [<code>String</code>](#String)  
-**Returns**: [<code>String</code>](#String) - <p>the slug</p>  
-<a name="String+toRxDBtype"></a>
-
-### string.toRxDBtype() ⇒ <code>string</code>
-<p>Converts a LodgerField type to RxDB compatible one</p>
-<p>Explicatie:
-DB-ul nu stie decat de tipurile primare:
--&gt; boolean, string, number, array, object
-Schema noastra e mult mai detaliata</p>
-
-**Kind**: instance method of [<code>String</code>](#String)  
-**Returns**: <code>string</code> - <ul>
-<li>tipul primar, eg. 'string'</li>
-</ul>  
+## SubscribableTaxonomy ⇐ <code>LodgerTaxonomy&lt;any,</code>
+**Kind**: global interface  
+**Extends**: <code>LodgerTaxonomy&lt;any,</code>  
+**Template**: N  
+**Template**: S  
 <a name="Lodger"></a>
 
 ## Lodger
@@ -121,7 +93,6 @@ Schema noastra e mult mai detaliata</p>
 * [Lodger](#Lodger)
     * [new Lodger(forms, db)](#new_Lodger_new)
     * _instance_
-        * [.notify](#Lodger+notify)
         * [.taxonomiesWithoutReference](#Lodger+taxonomiesWithoutReference) ⇒ <code>Array</code>
         * [.getters](#Lodger+getters)
         * [.preferences](#Lodger+preferences)
@@ -145,17 +116,6 @@ Schema noastra e mult mai detaliata</p>
 | --- | --- |
 | forms | <code>FormsHolder</code> | 
 | db | <code>RxDatabase</code> | 
-
-<a name="Lodger+notify"></a>
-
-### lodger.notify
-<p>Notifies the user about an update/change</p>
-
-**Kind**: instance Store action wrapper of [<code>Lodger</code>](#Lodger)  
-
-| Param | Type |
-| --- | --- |
-| notification | <code>Notification</code> | 
 
 <a name="Lodger+taxonomiesWithoutReference"></a>
 
@@ -257,36 +217,30 @@ Todo!</p>
 **Kind**: global class  
 **Extends**: <code>RxJsonSchemaTopLevel</code>  
 **Implements**: <code>SchemaField</code>  
-
-* [Field](#Field) ⇐ <code>RxJsonSchemaTopLevel</code>
-    * [new exports.Field(field)](#new_Field_new)
-    * [.toRxJSONSchema()](#Field+toRxJSONSchema) ⇒ <code>RxJsonSchemaTopLevel</code>
-
+**Requires**: <code>module:[String]</code>  
 <a name="new_Field_new"></a>
 
-### new exports.Field(field)
+### new exports.Field(data)
 <p>Creates an instance of Field.</p>
 
 
 | Param | Type |
 | --- | --- |
-| field | <code>FieldCreator</code> | 
+| data | <code>FieldCreator.&lt;T&gt;</code> | 
 
-<a name="Field+toRxJSONSchema"></a>
-
-### field.toRxJSONSchema() ⇒ <code>RxJsonSchemaTopLevel</code>
-**Kind**: instance method of [<code>Field</code>](#Field)  
 <a name="Form"></a>
 
 ## Form
 **Kind**: global class  
-**Implements**: <code>LodgerForm</code>  
+**Implements**: [<code>LodgerForm</code>](#LodgerForm)  
 
 * [Form](#Form)
     * [new Form()](#new_Form_new)
     * _instance_
-        * [.value(isNewForm)](#Form+value) ⇒ <code>Object</code>
-        * [.handleOnSubmit(data)](#Form+handleOnSubmit)
+        * [.data](#Form+data) ⇒ <code>Object</code>
+        * [.capureTimestamp](#Form+capureTimestamp)
+        * [.fieldsIds](#Form+fieldsIds) ⇒ <code>Array.&lt;string&gt;</code>
+        * [.value()](#Form+value) ⇒ <code>Object</code>
     * _static_
         * [.Form](#Form.Form)
             * [new Form(data, [generateRxCollection])](#new_Form.Form_new)
@@ -295,34 +249,40 @@ Todo!</p>
 <a name="new_Form_new"></a>
 
 ### new Form()
-<p>Forms are read from within the <code>lib/forms/</code> directory</p>
+<p>Lodder Form class</p>
 
+<a name="Form+data"></a>
+
+### form.data ⇒ <code>Object</code>
+<p>Makes a Vue-ready $data {object} suitable to be completed
+by the user in the frontend -&gt; new form
+(as it will turn reactive)</p>
+
+**Kind**: instance property of [<code>Form</code>](#Form)  
+**Read only**: true  
+<a name="Form+capureTimestamp"></a>
+
+### form.capureTimestamp
+<p>Everytime the value is accessed
+if 'la' field is present</p>
+
+**Kind**: instance property of [<code>Form</code>](#Form)  
+**Read only**: true  
+<a name="Form+fieldsIds"></a>
+
+### form.fieldsIds ⇒ <code>Array.&lt;string&gt;</code>
+<p>Quick access to all fields' ids</p>
+
+**Kind**: instance property of [<code>Form</code>](#Form)  
+**Read only**: true  
 <a name="Form+value"></a>
 
-### form.value(isNewForm) ⇒ <code>Object</code>
-<p>Makes a Vue-ready $data {object} suitable to be completed
-by the user in the end form
-as it will turn reactive</p>
+### form.value() ⇒ <code>Object</code>
+<p>Gets the value of current active form</p>
 
 **Kind**: instance method of [<code>Form</code>](#Form)  
 **Summary**: <p>for new forms, values are all undefined</p>  
 **Returns**: <code>Object</code> - <p>data item (Vue $data - ready)</p>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| isNewForm | <code>Boolean</code> | <p>mostly used for 'add' forms</p> |
-
-<a name="Form+handleOnSubmit"></a>
-
-### form.handleOnSubmit(data)
-<p>Manipulates the final data before submitting the form to the DB</p>
-
-**Kind**: instance method of [<code>Form</code>](#Form)  
-
-| Param |
-| --- |
-| data | 
-
 <a name="Form.Form"></a>
 
 ### Form.Form
@@ -395,57 +355,22 @@ as it will turn reactive</p>
 
 * [Subscriber](#Subscriber)
     * [new Subscriber()](#new_Subscriber_new)
-    * _instance_
-        * [.everyKeyInCriteriu](#Subscriber+everyKeyInCriteriu) : <code>RxCriteriu</code>
-        * [.init()](#Subscriber+init)
-        * [.firstInitHook()](#Subscriber+firstInitHook)
-        * [.subscribe([criteriu])](#Subscriber+subscribe)
-    * _static_
-        * [.exports.Subscriber](#Subscriber.exports.Subscriber)
-            * [new exports.Subscriber(name, taxonomy, criteriu)](#new_Subscriber.exports.Subscriber_new)
+    * [.module.exports](#Subscriber.module.exports)
+        * [new module.exports(name, taxonomy, criteriu)](#new_Subscriber.module.exports_new)
+    * [._temp#subscribe([criteriu])](#Subscriber._temp+subscribe)
 
 <a name="new_Subscriber_new"></a>
 
 ### new Subscriber()
 <p>Creates a new subscriber for a specific taxonomy</p>
 
-<a name="Subscriber+everyKeyInCriteriu"></a>
+<a name="Subscriber.module.exports"></a>
 
-### subscriber.everyKeyInCriteriu : <code>RxCriteriu</code>
-<p>Helper to get R's criteria keys to pass in to watcher</p>
-
-**Kind**: instance property of [<code>Subscriber</code>](#Subscriber)  
-**Read only**: true  
-<a name="Subscriber+init"></a>
-
-### subscriber.init()
-<p>Init function</p>
-
-**Kind**: instance method of [<code>Subscriber</code>](#Subscriber)  
-<a name="Subscriber+firstInitHook"></a>
-
-### subscriber.firstInitHook()
-<p>Assign this defaults as reactives</p>
-
-**Kind**: instance method of [<code>Subscriber</code>](#Subscriber)  
-<a name="Subscriber+subscribe"></a>
-
-### subscriber.subscribe([criteriu])
-<p>(re)Subscribes with given Criteria</p>
-
-**Kind**: instance method of [<code>Subscriber</code>](#Subscriber)  
-
-| Param | Type |
-| --- | --- |
-| [criteriu] | <code>Criteriu</code> | 
-
-<a name="Subscriber.exports.Subscriber"></a>
-
-### Subscriber.exports.Subscriber
+### Subscriber.module.exports
 **Kind**: static class of [<code>Subscriber</code>](#Subscriber)  
-<a name="new_Subscriber.exports.Subscriber_new"></a>
+<a name="new_Subscriber.module.exports_new"></a>
 
-#### new exports.Subscriber(name, taxonomy, criteriu)
+#### new module.exports(name, taxonomy, criteriu)
 <p>Creates an instance of Subscriber.</p>
 
 
@@ -455,28 +380,38 @@ as it will turn reactive</p>
 | taxonomy | [<code>Taxonomy</code>](#Taxonomy) |  |
 | criteriu | <code>Criteriu</code> | <p>initial sort / filter criteria if it shall not use the default one</p> |
 
+<a name="Subscriber._temp+subscribe"></a>
+
+### Subscriber.\_temp#subscribe([criteriu])
+<p>(re)Subscribes with given Criteria
+happens internaly when criteriu is changed</p>
+
+**Kind**: static method of [<code>Subscriber</code>](#Subscriber)  
+
+| Param | Type |
+| --- | --- |
+| [criteriu] | <code>Criteriu</code> | 
+
 <a name="Taxonomy"></a>
 
 ## Taxonomy
 **Kind**: global class  
-**Implements**: <code>LodgerTaxonomy</code>  
+**Implements**: [<code>LodgerTaxonomy</code>](#LodgerTaxonomy)  
 **Requires**: <code>module:Form</code>  
 
 * [Taxonomy](#Taxonomy)
     * [new Taxonomy(name, form)](#new_Taxonomy_new)
-    * _instance_
-        * [.referenceTaxonomies](#Taxonomy+referenceTaxonomies) ⇒ <code>Array</code>
-        * [.hasReference](#Taxonomy+hasReference) ⇒ <code>Boolean</code>
-        * [.subscribed](#Taxonomy+subscribed) ⇒ <code>Boolean</code>
-        * [.plural](#Taxonomy+plural) ⇒ [<code>String</code>](#String)
-        * [.isMultipleSelect](#Taxonomy+isMultipleSelect) ⇒ <code>Boolean</code>
-        * [.subscribe([subscriberName], [criteriuCerut])](#Taxonomy+subscribe) ⇒ <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code>
-        * [.unsubscribeAll([subscriberName])](#Taxonomy+unsubscribeAll) ⇒ <code>Promise</code>
-        * [.trash(id)](#Taxonomy+trash) ⇒ <code>RxDocument.&lt;T&gt;</code>
-        * [.put(data)](#Taxonomy+put) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
-        * [.select(taxonomie, id)](#Taxonomy+select)
-    * _static_
-        * [.search(input)](#Taxonomy.search)
+    * [.module.exports](#Taxonomy.module.exports)
+        * [new module.exports(collection, store)](#new_Taxonomy.module.exports_new)
+    * [.name](#Taxonomy.name)
+    * [.isMultipleSelect](#Taxonomy.isMultipleSelect) ⇒ <code>Boolean</code>
+    * [.data](#Taxonomy.data)
+    * [.subscribed](#Taxonomy.subscribed) ⇒ <code>Boolean</code>
+    * [.trash(id)](#Taxonomy.trash) ⇒ <code>RxDocument.&lt;T&gt;</code>
+    * [.put(data)](#Taxonomy.put) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
+    * [.search(input)](#Taxonomy.search)
+    * [.subscribe([subscriberName], [criteriuCerut])](#Taxonomy.subscribe) ⇒ <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code>
+    * [.unsubscribeAll([subscriberName])](#Taxonomy.unsubscribeAll) ⇒ <code>Promise</code>
 
 <a name="new_Taxonomy_new"></a>
 
@@ -487,99 +422,70 @@ as it will turn reactive</p>
 | name | <code>Taxonomie</code> | <p>name of the form</p> |
 | form | [<code>Form</code>](#Form) | <p>the constructed form item</p> |
 
-<a name="Taxonomy+referenceTaxonomies"></a>
+<a name="Taxonomy.module.exports"></a>
 
-### taxonomy.referenceTaxonomies ⇒ <code>Array</code>
-<p>Reference taxonomies of a taxonomy</p>
+### Taxonomy.module.exports
+**Kind**: static class of [<code>Taxonomy</code>](#Taxonomy)  
+<a name="new_Taxonomy.module.exports_new"></a>
 
-**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
-**Returns**: <code>Array</code> - <p>taxonomii</p>  
-<a name="Taxonomy+hasReference"></a>
+#### new module.exports(collection, store)
+<p>Creates an instance of Taxonomy.</p>
 
-### taxonomy.hasReference ⇒ <code>Boolean</code>
-<p>Checks for a reference taxonomy of taxonomy</p>
 
-**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
-**Returns**: <code>Boolean</code> - <p>has a reference taxonomy or not</p>  
+| Param | Type |
+| --- | --- |
+| collection | <code>RxCollection.&lt;T&gt;</code> | 
+| store | <code>Store.&lt;T&gt;</code> | 
+
+<a name="Taxonomy.name"></a>
+
+### Taxonomy.name
+<p>name getter</p>
+
+**Kind**: static property of [<code>Taxonomy</code>](#Taxonomy)  
 **Read only**: true  
-<a name="Taxonomy+subscribed"></a>
+<a name="Taxonomy.isMultipleSelect"></a>
 
-### taxonomy.subscribed ⇒ <code>Boolean</code>
-**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
-**Returns**: <code>Boolean</code> - <p>if subscribed anywhere</p>  
-**Read only**: true  
-<a name="Taxonomy+plural"></a>
-
-### taxonomy.plural ⇒ [<code>String</code>](#String)
-**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
-**Returns**: [<code>String</code>](#String) - <p>plural of taxonomy</p>  
-**Read only**: true  
-<a name="Taxonomy+isMultipleSelect"></a>
-
-### taxonomy.isMultipleSelect ⇒ <code>Boolean</code>
-**Kind**: instance property of [<code>Taxonomy</code>](#Taxonomy)  
+### Taxonomy.isMultipleSelect ⇒ <code>Boolean</code>
+**Kind**: static property of [<code>Taxonomy</code>](#Taxonomy)  
 **Returns**: <code>Boolean</code> - <p>if taxonomy represents a multiple select choice</p>  
 **Read only**: true  
-<a name="Taxonomy+subscribe"></a>
+<a name="Taxonomy.data"></a>
 
-### taxonomy.subscribe([subscriberName], [criteriuCerut]) ⇒ <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code>
-<p>Subscribes</p>
+### Taxonomy.data
+<p>Returns all data from subscribers</p>
 
-**Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
-**Returns**: <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code> - <p>the unwatcher for subscriber</p>  
+**Kind**: static property of [<code>Taxonomy</code>](#Taxonomy)  
+**Read only**: true  
+<a name="Taxonomy.subscribed"></a>
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [subscriberName] | <code>string</code> | <code>&quot;&#x27;main&#x27;&quot;</code> | 
-| [criteriuCerut] | <code>Criteriu</code> |  | 
+### Taxonomy.subscribed ⇒ <code>Boolean</code>
+**Kind**: static property of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>Boolean</code> - <p>if subscribed anywhere</p>  
+**Read only**: true  
+<a name="Taxonomy.trash"></a>
 
-<a name="Taxonomy+unsubscribeAll"></a>
-
-### taxonomy.unsubscribeAll([subscriberName]) ⇒ <code>Promise</code>
-<p>Kills all active listeners for a given subscriber name</p>
-
-**Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
-
-| Param | Type | Default |
-| --- | --- | --- |
-| [subscriberName] | <code>string</code> | <code>&quot;&#x27;main&#x27;&quot;</code> | 
-
-<a name="Taxonomy+trash"></a>
-
-### taxonomy.trash(id) ⇒ <code>RxDocument.&lt;T&gt;</code>
+### Taxonomy.trash(id) ⇒ <code>RxDocument.&lt;T&gt;</code>
 <p>Removes a Document by ID from the collection</p>
 
-**Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
+**Kind**: static method of [<code>Taxonomy</code>](#Taxonomy)  
 **Returns**: <code>RxDocument.&lt;T&gt;</code> - <p>removed document</p>  
 
 | Param | Type |
 | --- | --- |
 | id | <code>string</code> | 
 
-<a name="Taxonomy+put"></a>
+<a name="Taxonomy.put"></a>
 
-### taxonomy.put(data) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
+### Taxonomy.put(data) ⇒ <code>RxDocument.&lt;Taxonomie&gt;</code>
 <p>Inserts/upserts a new item in DB</p>
 
-**Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
+**Kind**: static method of [<code>Taxonomy</code>](#Taxonomy)  
 **Returns**: <code>RxDocument.&lt;Taxonomie&gt;</code> - <p>the fresh document</p>  
 
 | Param | Type |
 | --- | --- |
 | data | <code>Object</code> | 
-
-<a name="Taxonomy+select"></a>
-
-### taxonomy.select(taxonomie, id)
-<p>select an item
-brings in the active Document from DB</p>
-
-**Kind**: instance method of [<code>Taxonomy</code>](#Taxonomy)  
-
-| Param |
-| --- |
-| taxonomie | 
-| id | 
 
 <a name="Taxonomy.search"></a>
 
@@ -592,6 +498,36 @@ brings in the active Document from DB</p>
 | --- | --- |
 | input | <p>string de cautat</p> |
 
+<a name="Taxonomy.subscribe"></a>
+
+### Taxonomy.subscribe([subscriberName], [criteriuCerut]) ⇒ <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code>
+<p>Subscribes</p>
+
+**Kind**: static method of [<code>Taxonomy</code>](#Taxonomy)  
+**Returns**: <code>Promise.&lt;Subscriber.&lt;T&gt;&gt;</code> - <p>the unwatcher for subscriber</p>  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [subscriberName] | <code>string</code> | <code>&quot;&#x27;main&#x27;&quot;</code> | 
+| [criteriuCerut] | <code>Criteriu</code> |  | 
+
+<a name="Taxonomy.unsubscribeAll"></a>
+
+### Taxonomy.unsubscribeAll([subscriberName]) ⇒ <code>Promise</code>
+<p>Kills all active listeners for a given subscriber name</p>
+
+**Kind**: static method of [<code>Taxonomy</code>](#Taxonomy)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [subscriberName] | <code>string</code> | <code>&quot;&#x27;main&#x27;&quot;</code> | 
+
+<a name="Monede"></a>
+
+## Monede : <code>enum</code>
+<p>Monede</p>
+
+**Kind**: global enum  
 <a name="Taxonomii"></a>
 
 ## Taxonomii : <code>enum</code>
@@ -609,12 +545,6 @@ brings in the active Document from DB</p>
 
 - [ ] account for translations
 
-<a name="Monede"></a>
-
-## Monede : <code>enum</code>
-<p>Monede</p>
-
-**Kind**: global enum  
 <a name="strings"></a>
 
 ## strings : <code>enum</code>
@@ -642,6 +572,12 @@ brings in the active Document from DB</p>
 <p>Preferences MODULE</p>
 
 **Kind**: global constant  
+<a name="get_bigrams"></a>
+
+## get\_bigrams
+<p>Helpers</p>
+
+**Kind**: global constant  
 <a name="createEmptyStoreModule"></a>
 
 ## createEmptyStoreModule()
@@ -665,23 +601,4 @@ brings in the active Document from DB</p>
 | Param |
 | --- |
 | taxonomy | 
-
-<a name="setupFromFile"></a>
-
-## setupFromFile()
-<p>Loads a taxonomy's store data from it's filename in store</p>
-
-**Kind**: global function  
-<a name="use"></a>
-
-## use(module, namespaced)
-<p>Use a store module
-to be used before calling the constructor</p>
-
-**Kind**: global function  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| module |  |  |  |
-| namespaced | <code>Boolean</code> | <code>true</code> | <p>if it should be namespaced</p> |
 

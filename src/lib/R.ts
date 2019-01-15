@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import deepEqual from 'deep-equal'
 import { RxDocument, RxCollection, RxLocalDocument, RxDocumentBase } from 'rxdb'
-import { Subscription } from 'rxjs
+import { Subscription } from 'rxjs'
 
 type Criteriu = {
   limit?: number,
