@@ -40,6 +40,7 @@
     "faker": "^4.1.0",
     "fs": "^0.0.1-security",
     "fx": "^10.0.0",
+    "global": "^4.3.2",
     "jest": "^23.6.0",
     "jsdoc-babel": "^0.5.0",
     "jsdoc-to-markdown": "^4.0.1",
