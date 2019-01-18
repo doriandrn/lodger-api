@@ -8,7 +8,7 @@ import { RxCollectionCreator } from 'rxdb'
 
 import { env } from './defs/env'
 import FormError from './Error'
-import Schema from './Schema'
+
 import { Field } from './Field'
 
 /**
@@ -34,13 +34,6 @@ export type LodgerFormCreator<T> = {
   name?: string
   plural: Plural<string>
   fields: FieldCreator<T>[]
-}
-
-export type LodgerSchemaCreator = {
-  methods?: { [k: string]: () => void }
-  statics?: { [k: string]: () => void }
-  sync?: boolean
-  settings?: any
 }
 
 const formsPath = ['dev', 'test']
@@ -97,7 +90,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
   constructor (
     readonly name : N,
     fields: FieldCreator<I>[],
-    // data: LodgerFormCreator<I>,
+    // opts ?: FormOptions
   ) {
     // const { plural, methods, statics } = data
     // if (!name) throw new FormError('Form should have a name %%', data)

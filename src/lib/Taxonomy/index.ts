@@ -44,13 +44,15 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
   ) {
     const { name } = this
     store.registerModule(name, setupSharedMethods())
-    Object.keys(this.store.getters)
+    const { getters } = store
+
+    // define this.getters with shortnames
+    Object.keys(getters)
       .filter(key => key.startsWith(name))
       .map(key => {
         const shortKey = key.replace(`${name}/`, '')
-        const { store } = this
         Object.defineProperty(this.getters, shortKey, {
-          get () { return store.getters[key] }
+          get () { return this.store.getters[key] }
         })
       })
   }

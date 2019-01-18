@@ -1,6 +1,6 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
 import { GetterTree } from "vuex";
-import { RootState } from "./Store";
+// import { RootState } from "./Store";
 import FieldError from './Error'
 import String, { strings, numbers, arrays, objects } from './String'
 
@@ -11,7 +11,7 @@ type ReferenceTaxonomy = Plural<Taxonomie>
 type FieldGivenContext<N> = {
   getters: GetterTree<N, RootState>,
   selectedDoc ?: RxDocument<N>,
-  activeDoc ?: RxDocument<N>
+  activeDoc : RxDocument<N>
 }
 
 type FieldTypes = keyof typeof strings |

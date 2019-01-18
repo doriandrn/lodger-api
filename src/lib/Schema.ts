@@ -1,5 +1,5 @@
 import { RxJsonSchema, RxJsonSchemaTopLevel } from "rxdb";
-import { LodgerFormCreator, FieldCreator } from "./Form";
+import { LodgerFormCreator } from "./Form";
 import { Field } from './Field'
 
 /**
@@ -9,15 +9,26 @@ import { Field } from './Field'
  */
 interface LodgerSchema extends RxJsonSchema {
   addField (field: RxJsonSchemaTopLevel): void
-  // new (formData: LodgerForm): RxJsonSchema
+}
+
+type CommonFields = {
+  la: number
+}
+
+export type LodgerSchemaCreator<T> = LodgerFormCreator<T> & {
+  name: string // name is required here, despite in form
+  methods?: { [k: string]: () => void }
+  statics?: { [k: string]: () => void }
+  sync?: boolean
+  settings?: any
 }
 
 /**
  * Common fields for all taxonomies
  *
  */
-const commonFields: FieldCreator[] = [
-  // Data adaugarii / when added
+const commonFields: FieldCreator<CommonFields>[] = [
+  // Data adaugarii / datetime when added
   {
     id: 'la',
     type: 'dateTime',
@@ -35,7 +46,7 @@ const commonFields: FieldCreator[] = [
  * @extends {RxJsonSchema}
  * @implements {LodgerSchema}
  */
-export default class Schema implements LodgerSchema {
+export default class Schema extends Form implements RxJsonSchema, LodgerSchema {
   title = ''
   properties = {}
   type = 'object'
@@ -52,10 +63,11 @@ export default class Schema implements LodgerSchema {
    * @returns {RxJsonSchema} schema
    */
   constructor (
-    form: LodgerFormCreator,
-    addCommonMethods ?: boolean
+    data: LodgerSchemaCreator<T>,
+    options?: LodgerSchemaOptions
   ) {
-    const { name, fields } = form
+    super(data.name, data.fields, options.form)
+    const { name, fields } = data
 
     this.title = name
 
@@ -71,7 +83,8 @@ export default class Schema implements LodgerSchema {
   }
 
   /**
-   *
+   * Adds fields programatically as
+   * we also need to fill in the required array
    *
    * @param {FieldCreator} field
    * @memberof Schema
