@@ -1,12 +1,13 @@
 import vue from 'vue'
-import vuex from 'vuex'
+import vuex, { Store } from 'vuex'
 
 import DB from '~/lib/DB'
 
 import Taxonomy from '~/lib/Taxonomy/index'
 
-import collections from '@/__fixtures__/taxes/collections'
-import testdbsetup from '@/__fixtures__/db/test'
+import collections from '~/__fixtures__/taxes/collections'
+import testdbsetup from '~/__fixtures__/db/test'
+import { RxDatabase, RxCollection } from 'rxdb';
 
 vue.use(vuex)
 
@@ -23,8 +24,8 @@ export async function init () {
 }
 
 describe('Taxonomy class', () => {
-  let db, store, cols,
-    taxes = {}, $tax
+  let db: RxDatabase, store: Store<any>, cols: RxCollection[],
+    taxes = {}, $tax: Taxonomy<any>
 
   beforeAll(async () => {
     const i = await init()

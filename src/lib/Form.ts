@@ -138,7 +138,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    * @readonly
    * @memberof Form
    */
-  get capureTimestamp () {
+  get capturesTimestamp () {
     return Object.keys(this.data).indexOf('la') > -1
   }
 

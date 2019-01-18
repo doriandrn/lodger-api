@@ -3,6 +3,8 @@
 API reactiv, offline-first pentru administrarea asociațiilor de locatari.
 Stack: RxDB, VueX
 
+[Documentație API](https://lodger.ro/proiect/documentatie)
+
 ## Install
 
 ```sh
@@ -12,8 +14,5 @@ yarn install
 ## Teste
 
 ```sh
-yarn add global jest
-jest *
+yarn test *
 ```
-
-[Documentație API](https://lodger.ro/proiect/documentatie)

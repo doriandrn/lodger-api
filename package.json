@@ -59,6 +59,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
+    "jest-cli": "^23.6.0",
     "pouchdb-adapter-http": "^7.0.0",
     "pouchdb-adapter-idb": "^7.0.0",
     "pouchdb-adapter-memory": "^7.0.0",
