@@ -70,6 +70,10 @@ export default class Schema<Name extends string, Interface> extends Form<Name, I
     const { name, fields } = data
 
     this.title = name
+    console.info('ff', this.fields)
+    this.properties = this.fields
+    delete this.fields
+    console.info('sch', this)
 
     const filteredFields = fields
       .filter(field => !(field.excludeFrom &&

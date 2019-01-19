@@ -45,11 +45,8 @@ const formsPath = ['dev', 'test']
  * @interface LodgerForm
  */
 interface LodgerForm<N extends string, I> {
-  name: N
-  // collection: undefined | RxCollectionCreator
-  // indexables ?: string[]
-  fields : Field<I>[]
-  store: {}
+  readonly name: N
+
   readonly captureTimestamp: boolean
 
   readonly isActive: boolean
@@ -98,7 +95,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
       throw new FormError('missing fields on form %%', name)
 
     this.plural = String(name).plural()
-    this.fields = { ...fields.map(field => ({ [field.id]: new Field(field) }) ) }
+    this.fields = Object.assign({}, ...fields.map(field => ({ [field.id]: new Field(field) }) ))
 
     // if (this.isTaxonomy) {
     //   const schema = new Schema(data, true)

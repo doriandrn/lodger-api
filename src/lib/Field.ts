@@ -135,17 +135,22 @@ export class Field<T> implements FormField<T> {
         `required|${v}`
     }
 
-    // assign default value
+    // assign default value, can be undefined
     this.default = typeof data.default === 'function' ?
       data.default() :
       data.default
 
-    // bind the value function
     this.value = () => undefined
+    
+    // bind the value function
     if (value && typeof value === 'function')
       this.value = value.bind(this)
   }
 
+  /**
+   * Used for Schema constructors,
+   * returns only the properties needed for it
+   */
   rxSchema () {
     return {}
   }
