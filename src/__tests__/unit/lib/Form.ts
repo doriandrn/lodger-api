@@ -1,8 +1,5 @@
 import { Form, LodgerFormCreator } from '~/lib/Form'
 
-import fields from '@/__fixtures__/forms/fields/normal'
-import fieldsWithExcludedItems from '@/__fixtures__/forms/fields/withExcludedItems'
-
 /**
  * DO NOT CHANGE ANY OF THESE
  * as existing tests run on them
@@ -12,22 +9,15 @@ import fieldsWithExcludedItems from '@/__fixtures__/forms/fields/withExcludedIte
 const name = 'xx'
 const plural = 'xxs'
 
-const methods = {
-  async lol () {},
-  syncMethod () {}
-}
-
-const stub1: LodgerFormCreator = {
+const stub1: LodgerSchemaCreator = {
   name,
-  plural,
   fields,
   methods
 }
 
 const stub2: LodgerFormCreator = {
   name,
-  fields: fieldsWithExcludedItems,
-  plural
+  fields: fieldsWithExcludedItems
 }
 
 

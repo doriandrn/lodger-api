@@ -1,5 +1,4 @@
-import { Field } from '../../../src/lib/Field'
-// import { Field } from '~/lib/Field'
+import { Field } from '~/lib/Field'
 
 /**
  * Setup a dummy id to use everywhere

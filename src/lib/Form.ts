@@ -32,7 +32,7 @@ if (env === 'test')
 
 export type LodgerFormCreator<T> = {
   name?: string
-  plural: Plural<string>
+  plural?: Plural<string>
   fields: FieldCreator<T>[]
 }
 
@@ -90,7 +90,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
   constructor (
     readonly name : N,
     fields: FieldCreator<I>[],
-    // opts ?: FormOptions
+    opts ?: FormOptions
   ) {
     // const { plural, methods, statics } = data
     // if (!name) throw new FormError('Form should have a name %%', data)
