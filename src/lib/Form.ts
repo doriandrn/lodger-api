@@ -40,6 +40,23 @@ const formsPath = ['dev', 'test']
   .indexOf(env) > -1 ? 'forms' : '.'
 
 /**
+ * Common fields for all taxonomies
+ *
+ */
+const commonFields: FieldCreator<CommonFields>[] = [
+  // Data adaugarii / datetime when added
+  {
+    id: 'la',
+    type: 'dateTime',
+    required: true, // for filters / sorts
+    index: true,
+    excludeFrom: ['addForm', 'editForm'],
+    showInList: 'secondary'
+  }
+]
+
+
+/**
  *
  *
  * @interface LodgerForm
