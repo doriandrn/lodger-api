@@ -14,7 +14,6 @@ declare global {
   }
 }
 
-
 const fields = [
   {
     id: 'asociatieId',
@@ -43,7 +42,7 @@ const fields = [
   {
     id: 'apartamenteEligibile',
     type: 'selApartamente',
-    options: getters => getters['asociatie/apartamente']
+    options: ({ getters }) => getters['asociatie/apartamente']
   },
 
 ]
