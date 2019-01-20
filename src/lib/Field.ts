@@ -74,7 +74,7 @@ declare global {
  * @extends RxJsonSchemaTopLevel
  */
 interface FormField<T> extends RxJsonSchemaTopLevel {
-  rxSchema (): RxJsonSchemaTopLevel
+  readonly rxSchema : RxJsonSchemaTopLevel
   value (context ?: FieldGivenContext<T>): any
   onclick ?: (context ?: FieldGivenContext<T>) => void
 }
@@ -110,9 +110,10 @@ export class Field<T> implements FormField<T> {
   constructor (
     data: FieldCreator<T>
   ) {
-    const { id, ref, indexRef, type, step, required, v, value } = data
-    this.type = String(type || '').toRxDBtype()
+    const { id, index, ref, indexRef, type, step, required, v, value } = data
+    this.type = String(type || '').toRxDBType()
     this.id = id
+    this.index = data.index
 
     // transform the ref
     if (ref) {
@@ -141,7 +142,7 @@ export class Field<T> implements FormField<T> {
       data.default
 
     this.value = () => undefined
-    
+
     // bind the value function
     if (value && typeof value === 'function')
       this.value = value.bind(this)
@@ -151,8 +152,9 @@ export class Field<T> implements FormField<T> {
    * Used for Schema constructors,
    * returns only the properties needed for it
    */
-  rxSchema () {
-    return {}
+  get rxSchema () {
+    const { ref, multipleOf, index, type } = this
+    return { ref, multipleOf, index, type }
   }
 
   // /**

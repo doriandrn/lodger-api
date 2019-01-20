@@ -90,6 +90,8 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
   protected fields : FormFields<I>
   protected collection ?: RxCollectionCreator
 
+  private _onsubmit : Function[] = [] // hook
+
   readonly indexables ?: string[]
   readonly plural : Plural<Taxonomie>
 
@@ -165,6 +167,10 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    */
   get fieldsIds () {
     return Object.keys(this.fields)
+  }
+
+  set onsubmit (f: Function) {
+    this._onsubmit.push(f)
   }
 
   /**

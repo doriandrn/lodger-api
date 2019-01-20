@@ -12,7 +12,8 @@ interface LodgerSchema extends RxJsonSchema {
 }
 
 type CommonFields = {
-  la: number
+  _id: string
+  '@': number // Data adaugarii / datetime when added
 }
 
 export type LodgerSchemaCreator<T> = LodgerFormCreator<T> & {
@@ -24,13 +25,17 @@ export type LodgerSchemaCreator<T> = LodgerFormCreator<T> & {
 }
 
 /**
- * Common fields for all taxonomies
+ * Common fields for all TAXONOMIES
  *
  */
 const commonFields: FieldCreator<CommonFields>[] = [
-  // Data adaugarii / datetime when added
   {
-    id: 'la',
+    id: '_id',
+    excludeFrom: 'all',
+    value: ({ activeDoc }) => activeDoc._id
+  },
+  {
+    id: '@',
     type: 'dateTime',
     required: true, // for filters / sorts
     index: true,
@@ -70,10 +75,10 @@ export default class Schema<Name extends string, Interface> extends Form<Name, I
     const { name, fields } = data
 
     this.title = name
-    console.info('ff', this.fields)
     this.properties = this.fields
-    delete this.fields
+    // delete this.fields
     console.info('sch', this)
+    // console.info('sch', Schema.load)
 
     const filteredFields = fields
       .filter(field => !(field.excludeFrom &&

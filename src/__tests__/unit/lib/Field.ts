@@ -103,4 +103,38 @@ describe('Field', () => {
     })
   })
 
+  describe('.rxSchema', () => {
+    const id = 'un field random'
+    const testField = new Field({ id }).rxSchema
+
+    describe('positive', () => {
+      test('id is stripped because it s always kept as an index in  the container', () => {
+        expect(testField.id).toBeUndefined()
+      })
+
+      test('type gets converted with .toRxDBtype()', () => {
+        const field = new Field({ id, type: 'bani' }).rxSchema
+        expect(field.type).toBe('object')
+      })
+
+      test('adds references to fields', () => {
+        const fieldCuReferinta = { id, ref: 'altaColectie' }
+        const fieldCuReferintaTransformat = new Field(fieldCuReferinta).rxSchema
+
+        expect(fieldCuReferintaTransformat).toHaveProperty('ref')
+        expect(typeof fieldCuReferintaTransformat.ref).toBe('string')
+      })
+
+      // test('excludes null/undefined keys', () => {
+      //   Object.values(new Field(testField)).forEach(field => {
+      //     expect(field).toBeDefined()
+      //   })
+      // })
+
+      test('has the "index" property if supplied in field', () => {
+        const id = 'indexable'
+        expect(new Field({ id, index: true }).rxSchema.index).toBeTruthy()
+      })
+    })
+  })
 })

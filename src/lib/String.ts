@@ -15,7 +15,7 @@ declare global {
     stripLeading$: () => string,
     spleet: () => SplitObject,
     slugify: () => string,
-    toRxDBtype: () => JsonSchemaTypes
+    toRxDBType: () => JsonSchemaTypes
     plural: () => string
   }
 }
@@ -108,7 +108,7 @@ String.prototype.slugify = function (): string {
  *
  * @returns {string} - tipul primar, eg. 'string'
  */
-String.prototype.toRxDBtype = function (): JsonSchemaTypes {
+String.prototype.toRxDBType = function (): JsonSchemaTypes {
   const _default = 'string'
   const _this = this.toString()
 

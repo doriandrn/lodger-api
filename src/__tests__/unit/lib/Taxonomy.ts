@@ -104,7 +104,7 @@ describe('Taxonomy class', () => {
       const x = await $tax.put({ name: 'xx', lungime: 4 })
       _id = x._id
     })
-    
+
     test('removes ok the item by its id', () => {
       expect(async () => { await $tax.trash(_id) }).not.toThrow()
     })
@@ -113,4 +113,44 @@ describe('Taxonomy class', () => {
       expect(_id).not.toEqual($tax.getters.last)
     })
   })
+
+  describe('.config', () => {
+    const cheiPrincipale = ['limit', 'index', 'sort', 'find']
+
+    test('returneaza default-ul din config - pentru orice taxonomie daca nu e ceruta', () => {
+      const { criteriu } = $tax.config
+      expect(typeof criteriu).toBe('object')
+      const chei = Object.keys(criteriu)
+      expect(chei).toEqual(expect.arrayContaining(cheiPrincipale))
+    })
+
+    // test('returneaza criteriul cerut pentru taxonomie', () => {
+
+    // })
+  })
+
+  // describe('getCriteriu', () => {
+
+  //   test('suprascrie valorile cerute in query', () => {
+  //     const limit = 77
+  //     const sort = { la: 'lala' }
+  //     const criteriu = getCriteriu('asociatie', {
+  //       limit,
+  //       sort
+  //     })
+  //     expect(criteriu.limit).toBe(limit)
+  //     expect(criteriu.sort).toBe(sort)
+  //   })
+
+  //   test('arunca daca e cerut cu string sau altceva', () => {
+  //     expect(() => { getCriteriu({}) }).toThrow('taxonomie incorecta')
+  //     expect(() => { getCriteriu(23) }).toThrow('taxonomie incorecta')
+
+  //   })
+
+  //   test('returneaza criteriu default pt o taxonomie cunoscuta', () => {
+  //     const { limit, index, sort, find } = getCriteriu('asociatii')
+  //     expect(limit).toBe(lodgerConfig.taxonomii.asociatii.criteriu.limit)
+  //   })
+  // })
 })
