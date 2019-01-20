@@ -32,7 +32,7 @@ if (env === 'test')
 
 export type LodgerFormCreator<T> = {
   name?: string
-  plural: Plural<string>
+  plural?: Plural<string>
   fields: FieldCreator<T>[]
 }
 
@@ -62,11 +62,8 @@ const commonFields: FieldCreator<CommonFields>[] = [
  * @interface LodgerForm
  */
 interface LodgerForm<N extends string, I> {
-  name: N
-  // collection: undefined | RxCollectionCreator
-  // indexables ?: string[]
-  fields : Field<I>[]
-  store: {}
+  readonly name: N
+
   readonly captureTimestamp: boolean
 
   readonly isActive: boolean
@@ -107,7 +104,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
   constructor (
     readonly name : N,
     fields: FieldCreator<I>[],
-    // opts ?: FormOptions
+    opts ?: FormOptions
   ) {
     // const { plural, methods, statics } = data
     // if (!name) throw new FormError('Form should have a name %%', data)
@@ -115,7 +112,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
       throw new FormError('missing fields on form %%', name)
 
     this.plural = String(name).plural()
-    this.fields = { ...fields.map(field => ({ [field.id]: new Field(field) }) ) }
+    this.fields = Object.assign({}, ...fields.map(field => ({ [field.id]: new Field(field) }) ))
 
     // if (this.isTaxonomy) {
     //   const schema = new Schema(data, true)
@@ -155,7 +152,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    * @readonly
    * @memberof Form
    */
-  get capureTimestamp () {
+  get capturesTimestamp () {
     return Object.keys(this.data).indexOf('la') > -1
   }
 

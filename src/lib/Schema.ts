@@ -1,5 +1,5 @@
 import { RxJsonSchema, RxJsonSchemaTopLevel } from "rxdb";
-import { LodgerFormCreator } from "./Form";
+import { LodgerFormCreator, Form } from "./Form";
 import { Field } from './Field'
 
 /**
@@ -46,7 +46,7 @@ const commonFields: FieldCreator<CommonFields>[] = [
  * @extends {RxJsonSchema}
  * @implements {LodgerSchema}
  */
-export default class Schema extends Form implements RxJsonSchema, LodgerSchema {
+export default class Schema<Name extends string, Interface> extends Form<Name, Interface> implements RxJsonSchema, LodgerSchema {
   title = ''
   properties = {}
   type = 'object'
@@ -66,18 +66,22 @@ export default class Schema extends Form implements RxJsonSchema, LodgerSchema {
     data: LodgerSchemaCreator<T>,
     options?: LodgerSchemaOptions
   ) {
-    super(data.name, data.fields, options.form)
+    super(data.name, data.fields)
     const { name, fields } = data
 
     this.title = name
+    console.info('ff', this.fields)
+    this.properties = this.fields
+    delete this.fields
+    console.info('sch', this)
 
     const filteredFields = fields
       .filter(field => !(field.excludeFrom &&
         (field.excludeFrom.indexOf('db') > -1 ||
         field.excludeFrom.indexOf('all') > -1)))
 
-    if (addCommonMethods && name !== 'serviciu')
-        filteredFields.concat(commonFields)
+    // if (addCommonMethods && name !== 'serviciu')
+    //     filteredFields.concat(commonFields)
 
     filteredFields.map(field => this.addField(new Field(field)))
   }

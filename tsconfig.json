@@ -22,8 +22,10 @@
       "~/lib/*": [ "lib/*" ],
       // "forms/*": [ "forms/*" ],
       "defs/*": [ "lib/defs/*" ],
-      "helpers/*": [ "lib/helpers/*" ],
+      "helper/*": [ "lib/helpers/*" ],
       "@/*": [ "/*" ],
+      "fixtures/*": [ "__fixtures__/*" ],
+      "tests/*": [ "__tests__/*"]
     },
     // "rootDirs": [
     //   "./"

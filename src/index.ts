@@ -9,7 +9,7 @@ import LodgerError from '~/lib/Error'
 import DB from '~/lib/DB'
 import Taxonomy from '~/lib/Taxonomy'
 
-import notify from 'helpers/notify'
+import notify from 'helper/notify'
 
 import { env } from '~/lib/defs/env'
 import { Form } from '~/lib/Form'

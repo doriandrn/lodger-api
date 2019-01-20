@@ -1,12 +1,14 @@
 import vue from 'vue'
-import vuex from 'vuex'
+import vuex, { Store } from 'vuex'
+import { RxDatabase, RxCollection } from 'rxdb'
 
 import DB from '~/lib/DB'
 
 import Taxonomy from '~/lib/Taxonomy/index'
 
-import collections from '@/__fixtures__/taxes/collections'
-import testdbsetup from '@/__fixtures__/db/test'
+import collections from 'fixtures/taxes/collections'
+import testdbsetup from 'fixtures/db/test'
+
 
 vue.use(vuex)
 
@@ -14,6 +16,7 @@ export async function init () {
   const db = await DB.create(Object.assign({}, { ...testdbsetup }, {
     name: `${testdbsetup.name}/${Date.now()}`
   }))
+
   await Promise.all(collections.map(col => db.collection(col)))
 
   const cols = db.collections
@@ -23,8 +26,8 @@ export async function init () {
 }
 
 describe('Taxonomy class', () => {
-  let db, store, cols,
-    taxes = {}, $tax
+  let db: RxDatabase, store: Store<any>, cols: RxCollection[],
+    taxes = {}, $tax: Taxonomy<any>
 
   beforeAll(async () => {
     const i = await init()
@@ -95,12 +98,13 @@ describe('Taxonomy class', () => {
   })
 
   describe('.trash()', () => {
-    let _id
+    let _id: string
 
     beforeAll(async () => {
       const x = await $tax.put({ name: 'xx', lungime: 4 })
       _id = x._id
     })
+    
     test('removes ok the item by its id', () => {
       expect(async () => { await $tax.trash(_id) }).not.toThrow()
     })

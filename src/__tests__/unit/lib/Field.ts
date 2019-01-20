@@ -1,5 +1,4 @@
-import { Field } from '../../../src/lib/Field'
-// import { Field } from '~/lib/Field'
+import { Field } from '~/lib/Field'
 
 /**
  * Setup a dummy id to use everywhere
@@ -11,7 +10,7 @@ describe('Field', () => {
     describe('+', () => {
       test('constructs with ID', () => {
         const field = new Field({ id })
-
+        console.info('Field', field)
         expect(field).toBeDefined()
         expect(field.id).toEqual(id)
         expect(field.type).toBe('string')
@@ -93,7 +92,7 @@ describe('Field', () => {
         expect(field.value({ getters: getterTree as any })).toEqual('bar')
       })
 
-      test('is undefined if property missing', () => {
+      test('is undefined if "value" property missing', () => {
         const field = new Field({ id })
         expect(field.value()).toBeUndefined()
       })
@@ -103,4 +102,5 @@ describe('Field', () => {
 
     })
   })
+
 })
