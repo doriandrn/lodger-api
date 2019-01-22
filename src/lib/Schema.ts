@@ -8,11 +8,11 @@ import { Field } from './Field'
  * @interface LodgerSchema
  */
 interface LodgerSchema extends RxJsonSchema {
-  addField (field: RxJsonSchemaTopLevel): void
+  add (fieldId: string, field: RxJsonSchemaTopLevel): void
 }
 
 type CommonFields = {
-  _id: string
+  _id: string // item's ID
   '@': number // Data adaugarii / datetime when added
 }
 
@@ -28,7 +28,7 @@ export type LodgerSchemaCreator<T> = LodgerFormCreator<T> & {
  * Common fields for all TAXONOMIES
  *
  */
-const commonFields: FieldCreator<CommonFields>[] = [
+export const commonFields: FieldCreator<CommonFields>[] = [
   {
     id: '_id',
     excludeFrom: 'all',
@@ -44,6 +44,10 @@ const commonFields: FieldCreator<CommonFields>[] = [
   }
 ]
 
+type LodgerDocument = {
+  _id: string
+}
+
 /**
  *
  *
@@ -51,12 +55,12 @@ const commonFields: FieldCreator<CommonFields>[] = [
  * @extends {RxJsonSchema}
  * @implements {LodgerSchema}
  */
-export default class Schema<Name extends string, Interface> extends Form<Name, Interface> implements RxJsonSchema, LodgerSchema {
-  title = ''
-  properties = {}
-  type = 'object'
-  version = 0
-  required: string[] = []
+export default class Schema<Name extends string, Interface extends LodgerDocument> extends Form<Name, Interface> implements RxJsonSchema, LodgerSchema {
+  readonly title: string = ''
+  readonly properties: { [k in keyof Interface]: RxJsonSchemaTopLevel } = {}
+  readonly type = 'object'
+  readonly version = 0
+  readonly required: string[] = []
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -72,23 +76,28 @@ export default class Schema<Name extends string, Interface> extends Form<Name, I
     options?: LodgerSchemaOptions
   ) {
     super(data.name, data.fields)
-    const { name, fields } = data
 
-    this.title = name
-    this.properties = this.fields
-    // delete this.fields
-    console.info('sch', this)
-    // console.info('sch', Schema.load)
+    this.title = this.name
 
-    const filteredFields = fields
-      .filter(field => !(field.excludeFrom &&
-        (field.excludeFrom.indexOf('db') > -1 ||
-        field.excludeFrom.indexOf('all') > -1)))
+    for (const fieldId in this.fields) {
+      this.properties[fieldId] = this.fields[fieldId].rxSchema
+    }
 
-    // if (addCommonMethods && name !== 'serviciu')
-    //     filteredFields.concat(commonFields)
+    commonFields.map(field => { this.add(field) })
 
-    filteredFields.map(field => this.addField(new Field(field)))
+    console.info('sch', this, this.title)
+
+    // const filteredFields = fields
+    //   .filter(field => !(field.excludeFrom &&
+    //     (field.excludeFrom.indexOf('db') > -1 ||
+    //     field.excludeFrom.indexOf('all') > -1)))
+
+    // // if (addCommonMethods && name !== 'serviciu')
+    // //     filteredFields.concat(commonFields)
+
+    // filteredFields.map(field => this.add(new Field(field)))
+    const { title, properties, version, type, required } = this
+    return { title, properties, version, type, required }
   }
 
   /**
@@ -98,11 +107,15 @@ export default class Schema<Name extends string, Interface> extends Form<Name, I
    * @param {FieldCreator} field
    * @memberof Schema
    */
-  addField (field: RxJsonSchemaTopLevel) {
-    const { id, required } = field
-    if (required && this.required.indexOf(id) < 0)
-      this.required.push(id)
+  add (field: FieldCreator<any>) {
+    (() => super.addField(field))()
+    const { id } = field
 
-    Object.assign(this.properties, field.toJSONSchema())
+    // console.info('ZIS', this)
+    if (field.required && this.required.indexOf(id) < 0)
+    this.required.push(id)
+
+    const { rxSchema } = this.fields[id]
+    Object.assign(this.properties, { [id]: rxSchema })
   }
 }

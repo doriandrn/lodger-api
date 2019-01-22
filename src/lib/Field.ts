@@ -25,8 +25,8 @@ type FieldTypes = keyof typeof strings |
 declare global {
   type ID<X extends Taxonomie> = string
 
-  type FieldCreator<T> = {
-    id : keyof T // item's identifier, correlates to DB's item key
+  type FieldCreator = {
+    id : string // item's identifier, correlates to DB's item key
 
     label ?: string // what the user sees
     placeholder ?: string // sample data
@@ -113,7 +113,8 @@ export class Field<T> implements FormField<T> {
     const { id, index, ref, indexRef, type, step, required, v, value } = data
     this.type = String(type || '').toRxDBType()
     this.id = id
-    this.index = data.index
+
+    if (index) this.index = true
 
     // transform the ref
     if (ref) {
@@ -153,8 +154,14 @@ export class Field<T> implements FormField<T> {
    * returns only the properties needed for it
    */
   get rxSchema () {
-    const { ref, multipleOf, index, type } = this
-    return { ref, multipleOf, index, type }
+    const schema = {}
+    const excludes = ['storage', 'id', 'value', 'default']
+    Object.keys(this).forEach(prop => {
+      if (this[prop] === undefined) return
+      if (excludes.indexOf(prop) > -1) return
+      schema[prop] = this[prop]
+    })
+    return schema
   }
 
   // /**

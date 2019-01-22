@@ -10,7 +10,7 @@ describe('Field', () => {
     describe('+', () => {
       test('constructs with ID', () => {
         const field = new Field({ id })
-        console.info('Field', field)
+
         expect(field).toBeDefined()
         expect(field.id).toEqual(id)
         expect(field.type).toBe('string')

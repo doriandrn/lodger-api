@@ -1,4 +1,5 @@
 import { Form, LodgerFormCreator } from '~/lib/Form'
+import fieldsWithExcludedItems from 'fixtures/fields/withExcludedItems'
 
 /**
  * DO NOT CHANGE ANY OF THESE
@@ -9,72 +10,39 @@ import { Form, LodgerFormCreator } from '~/lib/Form'
 const name = 'xx'
 const plural = 'xxs'
 
-const stub1: LodgerSchemaCreator = {
-  name,
-  fields,
-  methods
-}
 
-const stub2: LodgerFormCreator = {
+const formData: LodgerFormCreator = {
   name,
   fields: fieldsWithExcludedItems
 }
 
+type TestForm = {
+  x1: string
+}
 
 describe('Form', () => {
-  let __stub1__: LodgerFormConstructor
-  let __stub2__: LodgerFormConstructor
-
+  let form: Form<'xx', TestForm> =
   beforeAll(() => {
-    __stub1__ = new Form(stub1)
-    __stub2__ = new Form(stub2)
-    // console.error(__stub2__)
+    form = new Form(name, formData)
   })
-
 
   describe('constructor()', () => {
-    describe('negative', () => {
-      const name = 'aFormName'
-      const plural = 'formsCollection'
-      test('throws if fields is empty', () => {
-        const fields: Fields = []
-        expect(() => new Form({ fields }, name, plural)).toThrow()
-      })
-    })
 
-  })
 
-  describe('indexable fields', () => {
-    // describe('positive', () => {
-    //   test('contains all fields\' ids with index: true', () => {
-    //     expect(__stub1__.indexables).toContainEqual(
-
-    //     )
-    //   })
-
-    //   test('contains keys from commmon methods', () => {
-
-    //   })
-    // })
   })
 
   describe('.value()', () => {
-    describe('positive', () => {
-      // nu e  cel mai ok test, redo
-      test('it contains all keys, even excluded ones', () => {
-        expect(Object.keys(__stub1__.value()))
-        .toContainEqual(Object.keys(__stub1__.collection.schema.properties))
-      })
+    // nu e  cel mai ok test, redo
+    test('it contains all keys', () => {
+      expect(Object.keys(form.value()))
+      .toContainEqual(form.fieldsIds)
     })
 
-    describe('negative', () => {
-
-    })
   })
 
-  describe('.plural getter', () => {
-    test('returns the collection name', () => {
-      expect(__stub1__.plural).toEqual(__stub1__.collection.name)
+  describe('.plural', () => {
+    test('returns the inernationalized name string', () => {
+      expect(form.plural).toEqual(form.name.plural())
     })
   })
 
@@ -98,15 +66,7 @@ describe('Form', () => {
     })
 
     describe('schema', () => {
-      test('is defined', () => {
-        const { schema } = __stub1__.collection
-        expect(schema).toBeDefined()
-      })
 
-      test('title matches name', () => {
-        const { schema } = __stub1__.collection
-        expect(schema.title).toBe(name)
-      })
 
       // test('matches fields length', () => {
       //   const { schema } = __stub1__.collection
