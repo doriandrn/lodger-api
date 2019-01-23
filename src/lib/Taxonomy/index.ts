@@ -1,8 +1,8 @@
-import { RxDocument, RxCollection } from 'rxdb'
+import { RxDocument, RxCollection, RxCollectionCreator } from 'rxdb'
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
-import { GetterTree } from 'vuex'
-
+import { Store } from 'vuex'
+import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 
 import { setupSharedMethods } from '../helpers/store'
@@ -12,10 +12,41 @@ import { setupSharedMethods } from '../helpers/store'
   *
   * @interface LodgerTaxonomy
   */
- interface LodgerTaxonomy<N extends Taxonomie> {
-  put (data: Object): Promise<RxDocument<N>> | void
+ interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
+  put (data: PutData<Interface>): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N> | null>
 }
+
+type LodgerTaxonomyCreator = LodgerFormCreator & RxCollectionCreator
+
+type PutData<I> = {
+  [i in keyof I]: any
+}
+
+type CommonFields = {
+  _id?: string // item's ID
+  la: number // Data adaugarii / datetime when added
+}
+
+/**
+ * Common fields for all TAXONOMIES
+ *
+ */
+export const commonFields: FieldCreator<CommonFields>[] = [
+  // {
+  //   id: '_id',
+  //   excludeFrom: 'all',
+  //   value: ({ activeDoc }) => activeDoc._id
+  // },
+  {
+    id: 'la',
+    type: 'dateTime',
+    required: true, // for filters / sorts
+    index: true,
+    excludeFrom: ['addForm', 'editForm'],
+    showInList: 'secondary'
+  }
+]
 
 /**
  * @class Taxonomy
@@ -26,10 +57,14 @@ import { setupSharedMethods } from '../helpers/store'
  * @param {Taxonomie} name - name of the form
  * @param {Form} form - the constructed form item
  */
-export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> {
+export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form implements LodgerTaxonomy<T, Interface> {
   // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
-  readonly getters: GetterTree<> = {}
+  // readonly getters: {
+  //   [k: string]: () => any
+  // }
+  protected collection: RxCollection<T>
+  private storeModule = setupSharedMethods()
 
   /**
    * Creates an instance of Taxonomy.
@@ -39,19 +74,24 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    * @memberof Taxonomy
    */
   constructor (
-    protected collection: RxCollection<T>,
-    readonly store: Store<T>
+    data: LodgerTaxonomyCreator,
+    // protected collection: RxCollection<T>,
+    // readonly store: Store<RootState>
   ) {
-    const { name } = this
-    store.registerModule(name, setupSharedMethods())
-    const { getters } = store
+    super(data.name, data.fields, { isTaxonomy: true })
+    commonFields.map(field => this.addField(field))
 
-    // define this.getters with shortnames
-    Object.keys(getters)
+    const { name, rxSchema } = this
+    this.collection = this.$db.collection(rxSchema)
+    this.$store.registerModule(name, this.storeModule)
+
+
+    // define our getters with shortnames
+    Object.keys(this.$store.getters)
       .filter(key => key.startsWith(name))
       .map(key => {
         const shortKey = key.replace(`${name}/`, '')
-        Object.defineProperty(this.getters, shortKey, {
+        Object.defineProperty(this, shortKey, {
           get () { return this.store.getters[key] }
         })
       })
@@ -88,7 +128,7 @@ export default class Taxonomy<T extends Taxonomie> implements LodgerTaxonomy<T> 
    * @memberof Taxonomy
    */
   async put (
-    data: { _id ?: string },
+    data: PutData<Interface>
   ) {
     if (!data || Object.keys(data).length < 1)
       throw new TaxonomyError('Missing data %%', data)

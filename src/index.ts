@@ -79,6 +79,9 @@ type TaxesList = {
 
 interface LodgerAPI {
   put (taxonomie: Taxonomie, data: {}): Promise<RxDocument<Taxonomie>>
+  trash (): void
+
+  import (): void
   export (path: PathLike, cryptData ?: boolean, filename ?: string): Promise<void>
 
   destroy (): Promise<void>

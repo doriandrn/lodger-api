@@ -1,6 +1,6 @@
 import Schema, { commonFields } from '~/lib/Schema'
 import schema1 from 'fixtures/schemas/withMethods'
-import { isRxSchema } from 'rxdb'
+import { isRxSchema, RxSchema, RxJsonSchema } from 'rxdb'
 
 const name = 'schema1'
 
@@ -12,7 +12,6 @@ describe('Schema', () => {
   beforeAll(() => {
     schema = new Schema(schema1)
     console.info('test schema', schema)
-    console.info('schema add', schema.add)
   })
 
   describe('ctor', () => {
@@ -24,16 +23,29 @@ describe('Schema', () => {
       expect(schema).toMatchSnapshot()
     })
 
+  })
+
+  describe('.rx', () =>  {
+    let rx: RxJsonSchema, rxSchema: RxSchema
+
+    beforeAll(() => {
+      rx = schema.rx
+      rxSchema = RxSchema.create(rx)
+    })
+
     test('is a valid RxSchema', () => {
-      expect(isRxSchema(schema)).toBeTruthy()
+      expect(rxSchema).toBeDefined()
+      expect(isRxSchema(rxSchema)).toBeTruthy()
+    })
+
+    describe('.title', () => {
+      test('matches given name', () => {
+        expect(rx.title).toBe(name)
+      })
     })
   })
 
-  describe('.title', () => {
-    test('matches given name', () => {
-      expect(schema.title).toBe(name)
-    })
-  })
+
 
   describe('.version', () => {
     test('is 0 on first run', () => {
@@ -47,8 +59,9 @@ describe('Schema', () => {
   })
 
   describe('add()', () => {
-    test('adds ok a a new field', () => {
-
+    test('inserts a new field programatically', () => {
+      schema.add({ id: 'cucu' })
+      expect(schema.properties.cucu).toBeDefined()
     })
   })
 

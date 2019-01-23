@@ -8,41 +8,21 @@ import { Field } from './Field'
  * @interface LodgerSchema
  */
 interface LodgerSchema extends RxJsonSchema {
-  add (fieldId: string, field: RxJsonSchemaTopLevel): void
+  readonly indexables: []
+  add (field: RxJsonSchemaTopLevel): void
 }
 
-type CommonFields = {
-  _id: string // item's ID
-  '@': number // Data adaugarii / datetime when added
-}
 
-export type LodgerSchemaCreator<T> = LodgerFormCreator<T> & {
-  name: string // name is required here, despite in form
-  methods?: { [k: string]: () => void }
-  statics?: { [k: string]: () => void }
-  sync?: boolean
-  settings?: any
-}
 
-/**
- * Common fields for all TAXONOMIES
- *
- */
-export const commonFields: FieldCreator<CommonFields>[] = [
-  {
-    id: '_id',
-    excludeFrom: 'all',
-    value: ({ activeDoc }) => activeDoc._id
-  },
-  {
-    id: '@',
-    type: 'dateTime',
-    required: true, // for filters / sorts
-    index: true,
-    excludeFrom: ['addForm', 'editForm'],
-    showInList: 'secondary'
-  }
-]
+// export type LodgerSchemaCreator<T> = LodgerFormCreator<T> & {
+//   name: string // name is required here, despite in form
+//   methods?: { [k: string]: () => void }
+//   statics?: { [k: string]: () => void }
+//   sync?: boolean
+//   settings?: any
+// }
+
+
 
 type LodgerDocument = {
   _id: string
@@ -56,11 +36,11 @@ type LodgerDocument = {
  * @implements {LodgerSchema}
  */
 export default class Schema<Name extends string, Interface extends LodgerDocument> extends Form<Name, Interface> implements RxJsonSchema, LodgerSchema {
-  readonly title: string = ''
   readonly properties: { [k in keyof Interface]: RxJsonSchemaTopLevel } = {}
   readonly type = 'object'
   readonly version = 0
   readonly required: string[] = []
+  readonly indexables: string[] = []
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -77,15 +57,11 @@ export default class Schema<Name extends string, Interface extends LodgerDocumen
   ) {
     super(data.name, data.fields)
 
-    this.title = this.name
-
     for (const fieldId in this.fields) {
       this.properties[fieldId] = this.fields[fieldId].rxSchema
     }
 
-    commonFields.map(field => { this.add(field) })
 
-    console.info('sch', this, this.title)
 
     // const filteredFields = fields
     //   .filter(field => !(field.excludeFrom &&
@@ -96,8 +72,20 @@ export default class Schema<Name extends string, Interface extends LodgerDocumen
     // //     filteredFields.concat(commonFields)
 
     // filteredFields.map(field => this.add(new Field(field)))
-    const { title, properties, version, type, required } = this
-    return { title, properties, version, type, required }
+  }
+
+  /**
+   *
+   *
+   * @readonly
+   * @type {RxJsonSchema}
+   * @memberof Schema
+   */
+  get rx (): RxJsonSchema {
+    const { properties, version, type, required } = this
+    return {
+      title: this.name,
+      properties, version, type, required }
   }
 
   /**
