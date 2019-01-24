@@ -16,7 +16,7 @@ declare global {
     spleet: () => SplitObject,
     slugify: () => string,
     toRxDBType: () => JsonSchemaTypes
-    plural: () => string
+    plural: () => Plural<string>
   }
 }
 

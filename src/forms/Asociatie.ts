@@ -1,4 +1,5 @@
-import { RxDocument, RxCollectionCreator } from "rxdb";
+import { RxDocument, RxCollectionBase } from "rxdb";
+import { LodgerTaxonomyCreator } from '../lib/Taxonomy'
 
 declare global {
   type Organizatie = {
@@ -7,14 +8,10 @@ declare global {
     rocif?: boolean
   }
 
-  /**
-   * Taxonomy: Asociatie
-   *
-   * @interface Asociatie
-   */
-  interface Asociatie {
+  type Asociatie = {
     _id: string
     name: string
+    balanta: Bani
 
     servicii: Serviciu[]
     organizatie?: Organizatie,
@@ -23,9 +20,6 @@ declare global {
     tranzactii?: Tranzactie[]
     incasari?: Incasare[]
 
-    readonly administratori: Utilizator[]
-    readonly balanta: Bani
-
     preferinte: {
       moneda: string
 
@@ -33,16 +27,25 @@ declare global {
       genereazaListeAutomat: boolean
 
       filtre: {
-        [k: Taxonomie]: {
+        [k in keyof Taxonomie]: {
           [f: string]: any
         }
       }
     }
-
-    initBalanta (): void
-    incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
-    toggleServiciu: (serviciu: ID<'Serviciu'>) => void
   }
+}
+
+/**
+ * Taxonomy: Asociatie
+ *
+ * @interface Asociatie
+ */
+interface AsociatieAPI {
+  readonly administratori: Utilizator[]
+
+  initBalanta (): void
+  incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
+  toggleServiciu: (serviciu: ID<'Serviciu'>) => void
 }
 
 const plural = 'asociatii'
@@ -117,7 +120,7 @@ const fields: FieldCreator<Asociatie>[] = [
   }
 ]
 
-const methods: RxCollectionCreator.methods = {
+const methods: RxCollectionBase<Asociatie, AsociatieAPI> = {
   async initBalanta (data: {balanta: Bani}) {
     if (this.balanta !== undefined) return
     this.balanta = data.balanta
@@ -191,49 +194,10 @@ const setari = {
   },
 }
 
-export {
+export default <LodgerTaxonomyCreator>{
   fields,
   plural,
   methods,
   statics,
   setari
 }
-
-// export const campuri = [
-//   {
-//     id: 'balanta',
-//     label: 'asociatie.init.balanta',
-//     required: true,
-//     type: 'bani',
-//     '@change': 'asociatie/initBalanta',
-//     value (getters) { return getters['asociatie/balanta'] }
-//   },
-//   {
-//     id: 'dataDinLunaListe',
-//     label: 'asociatie.init.dataDinLuna',
-//     required: true,
-//     type: 'number',
-//     max: 28,
-//     min: 1
-//   }
-// ]
-// export const setari = {
-//   regionale: {
-//     campuri: [
-//       {
-//         id: 'limba',
-//         type: 'select',
-//         '@change': 'schimbaLimba',
-//         value: g => g.locale,
-//         options: g => g.limbiChoose
-//       },
-//       {
-//         id: 'moneda',
-//         type: 'select',
-//         value: g => g.moneda,
-//         options: g => g.monede
-//       }
-//     ]
-//   }
-// }
-

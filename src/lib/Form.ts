@@ -4,11 +4,8 @@
  * than a normal JsonSchema
  */
 import Debug from 'debug'
-import { RxCollectionCreator } from 'rxdb'
-
-import { env } from './defs/env'
 import FormError from './Error'
-
+import { env } from './defs/env'
 import { Field } from './Field'
 
 /**
@@ -30,7 +27,7 @@ if (env === 'test')
   Debug.enable('Form:*')
 
 type FormOptions = {
-  // todo
+  captureTimestamp ?: boolean // generates a rxSchema ready to be used as a collection creator
 }
 
 export type LodgerFormCreator<T> = {
@@ -38,6 +35,8 @@ export type LodgerFormCreator<T> = {
   plural?: Plural<string>
   fields: FieldCreator<T>[]
 }
+
+const debug = Debug('lodger:Form')
 
 const formsPath = ['dev', 'test']
   .indexOf(env) > -1 ? 'forms' : '.'
@@ -74,7 +73,6 @@ type FormFields<I> = {
  */
 class Form<N extends string, I> implements LodgerForm<N, I> {
   protected fields : FormFields<I> = {}
-  protected collection ?: RxCollectionCreator
 
   private _onsubmit : Function[] = [] // hook
 
@@ -97,25 +95,29 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
     fields: FieldCreator<I>[],
     opts ?: FormOptions
   ) {
-    // const { plural, methods, statics } = data
-    // if (!name) throw new FormError('Form should have a name %%', data)
     if (!fields.length)
       throw new FormError('missing fields on form %%', name)
 
     this.plural = String(name).plural()
     fields.map(field => this.addField(field))
 
-    // if (this.isTaxonomy) {
-    //   const schema = new Schema(data, true)
-    //   const collection = {
-    //     name: plural,
-    //     schema,
-    //     methods,
-    //     statics
-    //   }
-    //   this.collection = collection
-    //   this.indexables = Object.keys(schema.properties).filter(prop => schema.properties[prop].index)
-    // }
+    if (opts) {
+      if (opts.captureTimestamp) {
+        this.addField({
+          id: 'la',
+          type: 'dateTime',
+          required: true, // for filters / sorts
+          index: true,
+          excludeFrom: ['addForm', 'editForm'],
+          showInList: 'secondary'
+        })
+      }
+    }
+
+    // default onsubmit func
+    this.onsubmit = () => {
+
+    }
   }
 
   /**
@@ -129,17 +131,6 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    */
   get data () {
     return Object.assign({}, ...Object.keys(this.fields))
-  }
-
-  /**
-   * Everytime the value is accessed
-   * if 'la' field is present
-   *
-   * @readonly
-   * @memberof Form
-   */
-  get capturesTimestamp () {
-    return Object.keys(this.data).indexOf('la') > -1
   }
 
   /**
@@ -189,7 +180,9 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    * @param {FieldCreator} field
    * @memberof Form
    */
-  addField (field: FieldCreator) {
+  private addField (field: FieldCreator<any>) {
+    if (this.fields[field.id])
+      throw new FormError('Field already exists, %%', field.id)
     this.fields[field.id] = new Field(field)
   }
 
@@ -199,10 +192,6 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
    * @param name
    */
   static async load (name: string): Promise<Form<any, D>> {
-    const debug = Debug('lodger:Form')
-    // if (!name)
-    //   throw new FormError('no name supplied for form')
-
     const formPath: string = `${ formsPath }/${ name }`
 
     try {
@@ -214,7 +203,6 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
       debug('x', name)
       throw new FormError(err)
     }
-
   }
 }
 

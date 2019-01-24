@@ -1,11 +1,11 @@
-import { RxDocument, RxCollection, RxCollectionCreator } from 'rxdb'
+import { RxDocument, RxCollection, RxCollectionCreator, RxJsonSchema } from 'rxdb'
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
-import { Store } from 'vuex'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 
 import { setupSharedMethods } from '../helpers/store'
+import Schema from '../Schema';
 
 /**
   * Taxonomy item
@@ -17,14 +17,14 @@ import { setupSharedMethods } from '../helpers/store'
   trash (id: string): Promise<RxDocument<N> | null>
 }
 
-type LodgerTaxonomyCreator = LodgerFormCreator & RxCollectionCreator
+export type LodgerTaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
 
 type PutData<I> = {
-  [i in keyof I]: any
+  [i in keyof I] ?: any
 }
 
 type CommonFields = {
-  _id?: string // item's ID
+  _id ?: string // item's ID
   la: number // Data adaugarii / datetime when added
 }
 
@@ -60,11 +60,8 @@ export const commonFields: FieldCreator<CommonFields>[] = [
 export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form implements LodgerTaxonomy<T, Interface> {
   // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
-  // readonly getters: {
-  //   [k: string]: () => any
-  // }
+  readonly name: Plural<T>
   protected collection: RxCollection<T>
-  private storeModule = setupSharedMethods()
 
   /**
    * Creates an instance of Taxonomy.
@@ -74,25 +71,34 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form 
    * @memberof Taxonomy
    */
   constructor (
-    data: LodgerTaxonomyCreator,
-    // protected collection: RxCollection<T>,
-    // readonly store: Store<RootState>
+    data: LodgerTaxonomyCreator<Interface>,
   ) {
-    super(data.name, data.fields, { isTaxonomy: true })
-    commonFields.map(field => this.addField(field))
+    super(data.name, data.fields)
+    this.name = data.name.plural()
+    const { methods, statics } = data
+    const { name, $db, $store } = this
 
-    const { name, rxSchema } = this
-    this.collection = this.$db.collection(rxSchema)
-    this.$store.registerModule(name, this.storeModule)
+    commonFields.map(field => super.addField(field))
 
+    const collectionCreator: RxCollectionCreator = {
+      name,
+      schema: new Schema(this),
+      methods,
+      statics
+    }
+
+    $db.collection(collectionCreator).then((col: RxCollection<T>) => {
+      this.collection = col
+    })
+    $store.registerModule(name, setupSharedMethods())
 
     // define our getters with shortnames
-    Object.keys(this.$store.getters)
+    Object.keys($store.getters)
       .filter(key => key.startsWith(name))
       .map(key => {
         const shortKey = key.replace(`${name}/`, '')
         Object.defineProperty(this, shortKey, {
-          get () { return this.store.getters[key] }
+          get () { return $store.getters[key] }
         })
       })
   }
@@ -103,9 +109,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form 
    * @readonly
    * @memberof Taxonomy
    */
-  get name () {
-    return this.collection.name
-  }
+  // get name () {
+  //   return this.collection.name
+  // }
 
 
   /**
@@ -148,7 +154,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form 
     try {
       const doc = await this.collection[method](data)
       const id = doc._id
-      this.store.dispatch(`${name}/set_last`, id)
+      this.$store.dispatch(`${name}/set_last`, id)
 
       notify({
         type: 'success',

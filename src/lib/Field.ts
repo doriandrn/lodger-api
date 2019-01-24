@@ -25,8 +25,8 @@ type FieldTypes = keyof typeof strings |
 declare global {
   type ID<X extends Taxonomie> = string
 
-  type FieldCreator = {
-    id : string // item's identifier, correlates to DB's item key
+  type FieldCreator<T> = {
+    id : keyof T // item's identifier, correlates to DB's item key
 
     label ?: string // what the user sees
     placeholder ?: string // sample data
@@ -145,8 +145,9 @@ export class Field<T> implements FormField<T> {
     this.value = () => undefined
 
     // bind the value function
+    const { storage } = this
     if (value && typeof value === 'function')
-      this.value = value.bind(this)
+      this.value = value.bind({ id, storage })
   }
 
   /**
