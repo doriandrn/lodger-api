@@ -50,11 +50,10 @@ const formsPath = ['dev', 'test']
 interface LodgerForm<N extends string, I> {
   readonly name: N
 
-  readonly isActive: boolean
-  readonly captureTimestamp: boolean
+  $active: boolean
 
   value (newForm: boolean): FormValue<I>
-  addField (field: FieldCreator<I>): void
+  // readonly addField (field: FieldCreator<I>): void
 }
 
 type FormValue<I> = {
@@ -80,7 +79,7 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
   readonly plural : Plural<Taxonomie>
   readonly captureTimestamp : boolean = false
 
-  isActive: boolean = false
+  $active: boolean = false
 
   /**
    * Creates an instance of Form.
@@ -162,11 +161,11 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
   value (
     context ?: FormContext<I>
   ): FormValue<I> {
-    // const debug = Debug('Form:value')
     let $data = {} as any
 
     this.fieldsIds.forEach(fieldId => {
       const field = this.fields[fieldId]
+      if (field.storage !== 'db') return // todo: pune din store
       $data[fieldId] = field.value(context)
     })
 
