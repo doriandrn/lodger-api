@@ -3,8 +3,7 @@ import Vue from 'vue'
 Vue.use(Vuex)
 import {
   createEmptyStoreModule,
-  setupSharedMethods,
-  setupFromFile
+  setupSharedMethods
 } from '~/lib/helpers/store'
 
 const taxonomies = ['car', 'plane']

@@ -3,28 +3,7 @@
  * are quite diferrently structured
  * than a normal JsonSchema
  */
-import Debug from 'debug'
-import FormError from './Error'
-import { env } from './defs/env'
-import { Field } from './Field'
-
-/**
- * Errors Definition
- * @readonly
- * @enum {string}
- *
- * @todo account for translations
- */
-enum Errors {
-  invalidRequested = 'Invalid form requested: %%',
-  invalidName = 'Invalid name supplied',
-  noData = 'Form %% is missing data',
-  missingName = 'Forms should have a name',
-  missingPlural = 'A plural definition is required for %%'
-}
-
-if (env === 'test')
-  Debug.enable('Form:*')
+import Schema from './Schema'
 
 type FormOptions = {
   captureTimestamp ?: boolean // generates a rxSchema ready to be used as a collection creator
@@ -36,33 +15,21 @@ export type LodgerFormCreator<T> = {
   fields: FieldCreator<T>[]
 }
 
-const debug = Debug('lodger:Form')
-
-const formsPath = ['dev', 'test']
-  .indexOf(env) > -1 ? 'forms' : '.'
-
-
 /**
- *
  *
  * @interface LodgerForm
  */
 interface LodgerForm<N extends string, I> {
   readonly name: N
-
   $active: boolean
 
   value (newForm: boolean): FormValue<I>
-  // readonly addField (field: FieldCreator<I>): void
 }
 
 type FormValue<I> = {
   [k in keyof I]: any
 }
 
-type FormFields<I> = {
-  [k in keyof I] ?: Field<I>
-}
 
 /**
  * Lodder Form class
@@ -70,13 +37,12 @@ type FormFields<I> = {
  * @class Form
  * @implements {LodgerForm}
  */
-class Form<N extends string, I> implements LodgerForm<N, I> {
-  protected fields : FormFields<I> = {}
+class Form<N extends string, I>
+extends Schema<N, I>
+implements LodgerForm<N, I> {
+  private _onsubmit : Function[] = [] // hooks
 
-  private _onsubmit : Function[] = [] // hook
-
-  readonly indexables ?: string[]
-  readonly plural : Plural<Taxonomie>
+  readonly plural : Plural<N>
   readonly captureTimestamp : boolean = false
 
   $active: boolean = false
@@ -94,15 +60,14 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
     fields: FieldCreator<I>[],
     opts ?: FormOptions
   ) {
-    if (!fields.length)
-      throw new FormError('missing fields on form %%', name)
+    super(name, fields, opts && opts.schema ? opts.schema : {})
 
-    this.plural = String(name).plural()
-    fields.map(field => this.addField(field))
+    this.plural = name.plural()
 
     if (opts) {
+
       if (opts.captureTimestamp) {
-        this.addField({
+        super.add({
           id: 'la',
           type: 'dateTime',
           required: true, // for filters / sorts
@@ -171,41 +136,9 @@ class Form<N extends string, I> implements LodgerForm<N, I> {
 
     return $data
   }
-
-  /**
-   * Adds fields programatically as
-   * we also need to fill in the required array
-   *
-   * @param {FieldCreator} field
-   * @memberof Form
-   */
-  private addField (field: FieldCreator<any>) {
-    if (this.fields[field.id])
-      throw new FormError('Field already exists, %%', field.id)
-    this.fields[field.id] = new Field(field)
-  }
-
-  /**
-   * Loads a 'known' form by name
-   *
-   * @param name
-   */
-  static async load (name: string): Promise<Form<any, D>> {
-    const formPath: string = `${ formsPath }/${ name }`
-
-    try {
-      const formData: LodgerFormCreator<D> = await import(formPath)
-      // Object.assign(formData, { name })
-      debug('✓', name)
-      return new Form(name, formData.fields)
-    } catch (err) {
-      debug('x', name)
-      throw new FormError(err)
-    }
-  }
 }
 
 export {
   Form,
-  Errors
+  // Errors
 }

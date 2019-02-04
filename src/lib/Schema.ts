@@ -1,5 +1,7 @@
 import { RxJsonSchema, RxJsonSchemaTopLevel } from "rxdb"
+import SchemaError from './Error'
 import { Field } from './Field'
+import { env } from './defs/env'
 
 /**
  *
@@ -7,12 +9,36 @@ import { Field } from './Field'
  * @interface LodgerSchema
  */
 interface LodgerSchema extends RxJsonSchema {
-  add (field: RxJsonSchemaTopLevel): void
-  new (): RxJsonSchema
+  add (field: FieldCreator<any>): void
+  // new (): RxJsonSchema
 }
 
-type LodgerDocument = {
-  _id: string
+
+/**
+ * Errors Definition
+ * @readonly
+ * @enum {string}
+ *
+ * @todo account for translations
+ */
+enum Errors {
+  invalidRequested = 'Invalid file requested: %%',
+  invalidName = 'Invalid name supplied: %%',
+  missingFields = 'Missing fields on form %%',
+  fieldExists = 'Field already exists, %%'
+}
+
+type SchemaFields<I> = {
+  [k in keyof I] ?: Field<I>
+}
+
+type LodgerSchemaOptions = {}
+
+const datamodelDir = ['dev', 'test']
+  .indexOf(env) > -1 ? 'forms' : '.'
+
+type SchemaProperties<Interface> = {
+  [k in keyof Interface] : RxJsonSchemaTopLevel
 }
 
 /**
@@ -22,11 +48,12 @@ type LodgerDocument = {
  * @extends {RxJsonSchema}
  * @implements {LodgerSchema}
  */
-export default class Schema<Name extends string, Interface extends LodgerDocument> implements RxJsonSchema, LodgerSchema {
+export default class Schema<Name extends string, Interface> implements RxJsonSchema, LodgerSchema {
   readonly type = 'object'
   readonly version = 0
-  readonly properties: { [k in keyof Interface] : RxJsonSchemaTopLevel } = {}
+  readonly properties : SchemaProperties<Interface> = {}
   readonly required: string[] = []
+  // protected fields: SchemaFields<Interface> = {}
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -39,15 +66,62 @@ export default class Schema<Name extends string, Interface extends LodgerDocumen
    */
   constructor (
     readonly name: Name,
-    fields: Field<Interface>[]
-    // options?: LodgerSchemaOptions
+    fields: FieldCreator<Interface>[],
+    options?: LodgerSchemaOptions
   ) {
-    for (const fieldId in fields) {
-      const { storage } = fields[fieldId]
-      if (storage !== 'db')
-        continue
+    if (!fields.length)
+      throw new SchemaError(Errors.missingFields, { name })
 
-      this.properties[fieldId] = fields[fieldId].rxSchema
+    fields.map(f => this.add(f))
+  }
+
+  /**
+   * Adds fields programatically as
+   * we also need to fill in the required array
+   *
+   * @param {FieldCreator} field
+   * @memberof Schema
+   */
+  add (field: FieldCreator<Interface>) {
+    const { id } = field
+    if (this.properties[id])
+      throw new SchemaError(Errors.fieldExists, { id })
+    const { rxSchema, v, storage } = new Field(field)
+    if (storage !== 'db') return
+    const required =  v && v.indexOf('required') > -1
+    this.properties[id] = rxSchema
+
+    if (required && this.required.indexOf(id) < 0)
+      this.required.push(id)
+  }
+
+  get ids () {
+    return Object.keys(this.properties)
+  }
+
+  /**
+   *
+   *
+   * @readonly
+   * @memberof Schema
+   */
+  get indexables () {
+    return this.ids.filter(fieldId => this.properties[fieldId].index)
+  }
+
+  /**
+   * Loads a 'known' schema by name
+   *
+   * @param name
+   */
+  static async load (name: string): Promise<Schema<string, any>> {
+    const schemaPath: string = `${ datamodelDir }/${ name }`
+
+    try {
+      const { fields } =  await import(schemaPath)
+      return new Schema(name, fields)
+    } catch (err) {
+      throw new SchemaError(err)
     }
   }
 }

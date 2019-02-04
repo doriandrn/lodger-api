@@ -123,7 +123,7 @@ String.prototype.toRxDBType = function (): JsonSchemaTypes {
 /**
  * Plurals. @todo use Intl
  */
-String.prototype.plural = function () : string {
+String.prototype.plural = function () : Plural<string> {
   return String(`${this}i`)
 }
 

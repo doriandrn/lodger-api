@@ -1,4 +1,4 @@
-import { RxDocument, RxCollection, RxCollectionCreator, RxJsonSchema } from 'rxdb'
+import { RxDocument, RxCollection, RxCollectionCreator, RxJsonSchema, RxDatabase } from 'rxdb'
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
@@ -6,6 +6,7 @@ import notify from '../helpers/notify'
 
 import { setupSharedMethods } from '../helpers/store'
 import Schema from '../Schema';
+import { Store } from 'vuex';
 
 /**
   * Taxonomy item
@@ -13,40 +14,34 @@ import Schema from '../Schema';
   * @interface LodgerTaxonomy
   */
  interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
-  put (data: PutData<Interface>): Promise<RxDocument<N>> | void
+  put (doc: LodgerDocument<Interface>): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N> | null>
+
+  // static init (data: LodgerTaxonomyCreator<Interface>): Taxonomy<T, Interface>
 }
 
 export type LodgerTaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
 
-type PutData<I> = {
-  [i in keyof I] ?: any
+type LodgerTaxonomyCreatorOptions = {
+  multipleSelect: boolean,
+  shortGetters ?: boolean, // if the taxonomy should contain hot access to getters
+  store ?: boolean // whether it should use a Store module to store data
 }
 
-type CommonFields = {
-  _id ?: string // item's ID
-  la: number // Data adaugarii / datetime when added
+
+type LodgerDocument<I> = {
+  [ab in keyof I] ?: any
+  // readonly id ?: string,
 }
 
 /**
- * Common fields for all TAXONOMIES
+ * Store module
  *
+ * may or may not be used
+ * if one form  has the store option
+ * it activates
  */
-export const commonFields: FieldCreator<CommonFields>[] = [
-  // {
-  //   id: '_id',
-  //   excludeFrom: 'all',
-  //   value: ({ activeDoc }) => activeDoc._id
-  // },
-  {
-    id: 'la',
-    type: 'dateTime',
-    required: true, // for filters / sorts
-    index: true,
-    excludeFrom: ['addForm', 'editForm'],
-    showInList: 'secondary'
-  }
-]
+let $store: Store<any>, $db: RxDatabase
 
 /**
  * @class Taxonomy
@@ -57,11 +52,31 @@ export const commonFields: FieldCreator<CommonFields>[] = [
  * @param {Taxonomie} name - name of the form
  * @param {Form} form - the constructed form item
  */
-export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form implements LodgerTaxonomy<T, Interface> {
+export default class Taxonomy<T extends Taxonomie, Interface = {}>
+  extends Form<T, Interface>
+  implements LodgerTaxonomy<T, Interface> {
+
   // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
-  readonly name: Plural<T>
-  protected collection: RxCollection<T>
+
+  static async init (data: LodgerTaxonomyCreator<{}>, options) {
+    const { name, methods, statics, fields } = data
+
+    const form = new Form(data.name, data.fields)
+    // const schema = new Schema(name, form.fields)
+
+    const collectionCreator: RxCollectionCreator = {
+      name,
+      schema: form.super,
+      methods,
+      statics
+    }
+
+    const collection = await $db.collection(collectionCreator)
+
+    return new Taxonomy({ name, fields }, collection, options)
+
+  }
 
   /**
    * Creates an instance of Taxonomy.
@@ -71,47 +86,43 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form 
    * @memberof Taxonomy
    */
   constructor (
-    data: LodgerTaxonomyCreator<Interface>,
+    data: LodgerFormCreator<Interface>,
+    protected collection: RxCollection<T>,
+    options ?: LodgerTaxonomyCreatorOptions,
   ) {
-    super(data.name, data.fields)
-    this.name = data.name.plural()
-    const { methods, statics } = data
-    const { name, $db, $store } = this
-
-    commonFields.map(field => super.addField(field))
-
-    const collectionCreator: RxCollectionCreator = {
-      name,
-      schema: new Schema(this),
-      methods,
-      statics
-    }
-
-    $db.collection(collectionCreator).then((col: RxCollection<T>) => {
-      this.collection = col
+    super(data.name, data.fields, {
+      captureTimestamp: true,
     })
-    $store.registerModule(name, setupSharedMethods())
 
-    // define our getters with shortnames
-    Object.keys($store.getters)
-      .filter(key => key.startsWith(name))
-      .map(key => {
-        const shortKey = key.replace(`${name}/`, '')
-        Object.defineProperty(this, shortKey, {
-          get () { return $store.getters[key] }
+    const { name } = this
+
+    // commonFields.map(field => super.addField(field))
+
+    if (options) {
+      if (options.shortGetters) {
+         // define our getters with shortnames
+        Object.keys($store.getters)
+        .filter(key => key.startsWith(name))
+        .map(key => {
+          const shortKey = key.replace(`${name}/`, '')
+          Object.defineProperty(this, shortKey, {
+            get () { return $store.getters[key] }
+          })
         })
-      })
+      }
+
+      if (options.store) {
+        if (!$store) {
+          $store = new Store({})
+        }
+        $store.registerModule(name, setupSharedMethods())
+      }
+    }
   }
 
-  /**
-   * name getter
-   *
-   * @readonly
-   * @memberof Taxonomy
-   */
-  // get name () {
-  //   return this.collection.name
-  // }
+  get name () {
+    return super.plural
+  }
 
 
   /**
@@ -128,21 +139,21 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form 
   /**
    * Inserts/upserts a new item in DB
    *
-   * @param {Object} data
+   * @param {Object} doc
    * @returns {RxDocument<Taxonomie>} the fresh document
    *
    * @memberof Taxonomy
    */
   async put (
-    data: PutData<Interface>
+    doc: LodgerDocument<Interface>
   ) {
-    if (!data || Object.keys(data).length < 1)
-      throw new TaxonomyError('Missing data %%', data)
+    if (!doc || Object.keys(doc).length < 1)
+      throw new TaxonomyError('Invalid doc supplied %%', { doc })
 
     /**
      * If form submitted with an _id, must be an upsert
      */
-    const method = data._id ?
+    const method = doc._id ?
       'upsert' :
       'insert'
 
@@ -152,15 +163,15 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> extends Form 
      * do the insert / upsert and following actions
      */
     try {
-      const doc = await this.collection[method](data)
-      const id = doc._id
-      this.$store.dispatch(`${name}/set_last`, id)
+      const _doc = await this.collection[method](doc)
+      const id = _doc._id
+      $store.dispatch(`${name}/set_last`, id)
 
       notify({
         type: 'success',
         text: `pus ${name} ${id}`
       })
-      return doc
+      return _doc
     } catch (e) {
       notify({ type: 'error', text: String(e) })
     }
