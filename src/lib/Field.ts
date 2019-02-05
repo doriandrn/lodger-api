@@ -1,4 +1,4 @@
-import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
+import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes, RxJsonSchema } from "rxdb";
 import { GetterTree } from "vuex";
 // import { RootState } from "./Store";
 import FieldError from './Error'
@@ -50,6 +50,7 @@ declare global {
     step ?: number // incrementer for number inputs, step or multipleOf
     min ?: number
     max ?: number
+    final ?: boolean // cannot be changed later on after first init
 
     v ?: string // validation string (for vee-validate)
 
@@ -131,8 +132,8 @@ export class Field<T> implements FormField<T> {
     }
 
     // hook in required to validation string
-    if (v) {
-      this.v = required && v.indexOf('required') < 0 ?
+    if (required) {
+      this.v = required && v && v.indexOf('required') < 0 ?
         v :
         `required|${v}`
     }
@@ -154,7 +155,7 @@ export class Field<T> implements FormField<T> {
    * Used for Schema constructors,
    * returns only the properties needed for it
    */
-  get rxSchema () {
+  get rxSchema (): RxJsonSchemaTopLevel {
     const schema = {}
     const excludes = ['storage', 'id', 'value', 'default']
     Object.keys(this).forEach(prop => {

@@ -10,7 +10,7 @@ import { env } from './defs/env'
  */
 interface LodgerSchema extends RxJsonSchema {
   add (field: FieldCreator<any>): void
-  // new (): RxJsonSchema
+  new (): RxJsonSchema
 }
 
 
@@ -28,14 +28,10 @@ enum Errors {
   fieldExists = 'Field already exists, %%'
 }
 
-type SchemaFields<I> = {
-  [k in keyof I] ?: Field<I>
-}
-
 type LodgerSchemaOptions = {}
 
 const datamodelDir = ['dev', 'test']
-  .indexOf(env) > -1 ? 'forms' : '.'
+  .indexOf(env) > -1 ? '.schemas' : '.'
 
 type SchemaProperties<Interface> = {
   [k in keyof Interface] : RxJsonSchemaTopLevel
@@ -53,7 +49,6 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
   readonly version = 0
   readonly properties : SchemaProperties<Interface> = {}
   readonly required: string[] = []
-  // protected fields: SchemaFields<Interface> = {}
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -90,7 +85,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     if (storage !== 'db') return
     const required =  v && v.indexOf('required') > -1
     this.properties[id] = rxSchema
-
+    console.error(id, required)
     if (required && this.required.indexOf(id) < 0)
       this.required.push(id)
   }
@@ -115,7 +110,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
    * @param name
    */
   static async load (name: string): Promise<Schema<string, any>> {
-    const schemaPath: string = `${ datamodelDir }/${ name }`
+    const schemaPath: string = `../${ datamodelDir }/${ name }`
 
     try {
       const { fields } =  await import(schemaPath)

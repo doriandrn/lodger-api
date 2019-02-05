@@ -8,8 +8,6 @@ import fieldsWithExcludedItems from 'fixtures/fields/withExcludedItems'
  * Rather, create new / extend the stubs / vars and export them
  */
 const name = 'xx'
-const plural = 'xxs'
-
 
 const formData: LodgerFormCreator = {
   name,
@@ -22,20 +20,37 @@ type TestForm = {
 
 describe('Form', () => {
   let form: Form<'xx', TestForm> =
+
   beforeAll(() => {
-    form = new Form(name, formData)
+    form = new Form(name, formData.fields)
   })
 
-  describe('constructor()', () => {
+  describe('.fields', () => {
+    test('contains all fields', () => {
+      expect(formData.fields.length).toEqual(Object.keys(form.fields).length)
+    })
+  })
 
+  describe('constructor', () => {
+    describe('matches snapshot',  () => {
+      expect(form).toMatchSnapshot(name)
+    })
 
+    describe('options', () => {
+      describe('.captureTimestamp', () => {
+        const formWithCT = new Form(name, formData.fields, {
+          captureTimestamp: true
+        })
+        expect(formWithCT.fieldsIds.indexOf('la') > -1).toBeTruthy()
+      })
+    })
   })
 
   describe('.value()', () => {
     // nu e  cel mai ok test, redo
     test('it contains all keys', () => {
       expect(Object.keys(form.value()))
-      .toContainEqual(form.fieldsIds)
+      .toEqual(form.fieldsIds)
     })
 
   })
@@ -46,77 +61,9 @@ describe('Form', () => {
     })
   })
 
-  describe('.collection', () => {
-    describe('positive', () => {
-      test('makes collection', () => {
-        const { collection } = __stub1__
-        expect(collection).toBeDefined()
-        expect(collection.schema).toBeDefined()
-      })
-
-      test('methods are passed in if existing', () => {
-        const { collection } = __stub1__
-        expect(collection.methods).toEqual(stub1.methods)
-      })
-
-      test('statics are passed', () => {
-        const { collection } = __stub1__
-        expect(collection.statics).toEqual(stub1.statics)
-      })
-    })
-
-    describe('schema', () => {
-
-
-      // test('matches fields length', () => {
-      //   const { schema } = __stub1__.collection
-      //   const keys = Object.keys(schema.properties)
-      //   expect(keys.length).toBe(fields.length)
-      // })
-
-      describe('.required[]', () => {
-
-        test('adds required fields', () => {
-          const { schema } = __stub2__.collection
-          const { required } = schema
-          expect(required).toContain('x2')
-          expect(required).not.toContain('x5')
-        })
-
-        test('does NOT contain duplicates', () => {
-          const { schema } = __stub2__.collection
-          const { required } = schema
-          expect(required).toEqual(['x2'])
-        })
-
-        test('excluded from db fields dont show up', () => {
-          const { schema } = __stub2__.collection
-          expect(schema.properties.x5).toBeUndefined()
-        })
-      })
-
-      test('excludes fields', () => {
-        const { schema: { properties } } = __stub2__.collection
-        expect(properties).not.toHaveProperty('x5')
-      })
-
-      test('indexable fields have -index- prop', () => {
-        const { schema: { properties } } = __stub2__.collection
-        expect(properties.x2.index).toBeDefined()
-      })
-
-      describe('adds common-shared fields', () => {
-        test('la - @ - time the doc was added', () => {
-          const { schema: { properties } } = __stub2__.collection
-          expect(properties.la).toBeDefined()
-        })
-      })
-
-    })
-  })
 
   describe('.load() - Loads a form by name', () => {
-    let form
+    let form: Form<string,any>
     const formToLoadAndTest = 'apartament'
     beforeAll(async () => {
       try {
@@ -131,11 +78,9 @@ describe('Form', () => {
       test('returns a fully inited <Form> if found and ok', () => {
         expect(form).toBeDefined()
         expect(form.name).toBeDefined()
-        expect(form.collection).toBeDefined()
       })
 
       test('form name is the same  as requested', () => {
-        console.error(form)
         expect(form.name).toBe(formToLoadAndTest)
       })
     })

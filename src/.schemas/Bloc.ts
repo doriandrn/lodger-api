@@ -53,3 +53,26 @@ export {
   plural,
   fields
 }
+
+/**
+ * It's assumed the item has an _id
+ */
+
+// Building
+//   @parents Taxonomies.Organization
+
+//   _id
+//     value // this means it has a value, it's stored in the store and so it will get it from there
+
+//   !name : string // ! = indexable
+//     placeholder 'ex. M11, COCOR-2, A3...'
+//     validate 'min:1|max:20'
+//     focus true // boolean or function
+//     value ({ activeDoc }) => activeDoc.name
+//     oninput
+//       transform 'uppercase:all'
+
+//   address ?: Textarea
+//     validate 'min:20'
+
+//   scari ?: Scara[] // this won't be indexed,  cant search for it

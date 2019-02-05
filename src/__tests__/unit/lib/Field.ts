@@ -18,6 +18,13 @@ describe('Field', () => {
     })
   })
 
+  describe('.v - validation string', () => {
+    test('adds "required" to it if field is required', () => {
+      const field = new Field({ id, required: true })
+      expect(field.v.indexOf('required')).toBeGreaterThan(-1)
+    })
+  })
+
   describe('.ref - references', () => {
     describe('+', () => {
       test('is undefined if no references passed', () => {
@@ -125,11 +132,16 @@ describe('Field', () => {
         expect(typeof fieldCuReferintaTransformat.ref).toBe('string')
       })
 
-      // test('excludes null/undefined keys', () => {
-      //   Object.values(new Field(testField)).forEach(field => {
-      //     expect(field).toBeDefined()
-      //   })
-      // })
+      test('excludes null/undefined keys', () => {
+        Object.values(new Field(testField)).forEach(field => {
+          expect(field).toBeDefined()
+        })
+      })
+
+      test('has the "index" property if supplied in field', () => {
+        const id = 'indexable'
+        expect(new Field({ id, index: true }).rxSchema.index).toBeTruthy()
+      })
 
       test('has the "index" property if supplied in field', () => {
         const id = 'indexable'

@@ -4,9 +4,14 @@
  * than a normal JsonSchema
  */
 import Schema from './Schema'
+import { Field } from './Field';
 
 type FormOptions = {
   captureTimestamp ?: boolean // generates a rxSchema ready to be used as a collection creator
+}
+
+type FormFields<I> = {
+  [k in keyof I] ?: Field<I>
 }
 
 export type LodgerFormCreator<T> = {
@@ -47,6 +52,8 @@ implements LodgerForm<N, I> {
 
   $active: boolean = false
 
+  private fields: FormFields<I> = {}
+
   /**
    * Creates an instance of Form.
    *
@@ -63,6 +70,10 @@ implements LodgerForm<N, I> {
     super(name, fields, opts && opts.schema ? opts.schema : {})
 
     this.plural = name.plural()
+
+    fields.map(field => {
+      this.fields[ field.id ] = new Field(field)
+    })
 
     if (opts) {
 

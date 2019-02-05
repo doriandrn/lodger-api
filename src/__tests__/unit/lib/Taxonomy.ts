@@ -153,4 +153,27 @@ describe('Taxonomy class', () => {
   //     expect(limit).toBe(lodgerConfig.taxonomii.asociatii.criteriu.limit)
   //   })
   // })
+
+
+  // describe('.collection', () => {
+  //   describe('positive', () => {
+  //     test('makes collection', () => {
+  //       const { collection } = __stub1__
+  //       expect(collection).toBeDefined()
+  //       expect(collection.schema).toBeDefined()
+  //     })
+
+  //     test('methods are passed in if existing', () => {
+  //       const { collection } = __stub1__
+  //       expect(collection.methods).toEqual(stub1.methods)
+  //     })
+
+  //     test('statics are passed', () => {
+  //       const { collection } = __stub1__
+  //       expect(collection.statics).toEqual(stub1.statics)
+  //     })
+  //   })
+
+
+  // })
 })

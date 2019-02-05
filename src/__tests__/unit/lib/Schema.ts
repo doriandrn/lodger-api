@@ -13,8 +13,6 @@ describe('Schema', () => {
   beforeAll(() => {
     schema = new Schema(name, schema1.fields)
     rxSchema = RxSchema.create(schema)
-
-    console.info(name, schema)
   })
 
   describe('ctor', () => {
@@ -28,7 +26,12 @@ describe('Schema', () => {
 
     test('is a valid RxSchema', () => {
       expect(rxSchema).toBeDefined()
-      // expect(isRxSchema(rxSchema)).toBeTruthy()
+      expect(isRxSchema(rxSchema)).toBeTruthy()
+    })
+
+    test('fields match', () => {
+      const keys = Object.keys(schema.properties)
+      expect(keys.length).toBe(schema1.fields.length)
     })
 
     describe('options', () => {
@@ -36,6 +39,17 @@ describe('Schema', () => {
     })
   })
 
+  describe('.required[]', () => {
+    test('has all required fields', () => {
+      expect(schema.required).toEqual(schema1.fields.filter(field => field.required).map(field => field.id))
+    })
+  })
+
+  describe('.properties', () => {
+    test('excluded from db fields dont show up', () => {
+      expect(schema.properties.x5).toBeUndefined()
+    })
+  })
 
   // describe('.title', () => {
   //   test('matches given name', () => {
@@ -61,6 +75,12 @@ describe('Schema', () => {
       schema.add({ id: 'cucu' })
       expect(schema.properties.cucu).toBeDefined()
     })
+
+    test('inserts a required field in .required[]', () => {
+      const id = 'reqTest'
+      schema.add({ id, required: true })
+      expect(schema.required).toContain(id)
+    })
   })
 
   describe('.indexables - indexable fields', () => {
@@ -76,9 +96,9 @@ describe('Schema', () => {
 
   describe('.load', () => {
     test('loads a known taxonomy schema by name', async () => {
-      const sch = await Schema.load('asociatie')
+      const sch = await Schema.load('bloc')
       expect(sch).toBeDefined()
-      expect(typeof sch).toBe(Schema)
+      expect(sch instanceof Schema).toBeTruthy()
     })
   })
 })
