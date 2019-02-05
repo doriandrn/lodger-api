@@ -64,8 +64,8 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     fields: FieldCreator<Interface>[],
     options?: LodgerSchemaOptions
   ) {
-    if (!fields.length)
-      throw new SchemaError(Errors.missingFields, { name })
+    // if (!fields.length)
+    //   throw new SchemaError(Errors.missingFields, { name })
 
     fields.map(f => this.add(f))
   }
@@ -85,7 +85,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     if (storage !== 'db') return
     const required =  v && v.indexOf('required') > -1
     this.properties[id] = rxSchema
-    console.error(id, required)
+
     if (required && this.required.indexOf(id) < 0)
       this.required.push(id)
   }

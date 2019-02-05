@@ -83,7 +83,7 @@ describe('Schema', () => {
     })
   })
 
-  describe('.indexables - indexable fields', () => {
+  describe('.indexables', () => {
     test('contains all fields\' ids with index: true', () => {
       expect(schema.indexables).toContainEqual('x2')
     })

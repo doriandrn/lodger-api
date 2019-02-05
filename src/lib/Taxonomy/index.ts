@@ -5,8 +5,13 @@ import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 
 import { setupSharedMethods } from '../helpers/store'
+
+import vuex, { Store } from 'vuex';
+import vue from 'vue'
+
 import Schema from '../Schema';
-import { Store } from 'vuex';
+
+vue.use(vuex)
 
 /**
   * Taxonomy item
@@ -16,23 +21,21 @@ import { Store } from 'vuex';
  interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
   put (doc: LodgerDocument<Interface>): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N> | null>
-
-  // static init (data: LodgerTaxonomyCreator<Interface>): Taxonomy<T, Interface>
 }
 
 export type LodgerTaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
 
 type LodgerTaxonomyCreatorOptions = {
-  multipleSelect: boolean,
+  multipleSelect ?: boolean,
   shortGetters ?: boolean, // if the taxonomy should contain hot access to getters
   store ?: boolean // whether it should use a Store module to store data
 }
-
 
 type LodgerDocument<I> = {
   [ab in keyof I] ?: any
   // readonly id ?: string,
 }
+
 
 /**
  * Store module
@@ -53,47 +56,44 @@ let $store: Store<any>, $db: RxDatabase
  * @param {Form} form - the constructed form item
  */
 export default class Taxonomy<T extends Taxonomie, Interface = {}>
-  extends Form<T, Interface>
   implements LodgerTaxonomy<T, Interface> {
 
   // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
 
-  static async init (data: LodgerTaxonomyCreator<{}>, options) {
+  static async init (
+    data: LodgerTaxonomyCreator<{}>,
+    options?: LodgerTaxonomyCreatorOptions
+  ) {
     const { name, methods, statics, fields } = data
 
-    const form = new Form(data.name, data.fields)
-    // const schema = new Schema(name, form.fields)
+    const form = new Form(name, fields)
+    const schema = new Schema(name, fields)
 
     const collectionCreator: RxCollectionCreator = {
       name,
-      schema: form.super,
+      schema,
       methods,
       statics
     }
 
     const collection = await $db.collection(collectionCreator)
 
-    return new Taxonomy({ name, fields }, collection, options)
-
+    return new Taxonomy(form, collection, options)
   }
 
   /**
    * Creates an instance of Taxonomy.
    *
+   * @param {Form<T, Interface>} form
    * @param {RxCollection<T>} collection
-   * @param {Store<T>} store
    * @memberof Taxonomy
    */
   constructor (
-    data: LodgerFormCreator<Interface>,
+    protected form: Form<T, Interface>,
     protected collection: RxCollection<T>,
     options ?: LodgerTaxonomyCreatorOptions,
   ) {
-    super(data.name, data.fields, {
-      captureTimestamp: true,
-    })
-
     const { name } = this
 
     // commonFields.map(field => super.addField(field))
@@ -112,16 +112,14 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       }
 
       if (options.store) {
-        if (!$store) {
-          $store = new Store({})
-        }
+        if (!$store) { $store = new Store({}) }
         $store.registerModule(name, setupSharedMethods())
       }
     }
   }
 
   get name () {
-    return super.plural
+    return this.collection.name
   }
 
 

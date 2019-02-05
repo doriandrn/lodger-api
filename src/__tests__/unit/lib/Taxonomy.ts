@@ -1,16 +1,12 @@
-import vue from 'vue'
-import vuex, { Store } from 'vuex'
 import { RxDatabase, RxCollection } from 'rxdb'
 
 import DB from '~/lib/DB'
-
+import { Form } from '~/lib/Form'
 import Taxonomy from '~/lib/Taxonomy/index'
 
 import collections from 'fixtures/taxes/collections'
 import testdbsetup from 'fixtures/db/test'
 
-
-vue.use(vuex)
 
 export async function init () {
   const db = await DB.create(Object.assign({}, { ...testdbsetup }, {
@@ -20,22 +16,21 @@ export async function init () {
   await Promise.all(collections.map(col => db.collection(col)))
 
   const cols = db.collections
-  const store = new vuex.Store({})
 
-  return { db, cols, store }
+  return { db, cols }
 }
 
 describe('Taxonomy class', () => {
-  let db: RxDatabase, store: Store<any>, cols: RxCollection[],
+  let db: RxDatabase, form: Form<string, any>, cols: RxCollection[],
     taxes = {}, $tax: Taxonomy<any>
 
   beforeAll(async () => {
     const i = await init()
     db = i.db
-    store = i.store
     cols = i.cols
     Object.keys(cols).map(col => {
-      taxes[col] = new Taxonomy(cols[col], store)
+      const form = new Form()
+      taxes[col] = new Taxonomy(form, cols[col], { store: true })
     })
     $tax = taxes['sosete']
   })

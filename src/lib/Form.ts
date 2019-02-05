@@ -63,12 +63,12 @@ implements LodgerForm<N, I> {
    * @memberof Form
    */
   constructor (
-    readonly name : N,
-    fields: FieldCreator<I>[],
+    readonly name : N = 'untitled',
+    fields: FieldCreator<I>[] = [],
     opts ?: FormOptions
   ) {
     super(name, fields, opts && opts.schema ? opts.schema : {})
-
+    this.name = name
     this.plural = name.plural()
 
     fields.map(field => {

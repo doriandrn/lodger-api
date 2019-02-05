@@ -10,12 +10,15 @@ Schema {
     "x2": Object {
       "index": true,
       "type": "string",
+      "v": "required|undefined",
     },
     "x3": Object {
       "type": "string",
     },
   },
-  "required": Array [],
+  "required": Array [
+    "x2",
+  ],
   "type": "object",
   "version": 0,
 }
