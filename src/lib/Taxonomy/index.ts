@@ -1,49 +1,34 @@
-import { RxDocument, RxCollection, RxCollectionCreator, RxJsonSchema, RxDatabase } from 'rxdb'
+import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase } from 'rxdb'
+import { observable, computed, action } from 'mobx'
+
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
-
-import { sharedStoreMethods } from 'defs/sharedStoreMethods'
-import { setupSharedMethods } from '../helpers/store'
-
-import { observable } from 'mobx'
-
 import Schema from '../Schema'
+
+export type LodgerTaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
+
+type LodgerTaxonomyCreatorOptions = {
+  multipleSelect ?: boolean
+}
+
+// base document definition of a lodger item
+type LodgerDocument = {
+  _id ?: string
+}
+
+let $db: RxDatabase
 
 /**
   * Taxonomy item
   *
   * @interface LodgerTaxonomy
   */
- interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
-  put (doc: LodgerDocument<Interface>): Promise<RxDocument<N>> | void
+interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
+  put (doc: LodgerDocument & Partial<Interface>): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N> | null>
 }
-
-export type LodgerTaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
-
-type LodgerTaxonomyCreatorOptions = {
-  multipleSelect ?: boolean,
-  shortGetters ?: boolean, // if the taxonomy should contain hot access to getters
-  // store ?: boolean // whether it should use a Store module to store data
-}
-
-type LodgerDocument<I> = {
-  [ab in keyof I] ?: any
-  // readonly id ?: string,
-}
-
-
-/**
- * Store module
- *
- * may or may not be used
- * if one form  has the store option
- * it activates
- */
-const $store: Store<any> = new Store({})
-let $db: RxDatabase
 
 /**
  * @class Taxonomy
@@ -58,6 +43,12 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   implements LodgerTaxonomy<T, Interface> {
 
   readonly isMultipleSelect ?: boolean = false
+
+  @observable lastItems: string[] = []
+  @computed get last () {
+    return this.lastItems[0]
+  }
+
   // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
 
@@ -94,27 +85,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     protected collection: RxCollection<T>,
     options ?: LodgerTaxonomyCreatorOptions,
   ) {
-    const { name } = this
-
-    $store.registerModule(name, setupSharedMethods())
-
     if (options) {
-
       if (options.multipleSelect) {
         this.isMultipleSelect = true
-      }
-      console.error(mapGetters(name, Object.keys(sharedStoreMethods)))
-      if (options.shortGetters) {
-        Object.assign(this, mapGetters(name, Object.keys(sharedStoreMethods)))
-        // define our getters with shortnames
-        //   Object.keys($store.getters)
-        //   .filter(key => key.startsWith(name))
-        //   .map(key => {
-        //     const shortKey = key.replace(`${name}/`, '')
-        //     Object.defineProperty(this, shortKey, {
-        //       get () { return $store.getters[key] }
-        //     })
-        //   })
       }
     }
   }
@@ -138,11 +111,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @memberof Taxonomy
    */
   async trash (id: string) {
-    const { last, name } = this
-    await this.collection.findOne(id).remove()
-
-    // sets the previous id
-    if (last === id) $store.dispatch(`${name}/set_last`, last)
+    if (this.last === id) this.popLast()
+    return await this.collection.findOne(id).remove()
   }
 
 
@@ -155,7 +125,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @memberof Taxonomy
    */
   async put (
-    doc: Partial<Interface>
+    doc: Partial<Interface> & LodgerDocument
   ) {
     if (!doc || Object.keys(doc).length < 1)
       throw new TaxonomyError('Invalid doc supplied %%', { doc })
@@ -176,7 +146,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       const _doc = await this.collection[method](doc)
       const id = _doc._id
 
-      $store.dispatch(`${name}/set_last`, id)
+      this.setLast(id)
 
       notify({
         type: 'success',
@@ -187,6 +157,14 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     } catch (e) {
       notify({ type: 'error', text: String(e) })
     }
+  }
+
+  @action setLast (id : string) {
+    this.lastItems.unshift(id)
+  }
+
+  @action popLast () {
+    this.lastItems.shift()
   }
 
   /**

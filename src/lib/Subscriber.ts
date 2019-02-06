@@ -1,6 +1,5 @@
-import { Subscription } from 'rxjs'
-import { RxCollection } from 'rxdb'
-import R from './R'
+import { RxCollection, RxDocument } from 'rxdb'
+import { action, observable, computed } from 'mobx';
 
 declare global {
   type Criteriu = {
@@ -19,10 +18,8 @@ declare global {
  */
 interface LodgerSubscriber<I> {
   readonly criteriu: Criteriu
-  readonly component: R<I>
 
-  subscribe (criteriu ?: Criteriu): Subscription
-  selectDocument (id ?: string): void
+  // subscribe (criteriu ?: Criteriu): Subscription
   kill (): void
 }
 
@@ -31,13 +28,38 @@ interface LodgerSubscriber<I> {
  *
  * @class Subscriber
  * @implements {LodgerSubscriber}
- * @requires Vue,R
  */
 export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
-  readonly _reference: any
-  readonly _subscribed: Boolean = false
-  readonly component: R<N>
-  subscribe : (criteriu: Criteriu) => Subscription
+  documents: RxDocument<N>[] = [] // main data holder
+
+  @observable subscribed: Boolean = false
+  @observable _selected ?: string
+
+  @observable fetching: Boolean = false
+  @observable activeCriteria: Criteriu = {}
+
+  @action selectDocument (id ?: string) {
+    this._selected = id
+  }
+
+  @computed get selected () {
+    return this._selected
+  }
+
+  @computed get ids () {
+    return Object.keys(this.items)
+  }
+
+  @computed get items () {
+    return Object.assign({},
+      ...this.documents
+        .map(item => ({ [item._id]: item._data }))
+    )
+  }
+
+  @computed get criteriu () {
+    return this.activeCriteria
+  }
 
   /**
    * Creates an instance of Subscriber.
@@ -50,26 +72,43 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   constructor (
     protected collection: RxCollection<N>
   ) {
-    this.component = new R()
-    this.subscribe = this.component.subscribe
   }
 
-  get criteriu () {
-    return this.component.criteriu
+  // get data () {
+  //   const { component } = this
+  //   return {
+  //     ids: component.ids,
+  //     items: component.items,
+  //     documents: {
+  //       active: component.activeDoc,
+  //       selected: component.selectedDoc
+  //     }
+  //   }
+  // }
+
+  @action handleSubscriptionData (changes: RxDocument<any>[]) {
+    this.documents = changes.map(change => Object.freeze(change))
+    this.fetching = false
+    if (!this.subscribed) this.subscribed = true
   }
 
-  get data () {
-    const { component } = this
-    return {
-      ids: component.ids,
-      items: component.items,
-      documents: {
-        active: component.activeDoc,
-        selected: component.selectedDoc
-      }
-    }
+  /**
+   * (re)Subscribes with given Criteria
+   * happens internaly when criteriu is changed
+   *
+   * @param {Criteriu} [criteriu]
+   * @memberof Subscriber
+   */
+  protected subscribe ({ limit, index, sort, filter }: Criteriu) {
+    const paging = Number(limit || 0) * (index || 1)
+
+    return this.collection
+      .find(filter)
+      .limit(paging)
+      .sort(sort)
+      .$
+      .subscribe(this.handleSubscriptionData)
   }
 
   kill () {}
-  selectDocument () {}
 }
