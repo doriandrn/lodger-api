@@ -54,8 +54,6 @@ const fields: FieldCreator<Utilizator>[] = [
   }
 ]
 
-const plural = 'utilizatori'
-
 const methods = {
   async UPDATEAZA(campuri) {
     // TODO: nu permite updatarea anumitor chei
@@ -63,6 +61,15 @@ const methods = {
       this[camp] = campuri[camp]
     })
     await this.save()
+  }
+}
+
+const hooks = {
+  onFirstTimeSubscribe: async ({ put, dispatch }) => {
+    await put({
+      name: 'Administrator',
+      rol: 'admin'
+    })
   }
 }
 
@@ -85,7 +92,7 @@ const settings = {
 
 export {
   fields,
-  plural,
+  hooks,
   methods,
   settings
 }

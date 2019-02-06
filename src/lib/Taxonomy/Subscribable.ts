@@ -11,13 +11,11 @@ import Subscriber from '../Subscriber'
  */
 interface SubscribableTaxonomy<N, S> {
   readonly subscribers: SubscriberList<N>
-  readonly data: SubscriberDataHolder
+  readonly data: SubscriberDataHolder,
   readonly subscribed: boolean,
 
   subscribe (name: string, criteriu ?: Criteriu): Promise<Subscriber<N>>
   unsubscribeAll: (subscriberName?: string) => void
-
-  onFirstTimeInit: () => void
 }
 
 type SubscriberList<N> = {
@@ -49,6 +47,7 @@ export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy 
   get subscribed () {
     return Object.keys(this.subscribers).length > 0
   }
+
   /**
    * Subscribes
    *
@@ -61,8 +60,8 @@ export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy 
     subscriberName : string = 'main',
     criteriuCerut ?: Criteriu
   ): Promise<Subscriber<T>> {
-    const { collection, store } = this
-    this.subscribers[subscriberName] = new Subscriber(collection, store).subscribe(criteriuCerut)
+    const { collection, $store } = this
+    this.subscribers[subscriberName] = new Subscriber(collection, $store).subscribe(criteriuCerut)
   }
 
   /**
@@ -80,25 +79,5 @@ export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy 
         await subscribers[subscriber].unsubscribe()
       })
     )
-  }
-
-  async onFirstTimeSubscribe () {
-    const { name, collection, store } = this
-    switch (name) {
-      // insert predefined services
-      case 'Serviciu':
-        predefinite.forEach(async denumire => { await collection.insert({ denumire }) })
-        break
-
-      // insert admin user
-      case 'Utilizator':
-        const { _id } = await collection.insert({
-          name: 'Administrator',
-          rol: 'admin'
-        })
-        store.dispatch('utilizator/set_active', _id)
-        break
-    }
-
   }
 }

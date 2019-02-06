@@ -53,6 +53,10 @@ export default class STaxonomy extends SubscribableTaxonomy implements Searchabl
       this._results.push({ id, relevance, value })
     }
   }
+
+  get defaultCriteriu () {
+    return super.config.criteriu
+  }
 }
 
 /**

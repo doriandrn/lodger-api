@@ -36,8 +36,6 @@ const fields: FieldCreator<Serviciu>[] = [
   }
 ]
 
-const plural = 'servicii'
-
 const predefinite =
   [
     'apa',
@@ -48,8 +46,13 @@ const predefinite =
     'evacuare-gunoi-menajer'
   ]
 
+const hooks = {
+  onFirstTimeSubscribe: ({ put }) => {
+    predefinite.map(async service => { await put(service) })
+  }
+}
+
 export {
   fields,
-  plural,
-  predefinite
+  hooks
 }

@@ -30,7 +30,10 @@ describe('Taxonomy class', () => {
     cols = i.cols
     Object.keys(cols).map(col => {
       const form = new Form()
-      taxes[col] = new Taxonomy(form, cols[col], { store: true })
+      taxes[col] = new Taxonomy(form, cols[col], {
+        store: true,
+        shortGetters: true
+      })
     })
     $tax = taxes['sosete']
   })
@@ -66,11 +69,10 @@ describe('Taxonomy class', () => {
     test(`getter 'last' is the last added item's id`, async () => {
       const { _id } = soseta
 
-      const lastAddedId = $tax.getters['last']
-      expect(lastAddedId).toBe(_id)
+      expect($tax.last).toBe(_id)
 
       const x = await $tax.put({ name: 'gigi', lungime: 5 })
-      expect(x._id).toBe($tax.getters.last)
+      expect(x._id).toBe($tax.last)
     })
 
     // test('(!!) if added from same subscriber, item gets selected immediately after', () => {
@@ -105,7 +107,13 @@ describe('Taxonomy class', () => {
     })
 
     test('store last id updates to previous id', () => {
-      expect(_id).not.toEqual($tax.getters.last)
+      expect(_id).not.toEqual($tax.last)
+    })
+  })
+
+  describe('@hooks', () => {
+    describe('inited', () => {
+
     })
   })
 

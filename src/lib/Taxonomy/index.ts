@@ -4,14 +4,12 @@ import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 
+import { sharedStoreMethods } from 'defs/sharedStoreMethods'
 import { setupSharedMethods } from '../helpers/store'
 
-import vuex, { Store } from 'vuex';
-import vue from 'vue'
+import { observable } from 'mobx'
 
-import Schema from '../Schema';
-
-vue.use(vuex)
+import Schema from '../Schema'
 
 /**
   * Taxonomy item
@@ -28,7 +26,7 @@ export type LodgerTaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreato
 type LodgerTaxonomyCreatorOptions = {
   multipleSelect ?: boolean,
   shortGetters ?: boolean, // if the taxonomy should contain hot access to getters
-  store ?: boolean // whether it should use a Store module to store data
+  // store ?: boolean // whether it should use a Store module to store data
 }
 
 type LodgerDocument<I> = {
@@ -44,7 +42,8 @@ type LodgerDocument<I> = {
  * if one form  has the store option
  * it activates
  */
-let $store: Store<any>, $db: RxDatabase
+const $store: Store<any> = new Store({})
+let $db: RxDatabase
 
 /**
  * @class Taxonomy
@@ -58,6 +57,7 @@ let $store: Store<any>, $db: RxDatabase
 export default class Taxonomy<T extends Taxonomie, Interface = {}>
   implements LodgerTaxonomy<T, Interface> {
 
+  readonly isMultipleSelect ?: boolean = false
   // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
 
@@ -96,28 +96,35 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   ) {
     const { name } = this
 
-    // commonFields.map(field => super.addField(field))
+    $store.registerModule(name, setupSharedMethods())
 
     if (options) {
-      if (options.shortGetters) {
-         // define our getters with shortnames
-        Object.keys($store.getters)
-        .filter(key => key.startsWith(name))
-        .map(key => {
-          const shortKey = key.replace(`${name}/`, '')
-          Object.defineProperty(this, shortKey, {
-            get () { return $store.getters[key] }
-          })
-        })
-      }
 
-      if (options.store) {
-        if (!$store) { $store = new Store({}) }
-        $store.registerModule(name, setupSharedMethods())
+      if (options.multipleSelect) {
+        this.isMultipleSelect = true
+      }
+      console.error(mapGetters(name, Object.keys(sharedStoreMethods)))
+      if (options.shortGetters) {
+        Object.assign(this, mapGetters(name, Object.keys(sharedStoreMethods)))
+        // define our getters with shortnames
+        //   Object.keys($store.getters)
+        //   .filter(key => key.startsWith(name))
+        //   .map(key => {
+        //     const shortKey = key.replace(`${name}/`, '')
+        //     Object.defineProperty(this, shortKey, {
+        //       get () { return $store.getters[key] }
+        //     })
+        //   })
       }
     }
   }
 
+  /**
+   *
+   *
+   * @readonly
+   * @memberof Taxonomy
+   */
   get name () {
     return this.collection.name
   }
@@ -131,8 +138,13 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @memberof Taxonomy
    */
   async trash (id: string) {
-    return await this.collection.findOne(id).remove()
+    const { last, name } = this
+    await this.collection.findOne(id).remove()
+
+    // sets the previous id
+    if (last === id) $store.dispatch(`${name}/set_last`, last)
   }
+
 
   /**
    * Inserts/upserts a new item in DB
@@ -143,7 +155,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @memberof Taxonomy
    */
   async put (
-    doc: LodgerDocument<Interface>
+    doc: Partial<Interface>
   ) {
     if (!doc || Object.keys(doc).length < 1)
       throw new TaxonomyError('Invalid doc supplied %%', { doc })
@@ -163,12 +175,14 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     try {
       const _doc = await this.collection[method](doc)
       const id = _doc._id
+
       $store.dispatch(`${name}/set_last`, id)
 
       notify({
         type: 'success',
         text: `pus ${name} ${id}`
       })
+
       return _doc
     } catch (e) {
       notify({ type: 'error', text: String(e) })
@@ -184,20 +198,5 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     const { taxonomii } = LodgerConfig
     const { defaults } = taxonomii
     return taxonomii[this.name] || defaults
-  }
-
-  get defaultCriteriu () {
-    return this.config.criteriu
-  }
-
-  /**
-   *
-   *
-   * @readonly
-   * @memberof Taxonomy
-   * @returns {Boolean} if taxonomy represents a multiple select choice
-   */
-  get isMultipleSelect () {
-    return ['Serviciu', 'Contor'].indexOf(this.name) > -1
   }
 }
