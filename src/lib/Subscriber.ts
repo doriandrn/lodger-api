@@ -1,5 +1,6 @@
 import { RxCollection, RxDocument } from 'rxdb'
 import { action, observable, computed } from 'mobx';
+import { Subscription } from 'rxjs';
 
 declare global {
   type Criteriu = {
@@ -20,7 +21,6 @@ interface LodgerSubscriber {
   readonly criteriu: Criteriu
 
   subscribe (criteriu ?: Criteriu): void // Subscription
-  kill (): void
 }
 
 /**
@@ -30,20 +30,21 @@ interface LodgerSubscriber {
  * @implements {LodgerSubscriber}
  */
 export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber {
-  documents: RxDocument<N>[] = [] // main data holder, reactive by itself
+  protected _subscription: Subscription
+  protected documents: RxDocument<N>[] = [] // main data holder, reactive by itself
 
   @observable subscribed: Boolean = false
-  @observable _selected ?: string
+  @observable selectedId ?: string
 
   @observable fetching: Boolean = false
-  @observable activeCriteria: Criteriu = {}
+  @observable activeCriteria: Criteriu = this.defaultCriteria
 
   @action selectDocument (id ?: string) {
-    this._selected = id
+    this.selectedId = id
   }
 
   @computed get selected () {
-    return this._selected
+    return this.selectedId
   }
 
   @computed get ids () {
@@ -73,8 +74,14 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @memberof Subscriber
    */
   constructor (
-    protected collection: RxCollection<N>
+    protected collection: RxCollection<N>,
+    protected defaultCriteria: Criteriu
   ) {
+  }
+
+  kill (): void {
+    if (!this._subscription) return
+    this._subscription.unsubscribe()
   }
 
   // get data () {
@@ -90,13 +97,15 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   // }
 
   @action handleSubscriptionData (changes: RxDocument<any>[]) {
-    this.documents = changes.map(change => Object.freeze(change))
+    // this.documents = changes.map(change => Object.freeze(change))
+    this.documents = changes
     this.fetching = false
     if (!this.subscribed) this.subscribed = true
   }
 
-  @action subscribeRequested () {
+  @action subscribeRequested (criteria: Criteriu) {
     this.fetching = true
+    this.activeCriteria = { ...criteria }
   }
 
   /**
@@ -107,16 +116,16 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @memberof Subscriber
    */
   subscribe ({ limit, index, sort, filter }: Criteriu) {
-    this.subscribeRequested()
+    this.subscribeRequested(arguments[0])
+
+    // progressive listing data
     const paging = Number(limit || 0) * (index || 1)
 
-    return this.collection
+    this._subscription = this.collection
       .find(filter)
       .limit(paging)
       .sort(sort)
       .$
-      .subscribe(this.handleSubscriptionData)
+      .subscribe(changes => this.handleSubscriptionData(changes))
   }
-
-  kill () {}
 }

@@ -68,14 +68,24 @@ export default class STaxonomy<T extends Taxonomie, I> extends Taxonomy<T, I> im
     subscriberName : string = 'main',
     criteriuCerut ?: Criteriu
   ): Promise<Subscriber<T>> {
-    const subscriber = this.subscribers[subscriberName]
-
-    if (subscriber) {
-      const newCriteria = Object.assign({}, { ...subscriber.criteriu }, { ...criteriuCerut })
-      return subscriber.subscribe(newCriteria)
+    let subscriber = this.subscribers[subscriberName]
+    if (!subscriber) {
+      subscriber = this.subscribers[subscriberName] = new Subscriber(this.collection, this.defaultCriteria)
     }
-    return this.subscribers[subscriberName] = new Subscriber(this.collection)
-      .subscribe(Object.assign({}, { ...this.defaultCriteria }, { ... criteriuCerut}))
+
+    const { criteriu } = subscriber
+
+    if (criteriuCerut) {
+      Object.assign(criteriu, { ...criteriuCerut })
+    }
+
+    return subscriber.subscribe(criteriu)
+  }
+
+  unsubscribe (subscriberName : string = 'main') {
+    const subscriber = this.subscribers[subscriberName]
+    subscriber.kill()
+    delete this.subscribers[subscriberName]
   }
 
   /**
