@@ -22,11 +22,15 @@ type SubscriberList<N> = {
   [k: string]: Subscriber<N>[]
 }
 
-export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy {
-  protected subscribers: SubscriberList
+export default class STaxonomy<T extends Taxonomie, I> extends Taxonomy<T, I> implements SubscribableTaxonomy<T, I> {
+  private subscribers: SubscriberList<T> = {}
 
-  constructor () {
-    super(...arguments)
+  constructor (
+    protected form: Form<T, I>,
+    protected collection: RxCollection<T>,
+    options ?: LodgerTaxonomyCreatorOptions
+  ) {
+    super(form, collection, options)
   }
 
   /**
@@ -48,6 +52,10 @@ export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy 
     return Object.keys(this.subscribers).length > 0
   }
 
+  get defaultCriteria () {
+    return super.config.criteriu
+  }
+
   /**
    * Subscribes
    *
@@ -60,8 +68,14 @@ export default class STaxonomy extends Taxonomy implements SubscribableTaxonomy 
     subscriberName : string = 'main',
     criteriuCerut ?: Criteriu
   ): Promise<Subscriber<T>> {
-    const { collection, $store } = this
-    this.subscribers[subscriberName] = new Subscriber(collection, $store).subscribe(criteriuCerut)
+    const subscriber = this.subscribers[subscriberName]
+
+    if (subscriber) {
+      const newCriteria = Object.assign({}, { ...subscriber.criteriu }, { ...criteriuCerut })
+      return subscriber.subscribe(newCriteria)
+    }
+    return this.subscribers[subscriberName] = new Subscriber(this.collection)
+      .subscribe(Object.assign({}, { ...this.defaultCriteria }, { ... criteriuCerut}))
   }
 
   /**

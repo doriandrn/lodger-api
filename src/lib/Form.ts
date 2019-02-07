@@ -1,8 +1,3 @@
-/**
- * Forms for Lodger
- * are quite diferrently structured
- * than a normal JsonSchema
- */
 import Schema from './Schema'
 import { Field } from './Field';
 

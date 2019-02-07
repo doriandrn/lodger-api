@@ -16,10 +16,10 @@ declare global {
  * @interface LodgerSubscriber
  * @template T
  */
-interface LodgerSubscriber<I> {
+interface LodgerSubscriber {
   readonly criteriu: Criteriu
 
-  // subscribe (criteriu ?: Criteriu): Subscription
+  subscribe (criteriu ?: Criteriu): void // Subscription
   kill (): void
 }
 
@@ -29,8 +29,8 @@ interface LodgerSubscriber<I> {
  * @class Subscriber
  * @implements {LodgerSubscriber}
  */
-export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber<N> {
-  documents: RxDocument<N>[] = [] // main data holder
+export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber {
+  documents: RxDocument<N>[] = [] // main data holder, reactive by itself
 
   @observable subscribed: Boolean = false
   @observable _selected ?: string
@@ -60,6 +60,9 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   @computed get criteriu () {
     return this.activeCriteria
   }
+
+  get activeDoc () { return }
+  get selectedDoc () { return }
 
   /**
    * Creates an instance of Subscriber.
@@ -92,6 +95,10 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     if (!this.subscribed) this.subscribed = true
   }
 
+  @action subscribeRequested () {
+    this.fetching = true
+  }
+
   /**
    * (re)Subscribes with given Criteria
    * happens internaly when criteriu is changed
@@ -99,7 +106,8 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @param {Criteriu} [criteriu]
    * @memberof Subscriber
    */
-  protected subscribe ({ limit, index, sort, filter }: Criteriu) {
+  subscribe ({ limit, index, sort, filter }: Criteriu) {
+    this.subscribeRequested()
     const paging = Number(limit || 0) * (index || 1)
 
     return this.collection

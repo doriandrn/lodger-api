@@ -5,6 +5,7 @@ import idbAdapter from 'pouchdb-adapter-idb'
 import httpAdapter from 'pouchdb-adapter-http'
 
 import { env } from 'defs/env'
+import { RxCollectionCreator } from 'rxdb';
 
 // RxDB.QueryChangeDetector.enable()
 // RxDB.QueryChangeDetector.enableDebugging()
@@ -34,6 +35,27 @@ switch (env) {
 }
 
 export default RxDB
+
+/**
+ * Helper function mostly used for tests
+ *
+ * @param collections
+ * @param dbSetup
+ */
+export async function createFromCollections (
+  collections: RxCollectionCreator[],
+  dbSetup: any
+) {
+  const db = await RxDB.create(Object.assign({}, { ...dbSetup }, {
+    name: `${dbSetup.name}/${Date.now()}`
+  }))
+
+  await Promise.all(collections.map(col => db.collection(col)))
+
+  const cols = db.collections
+
+  return { db, cols }
+}
 
 // /**
 //  * RxDB instantiator

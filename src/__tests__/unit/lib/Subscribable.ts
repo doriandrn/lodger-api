@@ -1,29 +1,71 @@
 import SubscribableTaxonomy from '~/lib/Taxonomy/Subscribable'
-import { init } from './index'
+
+import { RxDatabase, RxCollection } from 'rxdb'
+import { Form } from '~/lib/Form'
+import Subscriber from '~/lib/Subscriber'
+import { createFromCollections } from '~/lib/DB'
+
+import collections from 'fixtures/taxes/collections'
+import testdbsetup from 'fixtures/db/test'
 
 describe('@extends', () => {
   describe('Subscribable Taxonomy', () => {
-    let db, store, cols,
-      taxes = {}, $tax
+    let db: RxDatabase, cols: RxCollection[],
+    taxes = {}, $tax: Taxonomy<any>
 
     beforeAll(async () => {
-      console.error('pppp')
-      const i = await init()
-      console.error('bbbb')
+      const i = await createFromCollections(collections, testdbsetup)
+
       db = i.db
-      store = i.store
       cols = i.cols
 
       Object.keys(cols).map(col => {
-        taxes[col] = new SubscribableTaxonomy(cols[col], store)
+        taxes[col] = new SubscribableTaxonomy(new Form(), cols[col])
       })
-      console.error('tx', taxes)
+
       $tax = taxes['sosete']
     })
 
     describe('ctor', () => {
       test('creates ok the tax', () => {
+        expect($tax).toBeDefined()
+      })
+
+      test('is not subscribed', () => {
+        expect($tax.subscribed).toBeFalsy()
+      })
+
+      describe('options', () => {
+
+      })
+
+      test('.name', () => {
         expect($tax.name).toEqual('sosete')
+      })
+    })
+
+    describe('.defaultCriteria', () => {
+      test('is always defined', () => {
+        expect($tax.defaultCriteria).toBeDefined()
+      })
+      // test('is read from config', () => {
+      //   expect($tax.defaultCriteria)
+      // })
+    })
+
+    describe('.subscribe()', () => {
+      let subscriber: Subscriber<any>
+
+      beforeAll(() => {
+        subscriber = $tax.subscribe()
+      })
+
+      test('no args - .subscribers has -main-', () => {
+        expect($tax.subscribers.main).toBeDefined()
+      })
+
+      test('subscribed flag is true', () => {
+        expect($tax.subscribed).toBeTruthy()
       })
     })
 

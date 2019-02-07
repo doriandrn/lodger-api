@@ -1,31 +1,18 @@
 import { RxDatabase, RxCollection } from 'rxdb'
 
-import DB from '~/lib/DB'
+import { createFromCollections } from '~/lib/DB'
 import { Form } from '~/lib/Form'
 import Taxonomy from '~/lib/Taxonomy/index'
 
 import collections from 'fixtures/taxes/collections'
 import testdbsetup from 'fixtures/db/test'
 
-
-export async function init () {
-  const db = await DB.create(Object.assign({}, { ...testdbsetup }, {
-    name: `${testdbsetup.name}/${Date.now()}`
-  }))
-
-  await Promise.all(collections.map(col => db.collection(col)))
-
-  const cols = db.collections
-
-  return { db, cols }
-}
-
 describe('Taxonomy class', () => {
-  let db: RxDatabase, form: Form<string, any>, cols: RxCollection[],
+  let db: RxDatabase, cols: RxCollection[],
     taxes = {}, $tax: Taxonomy<any>
 
   beforeAll(async () => {
-    const i = await init()
+    const i = await createFromCollections(collections, testdbsetup)
     db = i.db
     cols = i.cols
     Object.keys(cols).map(col => {
