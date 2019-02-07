@@ -61,7 +61,8 @@ describe('@extends', () => {
       let subscriber: Subscriber<any>
 
       beforeAll(() => {
-        subscriber = $tax.subscribe()
+        $tax.subscribe()
+        subscriber = $tax.subscribers.main
       })
 
       test('no args - .subscribers has -main-', () => {
@@ -94,16 +95,18 @@ describe('@extends', () => {
 
         })
 
-        test('resubscribes on change', () => {
+        test('reacts & resubscribes on change', () => {
           const limit = 2
-          $tax.subscribe(testerName, { limit })
+          // $tax.subscribe(testerName, { limit })
+          tester.criteriu.limit = limit
           expect(tester.criteriu.limit).toBe(limit)
         })
 
         describe('.limit', () => {
-          let limit = 2
+          let limit = 3
           beforeAll(async () => {
-            $tax.subscribe(testerName, { limit })
+            // $tax.subscribe(testerName, { limit })
+            tester.criteriu.limit = limit
             for (let i = 0; i < limit*2; i ++ ) {
               await $tax.put({ name: 'xx', lungime: 3 })
             }
@@ -120,8 +123,14 @@ describe('@extends', () => {
       })
 
       describe('Multiple Subscribers', () => {
-        test('matches sshot', () => {
-          expect($tax.subscribers).toMatchSnapshot('subscribers')
+        const subs = ['a', 'b', 'c']
+        beforeAll(() => {
+          subs.map(sub => {
+            $tax.subscribe(sub)
+          })
+        })
+        test('all are defined', () => {
+          expect(Object.keys($tax.subscribers)).toEqual(expect.arrayContaining(subs))
         })
       })
     })
@@ -145,7 +154,12 @@ describe('@extends', () => {
     })
 
     describe('.unsubscribeAll()', () => {
-
+      beforeAll(() => {
+        $tax.unsubscribeAll()
+      })
+      test('kills all', () => {
+        expect(Object.keys($tax).length).toEqual(0)
+      })
     })
 
     afterAll(async () => {

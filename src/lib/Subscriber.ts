@@ -1,6 +1,5 @@
 import { RxCollection, RxDocument } from 'rxdb'
-import { action, observable, computed } from 'mobx';
-import { Subscription } from 'rxjs';
+import { action, observable, computed, reaction } from 'mobx';
 
 declare global {
   type Criteriu = {
@@ -21,6 +20,7 @@ interface LodgerSubscriber {
   readonly criteriu: Criteriu
 
   subscribe (criteriu ?: Criteriu): void // Subscription
+  kill (): void
 }
 
 /**
@@ -30,8 +30,7 @@ interface LodgerSubscriber {
  * @implements {LodgerSubscriber}
  */
 export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber {
-  protected _subscription: Subscription
-  protected documents: RxDocument<N>[] = [] // main data holder, reactive by itself
+  private documents: RxDocument<N>[] = [] // main data holder, reactive by itself
 
   @observable subscribed: Boolean = false
   @observable selectedId ?: string
@@ -64,6 +63,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
 
   get activeDoc () { return }
   get selectedDoc () { return }
+  kill: () => {}
 
   /**
    * Creates an instance of Subscriber.
@@ -77,11 +77,11 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     protected collection: RxCollection<N>,
     protected defaultCriteria: Criteriu
   ) {
-  }
-
-  kill (): void {
-    if (!this._subscription) return
-    this._subscription.unsubscribe()
+    reaction(() => this.activeCriteria, (newC) => {
+      console.error('changed', {...newC})
+      this.subscribe({ ...newC })
+    })
+    this.subscribe(this.defaultCriteria)
   }
 
   // get data () {
@@ -105,7 +105,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
 
   @action subscribeRequested (criteria: Criteriu) {
     this.fetching = true
-    this.activeCriteria = { ...criteria }
+    // this.activeCriteria = { ...criteria }
   }
 
   /**
@@ -115,17 +115,19 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @param {Criteriu} [criteriu]
    * @memberof Subscriber
    */
-  subscribe ({ limit, index, sort, filter }: Criteriu) {
-    this.subscribeRequested(arguments[0])
+  @action subscribe ({ limit, index, sort, filter }: Criteriu) {
+    // this.subscribeRequested(arguments[0])
 
     // progressive listing data
     const paging = Number(limit || 0) * (index || 1)
 
-    this._subscription = this.collection
+    const { unsubscribe } = this.collection
       .find(filter)
       .limit(paging)
       .sort(sort)
       .$
       .subscribe(changes => this.handleSubscriptionData(changes))
+
+    if (!this.kill) this.kill = unsubscribe
   }
 }

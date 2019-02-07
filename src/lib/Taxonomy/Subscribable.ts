@@ -68,40 +68,44 @@ export default class STaxonomy<T extends Taxonomie, I> extends Taxonomy<T, I> im
     subscriberName : string = 'main',
     criteriuCerut ?: Criteriu
   ): Promise<Subscriber<T>> {
-    let subscriber = this.subscribers[subscriberName]
-    if (!subscriber) {
-      subscriber = this.subscribers[subscriberName] = new Subscriber(this.collection, this.defaultCriteria)
-    }
 
-    const { criteriu } = subscriber
+    if (this.subscribers[subscriberName]) return
+    this.subscribers[subscriberName] = new Subscriber(this.collection, this.defaultCriteria)
+    // }
 
-    if (criteriuCerut) {
-      Object.assign(criteriu, { ...criteriuCerut })
-    }
+    // if (criteriuCerut) {
+    //   const { activeCriteria } = this.subscribers[subscriberName]
+    //   console.error('ac', activeCriteria)
+    //   Object.keys(criteriuCerut).map(key => {
+    //     activeCriteria[key] = criteriuCerut[key]
+    //   })
+    //   // Object.assign(this.subscribers[subscriberName].activeCriteria, { ...criteriuCerut })
+    // }
 
-    return subscriber.subscribe(criteriu)
+    // return subscriber.subscribe(criteriu)
   }
 
+  /**
+   *
+   *
+   * @param {string} [subscriberName='main']
+   * @memberof STaxonomy
+   */
   unsubscribe (subscriberName : string = 'main') {
     const subscriber = this.subscribers[subscriberName]
-    subscriber.kill()
+    if (subscriber.kill) subscriber.kill()
     delete this.subscribers[subscriberName]
   }
 
   /**
    * Kills all active listeners for a given subscriber name
    *
-   * @param {string} [subscriberName='main']
    * @returns {Promise}
    * @memberof Taxonomy
    */
-  unsubscribeAll (subscriberName: string = 'main') {
-    const subscribers = this.subscribers[subscriberName]
-
-    return Promise.all(
-      Object.keys(subscribers).map(async subscriber => {
-        await subscribers[subscriber].unsubscribe()
-      })
-    )
+  protected unsubscribeAll () {
+    Object.keys(this.subscribers).map(subscriber => {
+      this.unsubscribe(subscriber)
+    })
   }
 }
