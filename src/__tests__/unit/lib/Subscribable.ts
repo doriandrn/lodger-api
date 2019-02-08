@@ -69,17 +69,29 @@ describe('@extends', () => {
         expect($tax.subscribers.main).toBeDefined()
       })
 
-      test('subscribed flag is true', () => {
+      test('subscribed flag indicates true', () => {
         expect($tax.subscribed).toBeTruthy()
       })
 
-      test('observes data', async () => {
-        const item = await $tax.put({ name: 'gigi', lungime: 5 })
-        const { _id } = item
-        await delay(300)
-        const { main } = $tax.subscribers
-        expect(main.ids).toContain(_id)
-        expect(main.items[_id]).toBeDefined()
+
+      describe('Observes data', () => {
+        let subscriber: Subscriber<any>
+        let _id: string
+
+        beforeAll(async () => {
+          subscriber = $tax.subscribers.main
+          const item = await $tax.put({ name: 'gigi', lungime: 5 })
+          _id = item._id
+          await delay(300)
+        })
+
+        test('.ids contains the newly added item id', () => {
+          expect(subscriber.ids).toContain(_id)
+        })
+
+        test('.items has the key with ID', () => {
+          expect(subscriber.items[_id]).toBeDefined()
+        })
       })
 
       describe('Criteria', () => {
@@ -92,32 +104,73 @@ describe('@extends', () => {
         })
 
         test('has subscribed with default criteria', () => {
-
+          expect(tester.criteriu).toEqual($tax.defaultCriteria)
         })
 
-        test('reacts & resubscribes on change', () => {
-          const limit = 2
-          // $tax.subscribe(testerName, { limit })
-          tester.criteriu.limit = limit
-          expect(tester.criteriu.limit).toBe(limit)
-        })
+        describe('Change reactions', () => {
 
-        describe('.limit', () => {
-          let limit = 3
+          // add a couple of items to play with
           beforeAll(async () => {
-            // $tax.subscribe(testerName, { limit })
-            tester.criteriu.limit = limit
-            for (let i = 0; i < limit*2; i ++ ) {
+            for (let i = 0; i < 10; i ++ ) {
               await $tax.put({ name: 'xx', lungime: 3 })
             }
-            await delay(300)
-          })
-          test('indicator is equal', () => {
-            expect(tester.criteriu.limit).toEqual(limit)
+            await delay(1000)
           })
 
-          test('ids length is the same as limit', () => {
-            expect(tester.ids.length).toEqual(limit)
+          describe('.limit', () => {
+            let limit = 3
+
+            beforeAll(async () => {
+              tester.criteriu.limit = limit
+              await delay(200)
+            })
+
+            test('getter is equal', () => {
+              expect(tester.criteriu.limit).toEqual(limit)
+            })
+
+            test('ids length match', () => {
+              expect(tester.ids.length).toEqual(limit)
+            })
+
+            test('reacts & resubscribes on immediate re-change', () => {
+              limit = 2
+              tester.criteriu.limit = limit
+              expect(tester.criteriu.limit).toBe(limit)
+            })
+          })
+
+          describe('.index', () => {
+            let index = 1
+            let idsCurrentIndex
+
+            beforeAll(async () => {
+              idsCurrentIndex = tester.ids
+              tester.criteriu.index = index
+              await delay(300)
+            })
+            test('indexes length has increased', () => {
+              expect(idsCurrentIndex.length).toBeGreaterThan(tester.ids.length )
+            })
+          })
+
+          describe('.sort', () => {
+            let sort = { name: 1 }
+            const name = 'aaz'
+
+            beforeAll(async () => {
+              await $tax.put({ name, lungime: 9 })
+              tester.criteriu.sort = sort
+              await delay(300)
+            })
+
+            test('updates accordingly', () => {
+              expect(tester.criteriu.sort).toEqual(sort)
+            })
+
+            test('sorts ok', () => {
+              expect(tester.items[tester.ids[0]].name).toEqual(name)
+            })
           })
         })
       })
@@ -157,8 +210,9 @@ describe('@extends', () => {
       beforeAll(() => {
         $tax.unsubscribeAll()
       })
+
       test('kills all', () => {
-        expect(Object.keys($tax).length).toEqual(0)
+        expect(Object.keys($tax.subscribers).length).toEqual(0)
       })
     })
 

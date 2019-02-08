@@ -36,7 +36,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   @observable selectedId ?: string
 
   @observable fetching: Boolean = false
-  @observable activeCriteria: Criteriu = this.defaultCriteria
+  private activeCriteria: Criteriu
 
   @action selectDocument (id ?: string) {
     this.selectedId = id
@@ -64,7 +64,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   get activeDoc () { return }
   get selectedDoc () { return }
 
-  kill: () => {}
+  kill : () => void
 
   /**
    * Creates an instance of Subscriber.
@@ -76,13 +76,13 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    */
   constructor (
     protected collection: RxCollection<N>,
-    protected defaultCriteria: Criteriu
+    initialCriteria: Criteriu
   ) {
+    this.activeCriteria = observable({ ...initialCriteria  })
+    this.subscribe({ ...initialCriteria })
     reaction(() => ({ ...this.activeCriteria }), (newC) => {
-      console.error('changed', {...newC})
-      this.subscribe({ ...newC })
+      this.kill = this.subscribe({ ...newC })
     })
-    this.subscribe(this.defaultCriteria)
   }
 
   // get data () {
@@ -98,8 +98,8 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   // }
 
   @action private handleSubscriptionData (changes: RxDocument<any>[]) {
-    // this.documents = changes.map(change => Object.freeze(change))
     if (!this.subscribed) this.subscribed = true
+    // this.documents = changes.map(change => Object.freeze(change))
     this.documents = changes
     this.fetching = false
   }
@@ -115,7 +115,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @param {Criteriu} [criteriu]
    * @memberof Subscriber
    */
-  @action subscribe ({ limit, index, sort, filter }: Criteriu) {
+  subscribe ({ limit, index, sort, filter }: Criteriu) {
     this.subscribeRequested()
 
     // progressive listing data
@@ -128,6 +128,6 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
       .$
       .subscribe(changes => this.handleSubscriptionData(changes))
 
-    this.kill = unsubscribe
+    return unsubscribe
   }
 }

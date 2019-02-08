@@ -14,12 +14,12 @@ interface SubscribableTaxonomy<N, S> {
   readonly data: SubscriberDataHolder,
   readonly subscribed: boolean,
 
-  subscribe (name: string, criteriu ?: Criteriu): Promise<Subscriber<N>>
+  subscribe (name: string, criteriu ?: Criteriu): void
   unsubscribeAll: (subscriberName?: string) => void
 }
 
 type SubscriberList<N> = {
-  [k: string]: Subscriber<N>[]
+  [k: string]: Subscriber<N>
 }
 
 export default class STaxonomy<T extends Taxonomie, I> extends Taxonomy<T, I> implements SubscribableTaxonomy<T, I> {
@@ -57,7 +57,7 @@ export default class STaxonomy<T extends Taxonomie, I> extends Taxonomy<T, I> im
   }
 
   /**
-   * Subscribes
+   * Subscribes.
    *
    * @param {string} [subscriberName='main']
    * @param {Criteriu} [criteriuCerut]
@@ -66,23 +66,12 @@ export default class STaxonomy<T extends Taxonomie, I> extends Taxonomy<T, I> im
    */
   subscribe (
     subscriberName : string = 'main',
-    criteriuCerut ?: Criteriu
-  ): Promise<Subscriber<T>> {
-
+    initialCriteria ?: Criteriu
+  ): void {
     if (this.subscribers[subscriberName]) return
-    this.subscribers[subscriberName] = new Subscriber(this.collection, this.defaultCriteria)
-    // }
-
-    // if (criteriuCerut) {
-    //   const { activeCriteria } = this.subscribers[subscriberName]
-    //   console.error('ac', activeCriteria)
-    //   Object.keys(criteriuCerut).map(key => {
-    //     activeCriteria[key] = criteriuCerut[key]
-    //   })
-    //   // Object.assign(this.subscribers[subscriberName].activeCriteria, { ...criteriuCerut })
-    // }
-
-    // return subscriber.subscribe(criteriu)
+    const criteria = { ... this.defaultCriteria }
+    if (initialCriteria) Object.assign(criteria, { ...initialCriteria })
+    this.subscribers[subscriberName] = new Subscriber(this.collection, criteria)
   }
 
   /**
