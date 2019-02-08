@@ -63,6 +63,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
 
   get activeDoc () { return }
   get selectedDoc () { return }
+
   kill: () => {}
 
   /**
@@ -77,7 +78,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     protected collection: RxCollection<N>,
     protected defaultCriteria: Criteriu
   ) {
-    reaction(() => this.activeCriteria, (newC) => {
+    reaction(() => ({ ...this.activeCriteria }), (newC) => {
       console.error('changed', {...newC})
       this.subscribe({ ...newC })
     })
@@ -96,16 +97,15 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   //   }
   // }
 
-  @action handleSubscriptionData (changes: RxDocument<any>[]) {
+  @action private handleSubscriptionData (changes: RxDocument<any>[]) {
     // this.documents = changes.map(change => Object.freeze(change))
+    if (!this.subscribed) this.subscribed = true
     this.documents = changes
     this.fetching = false
-    if (!this.subscribed) this.subscribed = true
   }
 
-  @action subscribeRequested (criteria: Criteriu) {
+  @action private subscribeRequested () {
     this.fetching = true
-    // this.activeCriteria = { ...criteria }
   }
 
   /**
@@ -116,7 +116,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @memberof Subscriber
    */
   @action subscribe ({ limit, index, sort, filter }: Criteriu) {
-    // this.subscribeRequested(arguments[0])
+    this.subscribeRequested()
 
     // progressive listing data
     const paging = Number(limit || 0) * (index || 1)
@@ -128,6 +128,6 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
       .$
       .subscribe(changes => this.handleSubscriptionData(changes))
 
-    if (!this.kill) this.kill = unsubscribe
+    this.kill = unsubscribe
   }
 }
