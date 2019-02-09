@@ -24,7 +24,8 @@ export default [
       type: 'object',
       properties: {
         name: {
-          type: 'string'
+          type: 'string',
+          index: true
         },
         lungime: {
           type: 'number'

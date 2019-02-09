@@ -156,20 +156,37 @@ describe('@extends', () => {
 
           describe('.sort', () => {
             let sort = { name: 1 }
-            const name = 'aaz'
+            const firstAZname = 'aaa'
+            const firstZAname = 'zzz'
 
-            beforeAll(async () => {
-              await $tax.put({ name, lungime: 9 })
-              tester.criteriu.sort = sort
-              await delay(300)
+            describe('AZ', () => {
+              beforeAll(async () => {
+                await $tax.put({ name: firstAZname, lungime: 9 })
+                await $tax.put({ name: firstZAname, lungime: 9 })
+                tester.criteriu.sort = sort
+                await delay(300)
+              })
+
+              test('updates accordingly', () => {
+                expect(tester.criteriu.sort).toEqual(sort)
+              })
+
+              test('sorts ok', () => {
+                // console.error(Object.keys(tester.items))
+                expect(tester.items[tester.ids[0]].name).toEqual(firstAZname)
+              })
             })
 
-            test('updates accordingly', () => {
-              expect(tester.criteriu.sort).toEqual(sort)
-            })
+            describe('reverse', () => {
+              beforeAll(async () => {
+                tester.criteriu.sort = { name: -1 }
+                await delay(500)
+              })
 
-            test('sorts ok', () => {
-              expect(tester.items[tester.ids[0]].name).toEqual(name)
+              test('still ok, ZA', async () => {
+                const { items, ids } = tester
+                expect(items[ids[0]].name).toEqual(firstZAname)
+              })
             })
           })
         })

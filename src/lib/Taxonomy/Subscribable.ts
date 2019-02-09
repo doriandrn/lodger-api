@@ -1,5 +1,6 @@
 import Taxonomy from './'
 import Subscriber from '../Subscriber'
+import { Form } from '../Form'
 
 /**
  *
@@ -9,21 +10,20 @@ import Subscriber from '../Subscriber'
  * @template N
  * @template S
  */
-interface SubscribableTaxonomy<N, S> {
-  readonly subscribers: SubscriberList<N>
+interface SubscribableTaxonomy<T extends Taxonomie> {
+  readonly subscribers: SubscriberList<T>
   readonly data: SubscriberDataHolder,
-  readonly subscribed: boolean,
-
-  subscribe (name: string, criteriu ?: Criteriu): void
-  unsubscribeAll: (subscriberName?: string) => void
+  readonly subscribed: boolean
 }
 
-type SubscriberList<N> = {
-  [k: string]: Subscriber<N>
+type SubscriberList<T extends Taxonomie> = {
+  [k: string]: Subscriber<T>
 }
 
-export default class STaxonomy<T extends Taxonomie, I> extends Taxonomy<T, I> implements SubscribableTaxonomy<T, I> {
-  private subscribers: SubscriberList<T> = {}
+export default class STaxonomy<T extends Taxonomie, I>
+extends Taxonomy<T, I>
+implements SubscribableTaxonomy<T> {
+  readonly subscribers: SubscriberList<T> = {}
 
   constructor (
     protected form: Form<T, I>,
