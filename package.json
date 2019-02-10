@@ -26,10 +26,10 @@
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-typescript": "^7.1.0",
     "@babel/runtime": "^7.3.1",
-    "@types/debug": "^0.0.31",
+    "@types/debug": "^4.1.0",
     "@types/faker": "^4.1.5",
     "@types/jest": "^24.0.0",
-    "@types/node": "^10.12.21",
+    "@types/node": "^10.12.24",
     "awesome-typescript-loader": "^5.2.1",
     "babel-jest": "^24.1.0",
     "babel-loader": "^8.0.5",
@@ -39,7 +39,7 @@
     "deep-equal": "^1.0.1",
     "faker": "^4.1.0",
     "fs": "^0.0.1-security",
-    "fx": "^11.0.1",
+    "fx": "^11.1.0",
     "global": "^4.3.2",
     "jest": "^24.1.0",
     "jsdoc-babel": "^0.5.0",
@@ -57,14 +57,14 @@
     "source-map-loader": "^0.2.4",
     "ts-jest": "^23.10.5",
     "ts-loader": "^5.3.3",
-    "typescript": "^3.3.1"
+    "typescript": "^3.3.3"
   },
   "dependencies": {
     "jest-cli": "^24.1.0",
     "pouchdb-adapter-http": "^7.0.0",
     "pouchdb-adapter-idb": "^7.0.0",
     "pouchdb-adapter-memory": "^7.0.0",
-    "rxdb": "^8.0.4",
+    "rxdb": "^8.0.5",
     "rxjs": "^6.4.0",
     "vuex-persistedstate": "^2.5.4"
   }
