@@ -1,7 +1,6 @@
 import { RxCollection, RxDocument } from 'rxdb'
-import { action, observable, computed, reaction } from 'mobx';
+import { action, observable, computed, reaction, toJS } from 'mobx';
 import lodgerConfig from 'lodger.config'
-import { hasInterceptors } from 'mobx/lib/internal';
 
 declare global {
   type Criteriu = {
@@ -40,7 +39,7 @@ type SubscribeOptions = {
 export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber {
   private documents: RxDocument<N>[] = [] // main data holder, reactive by itself
 
-  @observable criteria: Criteriu = { ...lodgerConfig.taxonomii.defaults.criteriu }
+  @observable $criteria: Criteriu = { ...lodgerConfig.taxonomii.defaults.criteriu }
 
   @observable subscribed: Boolean = false
   @observable selectedId ?: string
@@ -67,9 +66,14 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     )
   }
 
-  // @computed get criteriu () {
-  //   return this.activeCriteria
-  // }
+  @computed get criteria () {
+    return toJS(this.$criteria)
+  }
+
+  set criteria (newC: Criteriu) {
+    console.error('setshitcalled')
+    Object.assign(this.$criteria, { ...newC })
+  }
 
   get activeDoc () { return }
   get selectedDoc () { return }
@@ -87,11 +91,10 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
   constructor (
     protected collection: RxCollection<N>
   ) {
-    // this.activeCriteria = observable({ ...initialCriteria  })
     this.subscribe()
-    reaction(() => ({ ...this.criteria }), (newC) => {
-      console.error({ ...newC })
-      this.kill = this.subscribe({ ...newC })
+    reaction(() => ({ ...this.$criteria }), (newC) => {
+      const nc = toJS(newC)
+      this.kill = this.subscribe(nc)
     })
   }
 
@@ -139,7 +142,7 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     const { unsubscribe } = this.collection
       .find(filter)
       .limit(paging)
-      .sort(sort)
+      .sort(toJS(sort))
       .$
       .subscribe(changes => this.handleSubscriptionData(changes))
 

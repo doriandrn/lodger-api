@@ -8,7 +8,7 @@ import { createFromCollections } from '~/lib/DB'
 import collections from 'fixtures/taxes/collections'
 import testdbsetup from 'fixtures/db/test'
 
-
+const testTax = 'sosete'
 
 describe('@extends', () => {
   describe('Subscribable Taxonomy', () => {
@@ -25,7 +25,7 @@ describe('@extends', () => {
         taxes[col] = new SubscribableTaxonomy(new Form(), cols[col])
       })
 
-      $tax = taxes['sosete']
+      $tax = taxes[testTax]
     })
 
     describe('ctor', () => {
@@ -42,7 +42,7 @@ describe('@extends', () => {
       })
 
       test('.name', () => {
-        expect($tax.name).toEqual('sosete')
+        expect($tax.name).toEqual(testTax)
       })
     })
 

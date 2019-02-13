@@ -56,22 +56,21 @@ describe('Subscriber', () => {
     let tester: Subscriber<any>
 
     beforeEach(() => { tester = new Subscriber(collection) })
-
     afterEach(() => { tester.kill() })
 
     describe('Change reactions', () => {
 
       test('.fetching = true whenever criteria changes', () => {
-        tester.criteria.limit = 1
+        tester.$criteria.limit = 1
         expect(tester.fetching).toBeTruthy()
       })
 
       describe('.limit', () => {
         let limit = 3
 
-        beforeAll(async () => {
-          tester.criteria.limit = limit
-          await delay(1200)
+        beforeEach(async () => {
+          tester.$criteria.limit = limit
+          await delay(200)
         })
 
         test('getter is equal', () => {
@@ -84,7 +83,7 @@ describe('Subscriber', () => {
 
         test('reacts & resubscribes on immediate re-change', () => {
           limit = 2
-          tester.criteria.limit = limit
+          tester.$criteria.limit = limit
           expect(tester.criteria.limit).toBe(limit)
         })
       })
@@ -95,7 +94,7 @@ describe('Subscriber', () => {
 
         beforeAll(async () => {
           idsCurrentIndex = tester.ids
-          tester.criteria.index = index
+          tester.$criteria.index = index
           await delay(300)
         })
         test('indexes length has increased', () => {
@@ -103,11 +102,11 @@ describe('Subscriber', () => {
         })
       })
 
-      describe('.find', () => {})
+      describe('.filter', () => {})
 
       describe('.sort', () => {
         let sort = { name: 1 }
-        const firstAZname = 'aaa'
+        const firstAZname = 'Aaa'
         const firstZAname = 'zzz'
 
         beforeAll(async () => {
@@ -116,27 +115,29 @@ describe('Subscriber', () => {
         })
 
         describe('AZ', () => {
-          beforeAll(async () => {
-            tester.criteria.sort = sort
-            await delay(300)
+          beforeEach(async () => {
+            tester.$criteria.sort = { name: 1 }
+            await delay(500)
           })
 
           test('updates accordingly', () => {
             expect(tester.criteria.sort).toEqual(sort)
           })
 
-          test('sorts ok', () => {
-            expect(tester.items[tester.ids[0]].name).toEqual(firstAZname)
+          test(`first item name is ${firstAZname}`, () => {
+            const { items, ids } = tester
+            expect(items[Object.keys(items)[0]].name).toEqual(firstAZname)
+            expect(items[ids[0]].name).toEqual(firstAZname)
           })
         })
 
         describe('ZA', () => {
-          beforeAll(async () => {
-            tester.criteria.sort = { name: -1 }
+          beforeEach(async () => {
+            tester.$criteria.sort = { name: -1 }
             await delay(500)
           })
 
-          test('still ok, ZA', async () => {
+          test(`first item name is ${firstZAname}`, () => {
             const { items, ids } = tester
             expect(items[ids[0]].name).toEqual(firstZAname)
           })
