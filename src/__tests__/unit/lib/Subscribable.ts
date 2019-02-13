@@ -10,8 +10,8 @@ import testdbsetup from 'fixtures/db/test'
 
 const testTax = 'sosete'
 
-describe('@extends', () => {
-  describe('Subscribable Taxonomy', () => {
+describe('@extends Taxonomy', () => {
+  describe('Subscribable', () => {
     let db: RxDatabase, cols: RxCollection[],
     taxes = {}, $tax: Taxonomy<any>
 

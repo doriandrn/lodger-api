@@ -6,32 +6,40 @@ declare global {
   type Criteriu = {
     limit?: number,
     index?: number,
-    sort?: SortOptions,
-    filter?: FilterOptions
+    sort?: {
+      [key: string]: number
+    },
+    filter?: {
+      [key: string]: any
+    }
   }
 }
 
 /**
- * A single subscriber for a Taxonomy (and form maybe?)
+ * Single RXCollection subscriber interface
  *
  * @interface LodgerSubscriber
  * @template T
  */
 interface LodgerSubscriber {
-  readonly criteriu: Criteriu
+  readonly criteria: Criteriu
 
-  subscribe (criteriu ?: Criteriu, opts ?: SubscribeOptions): void // Subscription
   select (id: string): RxDocument<any>
+  edit (id: string): RxDocument<any>
+
+  subscribe (criteria ?: Criteriu): void // Subscription
   kill (): void
 }
 
-type SubscribeOptions = {
+type SubscriberOptions = {
   progressivePaging ?: boolean
+  allowMultipleSelect ?: boolean
 }
 
 
 /**
- * Creates a new subscriber for a specific taxonomy
+ * Creates a new data sucker for any RxCollection
+ * refreshes data on criteria change
  *
  * @class Subscriber
  * @implements {LodgerSubscriber}
@@ -39,25 +47,18 @@ type SubscribeOptions = {
 export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber {
   private documents: RxDocument<N>[] = [] // main data holder, reactive by itself
 
-  @observable $criteria: Criteriu = { ...lodgerConfig.taxonomii.defaults.criteriu }
+  @observable criteria: Criteriu = { ...lodgerConfig.taxonomii.defaults.criteriu }
+  @observable fetching: Boolean = false
 
   @observable subscribed: Boolean = false
-  @observable selectedId ?: string
 
-  @observable fetching: Boolean = false
-  // private activeCriteria: Criteriu
+  @observable selectedId ?: string | string[]
+  @observable activeId ?: string
 
-  @action selectDocument (id ?: string) {
-    this.selectedId = id
-  }
+  @computed get selected () { return this.selectedId }
+  @computed get active () { return this.activeId }
 
-  @computed get selected () {
-    return this.selectedId
-  }
-
-  @computed get ids () {
-    return Object.keys(this.items)
-  }
+  @computed get ids () { return Object.keys(this.items) }
 
   @computed get items () {
     return Object.assign({},
@@ -66,17 +67,13 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     )
   }
 
-  @computed get criteria () {
-    return toJS(this.$criteria)
+  @computed get selectedDoc () {
+    return this.documents.filter(doc => doc._id === this.selectedId)[0]
   }
 
-  set criteria (newC: Criteriu) {
-    console.error('setshitcalled')
-    Object.assign(this.$criteria, { ...newC })
+  @computed get editing () {
+    return this.documents.filter(doc => doc._id === this.activeId)[0]
   }
-
-  get activeDoc () { return }
-  get selectedDoc () { return }
 
   kill : () => void = () => {}
 
@@ -89,30 +86,34 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @memberof Subscriber
    */
   constructor (
-    protected collection: RxCollection<N>
+    protected collection: RxCollection<N>,
+    readonly options ?: SubscriberOptions
   ) {
-    this.subscribe()
-    reaction(() => ({ ...this.$criteria }), (newC) => {
-      const nc = toJS(newC)
-      this.kill = this.subscribe(nc)
+    // Register the reaction on criteria change
+    reaction(() => ({ ...this.criteria }), (newC) => {
+      this.kill = this.subscribe(toJS(newC))
     })
+
+    // Trigger the very first subscribe
+    this.subscribe()
+
+    if (options) {
+      if (options.allowMultipleSelect) {
+        this.selectedId = []
+      }
+    }
   }
 
-  // get data () {
-  //   const { component } = this
-  //   return {
-  //     ids: component.ids,
-  //     items: component.items,
-  //     documents: {
-  //       active: component.activeDoc,
-  //       selected: component.selectedDoc
-  //     }
-  //   }
-  // }
-
+  /**
+   * Observables changes wwhenever data changes
+   *
+   * @private
+   * @param {RxDocument<any>[]} changes
+   * @memberof Subscriber
+   */
   @action private handleSubscriptionData (changes: RxDocument<any>[]) {
     if (!this.subscribed) this.subscribed = true
-    // this.documents = changes.map(change => Object.freeze(change))
+
     this.documents = changes
     this.fetching = false
   }
@@ -129,15 +130,15 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @memberof Subscriber
    */
   subscribe (
-    { limit, index, sort, filter }: Criteriu = { ... this.criteria },
-    options ?: SubscribeOptions
+    { limit, index, sort, filter }: Criteriu = { ... this.criteria }
   ) {
     this.subscribeRequested()
-
-    // progressive listing data
+    const { options } = this
+    limit = Number(limit)
+    index = Number(index)
     const paging = options && options.progressivePaging ?
-      Number(limit || 0) * (index || 1) :
-      Number(limit)
+      (limit || 0) * (index || 1) :
+      (limit + limit * index)
 
     const { unsubscribe } = this.collection
       .find(filter)
@@ -149,8 +150,30 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     return unsubscribe
   }
 
-  select (id: string) {
+  /**
+   * (De)selects an item by it's id
+   *
+   * @param {string} id
+   * @memberof Subscriber
+   */
+  @action select (id: string) {
+    if (typeof this.selectedId !== 'string' && this.selectedId && this.options && this.options.allowMultipleSelect) {
+      if (this.selectedId.indexOf(id) < 0)
+        this.selectedId.push(id)
+      else
+        this.selectedId.splice(this.selectedId.indexOf(id), 1)
+    } else {
+      this.selectedId = id
+    }
+  }
 
+  /**
+   * Sets the active document to be furtherly edited
+   *
+   * @param {string} id
+   * @memberof Subscriber
+   */
+  @action edit (id: string) {
+    this.activeId = id
   }
 }
-

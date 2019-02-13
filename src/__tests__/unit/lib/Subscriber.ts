@@ -1,4 +1,4 @@
-import { RxCollection } from 'rxdb';
+import { RxCollection, isRxDocument } from 'rxdb';
 import { createFromCollections } from '~/lib/DB'
 
 import Subscriber from '~/lib/Subscriber'
@@ -6,6 +6,10 @@ import delay from '~/lib/helpers/delay'
 
 import collections from 'fixtures/taxes/collections'
 import testdbsetup from 'fixtures/db/test'
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
 describe('Subscriber', () => {
   let collection: RxCollection
@@ -52,7 +56,7 @@ describe('Subscriber', () => {
     })
   })
 
-  describe('Criteria', () => {
+  describe('.criteria', () => {
     let tester: Subscriber<any>
 
     beforeEach(() => { tester = new Subscriber(collection) })
@@ -61,7 +65,7 @@ describe('Subscriber', () => {
     describe('Change reactions', () => {
 
       test('.fetching = true whenever criteria changes', () => {
-        tester.$criteria.limit = 1
+        tester.criteria.limit = 1
         expect(tester.fetching).toBeTruthy()
       })
 
@@ -69,7 +73,7 @@ describe('Subscriber', () => {
         let limit = 3
 
         beforeEach(async () => {
-          tester.$criteria.limit = limit
+          tester.criteria.limit = limit
           await delay(200)
         })
 
@@ -83,7 +87,7 @@ describe('Subscriber', () => {
 
         test('reacts & resubscribes on immediate re-change', () => {
           limit = 2
-          tester.$criteria.limit = limit
+          tester.criteria.limit = limit
           expect(tester.criteria.limit).toBe(limit)
         })
       })
@@ -94,7 +98,7 @@ describe('Subscriber', () => {
 
         beforeAll(async () => {
           idsCurrentIndex = tester.ids
-          tester.$criteria.index = index
+          tester.criteria.index = index
           await delay(300)
         })
         test('indexes length has increased', () => {
@@ -116,7 +120,7 @@ describe('Subscriber', () => {
 
         describe('AZ', () => {
           beforeEach(async () => {
-            tester.$criteria.sort = { name: 1 }
+            tester.criteria.sort = { name: 1 }
             await delay(500)
           })
 
@@ -133,7 +137,7 @@ describe('Subscriber', () => {
 
         describe('ZA', () => {
           beforeEach(async () => {
-            tester.$criteria.sort = { name: -1 }
+            tester.criteria.sort = { name: -1 }
             await delay(500)
           })
 
@@ -144,5 +148,42 @@ describe('Subscriber', () => {
         })
       })
     })
+  })
+
+  describe('.select', () => {
+    let oneRandomId: string = ''
+    let sub: Subscriber<any>
+    const noOfItems = 10 // number of items to insert
+
+    beforeAll(async () => {
+      sub = new Subscriber(collection)
+      for (let i = 0; i < noOfItems; i ++ ) {
+        await collection.insert({ name: 'YOLO', lungime: 3 })
+      }
+      await delay(1000)
+    })
+
+    afterAll(() => sub.kill())
+
+    beforeEach(() => {
+      oneRandomId = sub.ids[getRandomInt(noOfItems - 1)]
+      sub.select(oneRandomId)
+    })
+
+    test('selectedId ', () => {
+      expect(sub.selected).toBeDefined()
+      expect(sub.selected).toEqual(oneRandomId)
+    })
+
+    describe('.selectedDoc', () => {
+      test('is RxDocument', () => {
+        expect(isRxDocument(sub.selectedDoc)).toBeTruthy()
+      })
+
+      test('is the right one', () => {
+        expect(sub.selectedDoc._id).toEqual(oneRandomId)
+      })
+    })
+
   })
 })
