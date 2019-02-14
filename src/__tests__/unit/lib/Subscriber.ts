@@ -7,26 +7,102 @@ import delay from '~/lib/helpers/delay'
 import collections from 'fixtures/taxes/collections'
 import testdbsetup from 'fixtures/db/test'
 
-function getRandomInt(max) {
+function getRandomInt(max: number) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-describe('Subscriber', () => {
+async function insertNitems (n: number) {
+  for (let i = 0; i < 10; i ++ ) {
+    await this.insert({ name: 'YOLO', lungime: 3 })
+  }
+}
+
+describe('RxCollection Subscriber', () => {
   let collection: RxCollection
 
   beforeAll(async () => {
     const { cols } = await createFromCollections([collections[1]], testdbsetup)
     collection = cols.sosete
-
-    for (let i = 0; i < 10; i ++ ) {
-      await collection.insert({ name: 'YOLO', lungime: 3 })
-    }
-    await delay(1000)
+    await insertNitems.call(collection, 10)
   })
 
   describe('constructor', () => {
     describe('options', () => {
+      describe('.progressivePaging = true', () => {
+        let subscriber: Subscriber<any>, limit: number = 2
 
+        beforeAll(async () => {
+          subscriber = new Subscriber(collection, { progressivePaging: true })
+          subscriber.criteria.limit = limit
+          await subscriber.updates
+        })
+
+        afterAll(() => subscriber.kill())
+
+        test(`shows ${limit}`, () => {
+          expect(subscriber.length).toEqual(limit)
+        })
+
+        describe('index increases', () => {
+          beforeEach(async () => {
+            subscriber.criteria.index += 1
+            await subscriber.updates
+          })
+          test(`shows ${limit * 2}`, () => {
+            expect(subscriber.ids.length).toEqual(limit * 2)
+          })
+
+          test(`shows ${limit + limit * 2}`, () => {
+            expect(subscriber.ids.length).toEqual(limit + limit * 2)
+          })
+        })
+      })
+
+      describe('.multipleSelect = true', () => {
+        let subscriber: Subscriber<any>, oneRandomId: string
+
+        beforeAll(async () => {
+          subscriber = new Subscriber(collection, { multipleSelect: true })
+          await insertNitems.call(collection, 10)
+          await subscriber.updates
+          oneRandomId = subscriber.ids[getRandomInt(9)]
+        })
+
+        afterAll(() => subscriber.kill())
+
+        describe('.selectedIds', () => {
+          test('is array', () => {
+            expect(subscriber.selectedId.length).toEqual(0)
+          })
+        })
+
+        describe('.select()', () => {
+          describe('selects & deselects an id', () => {
+            beforeEach(() => { subscriber.select(oneRandomId) })
+
+            test('selects', () => {
+              expect(subscriber.selectedId).toContain(oneRandomId)
+            })
+            test('deselects', () => {
+              expect(subscriber.selectedId).not.toContain(oneRandomId)
+            })
+          })
+
+          describe('selects multiple', () => {
+            let toBeSelected: string[]
+
+            beforeAll(() => {
+              toBeSelected = subscriber.ids.splice(0, 3)
+              toBeSelected.forEach(id => subscriber.select(id))
+            })
+
+            test('ok', () => {
+              expect(subscriber.selected).toEqual(expect.arrayContaining(toBeSelected))
+            })
+          })
+
+        })
+      })
     })
   })
 
@@ -38,7 +114,7 @@ describe('Subscriber', () => {
       subscriber = new Subscriber(collection)
       const item = await collection.insert({ name: 'gigi', lungime: 5 })
       _id = item._id
-      await delay(300)
+      await subscriber.updates
     })
 
     afterAll(() => subscriber.kill())
@@ -74,7 +150,7 @@ describe('Subscriber', () => {
 
         beforeEach(async () => {
           tester.criteria.limit = limit
-          await delay(200)
+          await tester.updates
         })
 
         test('getter is equal', () => {
@@ -99,7 +175,7 @@ describe('Subscriber', () => {
         beforeAll(async () => {
           idsCurrentIndex = tester.ids
           tester.criteria.index = index
-          await delay(300)
+          await tester.updates
         })
         test('indexes length has increased', () => {
           expect(idsCurrentIndex.length).toBeGreaterThan(tester.ids.length )
@@ -121,7 +197,7 @@ describe('Subscriber', () => {
         describe('AZ', () => {
           beforeEach(async () => {
             tester.criteria.sort = { name: 1 }
-            await delay(500)
+            await tester.updates
           })
 
           test('updates accordingly', () => {
@@ -138,7 +214,7 @@ describe('Subscriber', () => {
         describe('ZA', () => {
           beforeEach(async () => {
             tester.criteria.sort = { name: -1 }
-            await delay(500)
+            await tester.updates
           })
 
           test(`first item name is ${firstZAname}`, () => {
@@ -150,17 +226,15 @@ describe('Subscriber', () => {
     })
   })
 
-  describe('.select', () => {
+  describe('.select()', () => {
     let oneRandomId: string = ''
     let sub: Subscriber<any>
     const noOfItems = 10 // number of items to insert
 
     beforeAll(async () => {
       sub = new Subscriber(collection)
-      for (let i = 0; i < noOfItems; i ++ ) {
-        await collection.insert({ name: 'YOLO', lungime: 3 })
-      }
-      await delay(1000)
+      insertNitems.call(collection, noOfItems)
+      await sub.updates
     })
 
     afterAll(() => sub.kill())

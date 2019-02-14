@@ -1,17 +1,15 @@
 import { RxCollection, RxDocument } from 'rxdb'
-import { action, observable, computed, reaction, toJS } from 'mobx';
-import lodgerConfig from 'lodger.config'
+import { action, observable, computed, reaction, toJS } from 'mobx'
+import delay from './helpers/delay';
 
-declare global {
-  type Criteriu = {
-    limit?: number,
-    index?: number,
-    sort?: {
-      [key: string]: number
-    },
-    filter?: {
-      [key: string]: any
-    }
+export type Criteria = {
+  limit?: number,
+  index?: number,
+  sort?: {
+    [key: string]: number
+  },
+  filter?: {
+    [key: string]: any
   }
 }
 
@@ -22,18 +20,19 @@ declare global {
  * @template T
  */
 interface LodgerSubscriber {
-  readonly criteria: Criteriu
+  readonly criteria: Criteria
 
   select (id: string): RxDocument<any>
   edit (id: string): RxDocument<any>
 
-  subscribe (criteria ?: Criteriu): void // Subscription
+  subscribe (criteria ?: Criteria): Function // Subscription
   kill (): void
 }
 
-type SubscriberOptions = {
+ type SubscriberOptions = {
   progressivePaging ?: boolean
-  allowMultipleSelect ?: boolean
+  multipleSelect ?: boolean
+  autoSelectOnCRUD ?: boolean // whenever an items is added / updated -> it's id gets selected
 }
 
 
@@ -47,7 +46,13 @@ type SubscriberOptions = {
 export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber {
   private documents: RxDocument<N>[] = [] // main data holder, reactive by itself
 
-  @observable criteria: Criteriu = { ...lodgerConfig.taxonomii.defaults.criteriu }
+  @observable criteria: Criteria = {
+    limit: 25,
+    index: 0,
+    sort: {},
+    filter: undefined
+  }
+
   @observable fetching: Boolean = false
 
   @observable subscribed: Boolean = false
@@ -75,6 +80,10 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     return this.documents.filter(doc => doc._id === this.activeId)[0]
   }
 
+  @computed get length () {
+    return this.ids.length
+  }
+
   kill : () => void = () => {}
 
   /**
@@ -92,13 +101,10 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     // Register the reaction on criteria change
     reaction(() => ({ ...this.criteria }), (newC) => {
       this.kill = this.subscribe(toJS(newC))
-    })
-
-    // Trigger the very first subscribe
-    this.subscribe()
+    }, { fireImmediately: true })
 
     if (options) {
-      if (options.allowMultipleSelect) {
+      if (options.multipleSelect) {
         this.selectedId = []
       }
     }
@@ -115,7 +121,9 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
     if (!this.subscribed) this.subscribed = true
 
     this.documents = changes
-    this.fetching = false
+
+    // defer this a little bit for user friendliness &/or transitions
+    setTimeout(() => { this.fetching = false }, 100)
   }
 
   @action private subscribeRequested () {
@@ -130,15 +138,16 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @memberof Subscriber
    */
   subscribe (
-    { limit, index, sort, filter }: Criteriu = { ... this.criteria }
+    { limit, index, sort, filter }: Criteria
   ) {
     this.subscribeRequested()
     const { options } = this
     limit = Number(limit)
     index = Number(index)
+
     const paging = options && options.progressivePaging ?
-      (limit || 0) * (index || 1) :
-      (limit + limit * index)
+      (limit + limit * index) :
+      limit
 
     const { unsubscribe } = this.collection
       .find(filter)
@@ -157,7 +166,11 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    * @memberof Subscriber
    */
   @action select (id: string) {
-    if (typeof this.selectedId !== 'string' && this.selectedId && this.options && this.options.allowMultipleSelect) {
+    if (typeof this.selectedId !== 'string' &&
+      this.selectedId &&
+      this.options &&
+      this.options.multipleSelect
+    ) {
       if (this.selectedId.indexOf(id) < 0)
         this.selectedId.push(id)
       else
@@ -175,5 +188,16 @@ export default class Subscriber<N extends Taxonomie> implements LodgerSubscriber
    */
   @action edit (id: string) {
     this.activeId = id
+  }
+
+  get updates () {
+    return new Promise((resolve) => {
+      reaction(() => this.fetching, (async (status) => {
+        if (!status) {
+          await delay(50) // quite hacky, waits for @computeds to effect
+          resolve()
+        }
+      }))
+    })
   }
 }
