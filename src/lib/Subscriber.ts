@@ -2,17 +2,6 @@ import { RxCollection, RxDocument } from 'rxdb'
 import { action, observable, computed, reaction, toJS } from 'mobx'
 import delay from './helpers/delay';
 
-export type Criteria = {
-  limit?: number,
-  index?: number,
-  sort?: {
-    [key: string]: number
-  },
-  filter?: {
-    [key: string]: any
-  }
-}
-
 /**
  * Single RXCollection subscriber interface
  *
@@ -29,12 +18,18 @@ interface LodgerSubscriber {
   kill (): void
 }
 
- type SubscriberOptions = {
+type SubscriberOptions = {
   progressivePaging ?: boolean
   multipleSelect ?: boolean
   autoSelectOnCRUD ?: boolean // whenever an items is added / updated -> it's id gets selected
 }
 
+export type Criteria = {
+  limit ?: number
+  index ?: number
+  sort ?: { [key: string]: number }
+  filter ?: { [key: string]: any }
+}
 
 /**
  * Creates a new data sucker for any RxCollection

@@ -1,6 +1,7 @@
 import Taxonomy from './'
 import Subscriber from '../Subscriber'
 import { Form } from '../Form'
+import { computed } from 'mobx';
 
 /**
  *
@@ -39,8 +40,8 @@ implements SubscribableTaxonomy<T> {
    * @readonly
    * @memberof Taxonomy
    */
-  get data () {
-    return
+  @computed get data () {
+    return this.subscribers
   }
 
   /**
@@ -66,12 +67,10 @@ implements SubscribableTaxonomy<T> {
    */
   subscribe (
     subscriberName : string = 'main',
-    initialCriteria ?: Criteriu
+    options
   ): void {
     if (this.subscribers[subscriberName]) return
-    const criteria = { ... this.defaultCriteria }
-    if (initialCriteria) Object.assign(criteria, { ...initialCriteria })
-    this.subscribers[subscriberName] = new Subscriber(this.collection, criteria)
+    this.subscribers[subscriberName] = new Subscriber(this.collection, options)
   }
 
   /**

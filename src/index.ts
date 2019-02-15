@@ -4,16 +4,14 @@ import fs, { PathLike } from 'fs'
 import yaml from 'json2yaml'
 
 import config from './lodger.config'
+import { env } from '~/lib/defs/env'
+
 import LodgerError from '~/lib/Error'
 
 import DB from '~/lib/DB'
-import Taxonomy from '~/lib/Taxonomy'
+import Taxonomy from '~/lib/Taxonomy/Subscribable'
 
 import notify from 'helper/notify'
-
-import { env } from '~/lib/defs/env'
-import { Form } from '~/lib/Form'
-import { Store } from 'vuex';
 
 /**
  * Taxonomies
@@ -69,9 +67,6 @@ interface LodgerPlugin {
   install (): void
 }
 
-interface LodgerTaxes {
-  withoutReference: () => Taxonomy<Taxonomie>[]
-}
 
 type TaxesList = {
   [k in Taxonomii]: Taxonomy<Taxonomie>
@@ -99,13 +94,7 @@ class Lodger implements LodgerAPI {
    */
   protected store = new Store({})
 
-  readonly taxonomies: {
-    [k in keyof Taxonomii]: Taxonomy<Taxonomie>
-
-    // withoutReference ?: () => Taxonomy<Taxonomie>[]
-  }
-
-
+  readonly taxonomies: TaxesList = {}
   protected plugins: LodgerPlugin[] = []
 
   /**
@@ -115,7 +104,6 @@ class Lodger implements LodgerAPI {
    * @memberof Lodger
    */
   constructor (
-    forms: FormsHolder,
     protected db: RxDatabase
   ) {
     notify.bind(this.store)
@@ -163,55 +151,55 @@ class Lodger implements LodgerAPI {
    * Sets a preference either in DB or store
    *
    */
-  async setPreference (preference: string, value: any) {
-    const debug = Debug('lodger:set')
-    const { store } = this
-    const allowedTaxonomies = ['client', 'user']
-    if (!preference) throw new LodgerError(Errors.invalidPreferenceIndex)
-    const taxonomy = preference.split('.')[0]
-    if (!taxonomy || allowedTaxonomies.indexOf(taxonomy) < 0) {
-      throw new LodgerError(Errors.invalidPreferenceIndex)
-    }
+  // async setPreference (preference: string, value: any) {
+  //   const debug = Debug('lodger:set')
+  //   const { store } = this
+  //   const allowedTaxonomies = ['client', 'user']
+  //   if (!preference) throw new LodgerError(Errors.invalidPreferenceIndex)
+  //   const taxonomy = preference.split('.')[0]
+  //   if (!taxonomy || allowedTaxonomies.indexOf(taxonomy) < 0) {
+  //     throw new LodgerError(Errors.invalidPreferenceIndex)
+  //   }
 
-    debug('setting preference', preference, value)
+  //   debug('setting preference', preference, value)
 
-    switch (taxonomy) {
-      case 'client':
-        store.commit('preferences/update', {
-          path: preference.replace('client.', ''),
-          value
-        })
-        break
+  //   switch (taxonomy) {
+  //     case 'client':
+  //       store.commit('preferences/update', {
+  //         path: preference.replace('client.', ''),
+  //         value
+  //       })
+  //       break
 
-      case 'user':
-        // db.collections.utilizator....
-        break
-    }
-  }
+  //     case 'user':
+  //       // db.collections.utilizator....
+  //       break
+  //   }
+  // }
 
-  /**
-   * Lodger Getters
-   * All UI connects with this
-   * combines DB & Store getters
-   *
-   */
-  get getters () {
-    return this.store.getters
-  }
+  // /**
+  //  * Lodger Getters
+  //  * All UI connects with this
+  //  * combines DB & Store getters
+  //  *
+  //  */
+  // get getters () {
+  //   return this.store.getters
+  // }
 
 
   /**
    * Combined preferences getter
    * gets values from DB and store
    */
-  get preferences () {
-    const { db, store } = this
-    const preferences: Preferences = {
-      client: store.getters.preferences,
-      user: db.collections['preferences']
-    }
-    return preferences
-  }
+  // get preferences () {
+  //   const { db, store } = this
+  //   const preferences: Preferences = {
+  //     client: store.getters.preferences,
+  //     user: db.collections['preferences']
+  //   }
+  //   return preferences
+  // }
 
   /**
    * Init / build function
@@ -263,64 +251,62 @@ class Lodger implements LodgerAPI {
      * try to call all DB methods for refrences of the taxonomy
      *
      */
-    store.subscribe(async ({ type, payload }, state) => {
-      const path = type.split('/')
-      if (path[1] !== 'select') return
-      const debug = Debug('lodger:SELECTstoreSubscriber')
-      const tax = path[0]
+    // store.subscribe(async ({ type, payload }, state) => {
+    //   const path = type.split('/')
+    //   if (path[1] !== 'select') return
+    //   const debug = Debug('lodger:SELECTstoreSubscriber')
+    //   const tax = path[0]
 
-      debug('payload', payload)
-      if (!payload) return
+    //   debug('payload', payload)
+    //   if (!payload) return
 
-      const id = typeof payload === 'string' ? payload : payload.id
-      if (id === store.getters[`tax/selected`]) return
+    //   const id = typeof payload === 'string' ? payload : payload.id
+    //   if (id === store.getters[`tax/selected`]) return
 
-      const reference = { [`${tax}Id`]: id }
-      const { referenceTaxonomies } = forms[tax]
+    //   const reference = { [`${tax}Id`]: id }
+    //   const { referenceTaxonomies } = forms[tax]
 
-      // taxonomies that depend on the selected tax and subscriber
-      // todo: move from here
-      const dependentTaxonomies: Taxonomie[] = []
-      Object.keys(forms).forEach((taxForm) => {
-        const { referenceTaxonomies } = forms[taxForm]
-        if (!referenceTaxonomies || referenceTaxonomies.indexOf(tax) < 0) return
-        dependentTaxonomies.push(<Taxonomie>taxForm)
-      })
-      debug(`${tax} dep taxes:`, dependentTaxonomies)
+    //   // taxonomies that depend on the selected tax and subscriber
+    //   // todo: move from here
+    //   const dependentTaxonomies: Taxonomie[] = []
+    //   Object.keys(forms).forEach((taxForm) => {
+    //     const { referenceTaxonomies } = forms[taxForm]
+    //     if (!referenceTaxonomies || referenceTaxonomies.indexOf(tax) < 0) return
+    //     dependentTaxonomies.push(<Taxonomie>taxForm)
+    //   })
+    //   debug(`${tax} dep taxes:`, dependentTaxonomies)
 
-      // call methods of references documents
-      referenceTaxonomies.forEach(async (refTax: Taxonomie) => {
-        const refdoc = store.getters[`${refTax}/activeDoc`]
-        // debug(`refdoc ${tax} (${refTax})`, refdoc)
-        if (!refdoc) return
-        const method = refdoc[`toggle_${tax}`]
-        if (!method || typeof method !== 'function') return
-        await method(id)
-        debug(`called references methods for ${refTax}`)
-      })
+    //   // call methods of references documents
+    //   referenceTaxonomies.forEach(async (refTax: Taxonomie) => {
+    //     const refdoc = store.getters[`${refTax}/activeDoc`]
+    //     // debug(`refdoc ${tax} (${refTax})`, refdoc)
+    //     if (!refdoc) return
+    //     const method = refdoc[`toggle_${tax}`]
+    //     if (!method || typeof method !== 'function') return
+    //     await method(id)
+    //     debug(`called references methods for ${refTax}`)
+    //   })
 
-      // update find criteria in DH with selected Item
-      if (dependentTaxonomies.length) {
-        dependentTaxonomies.forEach(dTax => {
-          const subscriber = payload.subscriber || 'main'
-          const { plural } = forms[dTax]
-          const holder = vueHelper.subsData[subscriber][plural]
-          if (!holder || !holder.criteriu) return
-          debug('asignez', dTax, subscriber, reference)
-          holder.criteriu.find = { ...reference }
+    //   // update find criteria in DH with selected Item
+    //   if (dependentTaxonomies.length) {
+    //     dependentTaxonomies.forEach(dTax => {
+    //       const subscriber = payload.subscriber || 'main'
+    //       const { plural } = forms[dTax]
+    //       const holder = vueHelper.subsData[subscriber][plural]
+    //       if (!holder || !holder.criteriu) return
+    //       debug('asignez', dTax, subscriber, reference)
+    //       holder.criteriu.find = { ...reference }
 
-          // deselect
-          store.dispatch(`${dTax}/select`, { id: null, subscriber })
-        })
-        debug('ass dun')
-      }
-    })
+    //       // deselect
+    //       store.dispatch(`${dTax}/select`, { id: null, subscriber })
+    //     })
+    //     debug('ass dun')
+    //   }
+    // })
 
     debug('built')
 
     return new Lodger(
-      Taxonomies,
-      forms,
       db
     )
   }
