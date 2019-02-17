@@ -6,8 +6,9 @@ import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 import Schema from '../Schema'
+import { env } from '../defs/env'
 
-export type LodgerTaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
+export type ETSchema<I> = LodgerFormCreator<I> & RxCollectionCreator
 
 type LodgerTaxonomyCreatorOptions = {
   multipleSelect ?: boolean
@@ -18,8 +19,6 @@ type LodgerDocument = {
   _id ?: string
 }
 
-let $db: RxDatabase
-
 /**
   * Taxonomy item
   *
@@ -28,6 +27,8 @@ let $db: RxDatabase
 interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
   put (doc: LodgerDocument & Partial<Interface>): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N> | null>
+
+  readonly last ?: string
 }
 
 /**
@@ -42,18 +43,29 @@ interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
 export default class Taxonomy<T extends Taxonomie, Interface = {}>
   implements LodgerTaxonomy<T, Interface> {
 
-  readonly isMultipleSelect ?: boolean = false
-
   @observable lastItems: string[] = []
+
+  /**
+   * Last added item's id
+   *
+   * @readonly
+   * @memberof Taxonomy
+   */
   @computed get last () {
     return this.lastItems[0]
   }
+
+  set last (id : string) {
+    if (id) this.lastItems.unshift(id)
+    else this.lastItems.shift()
+  }
+
 
   // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
 
   static async init (
-    data: LodgerTaxonomyCreator<{}>,
+    data: ETSchema<{}>,
     options?: LodgerTaxonomyCreatorOptions
   ) {
     const { name, methods, statics, fields } = data
@@ -68,7 +80,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       statics
     }
 
-    const collection = await $db.collection(collectionCreator)
+    const collection = await db.collection(collectionCreator)
 
     return new Taxonomy(form, collection, options)
   }
@@ -83,13 +95,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   constructor (
     protected form: Form<T, Interface>,
     protected collection: RxCollection<T>,
-    options ?: LodgerTaxonomyCreatorOptions,
+    readonly options ?: LodgerTaxonomyCreatorOptions,
   ) {
-    if (options) {
-      if (options.multipleSelect) {
-        this.isMultipleSelect = true
-      }
-    }
   }
 
   /**
@@ -111,7 +118,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @memberof Taxonomy
    */
   async trash (id: string) {
-    if (this.last === id) this.popLast()
+    if (this.last === id) this.last = undefined
     return await this.collection.findOne(id).remove()
   }
 
@@ -146,25 +153,17 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       const _doc = await this.collection[method](doc)
       const id = _doc._id
 
-      this.setLast(id)
+      this.last = id
 
       notify({
         type: 'success',
-        text: `pus ${name} ${id}`
+        text: `[${method}] ${name}!${['dev', 'test'].indexOf(env) > -1 ? `(${id})` : ''}`
       })
 
       return _doc
     } catch (e) {
       notify({ type: 'error', text: String(e) })
     }
-  }
-
-  @action setLast (id : string) {
-    this.lastItems.unshift(id)
-  }
-
-  @action popLast () {
-    this.lastItems.shift()
   }
 
   /**

@@ -1,6 +1,6 @@
 import { RxDatabase, RxCollection } from 'rxdb'
 
-import { createFromCollections } from '~/lib/DB'
+import DB from '~/lib/DB'
 import { Form } from '~/lib/Form'
 import Taxonomy from '~/lib/Taxonomy/index'
 
@@ -12,12 +12,13 @@ describe('Taxonomy class', () => {
     taxes = {}, $tax: Taxonomy<any>
 
   beforeAll(async () => {
-    const i = await createFromCollections(collections, testdbsetup)
-    db = i.db
-    cols = i.cols
+
+    db = await DB.create(testdbsetup)
+
     Object.keys(cols).map(col => {
-      const form = new Form()
-      taxes[col] = new Taxonomy(form, cols[col], {
+
+      taxes[col] = new Taxonomy(schema, {
+        db,
         store: true,
         shortGetters: true
       })

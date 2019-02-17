@@ -1,8 +1,7 @@
 import { RxCollection, isRxDocument } from 'rxdb';
-import { createFromCollections } from '~/lib/DB'
+import DB from '~/lib/DB'
 
-import Subscriber from '~/lib/Subscriber'
-import delay from '~/lib/helpers/delay'
+import Subscriber from 'rxcollection-subscriber'
 
 import collections from 'fixtures/taxes/collections'
 import testdbsetup from 'fixtures/db/test'
@@ -21,8 +20,8 @@ describe('RxCollection Subscriber', () => {
   let collection: RxCollection
 
   beforeAll(async () => {
-    const { cols } = await createFromCollections([collections[1]], testdbsetup)
-    collection = cols.sosete
+    const db = await DB.create(testdbsetup)
+    collection = await db.collection(collections[1])
     await insertNitems.call(collection, 10)
   })
 
