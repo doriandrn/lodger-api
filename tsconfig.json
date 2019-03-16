@@ -20,7 +20,6 @@
     "paths": {
       "~/*": [ "/*" ],
       "~/lib/*": [ "lib/*" ],
-      // "forms/*": [ "forms/*" ],
       "defs/*": [ "lib/defs/*" ],
       "helper/*": [ "lib/helpers/*" ],
       "@/*": [ "/*" ],
@@ -42,10 +41,6 @@
     "experimentalDecorators": true,
     "isolatedModules": false
   },
-  // "include": [
-  //   "src/**/*"
-  //   // "forms/*"
-  // ],
   "exclude": [
     "dist/**/*",
     // "__tests__/**/*",
