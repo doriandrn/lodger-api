@@ -231,7 +231,10 @@ class Lodger implements LodgerAPI {
       ))
     )
     debug('frms', forms)
-    const Taxonomies = Object.assign({}, ...taxes.map(tax => ( { [tax]: new Taxonomy(tax, forms[tax]) }) ))
+    const Taxonomies = Object.assign({},
+      ...taxes.map(async tax =>
+        ({ [tax]: await Taxonomy.init(tax, forms[tax]) })
+      ))
     debug('Txs', Object.keys(Taxonomies))
     debug(`Loaded ${Object.keys(taxes).length} taxes ok.`)
 

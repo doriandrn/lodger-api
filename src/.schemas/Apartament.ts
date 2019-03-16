@@ -28,6 +28,11 @@ declare global {
   }
 }
 
+const schema: ETSchema = {
+  fields,
+  plural
+}
+
 const plural = 'apartamente'
 const selectedApGetter = 'apartament/activeDoc'
 
@@ -165,8 +170,4 @@ const methods = {
   }
 }
 
-export {
-  fields,
-  plural,
-  methods
-}
+export schema

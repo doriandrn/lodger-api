@@ -20,7 +20,7 @@ export default class STaxonomy extends SubscribableTaxonomy implements Searchabl
   readonly _results: Result[] = []
 
   constructor (protected config: SubscribableTaxonomyConfig) {
-    super()
+    super(...arguments)
   }
 
   clearResults () {

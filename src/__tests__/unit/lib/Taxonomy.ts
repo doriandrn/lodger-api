@@ -17,7 +17,7 @@ describe('Taxonomy class', () => {
 
     Object.keys(cols).map(col => {
 
-      taxes[col] = new Taxonomy(schema, {
+      taxes[col] = await Taxonomy.init(schema, {
         db,
         store: true,
         shortGetters: true
