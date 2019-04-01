@@ -41,7 +41,7 @@ describe('Form', () => {
         const formWithCT = new Form(name, formData.fields, {
           captureTimestamp: true
         })
-        expect(formWithCT.fieldsIds.indexOf('la') > -1).toBeTruthy()
+        expect(formWithCT.fieldsIds.indexOf('la')).toBeGreaterThan(-1)
       })
     })
   })

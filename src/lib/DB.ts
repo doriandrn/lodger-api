@@ -1,19 +1,14 @@
 import * as RxDB from 'rxdb'
 
-import memoryAdapter from 'pouchdb-adapter-memory'
-import idbAdapter from 'pouchdb-adapter-idb'
-import httpAdapter from 'pouchdb-adapter-http'
-
 import { env } from 'defs/env'
 
 switch (env) {
   default:
-    RxDB.plugin(memoryAdapter)
+    RxDB.plugin(require('pouchdb-adapter-memory'))
     break
 
   case 'production':
-    RxDB.plugin(httpAdapter)
-    RxDB.plugin(idbAdapter)
+    RxDB.plugin(require('pouchdb-adapter-leveldb'))
     break
 }
 

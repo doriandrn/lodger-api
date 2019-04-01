@@ -65,24 +65,30 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
 
   static async init (
-    data: ETSchema<{}>,
+    _schema: ETSchema<{}>,
+    db: any,
     options?: LodgerTaxonomyCreatorOptions
   ) {
-    const { name, methods, statics, fields } = data
+    try {
+      const { name, methods, statics, fields } = _schema
 
-    const form = new Form(name, fields)
-    const schema = new Schema(name, fields)
+      const form = new Form(name, fields)
+      console.info('FU', form)
+      const schema = new Schema(name, fields)
 
-    const collectionCreator: RxCollectionCreator = {
-      name,
-      schema,
-      methods,
-      statics
+      const collectionCreator: RxCollectionCreator = {
+        name,
+        schema,
+        methods,
+        statics
+      }
+
+      const collection = await db.collection(collectionCreator)
+
+      return new Taxonomy(form, collection, options)
+    } catch (e) {
+      throw new TaxonomyError(e)
     }
-
-    const collection = await db.collection(collectionCreator)
-
-    return new Taxonomy(form, collection, options)
   }
 
   /**
