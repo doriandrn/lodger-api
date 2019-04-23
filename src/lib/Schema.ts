@@ -64,8 +64,8 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     fields: FieldCreator<Interface>[],
     options?: LodgerSchemaOptions
   ) {
-    // if (!fields.length)
-    //   throw new SchemaError(Errors.missingFields, { name })
+    if (!fields || !fields.length)
+      throw new SchemaError(Errors.missingFields, { name })
 
     fields.map(f => this.add(f))
   }

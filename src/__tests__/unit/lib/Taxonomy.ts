@@ -13,16 +13,18 @@ describe('Taxonomy class', () => {
   beforeAll(async () => {
     db = await DB.create(testdbsetup)
 
-    Object.keys(collections).map(async col => {
-      const { schema } = col
+    await Promise.all(Object.keys(collections).map(async col => {
+      const { schema } = collections[col]
+
       taxes[col] = await Taxonomy.init(schema,
         db,
         {
           store: true,
           shortGetters: true
         })
-    })
-    $tax = taxes['sosete']
+    }))
+
+    $tax = taxes[col]
   })
 
   afterAll(async () => {
