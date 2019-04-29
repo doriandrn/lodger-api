@@ -1,5 +1,5 @@
-import Schema from './Schema'
-import { Field } from './Field';
+import FormError from './Error'
+import { Field } from './Field'
 
 type FormOptions = {
   captureTimestamp ?: boolean // generates a rxSchema ready to be used as a collection creator
@@ -11,8 +11,21 @@ type FormFields<I> = {
 
 export type LodgerFormCreator<T> = {
   name?: string
-  plural?: Plural<string>
+  plural?: Plural<String>
   fields: FieldCreator<T>[]
+}
+
+/**
+ * Errors Definition
+ * @readonly
+ * @enum {string}
+ *
+ * @todo account for translations
+ */
+enum Errors {
+  invalidRequested = 'Invalid file requested: %%',
+  invalidName = 'Invalid name supplied: %%',
+  missingFields = 'Missing fields on form %%',
 }
 
 /**
@@ -38,11 +51,10 @@ type FormValue<I> = {
  * @implements {LodgerForm}
  */
 class Form<N extends string, I>
-extends FrontEndSchema<N, I>
 implements LodgerForm<N, I> {
   private _onsubmit : Function[] = [] // hooks
 
-  readonly plural : Plural<N>
+  readonly plural : string
   readonly captureTimestamp : boolean = false
 
   $active: boolean = false
@@ -58,11 +70,10 @@ implements LodgerForm<N, I> {
    * @memberof Form
    */
   constructor (
-    readonly name : N = 'untitled',
+    readonly name : string = 'untitled',
     fields: FieldCreator<I>[] = [],
     opts ?: FormOptions
   ) {
-    super(name, fields, opts && opts.schema ? opts.schema : {})
     this.name = name
     this.plural = name.plural()
 
@@ -71,10 +82,8 @@ implements LodgerForm<N, I> {
     })
 
     if (opts) {
-
       if (opts.captureTimestamp) {
-        super.add({
-          id: 'la',
+        this.fields['@'] = new Field({
           type: 'dateTime',
           required: true, // for filters / sorts
           index: true,
@@ -130,7 +139,7 @@ implements LodgerForm<N, I> {
    * @returns {Object} data item (Vue $data - ready)
    */
   value (
-    context ?: FormContext<I>
+    context ?: any
   ): FormValue<I> {
     let $data = {} as any
 
@@ -146,5 +155,5 @@ implements LodgerForm<N, I> {
 
 export {
   Form,
-  // Errors
+  Errors
 }

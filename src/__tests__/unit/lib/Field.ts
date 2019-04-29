@@ -140,13 +140,17 @@ describe('Field', () => {
       })
 
       test('excludes null/undefined keys', () => {
-        Object.values(new Field(testField)).forEach(field => {
+        Object.values(testField).forEach(field => {
           expect(field).toBeDefined()
         })
       })
 
       test('has the "index" property if supplied in field', () => {
         expect(new Field({ index: true }).rxSchema.index).toBeTruthy()
+      })
+
+      test('matches snapshot', () => {
+        expect(testField).toMatchSnapshot('testField')
       })
     })
   })
