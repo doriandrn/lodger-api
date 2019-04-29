@@ -38,7 +38,7 @@ type FormValue<I> = {
  * @implements {LodgerForm}
  */
 class Form<N extends string, I>
-extends Schema<N, I>
+extends FrontEndSchema<N, I>
 implements LodgerForm<N, I> {
   private _onsubmit : Function[] = [] // hooks
 

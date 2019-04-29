@@ -10,7 +10,7 @@ import { env } from './defs/env'
  */
 interface LodgerSchema extends RxJsonSchema {
   add (field: FieldCreator<any>): void
-  new (): RxJsonSchema
+  // new (): RxJsonSchema
 }
 
 
@@ -25,7 +25,8 @@ enum Errors {
   invalidRequested = 'Invalid file requested: %%',
   invalidName = 'Invalid name supplied: %%',
   missingFields = 'Missing fields on form %%',
-  fieldExists = 'Field already exists, %%'
+  fieldExists = 'Field already exists, %%',
+  fieldMissingId = 'Field missing ID, %%'
 }
 
 type LodgerSchemaOptions = {}
@@ -34,7 +35,7 @@ const datamodelDir = ['dev', 'test']
   .indexOf(env) > -1 ? '.schemas' : '.'
 
 type SchemaProperties<Interface> = {
-  [k in keyof Interface] : RxJsonSchemaTopLevel
+  [k in keyof Interface] ?: RxJsonSchemaTopLevel
 }
 
 /**
@@ -64,10 +65,12 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     fields: FieldCreator<Interface>[],
     options?: LodgerSchemaOptions
   ) {
-    // if (!fields.length)
-    //   throw new SchemaError(Errors.missingFields, { name })
+    if (!fields || !fields.length)
+      throw new SchemaError(Errors.missingFields, { name })
 
     fields.map(f => this.add(f))
+
+    if (options) {}
   }
 
   /**
@@ -79,6 +82,8 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
    */
   add (field: FieldCreator<Interface>) {
     const { id } = field
+    if (!id)
+      throw new SchemaError(Errors.fieldMissingId)
     if (this.properties[id])
       throw new SchemaError(Errors.fieldExists, { id })
     const { rxSchema, v, storage } = new Field(field)

@@ -1,6 +1,4 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes, RxJsonSchema } from "rxdb";
-import { GetterTree } from "vuex";
-// import { RootState } from "./Store";
 import FieldError from './Error'
 import String, { strings, numbers, arrays, objects } from './String'
 
@@ -23,10 +21,10 @@ type FieldTypes = keyof typeof strings |
 // enum cheiImutabile { 'primary' | 'index' | 'encrypted' | 'required'
 
 declare global {
-  type ID<X extends Taxonomie> = string
+  // type ID<X extends Taxonomie> = string
 
   type FieldCreator<T> = {
-    id : keyof T // item's identifier, correlates to DB's item key
+    // id : keyof T // item's identifier, correlates to DB's item key
 
     label ?: string // what the user sees
     placeholder ?: string // sample data
@@ -88,19 +86,18 @@ interface FormField<T> extends RxJsonSchemaTopLevel {
  * @extends RxJsonSchemaTopLevel
  */
 export class Field<T> implements FormField<T> {
-  readonly id: keyof T
-  readonly type: JsonSchemaTypes
+  readonly type: JsonSchemaTypes = 'string'
 
   readonly ref ?: ReferenceTaxonomy
   readonly items ?: { type: 'string' }
-  readonly index ?: boolean
-  readonly multipleOf ?: number
-  readonly v ?: string
+  readonly index ?: boolean // should be indexed to search for
+  readonly multipleOf ?: number // multiplier if number
+  readonly v ?: string // validation string
 
   readonly storage ?: 'db' | 'store'  = 'db' // where to store data, in db or store
 
   readonly default?: any
-  readonly value : (context ?: FieldGivenContext<T>) => any
+  readonly value : (context ?: FieldGivenContext<T>) => any = () => undefined
 
   /**
    * Creates an instance of Field.
@@ -109,11 +106,14 @@ export class Field<T> implements FormField<T> {
    * @memberof Field
    */
   constructor (
-    data: FieldCreator<T>
+    data ?: FieldCreator<T>
   ) {
-    const { id, index, ref, indexRef, type, step, required, v, value } = data
+    if (!data) {
+      return
+    }
+
+    const { index, ref, indexRef, type, step, required, v, value } = data
     this.type = String(type || '').toRxDBType()
-    this.id = id
 
     if (index) this.index = true
 
@@ -143,12 +143,12 @@ export class Field<T> implements FormField<T> {
       data.default() :
       data.default
 
-    this.value = () => undefined
+
 
     // bind the value function
     const { storage } = this
-    if (value && typeof value === 'function')
-      this.value = value.bind({ id, storage })
+      if (value && typeof value === 'function')
+        this.value = value.bind({ storage })
   }
 
   /**
@@ -157,7 +157,7 @@ export class Field<T> implements FormField<T> {
    */
   get rxSchema (): RxJsonSchemaTopLevel {
     const schema = {}
-    const excludes = ['storage', 'id', 'value', 'default']
+    const excludes = ['storage', 'value', 'default']
     Object.keys(this).forEach(prop => {
       if (this[prop] === undefined) return
       if (excludes.indexOf(prop) > -1) return
@@ -165,17 +165,4 @@ export class Field<T> implements FormField<T> {
     })
     return schema
   }
-
-  // /**
-  //  * Field value calculator
-  //  *
-  //  * @param {FieldGivenContext<T>} context
-  //  * @returns {*}
-  //  * @memberof Field
-  //  */
-  // value (context ?: FieldGivenContext<T>): any {
-  //   if (!context) return
-  //   return this.value
-  // }
-
 }

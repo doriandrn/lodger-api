@@ -5,7 +5,7 @@
 		}
 	],
 	"settings": {
-		"workbench.colorTheme": "Sunset Theme",
+		"workbench.colorTheme": "Default Light+",
 		"terminal.integrated.scrollback": 10000
 	}
 }

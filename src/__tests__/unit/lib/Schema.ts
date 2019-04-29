@@ -1,18 +1,14 @@
 import Schema from '~/lib/Schema'
-import { isRxSchema, RxSchema, RxJsonSchema } from 'rxdb'
-
 import schema1 from 'fixtures/schemas/withMethods'
-const name = 'schema1'
 
-Object.assign(schema1, { name })
+const name = 'schema1'
+// Object.assign(schema1, { name })
 
 describe('Schema', () => {
   let schema: Schema<string, any>
-  let rxSchema: RxSchema
 
   beforeAll(() => {
     schema = new Schema(name, schema1.fields)
-    rxSchema = RxSchema.create(schema)
   })
 
   describe('ctor', () => {
@@ -24,10 +20,11 @@ describe('Schema', () => {
       expect(schema).toMatchSnapshot(name)
     })
 
-    test('is a valid RxSchema', () => {
-      expect(rxSchema).toBeDefined()
-      expect(isRxSchema(rxSchema)).toBeTruthy()
-    })
+    // deprecated -> rxschema.create() no longer avail
+    // test('is a valid RxSchema', () => {
+    //   expect(rxSchema).toBeDefined()
+    //   expect(isRxSchema(rxSchema)).toBeTruthy()
+    // })
 
     test('fields match', () => {
       const keys = Object.keys(schema.properties)
@@ -50,14 +47,6 @@ describe('Schema', () => {
       expect(schema.properties.x5).toBeUndefined()
     })
   })
-
-  // describe('.title', () => {
-  //   test('matches given name', () => {
-  //     expect(rxSchema.title).toBe(name)
-  //   })
-  // })
-
-
 
   describe('.version', () => {
     test('is 0 on first run', () => {

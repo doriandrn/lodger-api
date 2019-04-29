@@ -55,7 +55,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     return this.lastItems[0]
   }
 
-  set last (id : string) {
+  set last (id : string | undefined) {
     if (id) this.lastItems.unshift(id)
     else this.lastItems.shift()
   }
@@ -65,24 +65,27 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
 
   static async init (
-    data: ETSchema<{}>,
+    schema: ETSchema<{}>,
+    db: any,
     options?: LodgerTaxonomyCreatorOptions
   ) {
-    const { name, methods, statics, fields } = data
+    try {
+      const ETS = new Schema(title, schema)
+      const form = new Form(ETS.FE)
 
-    const form = new Form(name, fields)
-    const schema = new Schema(name, fields)
+      const collectionCreator: RxCollectionCreator = {
+        name: title,
+        schema,
+        methods,
+        statics
+      }
 
-    const collectionCreator: RxCollectionCreator = {
-      name,
-      schema,
-      methods,
-      statics
+      const collection = await db.collection(collectionCreator)
+
+      return new Taxonomy(form, collection, options)
+    } catch (e) {
+      throw new TaxonomyError(e)
     }
-
-    const collection = await db.collection(collectionCreator)
-
-    return new Taxonomy(form, collection, options)
   }
 
   /**

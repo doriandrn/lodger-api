@@ -1,5 +1,5 @@
 import Taxonomy from './'
-import Subscriber from '../Subscriber'
+import Subscriber from 'rxcollection-subscriber'
 import { Form } from '../Form'
 import { computed } from 'mobx';
 

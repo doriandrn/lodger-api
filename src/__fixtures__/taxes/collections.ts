@@ -1,6 +1,5 @@
-export default [
-  {
-    name: 'masini',
+export default {
+  masini: {
     schema: {
       title: 'masina',
       version: 0,
@@ -16,8 +15,7 @@ export default [
       }
     }
   },
-  {
-    name: 'sosete',
+  sosete: {
     schema: {
       title: 'soseta',
       version: 0,
@@ -33,4 +31,4 @@ export default [
       }
     }
   }
-]
+}

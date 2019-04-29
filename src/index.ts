@@ -89,11 +89,6 @@ interface LodgerAPI {
  * @requires <rxdb> RxDatabase
  */
 class Lodger implements LodgerAPI {
-  /**
-   * @requires <vuex> VueX
-   */
-  protected store = new Store({})
-
   readonly taxonomies: TaxesList = {}
   protected plugins: LodgerPlugin[] = []
 
@@ -106,7 +101,7 @@ class Lodger implements LodgerAPI {
   constructor (
     protected db: RxDatabase
   ) {
-    notify.bind(this.store)
+    // notify.bind(this.store)
   }
 
   put (taxonomie, data) {
@@ -247,7 +242,6 @@ class Lodger implements LodgerAPI {
     // })
     // debug('cols', _collections)
     // const db = await DB(_collections, dbCon)
-
 
     /**
      * When a taxonomy item gets SELECTED,
