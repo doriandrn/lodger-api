@@ -1,9 +1,9 @@
 import fields from './normal'
 
-const fieldsWithExcludedItems : FieldCreator<any>[] = [
+const fieldsWithExcludedItems : FieldsCreator<any> = {
   ...fields,
-  { excludeFrom: 'db' },
-  { excludeFrom: 'db', required: true }
-]
+  x4: { excludeFrom: 'db' },
+  x5: { excludeFrom: 'db', required: true }
+}
 
 export default fieldsWithExcludedItems

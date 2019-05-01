@@ -6,13 +6,13 @@ type FormOptions = {
 }
 
 type FormFields<I> = {
-  [k in keyof I] ?: Field
+  [k in keyof I] : Field
 }
 
 export type LodgerFormCreator<T> = {
   name?: string
   plural?: Plural<String>
-  fields?: FieldsCreator<T>[]
+  fields?: FieldsCreator<T>
 }
 
 /**
@@ -40,7 +40,7 @@ interface LodgerForm<N extends string, I> {
 }
 
 type FormValue<I> = {
-  [k in keyof I]: any
+  [k in keyof I] ?: any
 }
 
 
@@ -54,6 +54,7 @@ class Form<N extends string, I>
 implements LodgerForm<N, I> {
   private _onsubmit : Function[] = [] // hooks
 
+  readonly name : N
   readonly plural : string
   readonly captureTimestamp : boolean = false
 
@@ -70,11 +71,11 @@ implements LodgerForm<N, I> {
    * @memberof Form
    */
   constructor (
-    readonly name : string = 'untitled',
-    fields: FieldsCreator<I>,
+    data: LodgerFormCreator<I>,
     opts ?: FormOptions
   ) {
-    this.name = name
+    const { fields, name } = data
+    this.name = name || 'untitled'
     this.plural = name.plural()
 
     if (fields) {

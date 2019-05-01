@@ -6,9 +6,9 @@ type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
 type ReferenceTaxonomy = Plural<Taxonomie>
 
 // Can be used to pass in the field additional params for when calculating the value
-type FieldGivenContext = {
-  selectedDoc ?: RxDocument<any>,
-  activeDoc : RxDocument<any>
+type FieldGivenContext<T> = {
+  selectedDoc ?: RxDocument<T>,
+  activeDoc : RxDocument<T>
 }
 
 type FieldTypes = keyof typeof strings |
@@ -30,7 +30,7 @@ declare global {
 
     // values
     default?: any | Function
-    value?: (context : FieldGivenContext) => any
+    value?: (context : FieldGivenContext<any>) => any
 
     // field description
     type ?: FieldTypes // our form types. DEFAULT: 'string'
@@ -67,20 +67,22 @@ declare global {
   }
 }
 
+/**
+ * @interface FieldAPI
+ */
+interface FieldAPI {
+  readonly default : any | Function
+  readonly rxSchema : RxJsonSchemaTopLevel
+
+  value (context : FieldGivenContext<any>): any
+  onclick ?: (context ?: FieldGivenContext<any>) => void
+}
+
 // excluded _id, we use it as a key.
 export type FieldsCreator<Schema> = {
   [i in Exclude<keyof Schema, '_id'>]: FieldCreator
 }
 
-/**
- * @interface FormField
- * @extends RxJsonSchemaTopLevel
- */
-interface FormField extends RxJsonSchemaTopLevel {
-  readonly rxSchema : RxJsonSchemaTopLevel
-  value (context ?: FieldGivenContext<any>): any
-  onclick ?: (context ?: FieldGivenContext<any>) => void
-}
 
 /**
  *
@@ -89,7 +91,7 @@ interface FormField extends RxJsonSchemaTopLevel {
  * @requires [String]
  * @extends RxJsonSchemaTopLevel
  */
-export class Field implements FormField {
+export class Field implements FieldAPI {
   readonly type: JsonSchemaTypes = 'string'
 
   readonly ref ?: ReferenceTaxonomy
@@ -100,8 +102,8 @@ export class Field implements FormField {
 
   readonly storage ?: 'db' | 'store'  = 'db' // where to store data, in db or store
 
-  readonly default?: any
-  readonly value : (context ?: FieldGivenContext<T>) => any = () => this.default || undefined
+  readonly default : any
+  readonly value : (context : FieldGivenContext<any>) => any = () => this.default || undefined
 
   /**
    * Creates an instance of Field.

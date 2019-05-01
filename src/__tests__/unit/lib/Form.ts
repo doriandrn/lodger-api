@@ -22,7 +22,7 @@ describe('Form', () => {
   let form: Form<'xx', TestFormFields>
 
   beforeAll(() => {
-    form = new Form(name, formData.fields)
+    form = new Form(formData)
   })
 
   describe('.fields', () => {
@@ -38,10 +38,10 @@ describe('Form', () => {
 
     describe('options', () => {
       describe('.captureTimestamp', () => {
-        const formWithCT = new Form(name, formData.fields, {
+        const formWithCT = new Form(formData, {
           captureTimestamp: true
         })
-        expect(formWithCT.fieldsIds.indexOf('la')).toBeGreaterThan(-1)
+        expect(formWithCT.fieldsIds.indexOf('@')).toBeGreaterThan(-1)
       })
     })
   })
