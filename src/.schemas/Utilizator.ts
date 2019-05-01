@@ -21,38 +21,28 @@ declare global {
   }
 }
 
-const fields: FieldCreator<Utilizator>[] = [
-  // {
-  //   id: '_id',
-  //   notInDb: true,
-  //   notInForm: true,
-  //   value: g => g[getter]._id
-  // },
-  {
-    id: 'name',
+const fields: FieldCreator<Utilizator> = {
+  name: {
     required: true,
     primary: true,
     showInList: 'primary',
     value: ({ activeDoc }) => activeDoc.name
   },
-  {
-    id: 'contact',
+  contact: {
     type: 'contactFields',
     excludeFrom: 'addForm',
     value: ({ activeDoc }) => activeDoc.contact
   },
-  {
-    id: 'rol',
+  rol: {
     required: true,
     excludeFrom: [],
     value: ({ activeDoc }) => activeDoc.rol
   },
-  {
-    id: 'preferinte',
+  preferinte: {
     type: 'object',
     excludeFrom: [],
   }
-]
+}
 
 const methods = {
   async UPDATEAZA(campuri) {

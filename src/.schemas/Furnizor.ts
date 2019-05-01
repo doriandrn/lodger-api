@@ -6,24 +6,21 @@ declare global {
   }
 }
 
-export const fields: FieldCreator<Furnizor>[] = [
-  {
-    id: 'name',
+export const fields: FieldsCreator<Furnizor> = {
+  name: {
     required: true,
     showInList: 'primary',
     index: true
   },
-  {
-    id: 'servicii',
+  servicii: {
     type: 'servicii',
     required: true,
     value: ({ activeDoc }) => activeDoc.servicii,
     ref: 'serviciu'
   },
-  {
-    id: 'organizatie',
+  organizatie: {
     type: 'organizatie'
   }
-]
+}
 
 export const plural = 'furnizori'

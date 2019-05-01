@@ -4,8 +4,7 @@ declare global {
    *
    * @interface Apartament
    */
-  interface Apartament {
-    _id : string
+  interface Apartament extends LodgerDocument {
     nr : number
     balanta: Bani
 
@@ -36,13 +35,8 @@ const schema: ETSchema = {
 const plural = 'apartamente'
 const selectedApGetter = 'apartament/activeDoc'
 
-const fields: FieldCreator<Apartament>[] = [
-  {
-    id: '_id',
-    value: g => g[selectedApGetter]._id
-  },
-  {
-    id: 'nr',
+const fields: FieldsCreator<Apartament> = {
+  nr: {
     type: 'number',
     default: g => {
       //TODO: numerotare pentru hoteluri, 101 et 1, 201 et 2
@@ -62,7 +56,7 @@ const fields: FieldCreator<Apartament>[] = [
     index: true,
     showInList: 'secondary'
   },
-  {
+  id: {
     id: 'proprietar',
     placeholder: 'Ion Barbu',
     oninput: {
@@ -72,16 +66,14 @@ const fields: FieldCreator<Apartament>[] = [
     v: 'alpha_spaces|max:32',
     value: g => g[selectedApGetter].proprietar
   },
-  {
-    id: 'suprafata',
+  suprafata: {
     type: 'number',
     showInList: ['details'],
     default: null, // TODO: ia de la apartamentul de la etajul de dedesubt, in functie de cate ap sunt
     step: 0.01,
     value: g => g[selectedApGetter].suprafata
   },
-  {
-    id: 'locatari',
+  locatari: {
     index: true,
     type: 'number',
     showInList: ['details'],
@@ -90,84 +82,73 @@ const fields: FieldCreator<Apartament>[] = [
     max: 10,
     value: g => g[selectedApGetter].locatari
   },
-  {
+  camere: {
     id: 'camere',
     type: 'number',
     index: true,
-    showInList: 'details',
+    showInList: ['details'],
     default: 2,
     max: 12,
     min: 1,
     value: g => g[selectedApGetter].camere
   },
-  {
-    id: 'etaj',
+  etaj: {
     type: 'number',
     required: true,
-    notInForm: true,
     default: g => g['etaj/selectat'].etaj,
     value: g => g[selectedApGetter].etaj
   },
-  {
-    id: 'blocId',
+  blocId: {
     required: true,
-    notInForm: true,
     default: g => g['etaj/selectat'].bloc,
     value: g => g[selectedApGetter].bloc
   },
-  {
-    id: 'asociatieId',
+  asociatieId: {
     required: true,
-    notInForm: true,
     default: g => g['asociatie/activeDoc']._id,
     value: g => g['asociatie/activeDoc']._id
   },
-  {
-    id: 'scara',
+  scara: {
     type: 'number',
     required: true,
-    notInForm: true,
     default: g => g['etaj/selectat'].scara,
     value: g => g[selectedApGetter].scara
   },
-  {
-    id: 'balanta',
+  balanta: {
     type: 'bani',
     default: null,
     required: true,
-    showInList: 'details',
+    showInList: ['details'],
     index: true,
     value: g => g[selectedApGetter].balanta
   },
-  {
-    id: 'contoare',
+  contoare: {
     type: 'contoare',
-    showInList: 'details',
+    showInList: ['details'],
     value: g => g[selectedApGetter].contoare
   },
-  {
-    id: 'incasari',
+  incasari: {
     type: 'array',
-    notInForm: true,
     ref: 'incasari'
   },
-  {
-    id: 'datorii',
+  datorii: {
     type: 'array',
-    notInForm: true,
     ref: 'cheltuieli'
   }
-]
+}
 
 const methods = {
   async incaseaza (data: Incasare) {
     if (!this.balanta) this.balanta = 0
     let incasari = this.incasari || []
     this.balanta += data.suma
-    incasari.push(data.id)
+    incasari.push(data._id)
     this.incasari = incasari
     await this.save()
   }
 }
 
-export schema
+export {
+  methods,
+  fields
+}

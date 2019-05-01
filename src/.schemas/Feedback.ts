@@ -4,22 +4,19 @@ interface Feedback {
   mesaj:  string
 }
 
-export const fields: FieldCreator<Feedback>[] = [
-  {
-    id: 'subiect',
+export const fields: FieldsCreator<Feedback> = {
+  subiect: {
     required: true
   },
-  {
-    id: 'tip',
+  tip: {
     type: 'select',
     options: ['bug', 'enhacement', 'feature', 'other'],
     default: 'bug',
     required: true
   },
-  {
-    id: 'mesaj',
+  mesaj: {
     required: true,
     type: 'textarea',
     placeholder: 'Părerea / Sugestia / Critica ta'
   }
-]
+}

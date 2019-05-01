@@ -1,5 +1,3 @@
-import { Getter } from 'vuex'
-
 /**
  * Monede
  *
@@ -21,52 +19,44 @@ declare global {
   }
 }
 
-const fields: FieldCreator<Incasare>[] = [
-  {
-    id: 'suma',
+const fields: FieldCreator<Incasare> = {
+  suma: {
     type: 'bani',
     showInList: 'primary',
     index: true,
     required: true,
     label: 'defaults.sum'
   },
-  {
-    id: 'nrChitanta',
+  nrChitanta: {
     type: 'number',
     default: 1,
     index: true,
     value: ({ activeDocument }) => (activeDocument.nrUltimaChitanta || 0) + 1
   },
 
-
-  {
-    id: 'apartamentId', //aka DE LA
+  //aka DE LA
+  apartamentId: {
+    id: 'apartamentId',
     required: true,
     type: 'search',
     ref: 'apartamente'
   },
+
   // ASTEA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
   // TREBUIE SA FIGUREZE
   /// !!!!!!!!!!!!!!!!
-  {
-    id: 'blocId',
-    notInForm: true,
+  blocId: {
     required: true,
     index: true,
     value: (g: Getter<AsociatieState, RootState>) => g['bloc/selected'].id
   },
-  {
-    id: 'asociatieId',
-    notInForm: true,
+  asociatieId: {
     required: true,
     index: true,
     value: (g: Getter<AsociatieState, RootState>) => g['asociatie/selected'].id
   }
-]
-
-const plural = 'incasari'
+}
 
 export {
-  fields,
-  plural
+  fields
 }

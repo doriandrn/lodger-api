@@ -12,7 +12,7 @@ type FormFields<I> = {
 export type LodgerFormCreator<T> = {
   name?: string
   plural?: Plural<String>
-  fields: FieldCreator<T>[]
+  fields: FieldsCreator<T>[]
 }
 
 /**

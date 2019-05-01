@@ -18,52 +18,38 @@ declare global {
   }
 }
 
-const fields: FieldCreator<Factura>[]  = [
-  {
-    id: 'furnizorId', //aka DE LA
-    required: true,
-    type: 'search',
-    ref: 'furnizori'
-  },
-  {
-    id: 'suma',
+const fields: FieldsCreator<Factura>  = {
+  suma: {
     type: 'bani',
     showInList: 'primary',
     index: true,
     required: true,
     label: 'defaults.sum'
   },
-  {
-    id: 'nrFactura',
+  nrFactura: {
     type: 'number',
     default: 1,
     index: true,
-    value: getters => Number(getters['asociatie/nrUltimaChitanta'] || 0) + 1
+    value: g => Number(g.nrUltimaChitanta || 0) + 1
   },
-  {
-    id: 'dataScadenta',
+  dataScadenta: {
     type: 'date',
     showInList: 'secondary'
   },
-  // {
-  //   id: 'moneda',
-  //   notInForm: true,
-  //   required: true,
-  //   value: getters => getters['asociatie/moneda']
-  // },
 
-  {
-    id: 'asociatieId',
-    notInForm: true,
+  furnizorId: {
+    required: true,
+    type: 'search',
+    ref: 'furnizori'
+  },
+
+  asociatieId: {
     required: true,
     index: true,
     value: (g) => g['asociatie/active'] || g['asociatie/selected']
   }
-]
-
-const plural = 'facturi'
+}
 
 export {
-  fields,
-  plural
+  fields
 }

@@ -50,9 +50,8 @@ interface AsociatieAPI {
 
 const plural = 'asociatii'
 
-const fields: FieldCreator<Asociatie>[] = [
-  {
-    id: 'name',
+const fields: FieldCreator<Asociatie> = {
+  name: {
     required: true,
     focus: true,
     index: true,
@@ -61,64 +60,51 @@ const fields: FieldCreator<Asociatie>[] = [
     v: 'max:32|min:3',
     oninput: { transform: 'capitalize' }
   },
-  {
-    id: 'organizatie',
+  organizatie: {
     type: 'object',
     value: ({ activeDoc }) => activeDoc.organizatie
     // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
   },
-  {
-    id: 'moneda',
+  moneda: {
     required: true
   },
-  {
-    id: 'balanta',
+  balanta: {
     type: 'number',
     value: ({ activeDoc }) => activeDoc.balanta,
     showInList: ['details']
   },
-  {
-    id: 'incasari',
+  incasari: {
     type: 'array',
     ref: 'incasari',
     value: ({ activeDoc }) => activeDoc.incasari,
     excludeFrom: ['addForm', 'editForm']
   },
-  {
-    id: 'utilizatori',
+  utilizaori: {
     type: 'array',
     ref: 'utilizatori',
     value: ({ activeDoc }) => activeDoc.utilizatori,
     excludeFrom: ['addForm', 'editForm']
   },
-  {
-    id: 'servicii',
+  servicii: {
     type: 'array',
     ref: 'servicii',
     value: ({ activeDoc }) => activeDoc.servicii,
     showInList: 'secondary',
     excludeFrom: ['addForm', 'editForm']
   },
-  {
-    id: 'furnizori',
+  furnizori: {
     type: 'array',
     ref: 'furnizori',
     value: ({ activeDoc }) => activeDoc.furnizori,
     excludeFrom: ['addForm', 'editForm']
   },
-  {
-    id: 'filtreCheltuieli',
-    value: ({ activeDoc }) => activeDoc.filtreCheltuieli,
-    type: 'array',
-    excludeFrom: ['addForm', 'editForm']
-  },
-  {
-    id: 'preferinte',
+  preferinte: {
     value: ({ activeDoc }) => activeDoc.preferinte,
     type: 'object',
     excludeFrom: ['addForm', 'editForm']
   }
-]
+}
+
 
 const methods: RxCollectionBase<Asociatie, AsociatieAPI> = {
   async initBalanta (data: {balanta: Bani}) {

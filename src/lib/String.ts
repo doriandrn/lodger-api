@@ -55,7 +55,7 @@ enum arrays {
  * @enum {number}
  */
 enum objects {
-  bani, object
+  bani, object, organizatie
 }
 
 /**

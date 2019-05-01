@@ -6,10 +6,9 @@ type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
 type ReferenceTaxonomy = Plural<Taxonomie>
 
 // Can be used to pass in the field additional params for when calculating the value
-type FieldGivenContext<N> = {
-  getters: GetterTree<N, RootState>,
-  selectedDoc ?: RxDocument<N>,
-  activeDoc : RxDocument<N>
+type FieldGivenContext = {
+  selectedDoc ?: RxDocument<any>,
+  activeDoc : RxDocument<any>
 }
 
 type FieldTypes = keyof typeof strings |
@@ -23,7 +22,7 @@ type FieldTypes = keyof typeof strings |
 declare global {
   // type ID<X extends Taxonomie> = string
 
-  type FieldCreator<T> = {
+  type FieldCreator = {
     // id : keyof T // item's identifier, correlates to DB's item key
 
     label ?: string // what the user sees
@@ -31,7 +30,7 @@ declare global {
 
     // values
     default?: any | Function
-    value?: (context : FieldGivenContext<T>) => any
+    value?: (context : FieldGivenContext) => any
 
     // field description
     type ?: FieldTypes // our form types. DEFAULT: 'string'
@@ -66,16 +65,20 @@ declare global {
     }
     focus ?: boolean // if this should be the first option to focus on
   }
+
+  type FieldsCreator<Schema> = {
+    [i in keyof Schema]: FieldCreator
+  }
 }
 
 /**
  * @interface FormField
  * @extends RxJsonSchemaTopLevel
  */
-interface FormField<T> extends RxJsonSchemaTopLevel {
+interface FormField extends RxJsonSchemaTopLevel {
   readonly rxSchema : RxJsonSchemaTopLevel
-  value (context ?: FieldGivenContext<T>): any
-  onclick ?: (context ?: FieldGivenContext<T>) => void
+  value (context ?: FieldGivenContext<any>): any
+  onclick ?: (context ?: FieldGivenContext<any>) => void
 }
 
 /**
@@ -85,7 +88,7 @@ interface FormField<T> extends RxJsonSchemaTopLevel {
  * @requires [String]
  * @extends RxJsonSchemaTopLevel
  */
-export class Field<T> implements FormField<T> {
+export class Field implements FormField {
   readonly type: JsonSchemaTypes = 'string'
 
   readonly ref ?: ReferenceTaxonomy
@@ -97,7 +100,7 @@ export class Field<T> implements FormField<T> {
   readonly storage ?: 'db' | 'store'  = 'db' // where to store data, in db or store
 
   readonly default?: any
-  readonly value : (context ?: FieldGivenContext<T>) => any = () => undefined
+  readonly value : (context ?: FieldGivenContext<T>) => any = () => this.default || undefined
 
   /**
    * Creates an instance of Field.
@@ -106,7 +109,7 @@ export class Field<T> implements FormField<T> {
    * @memberof Field
    */
   constructor (
-    data ?: FieldCreator<T>
+    data ?: FieldCreator<any>
   ) {
     if (!data) {
       return
@@ -128,7 +131,8 @@ export class Field<T> implements FormField<T> {
     if (step !== undefined) {
       if (this.type !== 'number')
         throw new FieldError('Type must be "number" for .step')
-      this.multipleOf = step
+
+        this.multipleOf = step
     }
 
     // hook in required to validation string
@@ -143,12 +147,10 @@ export class Field<T> implements FormField<T> {
       data.default() :
       data.default
 
-
-
     // bind the value function
     const { storage } = this
-      if (value && typeof value === 'function')
-        this.value = value.bind({ storage })
+    if (value && typeof value === 'function')
+      this.value = value.bind({ storage })
   }
 
   /**

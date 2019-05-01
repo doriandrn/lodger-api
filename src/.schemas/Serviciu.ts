@@ -8,33 +8,31 @@ declare global {
   }
 }
 
-const fields: FieldCreator<Serviciu>[] = [
+const fields: FieldCreator<Serviciu>[] = {
   /**
    * desi globale, serviciile sunt pt asociatii.
    * excludem asta din db, pastram pt referinta
    */
-  {
-    id: 'asociatieId',
-    excludeFrom: 'db'
+  asociatieId: {
+    excludeFrom: ['db']
   },
 
-  {
-    id: 'denumire',
+  denumire: {
     required: true,
     showInList: 'primary',
     primary: true,
     index: true
   },
-  {
-    id: 'furnizori',
+
+  furnizori: {
     type: 'array',
     excludeFrom: ['addForm', 'editForm']
   },
-  {
-    id: 'contoare',
+
+  contoare: {
     type: 'contoare'
   }
-]
+}
 
 const predefinite =
   [
@@ -54,5 +52,6 @@ const hooks = {
 
 export {
   fields,
+  predefinite,
   hooks
 }
