@@ -1,5 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
 import { RxDocument, RxCollectionBase } from "rxdb";
-import { LodgerTaxonomyCreator } from '../lib/Taxonomy'
 
 declare global {
   type Organizatie = {
@@ -8,7 +9,7 @@ declare global {
     rocif?: boolean
   }
 
-  type Asociatie = {
+  interface Asociatie extends LodgerDocument {
     _id: string
     name: string
     balanta: Bani
@@ -45,12 +46,10 @@ interface AsociatieAPI {
 
   initBalanta (): void
   incaseaza (incasare: Incasare): Promise<RxDocument<Incasare>>
-  toggleServiciu: (serviciu: ID<'Serviciu'>) => void
+  toggleServiciu: (serviciuId: string) => void
 }
 
-const plural = 'asociatii'
-
-const fields: FieldCreator<Asociatie> = {
+const fields: FieldsCreator<Asociatie> = {
   name: {
     required: true,
     focus: true,
@@ -65,9 +64,7 @@ const fields: FieldCreator<Asociatie> = {
     value: ({ activeDoc }) => activeDoc.organizatie
     // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
   },
-  moneda: {
-    required: true
-  },
+
   balanta: {
     type: 'number',
     value: ({ activeDoc }) => activeDoc.balanta,
@@ -79,7 +76,7 @@ const fields: FieldCreator<Asociatie> = {
     value: ({ activeDoc }) => activeDoc.incasari,
     excludeFrom: ['addForm', 'editForm']
   },
-  utilizaori: {
+  utilizatori: {
     type: 'array',
     ref: 'utilizatori',
     value: ({ activeDoc }) => activeDoc.utilizatori,
@@ -182,7 +179,6 @@ const setari = {
 
 export default <LodgerTaxonomyCreator>{
   fields,
-  plural,
   methods,
   statics,
   setari

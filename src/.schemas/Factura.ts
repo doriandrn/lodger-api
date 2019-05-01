@@ -1,3 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 type DistribuirePeApartamente = object
 
 type Distribuire = {

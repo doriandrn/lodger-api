@@ -1,3 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 type Scara = {
   id: number
   etaje: number
@@ -5,18 +8,18 @@ type Scara = {
   mansarda: boolean
 }
 
-interface Bloc {
-  _id: string
-  name: string
-  scari ?: Scara[]
-  adresa: string
+declare global {
+  interface Bloc extends LodgerDocument {
+    name: string
+    scari ?: Scara[]
+    adresa: string
 
-  asociatieId: string
+    asociatieId: string
+  }
 }
 
-const fields: FieldCreator<Bloc>[] = [
-  {
-    id: 'name',
+const fields: FieldsCreator<Bloc> = {
+  name: {
     placeholder: 'ex. M11, COCOR-2, A3...',
     oninput: {
       transform: 'uppercase:all',
@@ -29,8 +32,7 @@ const fields: FieldCreator<Bloc>[] = [
     focus: true,
     value: ({ activeDoc }) => activeDoc.name
   },
-  {
-    id: 'scari',
+  scari: {
     type: 'scari',
     default: [{
       id: 1,
@@ -40,17 +42,16 @@ const fields: FieldCreator<Bloc>[] = [
     }],
     value: ({ activeDoc }) => activeDoc.scari
   },
-  {
-    id: 'adresa',
+  adresa: {
     type: 'textarea',
     value: ({ activeDoc }) => activeDoc.adresa
+  },
+  asociatieId: {
+    value: ({ g }) => g.asociatieId
   }
-]
-
-const plural = 'blocuri'
+}
 
 export {
-  plural,
   fields
 }
 

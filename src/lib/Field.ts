@@ -65,10 +65,11 @@ declare global {
     }
     focus ?: boolean // if this should be the first option to focus on
   }
+}
 
-  type FieldsCreator<Schema> = {
-    [i in keyof Schema]: FieldCreator
-  }
+// excluded _id, we use it as a key.
+export type FieldsCreator<Schema> = {
+  [i in Exclude<keyof Schema, '_id'>]: FieldCreator
 }
 
 /**
@@ -109,7 +110,7 @@ export class Field implements FormField {
    * @memberof Field
    */
   constructor (
-    data ?: FieldCreator<any>
+    data ?: FieldCreator
   ) {
     if (!data) {
       return

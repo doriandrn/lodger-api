@@ -1,55 +1,59 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 declare global {
-  type Bani = {
-    suma: number
-    moneda: Monede
+  type Distribuire = {
+    [apartamentId: string]: {
+      suma: Bani,
+      procent: number
+    }
   }
 
   interface Cheltuiala {
     catre: Furnizor,
     suma: Bani,
+    facturi: Factura[],
     dataScadenta: Date,
     distribuire: Distribuire
 
     readonly apartamenteEligibile: []
+    readonly asociatieId: string
   }
 }
 
-const fields = [
-  {
-    id: 'asociatieId',
+const fields: FieldsCreator<Cheltuiala> = {
+  asociatieId: {
     ref: 'asociatii',
     required: true,
     index: true,
   },
-  {
-    id: 'facturi',
+  dataScadenta: {
+    type: 'dateTime'
+  },
+  catre: {
+    type: 'string',
+    ref: 'furnizori'
+  },
+  facturi: {
     type: 'search',
-    taxonomy: 'facturi',
     ref: 'facturi',
     // required: true TODO: e necesar? ?????????
   },
-  {
-    id: 'suma',
+  suma: {
     type: 'bani',
     required: true,
     index: true,
     showInList: 'secondary'
   },
-  {
-    id: 'modDistribuire',
+  distribuire: {
     type: 'distribuire'
   },
-  {
-    id: 'apartamenteEligibile',
+  apartamenteEligibile: {
     type: 'selApartamente',
     options: ({ getters }) => getters['asociatie/apartamente']
-  },
-
-]
-
-const plural = 'cheltuieli'
+  }
+}
 
 export {
-  plural,
   fields
 }

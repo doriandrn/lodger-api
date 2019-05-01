@@ -1,3 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 interface Feedback {
   subiect: string,
   tip: string,

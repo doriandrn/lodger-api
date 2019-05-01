@@ -5,18 +5,13 @@ import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
-import Schema from '../Schema'
+
 import { env } from '../defs/env'
 
 export type ETSchema<I> = LodgerFormCreator<I> & RxCollectionCreator
 
 type LodgerTaxonomyCreatorOptions = {
   multipleSelect ?: boolean
-}
-
-// base document definition of a lodger item
-type LodgerDocument = {
-  _id ?: string
 }
 
 /**

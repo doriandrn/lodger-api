@@ -1,3 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 declare global {
   type Serviciu = {
     denumire: string,
@@ -8,7 +11,7 @@ declare global {
   }
 }
 
-const fields: FieldCreator<Serviciu>[] = {
+const fields: FieldsCreator<Serviciu> = {
   /**
    * desi globale, serviciile sunt pt asociatii.
    * excludem asta din db, pastram pt referinta

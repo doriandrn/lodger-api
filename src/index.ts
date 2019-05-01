@@ -34,6 +34,15 @@ enum Forms {
 }
 
 /**
+ * Monede
+ *
+ * @enum {number}
+ */
+enum Monede {
+  RON, EUR, USD
+}
+
+/**
  * Errors definitions
  *
  * @enum {string}
@@ -49,6 +58,7 @@ enum Errors {
   missingData = 'Missing data %%',
   couldNotWriteFile = 'Cannot write file'
 }
+
 
 type FormsHolder = { [k in Taxonomie & Forms]: Form<k> }
 

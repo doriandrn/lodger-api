@@ -1,3 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 declare global {
   /**
    *
@@ -21,18 +24,13 @@ declare global {
 
     blocId: string
     asociatieId: string
+  }
 
+  interface ApartamentAPI {
     incaseaza (): void
-
   }
 }
 
-const schema: ETSchema = {
-  fields,
-  plural
-}
-
-const plural = 'apartamente'
 const selectedApGetter = 'apartament/activeDoc'
 
 const fields: FieldsCreator<Apartament> = {
@@ -56,8 +54,7 @@ const fields: FieldsCreator<Apartament> = {
     index: true,
     showInList: 'secondary'
   },
-  id: {
-    id: 'proprietar',
+  proprietar: {
     placeholder: 'Ion Barbu',
     oninput: {
       transform: 'capitalize'
@@ -83,7 +80,6 @@ const fields: FieldsCreator<Apartament> = {
     value: g => g[selectedApGetter].locatari
   },
   camere: {
-    id: 'camere',
     type: 'number',
     index: true,
     showInList: ['details'],
@@ -131,7 +127,7 @@ const fields: FieldsCreator<Apartament> = {
     type: 'array',
     ref: 'incasari'
   },
-  datorii: {
+  cheltuieli: {
     type: 'array',
     ref: 'cheltuieli'
   }

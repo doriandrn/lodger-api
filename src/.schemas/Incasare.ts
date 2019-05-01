@@ -1,17 +1,10 @@
-/**
- * Monede
- *
- * @enum {number}
- */
-enum Monede {
-  RON, EUR, USD
-}
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
 
 declare global {
-  interface Incasare {
+  interface Incasare extends LodgerDocument {
     suma: Bani,
     nrChitanta: number
-    moneda: Monede
 
     apartamentId: string
     blocId: string
@@ -19,7 +12,7 @@ declare global {
   }
 }
 
-const fields: FieldCreator<Incasare> = {
+const fields: FieldsCreator<Incasare> = {
   suma: {
     type: 'bani',
     showInList: 'primary',
@@ -31,12 +24,11 @@ const fields: FieldCreator<Incasare> = {
     type: 'number',
     default: 1,
     index: true,
-    value: ({ activeDocument }) => (activeDocument.nrUltimaChitanta || 0) + 1
+    value: ({ activeDoc }) => (activeDoc.nrUltimaChitanta || 0) + 1
   },
 
   //aka DE LA
   apartamentId: {
-    id: 'apartamentId',
     required: true,
     type: 'search',
     ref: 'apartamente'
@@ -48,12 +40,12 @@ const fields: FieldCreator<Incasare> = {
   blocId: {
     required: true,
     index: true,
-    value: (g: Getter<AsociatieState, RootState>) => g['bloc/selected'].id
+    value: (g) => g['bloc/selected'].id
   },
   asociatieId: {
     required: true,
     index: true,
-    value: (g: Getter<AsociatieState, RootState>) => g['asociatie/selected'].id
+    value: (g) => g['asociatie/selected'].id
   }
 }
 

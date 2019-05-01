@@ -1,3 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 type DateContact = {
   emailPublic?: string,
   telefonPublic?: string,
@@ -21,7 +24,7 @@ declare global {
   }
 }
 
-const fields: FieldCreator<Utilizator> = {
+const fields: FieldsCreator<Utilizator> = {
   name: {
     required: true,
     primary: true,

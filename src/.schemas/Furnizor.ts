@@ -1,3 +1,6 @@
+/// <reference path="../main.d.ts" />
+import { FieldsCreator } from '../lib/Field'
+
 declare global {
   interface Furnizor {
     name: string
@@ -22,5 +25,3 @@ export const fields: FieldsCreator<Furnizor> = {
     type: 'organizatie'
   }
 }
-
-export const plural = 'furnizori'
