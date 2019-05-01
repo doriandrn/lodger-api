@@ -12,13 +12,17 @@ declare global {
   type Plural<T> = T extends Taxonomie ? string : string
 
   type LodgerDocument = {
-    _id: string
+    _id: string,
+
+    '@': string
+    'upd@': string
   }
 
   /**
    * Monede
    *
    * @enum {number}
+   * @todo add all
    */
   enum Monede {
     RON, EUR, USD

@@ -1,18 +1,18 @@
-import FormError from './Error'
-import { Field } from './Field'
+// import FormError from './Error'
+import { Field, FieldsCreator } from './Field'
 
 type FormOptions = {
-  captureTimestamp ?: boolean // generates a rxSchema ready to be used as a collection creator
+  captureTimestamp ?: boolean
 }
 
 type FormFields<I> = {
-  [k in keyof I] ?: Field<I>
+  [k in keyof I] ?: Field
 }
 
 export type LodgerFormCreator<T> = {
   name?: string
   plural?: Plural<String>
-  fields: FieldsCreator<T>[]
+  fields?: FieldsCreator<T>[]
 }
 
 /**
@@ -71,15 +71,17 @@ implements LodgerForm<N, I> {
    */
   constructor (
     readonly name : string = 'untitled',
-    fields: FieldCreator<I>[] = [],
+    fields: FieldsCreator<I>,
     opts ?: FormOptions
   ) {
     this.name = name
     this.plural = name.plural()
 
-    fields.map(field => {
-      this.fields[ field.id ] = new Field(field)
-    })
+    if (fields) {
+      Object.keys(fields).map(field => {
+        this.fields[ field ] = new Field(fields[field])
+      })
+    }
 
     if (opts) {
       if (opts.captureTimestamp) {
