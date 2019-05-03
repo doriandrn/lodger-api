@@ -61,13 +61,13 @@ describe('Schema', () => {
 
   describe('add()', () => {
     test('inserts a new field programatically', () => {
-      schema.add({ id: 'cucu' })
+      schema.add('cucu')
       expect(schema.properties.cucu).toBeDefined()
     })
 
     test('inserts a required field in .required[]', () => {
       const id = 'reqTest'
-      schema.add({ id, required: true })
+      schema.add(id, { required: true })
       expect(schema.required).toContain(id)
     })
   })

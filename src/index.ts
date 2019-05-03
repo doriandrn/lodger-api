@@ -34,15 +34,6 @@ enum Forms {
 }
 
 /**
- * Monede
- *
- * @enum {number}
- */
-enum Monede {
-  RON, EUR, USD
-}
-
-/**
  * Errors definitions
  *
  * @enum {string}
@@ -114,10 +105,19 @@ class Lodger implements LodgerAPI {
     // notify.bind(this.store)
   }
 
-  put (taxonomie, data) {
+  /**
+   * Inserts/updates a new document in DB
+   * updates if data has ._id key
+   *
+   * @param {Taxonomie} taxonomie
+   * @param {Taxonomy<Taxonomie>} data
+   * @returns {Promise<RxDocument<Taxonomie>>}
+   * @alias Taxonomy.put
+   * @memberof Lodger
+   */
+  put (taxonomie: Taxonomie, data: Taxonomy<Taxonomie>): Promise<RxDocument<Taxonomie>> {
     this[taxonomie].put(data)
   }
-
 
 
    /**
@@ -225,8 +225,9 @@ class Lodger implements LodgerAPI {
 
     debug(`Building in ${env} mode ...`)
 
-    // strings only from  enums
+    // strings only from enums
     const taxes: Taxonomie[] = Object.keys(Taxonomii).filter(tax => typeof Taxonomii[tax as any] === 'number')
+
     const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
 
     // objects initializers / clses

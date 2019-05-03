@@ -1,11 +1,12 @@
 import { RxJsonSchema, RxJsonSchemaTopLevel } from "rxdb"
 import SchemaError from './Error'
-import { Field } from './Field'
+import { Field, FieldsCreator } from './Field'
 import { env } from './defs/env'
 
 enum Errors {
   missingProps = 'Missing properties on schema %%',
-  propExists = 'Property "%%" already exists'
+  propExists = 'Property "%%" already exists',
+  idUndef = 'ID for field %% cannot be undefined'
 }
 
 /**
@@ -48,13 +49,13 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
    */
   constructor (
     readonly name: Name,
-    fields: FieldsCreator<Interface>,
+    readonly fields ?: FieldsCreator<Interface>,
     options?: LodgerSchemaOptions
   ) {
-    if (!fields || !fields.length)
+    if (!fields || !Object.keys(fields).length)
       throw new SchemaError(Errors.missingFields, { name })
 
-    fields.map(f => this.add(f.id, f))
+    Object.keys(fields).map(f => this.add(fields[f].id || f, fields[f]))
 
     if (options) {}
   }
@@ -66,9 +67,11 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
    * @param {FieldCreator} field
    * @memberof Schema
    */
-  add (id: string, field: FieldCreator<Interface>) {
+  add (id: string, field ?: FieldCreator<Interface>) {
+    if (!id)
+      throw new SchemaError(Errors.idUndef, field)
     if (this.properties[id])
-      throw new SchemaError(Errors.propExists, { id })
+      throw new SchemaError(Errors.propExists, id)
     const { rxSchema, v, storage } = new Field(field)
 
     if (storage !== 'db') return
@@ -106,7 +109,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
       const { fields } =  await import(schemaPath)
       return new Schema(name, fields)
     } catch (err) {
-      throw new SchemaError(err)
+      throw new SchemaError(err, name)
     }
   }
 }

@@ -68,14 +68,14 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       // const ETS = new Schema(title, schema)
       const { methods, statics } = options
 
+      const form = new Form(title, schema)
+
       const collectionCreator = {
         name: title,
         schema,
         methods,
         statics
       }
-
-      const form = new Form(title, schema)
 
       const collection = await db.collection(collectionCreator)
 

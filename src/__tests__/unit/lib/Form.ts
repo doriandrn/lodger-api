@@ -19,7 +19,7 @@ type TestFormFields = {
 }
 
 describe('Form', () => {
-  let form: Form<'xx', TestFormFields>
+  let form: Form<TestFormFields>
 
   beforeAll(() => {
     form = new Form(formData)
@@ -27,22 +27,36 @@ describe('Form', () => {
 
   describe('.fields', () => {
     test('contains all fields', () => {
-      expect(formData.fields.length).toEqual(Object.keys(form.fields).length)
+      expect(Object.keys(formData.fields).length).toEqual(Object.keys(form.fields).length)
     })
   })
 
   describe('constructor', () => {
-    describe('matches snapshot',  () => {
+    test('matches snapshot',  () => {
       expect(form).toMatchSnapshot(name)
     })
 
     describe('options', () => {
       describe('.captureTimestamp', () => {
-        const formWithCT = new Form(formData, {
-          captureTimestamp: true
+        test('.fields[@] is defined', () => {
+          const formWithCT = new Form(formData, {
+            captureTimestamp: true
+          })
+          expect(formWithCT.fieldsIds.indexOf('@')).toBeGreaterThan(-1)
         })
-        expect(formWithCT.fieldsIds.indexOf('@')).toBeGreaterThan(-1)
       })
+    })
+  })
+
+  describe('.schema', () => {
+    test('is defined', () => {
+      expect(form.schema).toBeDefined()
+    })
+
+    test('properties obj contains the same no as fields', () => {
+      const { schema } = form
+      const { properties } = schema
+      expect(Object.keys(properties).length).toEqual(Object.keys(form.fields).length)
     })
   })
 

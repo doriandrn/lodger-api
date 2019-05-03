@@ -6,7 +6,7 @@
 export default class LodgerError extends Error {
   constructor(m: string, details?: any) {
     if (details) {
-      m = m.replace('%%', `"${JSON.stringify(details)}"`)
+      m = String(m).replace('%%', `"${JSON.stringify(details)}"`)
     }
     super(m)
 

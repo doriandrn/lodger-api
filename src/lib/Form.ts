@@ -1,5 +1,6 @@
 // import FormError from './Error'
 import { Field, FieldsCreator } from './Field'
+import Schema from './Schema';
 
 type FormOptions = {
   captureTimestamp ?: boolean
@@ -32,8 +33,7 @@ enum Errors {
  *
  * @interface LodgerForm
  */
-interface LodgerForm<N extends string, I> {
-  readonly name: N
+interface FormAPI<I> {
   $active: boolean
 
   value (newForm: boolean): FormValue<I>
@@ -50,13 +50,14 @@ type FormValue<I> = {
  * @class Form
  * @implements {LodgerForm}
  */
-class Form<N extends string, I>
-implements LodgerForm<N, I> {
+class Form<I>
+implements FormAPI<I> {
   private _onsubmit : Function[] = [] // hooks
 
-  readonly name : N
+  readonly name : string
   readonly plural : string
   readonly captureTimestamp : boolean = false
+  readonly schema: Schema<string, I> = new Schema(this.name)
 
   $active: boolean = false
 
