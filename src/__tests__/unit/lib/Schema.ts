@@ -1,4 +1,5 @@
 import Schema from '~/lib/Schema'
+import { Field } from '~/lib/Field'
 import schema1 from 'fixtures/schemas/withMethods'
 
 const name = 'schema1'
@@ -8,7 +9,11 @@ describe('Schema', () => {
   let schema: Schema<string, any>
 
   beforeAll(() => {
-    schema = new Schema(name, schema1.fields)
+    const fields = {}
+    Object.keys(schema1.fields).map(fieldName => {
+      fields[fieldName] = new Field(schema1.fields[fieldName])
+    })
+    schema = new Schema(name, fields)
   })
 
   describe('ctor', () => {
@@ -28,7 +33,7 @@ describe('Schema', () => {
 
     test('fields match', () => {
       const keys = Object.keys(schema.properties)
-      expect(keys.length).toBe(schema1.fields.length)
+      expect(keys.length).toBe(Object.keys(schema1.fields).length)
     })
 
     describe('options', () => {
@@ -38,8 +43,11 @@ describe('Schema', () => {
 
   describe('.required[]', () => {
     test('has all required fields', () => {
-      expect(schema.required).toEqual(schema1.fields.filter(field => field.required).map(field => field.id))
-    })
+      expect(schema.required).toEqual(
+        Object
+          .keys(schema1.fields)
+          .filter(fieldName => schema1.fields[fieldName].required)
+    )
   })
 
   describe('.properties', () => {
@@ -61,13 +69,13 @@ describe('Schema', () => {
 
   describe('add()', () => {
     test('inserts a new field programatically', () => {
-      schema.add('cucu')
+      schema.add('cucu', new Field())
       expect(schema.properties.cucu).toBeDefined()
     })
 
     test('inserts a required field in .required[]', () => {
       const id = 'reqTest'
-      schema.add(id, { required: true })
+      schema.add(id, new Field({ required: true }))
       expect(schema.required).toContain(id)
     })
   })
@@ -83,11 +91,12 @@ describe('Schema', () => {
     // })
   })
 
-  describe('.load', () => {
-    test('loads a known taxonomy schema by name', async () => {
-      const sch = await Schema.load('bloc')
-      expect(sch).toBeDefined()
-      expect(sch instanceof Schema).toBeTruthy()
-    })
-  })
+  // obsolete, not for schemas
+  // describe('.load', () => {
+  //   test('loads a known taxonomy schema by name', async () => {
+  //     const sch = await Schema.load('bloc')
+  //     expect(sch).toBeDefined()
+  //     expect(sch instanceof Schema).toBeTruthy()
+  //   })
+  // })
 })

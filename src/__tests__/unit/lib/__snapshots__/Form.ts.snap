@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[` 1`] = `undefined`;
-
 exports[`Form constructor matches snapshot: xx 1`] = `
 Form {
   "$active": false,
@@ -10,13 +8,13 @@ Form {
   ],
   "captureTimestamp": false,
   "fields": Object {
-    "0": Field {
+    "x1": Field {
       "default": undefined,
       "storage": "db",
       "type": "string",
       "value": [Function],
     },
-    "1": Field {
+    "x2": Field {
       "default": undefined,
       "index": true,
       "storage": "db",
@@ -24,10 +22,10 @@ Form {
       "v": "required|undefined",
       "value": [Function],
     },
-    "2": Field {
+    "x3": Field {
       "default": undefined,
       "storage": "db",
-      "type": "string",
+      "type": "number",
       "value": [Function],
     },
     "x4": Field {
@@ -46,5 +44,32 @@ Form {
   },
   "name": "xx",
   "plural": "xxi",
+  "schema": Schema {
+    "name": "xx",
+    "properties": Object {
+      "x1": Object {
+        "type": "string",
+      },
+      "x2": Object {
+        "index": true,
+        "type": "string",
+      },
+      "x3": Object {
+        "type": "number",
+      },
+      "x4": Object {
+        "type": "string",
+      },
+      "x5": Object {
+        "type": "string",
+      },
+    },
+    "required": Array [
+      "x2",
+      "x5",
+    ],
+    "type": "object",
+    "version": 0,
+  },
 }
 `;

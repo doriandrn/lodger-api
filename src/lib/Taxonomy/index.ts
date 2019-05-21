@@ -1,4 +1,4 @@
-import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase } from 'rxdb'
+import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase, RxDatabaseBase } from 'rxdb'
 import { observable, computed, action } from 'mobx'
 
 import LodgerConfig from 'lodger.config'
@@ -7,11 +7,13 @@ import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 
 import { env } from '../defs/env'
+import Schema from '../Schema';
 
-export type ETSchema<I> = LodgerFormCreator<I> & RxCollectionCreator
+export type TaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
 
 type LodgerTaxonomyCreatorOptions = {
-  multipleSelect ?: boolean
+  multipleSelect ?: boolean,
+  timestamps ?: boolean
 }
 
 /**
@@ -25,6 +27,8 @@ interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
 
   readonly last ?: string
 }
+
+let db: RxDatabase
 
 /**
  * @class Taxonomy
@@ -55,23 +59,47 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     else this.lastItems.shift()
   }
 
+  /**
+   * DB handler
+   *
+   * @static
+   * @memberof Taxonomy
+   */
+  static set db (db) {
+    db = db
+  }
 
-  // private referenceTaxonomies?: Taxonomy<Taxonomie>[]
-  // private dependantTaxonomies?: Taxonomy<Taxonomie>[]
+  static get db () {
+    return db
+  }
 
+  /**
+   * Init function that builds up the schema and form
+   *
+   * @static
+   * @param {TaxonomyCreator<Taxonomie>} data
+   * @param {LodgerTaxonomyCreatorOptions} [options={}]
+   * @returns {Taxonomy}
+   * @memberof Taxonomy
+   */
   static async init (
-    schema: RxCollectionCreator,
-    db: any,
-    options?: LodgerTaxonomyCreatorOptions
+    data: TaxonomyCreator<Taxonomie>,
+    options: LodgerTaxonomyCreatorOptions = {}
   ) {
-    try {
-      // const ETS = new Schema(title, schema)
-      const { methods, statics } = options
+    if (!db)
+      throw new TaxonomyError('please setup a DB first')
 
-      const form = new Form(title, schema)
+    try {
+      const { fields, methods, statics, name } = data
+      const { timestamps } = options
+
+      const schema = new Schema(name, fields)
+      const form = new Form(fields, {
+        captureTimestamp: timestamps
+      })
 
       const collectionCreator = {
-        name: title,
+        name,
         schema,
         methods,
         statics
@@ -93,7 +121,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @memberof Taxonomy
    */
   constructor (
-    protected form: Form<T, Interface>,
+    protected form: Form<Interface>,
     protected collection: RxCollection<T>,
     readonly options ?: LodgerTaxonomyCreatorOptions,
   ) {

@@ -1,19 +1,19 @@
 import { RxJsonSchema, RxJsonSchemaTopLevel } from "rxdb"
 import SchemaError from './Error'
-import { Field, FieldsCreator } from './Field'
 import { env } from './defs/env'
 
 enum Errors {
   missingProps = 'Missing properties on schema %%',
   propExists = 'Property "%%" already exists',
-  idUndef = 'ID for field %% cannot be undefined'
+  idUndef = 'ID for field %% cannot be undefined',
+  invalidField = 'Invalid field %% supplied'
 }
 
 /**
  * @interface LodgerSchema
  */
 interface LodgerSchema extends RxJsonSchema {
-  add (field: FieldCreator): void
+  add (id: string, field: Field): void
 }
 
 type LodgerSchemaOptions = {}
@@ -25,7 +25,7 @@ type SchemaProperties<Interface> = {
   [k in keyof Interface] ?: RxJsonSchemaTopLevel
 }
 
-/**
+/**s
  *
  *
  * @class Schema
@@ -49,7 +49,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
    */
   constructor (
     readonly name: Name,
-    readonly fields ?: FieldsCreator<Interface>,
+    fields ?: { [i: string]: Field },
     options?: LodgerSchemaOptions
   ) {
     if (!fields || !Object.keys(fields).length)
@@ -67,17 +67,22 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
    * @param {FieldCreator} field
    * @memberof Schema
    */
-  add (id: string, field ?: FieldCreator<Interface>) {
+  add (id: string, field ?: Field) {
     if (!id)
       throw new SchemaError(Errors.idUndef, field)
+
     if (this.properties[id])
       throw new SchemaError(Errors.propExists, id)
-    const { rxSchema, v, storage } = new Field(field)
+
+    if (field && !field.rxSchema)
+      throw new SchemaError(Errors.invalidField, field)
+
+    const { rxSchema, v, storage } = field
 
     if (storage !== 'db') return
 
     const required =  v && v.indexOf('required') > -1
-    this.properties[id] = rxSchema
+    this.properties[id] = rxSchema || {}
 
     if (required && this.required.indexOf(id) < 0)
       this.required.push(id)
@@ -95,21 +100,5 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
    */
   get indexables () {
     return this.ids.filter(fieldId => this.properties[fieldId].index)
-  }
-
-  /**
-   * Loads a 'known' schema by name
-   *
-   * @param name
-   */
-  static async load (name: string): Promise<Schema<string, any>> {
-    const schemaPath: string = `../${ datamodelDir }/${ name }`
-
-    try {
-      const { fields } =  await import(schemaPath)
-      return new Schema(name, fields)
-    } catch (err) {
-      throw new SchemaError(err, name)
-    }
   }
 }

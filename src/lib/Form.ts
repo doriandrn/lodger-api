@@ -11,7 +11,7 @@ type FormFields<I> = {
 }
 
 export type LodgerFormCreator<T> = {
-  name?: string
+  name: string
   plural?: Plural<String>
   fields?: FieldsCreator<T>
 }
@@ -57,11 +57,11 @@ implements FormAPI<I> {
   readonly name : string
   readonly plural : string
   readonly captureTimestamp : boolean = false
-  readonly schema: Schema<string, I> = new Schema(this.name)
+  protected schema : Schema<string, I>
 
   $active: boolean = false
 
-  private fields: FormFields<I> = {}
+  readonly fields !: FormFields<I>
 
   /**
    * Creates an instance of Form.
@@ -72,12 +72,17 @@ implements FormAPI<I> {
    * @memberof Form
    */
   constructor (
-    data: LodgerFormCreator<I>,
+    data ?: LodgerFormCreator<I>,
     opts ?: FormOptions
   ) {
-    const { fields, name } = data
-    this.name = name || 'untitled'
-    this.plural = name.plural()
+    const { fields, name } = data || {
+      name: 'untitled',
+      fields: {}
+    }
+    this.name = name
+    this.fields = fields
+
+    this.plural = this.name.plural()
 
     if (fields) {
       Object.keys(fields).map(field => {
@@ -86,7 +91,9 @@ implements FormAPI<I> {
     }
 
     if (opts) {
-      if (opts.captureTimestamp) {
+      const { captureTimestamp } = opts
+
+      if (captureTimestamp) {
         this.fields['@'] = new Field({
           type: 'dateTime',
           required: true, // for filters / sorts
@@ -96,6 +103,8 @@ implements FormAPI<I> {
         })
       }
     }
+
+    this.schema = new Schema(name, this.fields)
 
     // default onsubmit func
     this.onsubmit = () => {

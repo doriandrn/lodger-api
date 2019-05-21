@@ -9,16 +9,17 @@ import fieldsWithExcludedItems from 'fixtures/fields/withExcludedItems'
  */
 const name = 'xx'
 
-const formData: LodgerFormCreator<TestFormFields> = {
-  name,
-  fields: fieldsWithExcludedItems
-}
-
 type TestFormFields = {
   x1: string
 }
 
 describe('Form', () => {
+
+  const formData: LodgerFormCreator<TestFormFields> = {
+    name,
+    fields: { ...fieldsWithExcludedItems }
+  }
+
   let form: Form<TestFormFields>
 
   beforeAll(() => {
@@ -32,6 +33,7 @@ describe('Form', () => {
   })
 
   describe('constructor', () => {
+
     test('matches snapshot',  () => {
       expect(form).toMatchSnapshot(name)
     })
@@ -56,7 +58,8 @@ describe('Form', () => {
     test('properties obj contains the same no as fields', () => {
       const { schema } = form
       const { properties } = schema
-      expect(Object.keys(properties).length).toEqual(Object.keys(form.fields).length)
+      expect(Object.keys(properties)).toEqual(Object.keys(form.fields))
+      // expect(Object.keys(properties).length).toEqual(Object.keys(form.fields).length)
     })
   })
 
@@ -66,7 +69,6 @@ describe('Form', () => {
       expect(Object.keys(form.value()))
       .toEqual(form.fieldsIds)
     })
-
   })
 
   describe('.plural', () => {
