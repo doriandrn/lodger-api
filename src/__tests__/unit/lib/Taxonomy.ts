@@ -3,7 +3,8 @@ import { RxDatabase, RxCollection } from 'rxdb'
 import DB from '~/lib/DB'
 import Taxonomy from '~/lib/Taxonomy/index'
 
-import collections from 'fixtures/taxes/collections'
+import sosete from 'fixtures/taxes/sosete'
+
 import testdbsetup from 'fixtures/db/test'
 
 describe('Taxonomy class', () => {
@@ -11,20 +12,21 @@ describe('Taxonomy class', () => {
     taxes = {}, $tax: Taxonomy<any>
 
   beforeAll(async () => {
-    db = await DB.create(testdbsetup)
+    const db = await DB.create(testdbsetup)
+    console.info('DB', db)
+    Taxonomy.db = db
+    $tax = await Taxonomy.init(sosete, { timestamps: true })
 
-    await Promise.all(Object.keys(collections).map(async col => {
-      const { schema } = collections[col]
+    // await Promise.all(Object.keys(collections).map(async col => {
 
-      taxes[col] = await Taxonomy.init(schema,
-        db,
-        {
-          store: true,
-          shortGetters: true
-        })
-    }))
+      //   taxes[col] = await Taxonomy.init(collections[col],
+      //     {
+        //       timestamps: true
+        //     })
+        // }))
 
-    $tax = taxes[col]
+    // $tax = taxes.sosete
+    console.error('ffs', Taxonomy.db, $tax)
   })
 
   afterAll(async () => {
@@ -32,6 +34,10 @@ describe('Taxonomy class', () => {
   })
 
   describe('constructor', () => {
+    test('matches snapshot', () => {
+      expect($tax).toMatchSnapshot('sosete')
+    })
+
     test('it inits ok for a known tax', () => {
       const { sosete } = taxes
       expect(sosete).toBeDefined()

@@ -21,9 +21,11 @@ describe('Form', () => {
   }
 
   let form: Form<TestFormFields>
+  let schema: Schema<TestFormFields>
 
   beforeAll(() => {
     form = new Form(formData)
+    schema = form.schema
   })
 
   describe('.fields', () => {
@@ -52,11 +54,10 @@ describe('Form', () => {
 
   describe('.schema', () => {
     test('is defined', () => {
-      expect(form.schema).toBeDefined()
+      expect(schema).toBeDefined()
     })
 
     test('properties obj contains the same no as fields', () => {
-      const { schema } = form
       const { properties } = schema
       expect(Object.keys(properties)).toEqual(Object.keys(form.fields))
       // expect(Object.keys(properties).length).toEqual(Object.keys(form.fields).length)

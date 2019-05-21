@@ -7,7 +7,6 @@ import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 
 import { env } from '../defs/env'
-import Schema from '../Schema';
 
 export type TaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
 
@@ -65,8 +64,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @static
    * @memberof Taxonomy
    */
-  static set db (db) {
-    db = db
+  static set db (xdb) {
+    db = xdb
+    throw new TaxonomyError('new db %%', db)
   }
 
   static get db () {
@@ -87,16 +87,17 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     options: LodgerTaxonomyCreatorOptions = {}
   ) {
     if (!db)
-      throw new TaxonomyError('please setup a DB first')
+      throw new TaxonomyError('Please setup a DB first')
 
     try {
       const { fields, methods, statics, name } = data
       const { timestamps } = options
 
-      const schema = new Schema(name, fields)
-      const form = new Form(fields, {
+      const form = new Form({ name, fields }, {
         captureTimestamp: timestamps
       })
+
+      const { schema } = form
 
       const collectionCreator = {
         name,
