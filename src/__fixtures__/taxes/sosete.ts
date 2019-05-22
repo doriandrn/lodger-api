@@ -16,5 +16,6 @@ const fields: FieldsCreator<Sosete> = {
 }
 
 export default {
+  name: 'soseta',
   fields
 }

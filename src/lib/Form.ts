@@ -1,6 +1,7 @@
 // import FormError from './Error'
 import { Field, FieldsCreator } from './Field'
 import Schema from './Schema';
+import String from './String';
 
 type FormOptions = {
   captureTimestamp ?: boolean
@@ -57,7 +58,7 @@ implements FormAPI<I> {
   readonly name : string
   readonly plural : string
   readonly captureTimestamp : boolean = false
-  protected schema : Schema<string, I>
+  readonly schema : Schema<string, I>
 
   $active: boolean = false
 
@@ -79,8 +80,9 @@ implements FormAPI<I> {
       name: 'untitled',
       fields: {}
     }
+
     this.name = name
-    this.fields = fields
+    this.fields = { ...fields }
 
     this.plural = this.name.plural()
 
@@ -94,9 +96,16 @@ implements FormAPI<I> {
       const { captureTimestamp } = opts
 
       if (captureTimestamp) {
-        this.fields['@'] = new Field({
+        this.fields['createdAt'] = new Field({
           type: 'dateTime',
           required: true, // for filters / sorts
+          index: true,
+          excludeFrom: ['addForm', 'editForm'],
+          showInList: 'secondary'
+        })
+
+        this.fields['updatedAt'] = new Field({
+          type: 'dateTime',
           index: true,
           excludeFrom: ['addForm', 'editForm'],
           showInList: 'secondary'

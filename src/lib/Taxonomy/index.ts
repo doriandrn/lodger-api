@@ -66,11 +66,15 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    */
   static set db (xdb) {
     db = xdb
-    throw new TaxonomyError('new db %%', db)
+    // throw new TaxonomyError('new db %%', db)
   }
 
   static get db () {
     return db
+  }
+
+  get plural () {
+    return this.form.plural
   }
 
   /**
@@ -97,7 +101,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
         captureTimestamp: timestamps
       })
 
+      console.info('FORM', form)
+
       const { schema } = form
+
+      console.info('SCHEM', schema)
 
       const collectionCreator = {
         name,

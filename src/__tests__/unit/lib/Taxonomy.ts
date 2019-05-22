@@ -12,21 +12,16 @@ describe('Taxonomy class', () => {
     taxes = {}, $tax: Taxonomy<any>
 
   beforeAll(async () => {
+    console.info('SDOING')
     const db = await DB.create(testdbsetup)
-    console.info('DB', db)
     Taxonomy.db = db
-    $tax = await Taxonomy.init(sosete, { timestamps: true })
-
-    // await Promise.all(Object.keys(collections).map(async col => {
-
-      //   taxes[col] = await Taxonomy.init(collections[col],
-      //     {
-        //       timestamps: true
-        //     })
-        // }))
-
-    // $tax = taxes.sosete
-    console.error('ffs', Taxonomy.db, $tax)
+    try {
+      $tax = await Taxonomy.init(sosete, { timestamps: true })
+      console.info('$TAX',  $tax)
+    } catch (e) {
+      console.error('E', e)
+    }
+    // console.error('ffs', Taxonomy.db, $tax)
   })
 
   afterAll(async () => {
@@ -39,9 +34,8 @@ describe('Taxonomy class', () => {
     })
 
     test('it inits ok for a known tax', () => {
-      const { sosete } = taxes
-      expect(sosete).toBeDefined()
-      expect(sosete.name).toBe('sosete')
+      expect($tax).toBeDefined()
+      expect($tax.name).toBe('sosete')
     })
   })
 

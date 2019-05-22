@@ -73,3 +73,101 @@ Form {
   },
 }
 `;
+
+exports[`Form options .captureTimestamp matches snapshot: options.captureTimestamp 1`] = `
+Form {
+  "$active": false,
+  "_onsubmit": Array [
+    [Function],
+  ],
+  "captureTimestamp": false,
+  "fields": Object {
+    "createdAt": Field {
+      "default": undefined,
+      "index": true,
+      "storage": "db",
+      "type": "number",
+      "v": "required|undefined",
+      "value": [Function],
+    },
+    "updatedAt": Field {
+      "default": undefined,
+      "index": true,
+      "storage": "db",
+      "type": "number",
+      "value": [Function],
+    },
+    "x1": Field {
+      "default": undefined,
+      "storage": "db",
+      "type": "string",
+      "value": [Function],
+    },
+    "x2": Field {
+      "default": undefined,
+      "index": true,
+      "storage": "db",
+      "type": "string",
+      "v": "required|undefined",
+      "value": [Function],
+    },
+    "x3": Field {
+      "default": undefined,
+      "storage": "db",
+      "type": "number",
+      "value": [Function],
+    },
+    "x4": Field {
+      "default": undefined,
+      "storage": "db",
+      "type": "string",
+      "value": [Function],
+    },
+    "x5": Field {
+      "default": undefined,
+      "storage": "db",
+      "type": "string",
+      "v": "required|undefined",
+      "value": [Function],
+    },
+  },
+  "name": "xx",
+  "plural": "xxi",
+  "schema": Schema {
+    "name": "xx",
+    "properties": Object {
+      "createdAt": Object {
+        "index": true,
+        "type": "number",
+      },
+      "updatedAt": Object {
+        "index": true,
+        "type": "number",
+      },
+      "x1": Object {
+        "type": "string",
+      },
+      "x2": Object {
+        "index": true,
+        "type": "string",
+      },
+      "x3": Object {
+        "type": "number",
+      },
+      "x4": Object {
+        "type": "string",
+      },
+      "x5": Object {
+        "type": "string",
+      },
+    },
+    "required": Array [
+      "x2",
+      "x5",
+      "createdAt",
+    ],
+    "type": "object",
+    "version": 0,
+  },
+}
+`;

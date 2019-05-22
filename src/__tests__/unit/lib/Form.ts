@@ -14,24 +14,26 @@ type TestFormFields = {
 }
 
 describe('Form', () => {
-
   const formData: LodgerFormCreator<TestFormFields> = {
     name,
     fields: { ...fieldsWithExcludedItems }
   }
 
   let form: Form<TestFormFields>
+  let formWithCT: Form<any>
   let schema: Schema<TestFormFields>
 
   beforeAll(() => {
     form = new Form(formData)
+    formWithCT = new Form(formData, {
+      captureTimestamp: true
+    })
+
     schema = form.schema
   })
 
-  describe('.fields', () => {
-    test('contains all fields', () => {
-      expect(Object.keys(formData.fields).length).toEqual(Object.keys(form.fields).length)
-    })
+  test('it doesnt affect the other instance of form', () => {
+    expect(formWithCT.fieldsIds).not.toEqual(form.fieldsIds)
   })
 
   describe('constructor', () => {
@@ -40,15 +42,31 @@ describe('Form', () => {
       expect(form).toMatchSnapshot(name)
     })
 
-    describe('options', () => {
-      describe('.captureTimestamp', () => {
-        test('.fields[@] is defined', () => {
-          const formWithCT = new Form(formData, {
-            captureTimestamp: true
-          })
-          expect(formWithCT.fieldsIds.indexOf('@')).toBeGreaterThan(-1)
-        })
+
+  })
+
+  describe('options', () => {
+    describe('.captureTimestamp', () => {
+
+      test('matches snapshot', () => {
+        expect(formWithCT).toMatchSnapshot('options.captureTimestamp')
       })
+
+      test('.fields[createdAt] is defined', () => {
+        expect(formWithCT.fieldsIds.indexOf('createdAt')).toBeGreaterThan(-1)
+      })
+
+      test('.fields[updatedAt] is defined', () => {
+        expect(formWithCT.fieldsIds.indexOf('updatedAt')).toBeGreaterThan(-1)
+      })
+
+
+    })
+  })
+
+  describe('.fields', () => {
+    test('contains all fields', () => {
+      expect(Object.keys(formData.fields).length).toEqual(Object.keys(form.fields).length)
     })
   })
 
@@ -59,6 +77,8 @@ describe('Form', () => {
 
     test('properties obj contains the same no as fields', () => {
       const { properties } = schema
+      // console.info('properties', Object.keys(properties))
+      // console.info('ff', Object.keys(form.fields))
       expect(Object.keys(properties)).toEqual(Object.keys(form.fields))
       // expect(Object.keys(properties).length).toEqual(Object.keys(form.fields).length)
     })
