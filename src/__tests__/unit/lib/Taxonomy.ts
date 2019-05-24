@@ -8,24 +8,19 @@ import sosete from 'fixtures/taxes/sosete'
 import testdbsetup from 'fixtures/db/test'
 
 describe('Taxonomy class', () => {
-  let db: RxDatabase, cols: RxCollection[],
-    taxes = {}, $tax: Taxonomy<any>
+  let $tax: Taxonomy<any>
 
   beforeAll(async () => {
-    console.info('SDOING')
     const db = await DB.create(testdbsetup)
     Taxonomy.db = db
     try {
       $tax = await Taxonomy.init(sosete, { timestamps: true })
-      console.info('$TAX',  $tax)
     } catch (e) {
-      console.error('E', e)
     }
-    // console.error('ffs', Taxonomy.db, $tax)
   })
 
   afterAll(async () => {
-    await db.destroy()
+    await Taxonomy.db.destroy()
   })
 
   describe('constructor', () => {
@@ -35,7 +30,7 @@ describe('Taxonomy class', () => {
 
     test('it inits ok for a known tax', () => {
       expect($tax).toBeDefined()
-      expect($tax.name).toBe('sosete')
+      expect($tax.name).toBe(sosete.name)
     })
   })
 

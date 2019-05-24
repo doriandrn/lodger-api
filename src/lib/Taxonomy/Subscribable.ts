@@ -34,6 +34,10 @@ implements SubscribableTaxonomy<T> {
     super(form, collection, options)
   }
 
+  static init () {
+    return super.init.apply(this, arguments)
+  }
+
   /**
    * Returns all data from subscribers
    *

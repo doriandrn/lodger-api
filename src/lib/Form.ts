@@ -57,7 +57,7 @@ implements FormAPI<I> {
 
   readonly name : string
   readonly plural : string
-  readonly captureTimestamp : boolean = false
+  // readonly captureTimestamp : boolean = false
   readonly schema : Schema<string, I>
 
   $active: boolean = false
@@ -74,7 +74,7 @@ implements FormAPI<I> {
    */
   constructor (
     data ?: LodgerFormCreator<I>,
-    opts ?: FormOptions
+    protected opts ?: FormOptions
   ) {
     const { fields, name } = data || {
       name: 'untitled',
@@ -98,7 +98,7 @@ implements FormAPI<I> {
       if (captureTimestamp) {
         this.fields['createdAt'] = new Field({
           type: 'dateTime',
-          required: true, // for filters / sorts
+          // required: true, // for filters / sorts
           index: true,
           excludeFrom: ['addForm', 'editForm'],
           showInList: 'secondary'

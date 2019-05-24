@@ -1,31 +1,20 @@
 import SubscribableTaxonomy from '~/lib/Taxonomy/Subscribable'
 
-import { RxDatabase, RxCollection } from 'rxdb'
-import { Form } from '~/lib/Form'
-import Subscriber from '~/lib/Subscriber'
-import { createFromCollections } from '~/lib/DB'
+import Subscriber from 'rxcollection-subscriber'
+import DB from '~/lib/DB'
 
-import collections from 'fixtures/taxes/collections'
+import sosete from 'fixtures/taxes/sosete'
 import testdbsetup from 'fixtures/db/test'
 
 const testTax = 'sosete'
 
 describe('@extends Taxonomy', () => {
   describe('Subscribable', () => {
-    let db: RxDatabase, cols: RxCollection[],
-    taxes = {}, $tax: Taxonomy<any>
+    let $tax: SubscribableTaxonomy<any>
 
     beforeAll(async () => {
-      const i = await createFromCollections(collections, testdbsetup)
-
-      db = i.db
-      cols = i.cols
-
-      Object.keys(cols).map(col => {
-        taxes[col] = new SubscribableTaxonomy(new Form(), cols[col])
-      })
-
-      $tax = taxes[testTax]
+      SubscribableTaxonomy.db = await DB.create(testdbsetup)
+      $tax = await SubscribableTaxonomy.init(sosete)
     })
 
     describe('ctor', () => {
@@ -117,7 +106,7 @@ describe('@extends Taxonomy', () => {
     })
 
     afterAll(async () => {
-      await db.destroy()
+      await SubscribableTaxonomy.db.destroy()
     })
   })
 })

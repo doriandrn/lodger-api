@@ -66,7 +66,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    */
   static set db (xdb) {
     db = xdb
-    // throw new TaxonomyError('new db %%', db)
   }
 
   static get db () {
@@ -101,11 +100,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
         captureTimestamp: timestamps
       })
 
-      console.info('FORM', form)
-
       const { schema } = form
-
-      console.info('SCHEM', schema)
 
       const collectionCreator = {
         name,
@@ -116,7 +111,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
 
       const collection = await db.collection(collectionCreator)
 
-      return new Taxonomy(form, collection, options)
+      return new this(form, collection, options)
     } catch (e) {
       throw new TaxonomyError(e)
     }
@@ -181,7 +176,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       'upsert' :
       'insert'
 
-    const { name } = this
+    const { name, options } = this
+
+    if (options && options.timestamps) {
+      Object.assign(doc, { [method === 'insert' ? 'createdAt': 'updatedAt']: new Date().getTime() })
+    }
 
     /**
      * do the insert / upsert and following actions
