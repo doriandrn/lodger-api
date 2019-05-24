@@ -83,6 +83,8 @@ interface LodgerAPI {
   destroy (): Promise<void>
 }
 
+let plugins: LodgerPlugin[] = []
+
 /**
  *
  * @class The main API
@@ -90,8 +92,6 @@ interface LodgerAPI {
  * @requires <rxdb> RxDatabase
  */
 class Lodger implements LodgerAPI {
-  readonly taxonomies: TaxesList = {}
-  protected plugins: LodgerPlugin[] = []
 
   /**
    * Creates an instance of Lodger.
@@ -100,19 +100,21 @@ class Lodger implements LodgerAPI {
    * @memberof Lodger
    */
   constructor (
-    protected db: RxDatabase
+    taxonomies: TaxesList = {},
+    protected plugins: LodgerPlugin[] = []
   ) {
-    // notify.bind(this.store)
+    Object.defineProperties(this, taxonomies)
   }
 
   /**
+   * @alias Taxonomy.put
+   *
    * Inserts/updates a new document in DB
    * updates if data has ._id key
    *
    * @param {Taxonomie} taxonomie
    * @param {Taxonomy<Taxonomie>} data
    * @returns {Promise<RxDocument<Taxonomie>>}
-   * @alias Taxonomy.put
    * @memberof Lodger
    */
   put (taxonomie: Taxonomie, data: Taxonomy<Taxonomie>): Promise<RxDocument<Taxonomie>> {
@@ -120,7 +122,7 @@ class Lodger implements LodgerAPI {
   }
 
 
-   /**
+  /**
    * Subscribes to multiple taxonomies with
    * same criteria
    *
@@ -133,24 +135,24 @@ class Lodger implements LodgerAPI {
     criteriuCerut ?: Criteriu,
     subscriberName : string = 'main',
   ) {
-    taxonomii.forEach(taxonomie => {
+    Object.keys(taxonomii).forEach(taxonomie => {
       this.taxonomies[taxonomie].subscribe(subscriberName, criteriuCerut)
     })
   }
 
-  /**
-   * Array of taxonomies that have no reference
-   * root taxonomies
-   *
-   * @returns {Array}
-   */
-  get taxonomiesWithoutReference () {
-    const { forms } = this
-    return this.taxonomies.filter(tax => {
-      const refs = forms[tax].referenceTaxonomies
-      return !(refs && refs.length)
-    })
-  }
+  // /**
+  //  * Array of taxonomies that have no reference
+  //  * root taxonomies
+  //  *
+  //  * @returns {Array}
+  //  */
+  // get taxonomiesWithoutReference () {
+  //   const { forms } = this
+  //   return this.taxonomies.filter(tax => {
+  //     const refs = forms[tax].referenceTaxonomies
+  //     return !(refs && refs.length)
+  //   })
+  // }
 
   /**
    * Sets a preference either in DB or store
@@ -220,39 +222,26 @@ class Lodger implements LodgerAPI {
    *
    */
   static async build (options: BuildOptions = { ... config.build }) {
-    const db = await DB.create(options.db)
-    const debug = Debug('lodger:build')
-
-    debug(`Building in ${env} mode ...`)
+    Taxonomy.db = await DB.create(options.db)
 
     // strings only from enums
     const taxes: Taxonomie[] = Object.keys(Taxonomii).filter(tax => typeof Taxonomii[tax as any] === 'number')
 
-    const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
+    // const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
 
-    // objects initializers / clses
-    const forms: FormsHolder = Object.assign({},
-      ...await Promise.all(formsNames.map(formName =>
-        ({ [formName]: Form.load(formName) })
-      ))
-    )
-    debug('frms', forms)
+    // // objects initializers / clses
+    // const forms: FormsHolder = Object.assign({},
+    //   ...await Promise.all(formsNames.map(formName =>
+    //     ({ [formName]: Form.load(formName) })
+    //   ))
+    // )
+
     const Taxonomies = Object.assign({},
       ...taxes.map(async tax =>
-        ({ [tax]: await Taxonomy.init(tax, forms[tax]) })
+        ({ [tax]: await Taxonomy.init(tax) })
       ))
-    debug('Txs', Object.keys(Taxonomies))
-    debug(`Loaded ${Object.keys(taxes).length} taxes ok.`)
 
-    // const _collections: RxCollectionCreator[] = taxes.map(tax => {
-    //   // const f = Taxonomies[tax].form
-    //   const f = forms[tax]
-    //   const { name, plural, collection } = f
-    //   debug('C', name, plural, collection)
-    //   return collection
-    // })
-    // debug('cols', _collections)
-    // const db = await DB(_collections, dbCon)
+    console.info('ZAXES', Taxonomies)
 
     /**
      * When a taxonomy item gets SELECTED,
@@ -312,10 +301,9 @@ class Lodger implements LodgerAPI {
     //   }
     // })
 
-    debug('built')
-
     return new Lodger(
-      db
+      Taxonomies,
+      plugins
     )
   }
 
@@ -333,7 +321,7 @@ class Lodger implements LodgerAPI {
     }
     const { name } = plugin
     debug('using plugin', name)
-    this.plugins.push(plugin)
+    plugins.push(plugin)
   }
 
   /**
@@ -342,7 +330,7 @@ class Lodger implements LodgerAPI {
    */
   async destroy () {
     await this.unsubscribeAll()
-    await this.db.destroy()
+    await Taxonomy.destroy()
   }
 
   /**

@@ -21,10 +21,11 @@ type LodgerTaxonomyCreatorOptions = {
   * @interface LodgerTaxonomy
   */
 interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
+  readonly collection: RxCollection
+  readonly last ?: string
+
   put (doc: LodgerDocument & Partial<Interface>): Promise<RxDocument<N>> | void
   trash (id: string): Promise<RxDocument<N> | null>
-
-  readonly last ?: string
 }
 
 let db: RxDatabase
@@ -68,8 +69,20 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     db = xdb
   }
 
-  static get db () {
-    return db
+  // a getter should never be defined for DB
+  // static get db () {
+  //   return db
+  // }
+
+  /**
+   * @alias db.destroy
+   *
+   * @static
+   * @memberof Taxonomy
+   */
+  static async destroy () {
+    if (!db) return
+    await db.destroy()
   }
 
   get plural () {
@@ -126,9 +139,15 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    */
   constructor (
     protected form: Form<Interface>,
-    protected collection: RxCollection<T>,
+    collection: RxCollection<T>,
     readonly options ?: LodgerTaxonomyCreatorOptions,
   ) {
+    // kinda hide the property for snapshots
+    Object.defineProperty(this, 'collection', {
+      enumerable: false,
+      writable: false,
+      value: collection
+    })
   }
 
   /**
@@ -141,7 +160,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     return this.collection.name
   }
 
-
   /**
    * Removes a Document by ID from the collection
    *
@@ -153,7 +171,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     if (this.last === id) this.last = undefined
     return await this.collection.findOne(id).remove()
   }
-
 
   /**
    * Inserts/upserts a new item in DB

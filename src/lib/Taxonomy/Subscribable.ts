@@ -1,6 +1,5 @@
 import Taxonomy from './'
 import Subscriber from 'rxcollection-subscriber'
-import { Form } from '../Form'
 import { computed } from 'mobx';
 
 /**
@@ -26,12 +25,8 @@ extends Taxonomy<T, I>
 implements SubscribableTaxonomy<T> {
   readonly subscribers: SubscriberList<T> = {}
 
-  constructor (
-    protected form: Form<T, I>,
-    protected collection: RxCollection<T>,
-    options ?: LodgerTaxonomyCreatorOptions
-  ) {
-    super(form, collection, options)
+  constructor () {
+    super(...arguments)
   }
 
   static init () {

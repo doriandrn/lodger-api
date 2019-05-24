@@ -1,5 +1,3 @@
-import { RxDatabase, RxCollection } from 'rxdb'
-
 import DB from '~/lib/DB'
 import Taxonomy from '~/lib/Taxonomy/index'
 
@@ -32,6 +30,10 @@ describe('Taxonomy class', () => {
       expect($tax).toBeDefined()
       expect($tax.name).toBe(sosete.name)
     })
+
+    test('form is defined and accesibile', () => {
+      expect($tax.form).toBeDefined()
+    })
   })
 
   describe('.put()', () => {
@@ -58,11 +60,6 @@ describe('Taxonomy class', () => {
       const x = await $tax.put({ name: 'gigi', lungime: 5 })
       expect(x._id).toBe($tax.last)
     })
-
-    // test('(!!) if added from same subscriber, item gets selected immediately after', () => {
-    //   const { _id } = soseta
-    //   expect(store.getters['soseta/selected']).toBe(_id)
-    // })
 
     test('updates the current item if _id is provided and ok', async () => {
       const name = 'new sos'
@@ -100,6 +97,8 @@ describe('Taxonomy class', () => {
 
     })
   })
+
+
 
   describe('.config', () => {
     const cheiPrincipale = ['limit', 'index', 'sort', 'find']
@@ -163,4 +162,16 @@ describe('Taxonomy class', () => {
 
 
   // })
+
+  describe('.destroy()', () => {
+
+    beforeAll(async () => {
+      await Taxonomy.destroy()
+    })
+
+    test('destroys the db', () => {
+      expect($tax).toBeDefined()
+      expect($tax.db).toBeUndefined()
+    })
+  })
 })
