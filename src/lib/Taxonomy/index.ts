@@ -1,5 +1,5 @@
-import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase, RxDatabaseBase } from 'rxdb'
-import { observable, computed, action } from 'mobx'
+import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase } from 'rxdb'
+import { observable, computed } from 'mobx'
 
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
@@ -8,11 +8,15 @@ import notify from '../helpers/notify'
 
 import { env } from '../defs/env'
 
-export type TaxonomyCreator<I> = LodgerFormCreator<I> & RxCollectionCreator
+export type TaxonomyCreator<I> = LodgerFormCreator<I>
 
 type LodgerTaxonomyCreatorOptions = {
   multipleSelect ?: boolean,
   timestamps ?: boolean
+}
+
+enum Errors {
+  noDB = 'Please setup a DB first!'
 }
 
 /**
@@ -69,11 +73,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     db = xdb
   }
 
-  // a getter should never be defined for DB
-  // static get db () {
-  //   return db
-  // }
-
   /**
    * @alias db.destroy
    *
@@ -90,7 +89,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   }
 
   /**
-   * Init function that builds up the schema and form
+   * Init function that builds up the form and collection
    *
    * @static
    * @param {TaxonomyCreator<Taxonomie>} data
@@ -103,17 +102,20 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     options: LodgerTaxonomyCreatorOptions = {}
   ) {
     if (!db)
-      throw new TaxonomyError('Please setup a DB first')
+      throw new TaxonomyError(Errors.noDB)
 
     try {
-      const { fields, methods, statics, name } = data
+      const { name, fields, methods, statics } = data
       const { timestamps } = options
+
+      console.info('F', fields)
 
       const form = new Form({ name, fields }, {
         captureTimestamp: timestamps
       })
 
       const { schema } = form
+      console.info('CDAT', form, schema)
 
       const collectionCreator = {
         name,

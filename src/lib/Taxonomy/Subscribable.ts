@@ -1,4 +1,5 @@
 import Taxonomy from './'
+import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
 import { computed } from 'mobx';
 
@@ -80,7 +81,12 @@ implements SubscribableTaxonomy<T> {
    */
   unsubscribe (subscriberName : string = 'main') {
     const subscriber = this.subscribers[subscriberName]
-    if (subscriber.kill) subscriber.kill()
+
+    try {
+      if (subscriber.kill)
+        subscriber.kill()
+    } catch (e) {}
+
     delete this.subscribers[subscriberName]
   }
 
@@ -91,8 +97,9 @@ implements SubscribableTaxonomy<T> {
    * @memberof Taxonomy
    */
   protected unsubscribeAll () {
-    Object.keys(this.subscribers).map(subscriber => {
-      this.unsubscribe(subscriber)
-    })
+    const { subscribers } = this
+    if (!subscribers || !Object.keys(subscribers).length)
+      throw new SubscribableTaxonomyError('no subs')
+    Object.keys(subscribers).forEach(s => { this.unsubscribe(s) })
   }
 }

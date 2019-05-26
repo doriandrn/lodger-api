@@ -1,4 +1,5 @@
 import fields from './normal'
+import { FieldsCreator } from '~/lib/Field'
 
 const fieldsWithExcludedItems : FieldsCreator<any> = {
   ...fields,

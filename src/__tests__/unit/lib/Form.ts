@@ -41,8 +41,6 @@ describe('Form', () => {
     test('matches snapshot',  () => {
       expect(form).toMatchSnapshot(name)
     })
-
-
   })
 
   describe('options', () => {

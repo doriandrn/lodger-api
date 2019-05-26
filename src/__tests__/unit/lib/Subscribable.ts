@@ -43,9 +43,9 @@ describe('@extends Taxonomy', () => {
         expect($tax.defaultCriteria.limit).toBeGreaterThan(0)
       })
 
-          // test('has subscribed with default criteria', () => {
-    //   expect(tester.criteriu).toEqual($tax.defaultCriteria)
-    // })
+      // test('has subscribed with default criteria', () => {
+      //   expect(tester.criteriu).toEqual($tax.defaultCriteria)
+      // })
     })
 
     describe('.subscribe() & Subscriber', () => {
@@ -96,12 +96,20 @@ describe('@extends Taxonomy', () => {
     })
 
     describe('.unsubscribeAll()', () => {
+      let subscribers = {}
       beforeAll(() => {
-        $tax.unsubscribeAll()
+        subscribers = $tax.subscribers
+        console.info('ss', Object.keys(subscribers))
+        try {
+          $tax.unsubscribeAll()
+        } catch (e) {
+          console.error('e', e)
+        }
+        console.info('ss', Object.keys(subscribers))
       })
 
       test('kills all', () => {
-        expect(Object.keys($tax.subscribers).length).toEqual(0)
+        expect(Object.keys(subscribers).length).toEqual(0)
       })
     })
 

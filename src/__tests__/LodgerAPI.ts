@@ -33,14 +33,14 @@ describe('Lodger', () => {
       })
 
       test('.db property is unaccessibile', () => {
-        expect(isRxDatabase(L.db)).toBeUndefined()
+        expect(L.db).toBeUndefined()
       })
 
 
-      test('.forms = object containing all forms based on tax', () => {
-        expect(L.forms).toBeDefined()
-        expect(typeof L.forms).toBe('object')
-      })
+      // test('.forms = object containing all forms based on tax', () => {
+      //   expect(L.forms).toBeDefined()
+      //   expect(typeof L.forms).toBe('object')
+      // })
 
       test('runs with no options / arguments', async () => {
         const lodger = await Lodger.build()

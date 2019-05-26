@@ -104,6 +104,7 @@ class Lodger implements LodgerAPI {
     protected plugins: LodgerPlugin[] = []
   ) {
     Object.defineProperties(this, taxonomies)
+    console.log('taxes', taxonomies)
   }
 
   /**
@@ -241,7 +242,6 @@ class Lodger implements LodgerAPI {
         ({ [tax]: await Taxonomy.init(tax) })
       ))
 
-    console.info('ZAXES', Taxonomies)
 
     /**
      * When a taxonomy item gets SELECTED,

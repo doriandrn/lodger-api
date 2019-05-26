@@ -21,6 +21,16 @@ describe('Taxonomy class', () => {
     await Taxonomy.db.destroy()
   })
 
+  // test('inits with no parameters', async () => {
+  //   let x
+  //   try {
+  //     x = await Taxonomy.init({ name: 'cocosi' })
+  //   } catch (e) {
+  //     console.error('wtf', e)
+  //   }
+  //   expect(x).toBeDefined()
+  // })
+
   describe('constructor', () => {
     test('matches snapshot', () => {
       expect($tax).toMatchSnapshot('sosete')

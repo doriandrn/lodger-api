@@ -6,7 +6,6 @@ Form {
   "_onsubmit": Array [
     [Function],
   ],
-  "captureTimestamp": false,
   "fields": Object {
     "x1": Field {
       "default": undefined,
@@ -43,6 +42,7 @@ Form {
     },
   },
   "name": "xx",
+  "opts": undefined,
   "plural": "xxi",
   "schema": Schema {
     "name": "xx",
@@ -80,14 +80,12 @@ Form {
   "_onsubmit": Array [
     [Function],
   ],
-  "captureTimestamp": false,
   "fields": Object {
     "createdAt": Field {
       "default": undefined,
       "index": true,
       "storage": "db",
       "type": "number",
-      "v": "required|undefined",
       "value": [Function],
     },
     "updatedAt": Field {
@@ -132,6 +130,9 @@ Form {
     },
   },
   "name": "xx",
+  "opts": Object {
+    "captureTimestamp": true,
+  },
   "plural": "xxi",
   "schema": Schema {
     "name": "xx",
@@ -164,7 +165,6 @@ Form {
     "required": Array [
       "x2",
       "x5",
-      "createdAt",
     ],
     "type": "object",
     "version": 0,
