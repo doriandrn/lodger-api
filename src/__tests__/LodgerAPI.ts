@@ -7,7 +7,7 @@ import BroadcastChannel from 'broadcast-channel'
 
 const taxonomii: Taxonomii[] = <Taxonomii[]>Object.keys(Taxonomii)
 
-const delay = (value) => new Promise(resolve =>
+const delay = (value: number) => new Promise(resolve =>
   setTimeout(() => resolve(), value)
 )
 
@@ -20,9 +20,8 @@ describe('Lodger', () => {
 
   describe('.build()', () => {
     let L: Lodger
-    beforeAll(async () => {
-      L = await Lodger.build()
-    })
+    beforeAll(async () => { L = await Lodger.build() })
+
     describe('positive', () => {
       test('matches snapshot', () => {
         expect(L).toMatchSnapshot('lodger')

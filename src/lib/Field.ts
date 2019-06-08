@@ -1,6 +1,7 @@
-import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes, RxJsonSchema } from "rxdb";
+import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
 import FieldError from './Error'
-import String, { strings, numbers, arrays, objects } from './String'
+import { strings, numbers, arrays, objects } from './String'
+import String from './String'
 
 type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
 type ReferenceTaxonomy = Plural<Taxonomie>

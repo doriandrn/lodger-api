@@ -69,7 +69,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @static
    * @memberof Taxonomy
    */
-  static set db (xdb) {
+  static set db (xdb: RxDatabase) {
     db = xdb
   }
 
@@ -108,14 +108,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       const { name, fields, methods, statics } = data
       const { timestamps } = options
 
-      console.info('F', fields)
-
       const form = new Form({ name, fields }, {
         captureTimestamp: timestamps
       })
 
       const { schema } = form
-      console.info('CDAT', form, schema)
 
       const collectionCreator = {
         name,

@@ -127,11 +127,11 @@ String.prototype.plural = function () : Plural<string> {
   return String(`${this}i`)
 }
 
-export default String
-
 export {
   strings,
   numbers,
   arrays,
   objects
 }
+
+export default String

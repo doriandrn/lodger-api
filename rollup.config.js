@@ -1,45 +1,44 @@
 import commonjs from 'rollup-plugin-commonjs'
-import resolve from 'rollup-plugin-node-resolve'
+import nodeResolve from 'rollup-plugin-node-resolve'
 import builtins from 'rollup-plugin-node-builtins'
-import globals from 'rollup-plugin-node-globals'
+// import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
-import globImport from 'rollup-plugin-glob-import'
-import pkg from './package.json'
+// import globImport from 'rollup-plugin-glob-import'
+// import pkg from './package.json'
 
-// function resolve (dir) {
-//   return path.join(__dirname, '.', dir)
-// }
+// import { taxonomies } from './src/index.ts'
+import path from 'path'
+
+function resolve (dir) {
+  return path.join(__dirname, '.', dir)
+}
 
 const paths  =  {
   '~': resolve('src'),
   '~/lib': resolve('src/lib/'),
   helpers: resolve('src/lib/helpers'),
-  forms: resolve('src/lib/forms'),
+  schemas: resolve('src/lib/.schemas'),
   build: resolve('src/lib/build'),
   defs: resolve('src/lib/defs')
 }
 
+const ext = `ts`
 const extensions = [
-  '.js', '.jsx', '.ts', '.tsx',
+  'js', 'jsx', ext, 'tsx',
 ];
 
 const name = 'Lodger';
 
-// import { Taxonomii } from '.src/index.ts'
-const taxonomii = ['asociatie', 'apartament', 'bloc', 'cheltuiala', 'contor', 'factura', 'furnizor', 'incasare', 'serviciu', 'utilizator']
-
 const input = []
-const formsPath = `./src/forms`
-const ext = `ts`
-taxonomii.forEach(tax => input.push(`${formsPath}/${tax}.${ext}`))
+const formsPath = `./src/.schemas`
+
+// taxonomies.forEach(tax => input.push(`${formsPath}/${tax}.${ext}`))
 input.push('./src/index.ts')
 
 export default {
   input,
   // experimentalCodeSplitting: true,
-
-
   // inlineDynamicImports: true,
   // optimizeChunks: true,
   // manualChunks: [{
@@ -54,15 +53,15 @@ export default {
     'pouchdb-adapter-idb',
     'pouchdb-adapter-http',
     'rxdb',
-    'debug',
-    'vue',
-    'vuex'
+    'consola',
+    'rxcollection-subscriber',
+    'debug'
   ],
 
   plugins: [
     // Allows node_modules resolution
 
-    resolve({
+    nodeResolve({
       modulesOnly: true,
       extensions,
       preferBuiltins: false
@@ -77,7 +76,7 @@ export default {
 
     // globals(),
     commonjs({
-      include: ['node_modules/**/*', 'forms/*'],
+      include: ['node_modules/**/*', '.schemas/*'],
       ignore: ["conditional-runtime-dependency"],
       namedExports:  {
         // left-hand side can be an absolute path, a path
@@ -85,6 +84,7 @@ export default {
         // of a module in node_modules
         // 'forms/apartament': ['forms/apartament']
         // 'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
+        'src/lib/String': ['String']
       }
     }),
 

@@ -24,6 +24,10 @@ enum Taxonomii {
   Serviciu, Utilizator
 }
 
+const taxonomies: Taxonomie[] = Object
+  .keys(Taxonomii)
+  .filter(tax => typeof Taxonomii[tax as any] === 'number')
+
 /**
  * Forms, includes each for Taxonomies
  *
@@ -104,7 +108,6 @@ class Lodger implements LodgerAPI {
     protected plugins: LodgerPlugin[] = []
   ) {
     Object.defineProperties(this, taxonomies)
-    console.log('taxes', taxonomies)
   }
 
   /**
@@ -226,7 +229,7 @@ class Lodger implements LodgerAPI {
     Taxonomy.db = await DB.create(options.db)
 
     // strings only from enums
-    const taxes: Taxonomie[] = Object.keys(Taxonomii).filter(tax => typeof Taxonomii[tax as any] === 'number')
+
 
     // const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
 
@@ -384,6 +387,7 @@ class Lodger implements LodgerAPI {
 }
 
 export {
+  taxonomies,
   Lodger,
   Errors,
   Taxonomii,
