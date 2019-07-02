@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "declarationDir": "dist/types",
+    "declaration": true,
+    "target": "es6",
+    "module": "esnext",
+    "lib": [
+      "esnext",
+      "es2015"
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "~/*": [ "/*" ],
+      "~/lib/*": [ "lib/*" ],
+      "defs/*": [ "lib/defs/*" ],
+      "helper/*": [ "lib/helpers/*" ],
+      "@/*": [ "/*" ],
+      "fixtures/*": [ "__fixtures__/*" ],
+      "tests/*": [ "__tests__/*"]
+    },
+    // "rootDirs": [
+    //   "./"
+    // ],
+    "types": [
+      "node",
+      "debug",
+      "jest",
+      "faker"
+    ],
+    // "noEmit": true, // pt babel
+    "strict": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "isolatedModules": false
+  },
+  "exclude": [
+    "dist/**/*",
+    // "__tests__/**/*",
+    // "__fixtures__/**/*",
+    "node_modules/*"
+  ]
+}

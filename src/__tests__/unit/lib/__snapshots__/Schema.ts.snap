@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Schema ctor matches sshot: schema1 1`] = `
+Schema {
+  "name": "schema1",
+  "properties": Object {
+    "x1": Object {
+      "type": "string",
+    },
+    "x2": Object {
+      "index": true,
+      "type": "string",
+    },
+    "x3": Object {
+      "type": "number",
+    },
+  },
+  "required": Array [
+    "x2",
+  ],
+  "type": "object",
+  "version": 0,
+}
+`;

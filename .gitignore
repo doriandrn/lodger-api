@@ -1,0 +1,12 @@
+# dependencies
+node_modules
+
+# logs
+npm-debug.log
+log.txt
+*.log
+
+# yarn stff
+yarn.lock
+
+#dist/
