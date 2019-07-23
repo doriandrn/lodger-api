@@ -1,20 +1,41 @@
 # Lodger API
 
-DISCALIMER: 
+API experimental, reactiv, offline-first pentru administrarea asociațiilor de locatari.
 
-API reactiv, offline-first pentru administrarea asociațiilor de locatari.
-Stack: RxDB, VueX
+Stack: RxDB, mobx
 
-[Documentație API](https://lodger.ro/proiect/documentatie)
+## DISCALIMER
+
+Soft-ul este inca in stadiul de dezvoltare. Pana la anuntarea versiunii publice, va rugam nu folositi pentru date reale;
+
+
+
 
 ## Install
 
 ```sh
-yarn install
+yarn
 ```
 
-## Teste
+## Tests
+
+Run all, async:
 
 ```sh
 yarn test *
 ```
+
+Individual
+
+```sh
+yarn test [class]
+```
+
+### Additional resources
+
+- [Romanian version]()
+- [API Documentation](https://lodger.ro/proiect/documentatie)
+
+### Ecosystem
+
+[Client]() | [Website]()

@@ -8,5 +8,9 @@ log.txt
 
 # yarn stff
 yarn.lock
+yarn-error.log
 
 #dist/
+
+#personal
+*.code-workspace
