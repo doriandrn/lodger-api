@@ -7,8 +7,6 @@ declare module "*.json" {
 
 declare global {
   type Taxonomie = keyof typeof Taxonomii
-
-
   type Plural<T> = T extends Taxonomie ? string : string
 
   type LodgerDocument = {
@@ -18,18 +16,18 @@ declare global {
     'upd@': string
   }
 
-  /**
-   * Monede
-   *
-   * @enum {number}
-   * @todo add all
-   */
-  enum Monede {
-    RON, EUR, USD
-  }
-
   type Bani = {
     suma: number
     moneda: Monede
   }
+}
+
+/**
+ * Monede
+ *
+ * @enum {number}
+ * @todo add all
+ */
+export enum Monede {
+  RON, EUR, USD, BCH
 }

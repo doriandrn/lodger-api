@@ -5,7 +5,7 @@ import builtins from 'rollup-plugin-node-builtins'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
 // import globImport from 'rollup-plugin-glob-import'
-// import pkg from './package.json'
+// import pkg from './package.json's
 
 // import { taxonomies } from './src/index.ts'
 import path from 'path'
@@ -75,16 +75,18 @@ export default {
     // globImport(),
 
     // globals(),
+
     commonjs({
-      include: ['node_modules/**/*', '.schemas/*'],
+      include: ['node_modules/**/*', '.schemas/*', 'src/lib/*'],
       ignore: ["conditional-runtime-dependency"],
+      // ignoreGlobal: true,
       namedExports:  {
-        // left-hand side can be an absolute path, a path
-        // relative to the current directory, or the name
-        // of a module in node_modules
-        // 'forms/apartament': ['forms/apartament']
-        // 'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
-        'src/lib/String': ['String']
+      //   // left-hand side can be an absolute path, a path
+      //   // relative to the current directory, or the name
+      //   // of a module in node_modules
+      //   // 'forms/apartament': ['forms/apartament']
+      //   // 'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
+        './String': ['String', 'strings', 'arrays', 'objects']
       }
     }),
 

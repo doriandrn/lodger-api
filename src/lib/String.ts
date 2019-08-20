@@ -5,28 +5,12 @@ type SplitObject = {
   mutation: string
 }
 
-declare global {
-  /**
-   * String helpers extensions
-   *
-   * @interface String
-   */
-   interface String {
-    stripLeading$: () => string,
-    spleet: () => SplitObject,
-    slugify: () => string,
-    toRxDBType: () => JsonSchemaTypes
-    plural: () => Plural<string>
-  }
-}
-
-
 /**
  * Accepted 'string's for a LodgerSchema field
  *
  * @enum {number}
  */
-enum strings {
+export enum strings {
   search, select, string, text, textarea
 }
 
@@ -35,7 +19,7 @@ enum strings {
  *
  * @enum {number}
  */
-enum numbers {
+export enum numbers {
   date, dateTime, number
 }
 
@@ -44,7 +28,7 @@ enum numbers {
  *
  * @enum {number}
  */
-enum arrays {
+export enum arrays {
   array, contactFields, contoare, distribuire,
   furnizori, selApartamente, servicii, scari
 }
@@ -54,8 +38,24 @@ enum arrays {
  *
  * @enum {number}
  */
-enum objects {
+export enum objects {
   bani, object, organizatie
+}
+
+
+declare global {
+  /**
+   * String helpers extensions
+   *
+   * @interface String
+   */
+  interface String {
+    stripLeading$: () => string,
+    spleet: () => SplitObject,
+    slugify: () => string,
+    toRxDBType: () => JsonSchemaTypes
+    plural: () => Plural<string>
+  }
 }
 
 /**
@@ -127,11 +127,4 @@ String.prototype.plural = function () : Plural<string> {
   return String(`${this}i`)
 }
 
-export {
-  strings,
-  numbers,
-  arrays,
-  objects
-}
-
-export default String
+export default { String }

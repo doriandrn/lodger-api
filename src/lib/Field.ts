@@ -1,7 +1,11 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
 import FieldError from './Error'
+
+// These 3 lines are a hack for Rollup & Jest to work together.
+// Test with: yarn rollup -c & jest field
 import { strings, numbers, arrays, objects } from './String'
-import String from './String'
+import S from './String'
+const { String } = S
 
 type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
 type ReferenceTaxonomy = Plural<Taxonomie>
@@ -116,6 +120,7 @@ export class Field implements FieldAPI {
     data ?: FieldCreator
   ) {
     if (!data) {
+      // throw new FieldError('Field could not be created. No data supplied.')
       return
     }
 
