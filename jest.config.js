@@ -26,6 +26,7 @@ module.exports = {
     'fixtures/(.*)$': '<rootDir>/src/__fixtures__/$1',
     'lodger.config': '<rootDir>/src/lodger.config'
   },
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': 'ts-jest'

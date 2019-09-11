@@ -1,13 +1,14 @@
 import commonjs from 'rollup-plugin-commonjs'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import builtins from 'rollup-plugin-node-builtins'
-// import globals from 'rollup-plugin-node-globals'
+import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
+import { uglify } from 'rollup-plugin-uglify'
 // import globImport from 'rollup-plugin-glob-import'
 // import pkg from './package.json's
 
-// import { taxonomies } from './src/index.ts'
+import { taxonomies } from './src/index.ts'
 import path from 'path'
 
 function resolve (dir) {
@@ -38,62 +39,56 @@ input.push('./src/index.ts')
 
 export default {
   input,
-  // experimentalCodeSplitting: true,
-  // inlineDynamicImports: true,
-  // optimizeChunks: true,
+  inlineDynamicImports: true,
   // manualChunks: [{
   //   'forms/apartament': ['forms/apartament']
   // }],
-
-  // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
-  // https://rollupjs.org/guide/en#external-e-external
 
   external: [
     'pouchdb-adapter-memory',
     'pouchdb-adapter-idb',
     'pouchdb-adapter-http',
     'rxdb',
+    'mobx',
     'consola',
     'rxcollection-subscriber',
-    'debug'
+    'debug',
+    'regenerator-runtime'
   ],
 
   plugins: [
-    // Allows node_modules resolution
+    ts(),
 
+    // globImport(),
+
+    globals(),
+
+    commonjs({
+      include: ['node_modules/**/*', '.schemas/*', 'src/lib/*'],
+      ignore: ["conditional-runtime-dependency"]
+    }),
+
+    // Compile TypeScript/JavaScript files
+    babel({
+      extensions,
+      include: ['src/**/*'],
+      runtimeHelpers: true,
+      presets: ['@babel/preset-env']
+    }),
+
+    // Allows node_modules resolution
     nodeResolve({
       modulesOnly: true,
       extensions,
-      preferBuiltins: false
+      preferBuiltins: true
       // customResolveOptions: {
       //   forms: 'src/lib/forms/*'
       // }
     }),
 
-    ts(),
+    builtins(),
 
-    // globImport(),
-
-    // globals(),
-
-    commonjs({
-      include: ['node_modules/**/*', '.schemas/*', 'src/lib/*'],
-      ignore: ["conditional-runtime-dependency"],
-      // ignoreGlobal: true,
-      namedExports:  {
-      //   // left-hand side can be an absolute path, a path
-      //   // relative to the current directory, or the name
-      //   // of a module in node_modules
-      //   // 'forms/apartament': ['forms/apartament']
-      //   // 'node_modules/crypto-js/aes.js': [ 'encrypt', 'decrypt' ]
-        './String': ['String', 'strings', 'arrays', 'objects']
-      }
-    }),
-
-    // Compile TypeScript/JavaScript files
-    babel({ extensions, include: ['src/**/*'], runtimeHelpers: true }),
-
-    builtins()
+    // uglify()
   ],
 
   output: {

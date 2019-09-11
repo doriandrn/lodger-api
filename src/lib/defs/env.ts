@@ -1,1 +1,2 @@
-export const env = String(process.env.NODE_ENV)
+const env = String(process.env.NODE_ENV)
+export { env }

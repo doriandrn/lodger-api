@@ -1,7 +1,6 @@
 import Taxonomy from './'
 import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
-import { computed } from 'mobx';
 
 /**
  *
@@ -40,7 +39,7 @@ implements SubscribableTaxonomy<T> {
    * @readonly
    * @memberof Taxonomy
    */
-  @computed get data () {
+  get data () {
     return this.subscribers
   }
 

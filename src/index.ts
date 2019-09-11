@@ -4,7 +4,7 @@ import fs, { PathLike } from 'fs'
 import yaml from 'json2yaml'
 
 import config from './lodger.config'
-import { env } from '~/lib/defs/env'
+// import { env } from '~/lib/defs/env'
 
 import LodgerError from '~/lib/Error'
 

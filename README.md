@@ -4,14 +4,11 @@ Lodger is meant to be a Home-owners Association tool designed for Romania (furth
 
 API experimental, reactiv, offline-first pentru administrarea asociațiilor de locatari.
 
-Stack: RxDB, mobx
+Stack: RxDB, mobx (rxcollection-subscriber)
 
 ## DISCALIMER
 
 Soft-ul este inca in stadiul de dezvoltare. Pana la anuntarea versiunii publice, va rugam nu folositi pentru date reale;
-
-
-
 
 ## Install
 
