@@ -1,7 +1,7 @@
-import Debug from 'debug'
+
 import { RxDatabase, RxDatabaseCreator, RxCollectionCreator, RxDocument } from 'rxdb'
 import fs, { PathLike } from 'fs'
-import yaml from 'json2yaml'
+// import yaml from 'json2yaml'
 
 import config from './lodger.config'
 // import { env } from '~/lib/defs/env'
@@ -318,12 +318,10 @@ class Lodger implements LodgerAPI {
    *
    */
   static use (plugin: LodgerPlugin) {
-    const debug = Debug('lodger:use')
     if (!plugin || typeof plugin !== 'object') {
       throw new LodgerError(Errors.invalidPluginDefinition)
     }
     const { name } = plugin
-    debug('using plugin', name)
     plugins.push(plugin)
   }
 
@@ -343,7 +341,6 @@ class Lodger implements LodgerAPI {
    *
    */
   async export (path?: string, cryptedData?: boolean, filename?: string) {
-    const debug = Debug('lodger:export')
     const json = await this.db.dump()
     const extension = 'ldb'
     if (!path) path = `${require('os').homeDir}/downloads/`
@@ -352,10 +349,10 @@ class Lodger implements LodgerAPI {
       const date = new Date()
       filename = `LdgDB-${date}`
     }
-    fs.writeFile(`${path}/${filename}.${extension}`, yaml.stringify(json), (e: Error) => {
-      if (e) throw new LodgerError(Errors.couldNotWriteFile)
-      debug(`written ${filename}.${extension} in path`)
-    })
+    // fs.writeFile(`${path}/${filename}.${extension}`, yaml.stringify(json), (e: Error) => {
+    //   if (e) throw new LodgerError(Errors.couldNotWriteFile)
+    //   // debug(`written ${filename}.${extension} in path`)
+    // })
   }
 
   /**

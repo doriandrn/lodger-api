@@ -5,44 +5,13 @@ import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
 import { uglify } from 'rollup-plugin-uglify'
-// import globImport from 'rollup-plugin-glob-import'
-// import pkg from './package.json's
 
-import { taxonomies } from './src/index.ts'
-import path from 'path'
-
-function resolve (dir) {
-  return path.join(__dirname, '.', dir)
-}
-
-const paths  =  {
-  '~': resolve('src'),
-  '~/lib': resolve('src/lib/'),
-  helpers: resolve('src/lib/helpers'),
-  schemas: resolve('src/lib/.schemas'),
-  build: resolve('src/lib/build'),
-  defs: resolve('src/lib/defs')
-}
-
-const ext = `ts`
-const extensions = [
-  'js', 'jsx', ext, 'tsx',
-];
-
-const name = 'Lodger';
-
-const input = []
-const formsPath = `./src/.schemas`
-
-// taxonomies.forEach(tax => input.push(`${formsPath}/${tax}.${ext}`))
-input.push('./src/index.ts')
+const extensions = [ 'js', 'jsx', `ts`, 'tsx' ];
+const input = ['src/index.ts']
 
 export default {
   input,
   inlineDynamicImports: true,
-  // manualChunks: [{
-  //   'forms/apartament': ['forms/apartament']
-  // }],
 
   external: [
     'pouchdb-adapter-memory',
@@ -57,43 +26,41 @@ export default {
   ],
 
   plugins: [
-    ts(),
-
-    // globImport(),
+    ts({
+      lib: ["es5", "es6", "dom"],
+      target: "es5"
+    }),
 
     globals(),
-
-    commonjs({
-      include: ['node_modules/**/*', '.schemas/*', 'src/lib/*'],
-      ignore: ["conditional-runtime-dependency"]
-    }),
-
-    // Compile TypeScript/JavaScript files
-    babel({
-      extensions,
-      include: ['src/**/*'],
-      runtimeHelpers: true,
-      presets: ['@babel/preset-env']
-    }),
 
     // Allows node_modules resolution
     nodeResolve({
       modulesOnly: true,
       extensions,
       preferBuiltins: true
-      // customResolveOptions: {
-      //   forms: 'src/lib/forms/*'
-      // }
+    }),
+
+    commonjs({
+      extensions,
+      include: ['node_modules/**/*', '.schemas/*', 'src/lib/*'],
+      ignore: ["conditional-runtime-dependency"]
+    }),
+
+    babel({
+      extensions,
+      babelrc: true,
+      runtimeHelpers: true,
+      include: ['src/**/*'],
+      exclude: 'node_modules/**'
     }),
 
     builtins(),
 
-    // uglify()
+    uglify()
   ],
 
   output: {
-    // file: pkg.main,
     dir: 'dist',
     format: 'cjs'
-  },
+  }
 };
