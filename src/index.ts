@@ -1,16 +1,12 @@
 
-import { RxDatabase, RxDatabaseCreator, RxCollectionCreator, RxDocument } from 'rxdb'
-import fs, { PathLike } from 'fs'
+import { RxDatabaseCreator, RxDocument } from 'rxdb'
 // import yaml from 'json2yaml'
 
-import config from './lodger.config'
 // import { env } from '~/lib/defs/env'
-
+import config from './lodger.config'
 import LodgerError from '~/lib/Error'
-
 import DB from '~/lib/DB'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
-
 import notify from 'helper/notify'
 
 /**
@@ -104,7 +100,7 @@ class Lodger implements LodgerAPI {
    * @memberof Lodger
    */
   constructor (
-    taxonomies: TaxesList = {},
+    taxonomies: TaxesList = taxonomies,
     protected plugins: LodgerPlugin[] = []
   ) {
     Object.defineProperties(this, taxonomies)
@@ -242,9 +238,8 @@ class Lodger implements LodgerAPI {
 
     const Taxonomies = Object.assign({},
       ...taxes.map(async tax =>
-        ({ [tax]: await Taxonomy.init(tax) })
+        ({ [tax]: await Taxonomy.init(require(`./.schemas/${tax}`)) })
       ))
-
 
     /**
      * When a taxonomy item gets SELECTED,

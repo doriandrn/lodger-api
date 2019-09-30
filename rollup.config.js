@@ -20,9 +20,7 @@ export default {
     'rxdb',
     'mobx',
     'consola',
-    'rxcollection-subscriber',
-    'debug',
-    'regenerator-runtime'
+    'rxcollection-subscriber'
   ],
 
   plugins: [

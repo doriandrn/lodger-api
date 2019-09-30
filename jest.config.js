@@ -1,7 +1,10 @@
 module.exports = {
   verbose: true,
-  bail: true,
-  coverageReporters: ['html', 'text'],
+  bail: false,
+  coverageReporters: [
+    'html',
+    'text'
+  ],
   testEnvironment: 'node',
   globals: {
     'ts-jest': {
@@ -26,7 +29,10 @@ module.exports = {
     'fixtures/(.*)$': '<rootDir>/src/__fixtures__/$1',
     'lodger.config': '<rootDir>/src/lodger.config'
   },
-  modulePathIgnorePatterns: ["<rootDir>/dist/"],
+  modulePathIgnorePatterns: [
+    "<rootDir>/dist/",
+    "<rootDir>/src/__fixtures__/",
+  ],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': 'ts-jest'
