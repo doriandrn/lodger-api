@@ -23,7 +23,7 @@ module.exports = {
     '@/(.*)$': '<rootDir>/$1',
     '~/(.*)$': '<rootDir>/src/$1',
     'defs/(.*)$': '<rootDir>/src/lib/defs/$1',
-    'build/(.*)$': '<rootDir>/src/lib/build/$1',
+    'lodger-build/(.*)$': '<rootDir>/src/lib/build/$1',// just "build" is not ok
     'forms/(.*)$': '<rootDir>/src/forms/$1',
     'helper/(.*)$': '<rootDir>/src/lib/helpers/$1',
     'fixtures/(.*)$': '<rootDir>/src/__fixtures__/$1',

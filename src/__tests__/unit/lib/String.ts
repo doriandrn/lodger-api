@@ -45,15 +45,15 @@ describe('.stripLeading$()', () => {
   })
 })
 
-describe('.spleet()', () => {
+describe('.cusomSplit()', () => {
   test('imparte stringu in 2', () => {
-    const { mutation, what } = 'fa/CEVA'.spleet()
+    const { mutation, what } = 'fa/CEVA'.cusomSplit()
     expect(mutation).toBe('CEVA')
     expect(what).toBe('fa')
   })
 
   test('nu merge cu stringuri incorecte', () => {
-    const splt = 'caca'.spleet()
+    const splt = 'caca'.cusomSplit()
     expect(splt).toBe('caca')
   })
 })

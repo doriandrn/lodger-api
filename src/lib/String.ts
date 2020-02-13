@@ -51,7 +51,7 @@ declare global {
    */
   interface String {
     stripLeading$: () => string,
-    spleet: () => SplitObject,
+    cusomSplit: () => SplitObject,
     slugify: () => string,
     toRxDBType: () => JsonSchemaTypes
     plural: () => Plural<string>
@@ -74,7 +74,7 @@ String.prototype.stripLeading$ = function (): string {
  * @memberof String
  * @returns {SplitObject}
  */
-String.prototype.spleet = function (): SplitObject {
+String.prototype.customSplit = function (): SplitObject {
   const split = this.split('/')
 
   return {

@@ -1,8 +1,8 @@
-import { spleet } from '../../../../helpers/functions'
+import { cusomSplit } from '../../../../helpers/functions'
 
 const DBMethods = db => async ({ type, payload }) => {
   if (type.indexOf('/') < 0) return
-  const { what, mutation } = spleet(type)
+  const { what, mutation } = cusomSplit(type)
   const col = db[defs.get(what)]
   if (!col || !what) return
   debug('DBMethod:', type, payload)
