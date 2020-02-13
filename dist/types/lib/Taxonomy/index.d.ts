@@ -35,14 +35,15 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
      * @readonly
      * @memberof Taxonomy
      */
-    last: string | undefined;
+    get last(): string | undefined;
+    set last(id: string | undefined);
     /**
      * DB handler
      *
      * @static
      * @memberof Taxonomy
      */
-    static db: RxDatabase;
+    static set db(xdb: RxDatabase);
     /**
      * @alias db.destroy
      *
@@ -50,7 +51,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
      * @memberof Taxonomy
      */
     static destroy(): Promise<void>;
-    readonly plural: string;
+    get plural(): string;
     /**
      * Init function that builds up the form and collection
      *
@@ -75,7 +76,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
      * @readonly
      * @memberof Taxonomy
      */
-    readonly name: any;
+    get name(): any;
     /**
      * Removes a Document by ID from the collection
      *
@@ -98,7 +99,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
      * @memberof Taxonomy
      * Taxonomy default config
      */
-    readonly config: {
+    get config(): {
         criteriu: any;
     };
 }

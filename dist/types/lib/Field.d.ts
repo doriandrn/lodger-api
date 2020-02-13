@@ -80,6 +80,6 @@ export declare class Field implements FieldAPI {
      * Used for Schema constructors,
      * returns only the properties needed for it
      */
-    readonly rxSchema: RxJsonSchemaTopLevel;
+    get rxSchema(): RxJsonSchemaTopLevel;
 }
 export {};

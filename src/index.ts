@@ -92,7 +92,6 @@ let plugins: LodgerPlugin[] = []
  * @requires <rxdb> RxDatabase
  */
 class Lodger implements LodgerAPI {
-
   /**
    * Creates an instance of Lodger.
    * @param {FormsHolder} forms
@@ -235,6 +234,12 @@ class Lodger implements LodgerAPI {
     //     ({ [formName]: Form.load(formName) })
     //   ))
     // )
+
+    const taxes = []
+
+    for (let i in Taxonomii) {
+      taxes.push(i)
+    }
 
     const Taxonomies = Object.assign({},
       ...taxes.map(async tax =>

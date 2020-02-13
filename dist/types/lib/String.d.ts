@@ -58,7 +58,7 @@ declare global {
      */
     interface String {
         stripLeading$: () => string;
-        spleet: () => SplitObject;
+        cusomSplit: () => SplitObject;
         slugify: () => string;
         toRxDBType: () => JsonSchemaTypes;
         plural: () => Plural<string>;

@@ -66,7 +66,7 @@ declare class Form<I> implements FormAPI<I> {
      * @memberof Form
      * @returns {Object}
      */
-    readonly data: any;
+    get data(): any;
     /**
      * Quick access to all fields' ids
      *
@@ -74,13 +74,13 @@ declare class Form<I> implements FormAPI<I> {
      * @memberof Form
      * @returns {string[]}
      */
-    readonly fieldsIds: string[];
+    get fieldsIds(): string[];
     /**
      * register a new onsubmit function
      *
      * @memberof Form
      */
-    onsubmit: Function;
+    set onsubmit(f: Function);
     /**
      * Gets the value of current active form
      *

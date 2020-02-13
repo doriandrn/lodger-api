@@ -40,7 +40,7 @@ export default {
 
     commonjs({
       extensions,
-      include: ['node_modules/**/*', '.schemas/*', 'src/lib/*'],
+      include: ['node_modules/**/*', './.schemas/*', 'src/lib/*'],
       ignore: ["conditional-runtime-dependency"]
     }),
 
