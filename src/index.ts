@@ -238,7 +238,7 @@ class Lodger implements LodgerAPI {
     const taxesSchemas = await loadSchemas(taxonomies)
     const Taxonomies = taxesSchemas.map(async schema => {
       console.log('schemaffs', schema)
-      await Taxonomy.init(schema)
+      return await Taxonomy.init(schema)
     })
 
     // const Taxonomies = Object.assign({},

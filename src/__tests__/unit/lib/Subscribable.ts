@@ -33,6 +33,10 @@ describe('@extends Taxonomy', () => {
       test('.name', () => {
         expect($tax.name).toEqual(testTax)
       })
+
+      test('.plural', () => {
+        expect($tax.plural).toEqual(sosete.name + 'i')
+      })
     })
 
     describe('.defaultCriteria', () => {

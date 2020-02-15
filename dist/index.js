@@ -1383,11 +1383,9 @@ function () {
                       , STaxonomy.init(schema)];
 
                     case 1:
-                      _a.sent();
-
                       return [2
                       /*return*/
-                      ];
+                      , _a.sent()];
                   }
                 });
               });
