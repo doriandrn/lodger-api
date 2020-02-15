@@ -48,8 +48,8 @@ export default {
           let files = fs.readdirSync(targetDir);
           files.splice(files.indexOf('.DS_Store'), 1)
           const objectEntries = files
-            // .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`);
-            .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
+            .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`);
+            // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
           return `export default {\n${objectEntries.join(',\n')}\n};`;
         }
         return null;
@@ -85,7 +85,7 @@ export default {
 
     builtins(),
 
-    uglify()
+    // uglify()
   ],
 
   output: {
