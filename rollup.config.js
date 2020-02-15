@@ -1,3 +1,7 @@
+import path from 'path';
+import fs from 'fs';
+
+// plugins
 import commonjs from 'rollup-plugin-commonjs'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import builtins from 'rollup-plugin-node-builtins'
@@ -7,7 +11,7 @@ import ts from 'rollup-plugin-typescript'
 import { uglify } from 'rollup-plugin-uglify'
 
 const extensions = [ 'js', 'jsx', `ts`, 'tsx' ];
-const input = ['src/index.ts']
+const input = ['src/index.ts'] //, 'src/.schemas/Asociatie.ts'
 
 export default {
   input,
@@ -24,6 +28,33 @@ export default {
   ],
 
   plugins: [
+    // VIRTUAL MODULE
+    // for dynamic schema loading
+    {
+      // this is necessary to tell rollup that it should not try to resolve "dynamic-targets"
+      // via other means
+      resolveId(id) {
+        if (id === 'dynamic-targets') {
+          return id;
+        }
+        return null;
+      },
+
+      // create a module that exports an object containing file names as keys and
+      // functions that import those files as values
+      load(id) {
+        if (id === 'dynamic-targets') {
+          const targetDir = path.join(__dirname, 'src/.schemas');
+          let files = fs.readdirSync(targetDir);
+          files.splice(files.indexOf('.DS_Store'), 1)
+          const objectEntries = files
+            // .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`);
+            .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
+          return `export default {\n${objectEntries.join(',\n')}\n};`;
+        }
+        return null;
+      }
+    },
     ts({
       lib: ["es5", "es6", "dom"],
       target: "es5"
@@ -40,7 +71,7 @@ export default {
 
     commonjs({
       extensions,
-      include: ['node_modules/**/*', './.schemas/*', 'src/lib/*'],
+      include: ['node_modules/**/*', 'src/.schemas/*', 'src/lib/*'],
       ignore: ["conditional-runtime-dependency"]
     }),
 
@@ -48,7 +79,7 @@ export default {
       extensions,
       babelrc: true,
       runtimeHelpers: true,
-      include: ['src/**/*'],
+      include: ['src/**/*', 'src/.schemas/*'],
       exclude: 'node_modules/**'
     }),
 

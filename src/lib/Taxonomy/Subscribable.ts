@@ -1,6 +1,7 @@
-import Taxonomy from './'
+import Taxonomy, { TaxonomyCreator } from './'
 import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
+// import { LodgerFormCreator } from '../Form'
 
 /**
  *

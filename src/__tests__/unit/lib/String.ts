@@ -46,13 +46,13 @@ describe('.stripLeading$()', () => {
 })
 
 describe('.cusomSplit()', () => {
-  test('imparte stringu in 2', () => {
+  test('splits in { what, mutation }', () => {
     const { mutation, what } = 'fa/CEVA'.cusomSplit()
     expect(mutation).toBe('CEVA')
     expect(what).toBe('fa')
   })
 
-  test('nu merge cu stringuri incorecte', () => {
+  test('throws if "/" sign is not present', () => {
     const splt = 'caca'.cusomSplit()
     expect(splt).toBe('caca')
   })

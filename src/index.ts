@@ -8,6 +8,7 @@ import LodgerError from '~/lib/Error'
 import DB from '~/lib/DB'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
 import notify from 'helper/notify'
+import loadSchemas from 'helper/loadSchemas'
 
 /**
  * Taxonomies
@@ -225,7 +226,6 @@ class Lodger implements LodgerAPI {
 
     // strings only from enums
 
-
     // const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
 
     // // objects initializers / clses
@@ -235,16 +235,20 @@ class Lodger implements LodgerAPI {
     //   ))
     // )
 
-    const taxes = []
+    const Taxonomies = loadSchemas(taxonomies).map(async schema => {
+      await Taxonomy.init(schema)
+    })
 
-    for (let i in Taxonomii) {
-      taxes.push(i)
-    }
-
-    const Taxonomies = Object.assign({},
-      ...taxes.map(async tax =>
-        ({ [tax]: await Taxonomy.init(require(`./.schemas/${tax}`)) })
-      ))
+    // const Taxonomies = Object.assign({},
+    //   ...taxonomies.map(async tax => {
+    //     const filename = `./.schemas/${tax}`
+    //     const _tax = await import(filename)
+    //     return { [tax]: await Taxonomy.init(_tax) }
+    //   }
+    // ))
+    // taxonomies.map(async tax => {
+    //   this[tax] = await Taxonomy.init()
+    // })
 
     /**
      * When a taxonomy item gets SELECTED,
