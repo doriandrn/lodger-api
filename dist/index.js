@@ -1344,7 +1344,7 @@ function () {
     }
 
     return __awaiter(this, void 0, void 0, function () {
-      var _a, Taxonomies;
+      var _a, taxesSchemas, Taxonomies;
 
       var _this = this;
 
@@ -1368,7 +1368,11 @@ function () {
             _a.db = _b.sent();
             return [4
             /*yield*/
-            , load(taxonomies).map(function (schema) {
+            , load(taxonomies)];
+
+          case 2:
+            taxesSchemas = _b.sent();
+            Taxonomies = taxesSchemas.map(function (schema) {
               return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                   switch (_a.label) {
@@ -1387,71 +1391,7 @@ function () {
                   }
                 });
               });
-            }) // const Taxonomies = Object.assign({},
-            //   ...taxonomies.map(async tax => {
-            //     const filename = `./.schemas/${tax}`
-            //     const _tax = await import(filename)
-            //     return { [tax]: await Taxonomy.init(_tax) }
-            //   }
-            // ))
-            // taxonomies.map(async tax => {
-            //   this[tax] = await Taxonomy.init()
-            // })
-
-            /**
-             * When a taxonomy item gets SELECTED,
-             * try to call all DB methods for refrences of the taxonomy
-             *
-             */
-            // store.subscribe(async ({ type, payload }, state) => {
-            //   const path = type.split('/')
-            //   if (path[1] !== 'select') return
-            //   const debug = Debug('lodger:SELECTstoreSubscriber')
-            //   const tax = path[0]
-            //   debug('payload', payload)
-            //   if (!payload) return
-            //   const id = typeof payload === 'string' ? payload : payload.id
-            //   if (id === store.getters[`tax/selected`]) return
-            //   const reference = { [`${tax}Id`]: id }
-            //   const { referenceTaxonomies } = forms[tax]
-            //   // taxonomies that depend on the selected tax and subscriber
-            //   // todo: move from here
-            //   const dependentTaxonomies: Taxonomie[] = []
-            //   Object.keys(forms).forEach((taxForm) => {
-            //     const { referenceTaxonomies } = forms[taxForm]
-            //     if (!referenceTaxonomies || referenceTaxonomies.indexOf(tax) < 0) return
-            //     dependentTaxonomies.push(<Taxonomie>taxForm)
-            //   })
-            //   debug(`${tax} dep taxes:`, dependentTaxonomies)
-            //   // call methods of references documents
-            //   referenceTaxonomies.forEach(async (refTax: Taxonomie) => {
-            //     const refdoc = store.getters[`${refTax}/activeDoc`]
-            //     // debug(`refdoc ${tax} (${refTax})`, refdoc)
-            //     if (!refdoc) return
-            //     const method = refdoc[`toggle_${tax}`]
-            //     if (!method || typeof method !== 'function') return
-            //     await method(id)
-            //     debug(`called references methods for ${refTax}`)
-            //   })
-            //   // update find criteria in DH with selected Item
-            //   if (dependentTaxonomies.length) {
-            //     dependentTaxonomies.forEach(dTax => {
-            //       const subscriber = payload.subscriber || 'main'
-            //       const { plural } = forms[dTax]
-            //       const holder = vueHelper.subsData[subscriber][plural]
-            //       if (!holder || !holder.criteriu) return
-            //       debug('asignez', dTax, subscriber, reference)
-            //       holder.criteriu.find = { ...reference }
-            //       // deselect
-            //       store.dispatch(`${dTax}/select`, { id: null, subscriber })
-            //     })
-            //     debug('ass dun')
-            //   }
-            // })
-            ];
-
-          case 2:
-            Taxonomies = _b.sent(); // const Taxonomies = Object.assign({},
+            }); // const Taxonomies = Object.assign({},
             //   ...taxonomies.map(async tax => {
             //     const filename = `./.schemas/${tax}`
             //     const _tax = await import(filename)
