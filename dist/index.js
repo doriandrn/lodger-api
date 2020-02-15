@@ -1341,6 +1341,7 @@ function () {
                 return __generator(this, function (_a) {
                   switch (_a.label) {
                     case 0:
+                      console.log('schemaffs', schema);
                       return [4
                       /*yield*/
                       , STaxonomy.init(schema)];

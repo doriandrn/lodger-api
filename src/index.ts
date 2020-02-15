@@ -236,6 +236,7 @@ class Lodger implements LodgerAPI {
     // )
 
     const Taxonomies = loadSchemas(taxonomies).map(async schema => {
+      console.log('schemaffs', schema)
       await Taxonomy.init(schema)
     })
 
