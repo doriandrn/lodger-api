@@ -1098,11 +1098,27 @@ var capitalize = function (s) {
 };
 
 function load(schemas) {
-  return schemas.map(function (schema) {
-    // console.log('s,', schema)
-    var fileName = capitalize(schema) + ".ts";
-    dynamicTargets[fileName]().then(function () {
-      console.log("imported " + fileName);
+  var _this = this;
+
+  return schemas.map(function (schemaFileName) {
+    return __awaiter(_this, void 0, void 0, function () {
+      var fileName, schema;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            fileName = capitalize(schemaFileName) + ".ts";
+            return [4
+            /*yield*/
+            , dynamicTargets[fileName]()];
+
+          case 1:
+            schema = _a.sent();
+            console.log('s', schema);
+            return [2
+            /*return*/
+            , schema];
+        }
+      });
     });
   });
 }

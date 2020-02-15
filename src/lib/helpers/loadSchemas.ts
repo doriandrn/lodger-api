@@ -6,11 +6,11 @@ const capitalize = (s) => {
 }
 
 export default function load (schemas) {
-  return schemas.map(schema => {
+  return schemas.map(async schemaFileName => {
     // console.log('s,', schema)
-    const fileName = `${capitalize(schema)}.ts`
-    dynamicTargets[fileName]().then(() => {
-      console.log(`imported ${fileName}`)
-    })
+    const fileName = `${capitalize(schemaFileName)}.ts`
+    const schema = await dynamicTargets[fileName]()
+    console.log('s', schema)
+    return schema
   })
 }
