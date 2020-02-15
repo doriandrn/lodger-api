@@ -1357,12 +1357,19 @@ function () {
                 return __generator(this, function (_a) {
                   switch (_a.label) {
                     case 0:
+                      return [4
+                      /*yield*/
+                      , schema];
+
+                    case 1:
+                      _a.sent();
+
                       console.log('schemaffs', schema);
                       return [4
                       /*yield*/
                       , STaxonomy.init(schema)];
 
-                    case 1:
+                    case 2:
                       _a.sent();
 
                       return [2
