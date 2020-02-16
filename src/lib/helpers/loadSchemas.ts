@@ -14,7 +14,7 @@ const capitalize = (s) => {
 export default async function load (schemas: Schema<any, any>[]) {
   return await Promise.all(schemas.map(async schemaFileName => {
     const fileName = `${capitalize(schemaFileName)}.ts`
-    const schema = await dynamicTargets[fileName]()
+    const schema = { ...await dynamicTargets[fileName]() }
     Object.defineProperty(schema, 'name', {
       writable: false,
       value: String(fileName.split('.')[0]).toLowerCase()

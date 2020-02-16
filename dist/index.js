@@ -1113,17 +1113,19 @@ function load(schemas) {
           /*yield*/
           , Promise.all(schemas.map(function (schemaFileName) {
             return __awaiter(_this, void 0, void 0, function () {
-              var fileName, schema;
-              return __generator(this, function (_a) {
-                switch (_a.label) {
+              var fileName, schema, _a;
+
+              return __generator(this, function (_b) {
+                switch (_b.label) {
                   case 0:
                     fileName = capitalize(schemaFileName) + ".ts";
+                    _a = [{}];
                     return [4
                     /*yield*/
                     , dynamicTargets[fileName]()];
 
                   case 1:
-                    schema = _a.sent();
+                    schema = __assign.apply(void 0, _a.concat([_b.sent()]));
                     Object.defineProperty(schema, 'name', {
                       writable: false,
                       value: String(fileName.split('.')[0]).toLowerCase()
