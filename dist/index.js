@@ -177,11 +177,12 @@ switch (env) {
 var strings;
 
 (function (strings) {
-  strings[strings["search"] = 0] = "search";
-  strings[strings["select"] = 1] = "select";
-  strings[strings["string"] = 2] = "string";
-  strings[strings["text"] = 3] = "text";
-  strings[strings["textarea"] = 4] = "textarea";
+  strings[strings["bani"] = 0] = "bani";
+  strings[strings["search"] = 1] = "search";
+  strings[strings["select"] = 2] = "select";
+  strings[strings["string"] = 3] = "string";
+  strings[strings["text"] = 4] = "text";
+  strings[strings["textarea"] = 5] = "textarea";
 })(strings || (strings = {}));
 /**
  * Accepted 'number's for a LodgerSchema field
@@ -226,9 +227,8 @@ var arrays;
 var objects;
 
 (function (objects) {
-  objects[objects["bani"] = 0] = "bani";
-  objects[objects["object"] = 1] = "object";
-  objects[objects["organizatie"] = 2] = "organizatie";
+  objects[objects["object"] = 0] = "object";
+  objects[objects["organizatie"] = 1] = "organizatie";
 })(objects || (objects = {}));
 /**
  * Removes the '$' at the begining of a string
@@ -1079,7 +1079,7 @@ function (_super) {
 
 var dynamicTargets = {
   'Apartament.ts': () => Promise.resolve().then(function () { return Apartament; }),
-  'Asociatie.ts': () => Promise.resolve().then(function () { return Asociatie$1; }),
+  'Asociatie.ts': () => Promise.resolve().then(function () { return Asociatie; }),
   'Bloc.ts': () => Promise.resolve().then(function () { return Bloc; }),
   'Cheltuiala.ts': () => Promise.resolve().then(function () { return Cheltuiala; }),
   'Contor.ts': () => Promise.resolve().then(function () { return Contor; }),
@@ -1091,6 +1091,11 @@ var dynamicTargets = {
   'Tranzactie.ts': () => Promise.resolve().then(function () { return Tranzactie; }),
   'Utilizator.ts': () => Promise.resolve().then(function () { return Utilizator; })
 };
+
+/**
+ * Rollup helper file
+ * to dynamically load schemas based on filename
+ */
 
 var capitalize = function (s) {
   if (typeof s !== 'string') return '';
@@ -1119,7 +1124,7 @@ function load(schemas) {
 
                   case 1:
                     schema = _a.sent();
-                    console.log('s', schema);
+                    schema.name = String(fileName.split('.')[0]).toLowerCase();
                     return [2
                     /*return*/
                     , schema];
@@ -1208,8 +1213,6 @@ var Lodger =
 function () {
   /**
    * Creates an instance of Lodger.
-   * @param {FormsHolder} forms
-   * @param {RxDatabase} db
    * @memberof Lodger
    */
   function Lodger(taxonomies, plugins) {
@@ -1377,7 +1380,6 @@ function () {
                 return __generator(this, function (_a) {
                   switch (_a.label) {
                     case 0:
-                      console.log('schemaffs', schema);
                       return [4
                       /*yield*/
                       , STaxonomy.init(schema)];
@@ -1483,23 +1485,33 @@ function () {
 
   Lodger.prototype.destroy = function () {
     return __awaiter(this, void 0, void 0, function () {
+      var e_1;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
-            return [4
-            /*yield*/
-            , this.unsubscribeAll()];
+            _a.trys.push([0, 2,, 3]); // await this.unsubscribeAll()
 
-          case 1:
-            _a.sent();
 
             return [4
             /*yield*/
             , STaxonomy.destroy()];
 
-          case 2:
+          case 1:
+            // await this.unsubscribeAll()
             _a.sent();
 
+            return [3
+            /*break*/
+            , 3];
+
+          case 2:
+            e_1 = _a.sent();
+            console.error('Lodger could not be destroyed. Reason: ', e_1);
+            return [3
+            /*break*/
+            , 3];
+
+          case 3:
             return [2
             /*return*/
             ];
@@ -1584,17 +1596,15 @@ var selectedApGetter = 'apartament/activeDoc';
 var fields = {
   nr: {
     type: 'number',
-    default: function (g) {
-      //TODO: numerotare pentru hoteluri, 101 et 1, 201 et 2
-      var apartamente = g['bloc/activeDoc'].apartamente;
-      if (!apartamente || !apartamente.length) return 1; // TODO: asta e pt hoteluri, daca toate ap de pe etaj la scara
-
-      var sortate = apartamente.map(function (ap) {
-        return g.apartamente[ap].nr;
-      }).sort(function (a, b) {
-        return Number(a) - Number(b);
-      }).reverse();
-      return sortate[0] + 1;
+    default: function (g) {//TODO: numerotare pentru hoteluri, 101 et 1, 201 et 2
+      // const { apartamente } = g['bloc/activeDoc']
+      // if (!apartamente || !apartamente.length) return 1
+      // // TODO: asta e pt hoteluri, daca toate ap de pe etaj la scara
+      // const sortate = apartamente
+      //   .map(ap => g.apartamente[ap].nr)
+      //   .sort((a, b) => Number(a) - Number(b))
+      //   .reverse()
+      // return sortate[0] + 1
     },
     value: function (g) {
       return g[selectedApGetter].nr;
@@ -1648,27 +1658,21 @@ var fields = {
   etaj: {
     type: 'number',
     required: true,
-    default: function (g) {
-      return g['etaj/selectat'].etaj;
-    },
+    // default: g => g['etaj/selectat'].etaj,
     value: function (g) {
       return g[selectedApGetter].etaj;
     }
   },
   blocId: {
     required: true,
-    default: function (g) {
-      return g['etaj/selectat'].bloc;
-    },
+    // default: g => g['etaj/selectat'].bloc,
     value: function (g) {
       return g[selectedApGetter].bloc;
     }
   },
   asociatieId: {
     required: true,
-    default: function (g) {
-      return g['asociatie/activeDoc']._id;
-    },
+    // default: g => g['asociatie/activeDoc']._id,
     value: function (g) {
       return g['asociatie/activeDoc']._id;
     }
@@ -1676,9 +1680,7 @@ var fields = {
   scara: {
     type: 'number',
     required: true,
-    default: function (g) {
-      return g['etaj/selectat'].scara;
-    },
+    // default: g => g['etaj/selectat'].scara,
     value: function (g) {
       return g[selectedApGetter].scara;
     }
@@ -1964,16 +1966,13 @@ var setari = {
     }]
   }
 };
-var Asociatie = {
-  fields: fields$1,
-  methods: methods$1,
-  statics: statics,
-  setari: setari
-};
 
-var Asociatie$1 = /*#__PURE__*/Object.freeze({
+var Asociatie = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    'default': Asociatie
+    fields: fields$1,
+    methods: methods$1,
+    statics: statics,
+    setari: setari
 });
 
 var fields$2 = {

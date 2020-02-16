@@ -27,7 +27,8 @@ module.exports = {
     'forms/(.*)$': '<rootDir>/src/forms/$1',
     'helper/(.*)$': '<rootDir>/src/lib/helpers/$1',
     'fixtures/(.*)$': '<rootDir>/src/__fixtures__/$1',
-    'lodger.config': '<rootDir>/src/lodger.config'
+    'lodger.config': '<rootDir>/src/lodger.config',
+    'dynamic-targets': '<rootDir>/src/lib/helpers/dev/jest-dynamic-targets'
   },
   modulePathIgnorePatterns: [
     "<rootDir>/dist/",

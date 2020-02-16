@@ -1,4 +1,4 @@
-import { cusomSplit } from '../../../../helpers/functions'
+import { customSplit } from '../../../../helpers/functions'
 
 const DBMethods = db => async ({ type, payload }) => {
   if (type.indexOf('/') < 0) return

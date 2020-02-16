@@ -5,6 +5,7 @@ describe('.toRxDBType()', () => {
     test('returns "string" (default type) for unknown inputs', () => {
       expect('whatever'.toRxDBType()).toBe('string')
       expect('string'.toRxDBType()).toBe('string')
+      expect('bani'.toRxDBType()).toBe('string')
     })
 
     test('returns "number"', () => {
@@ -20,7 +21,6 @@ describe('.toRxDBType()', () => {
 
     test('returns object', () => {
       expect('object'.toRxDBType()).toBe('object')
-      expect('bani'.toRxDBType()).toBe('object')
     })
   })
 
@@ -45,15 +45,15 @@ describe('.stripLeading$()', () => {
   })
 })
 
-describe('.cusomSplit()', () => {
+describe('.customSplit()', () => {
   test('splits in { what, mutation }', () => {
-    const { mutation, what } = 'fa/CEVA'.cusomSplit()
+    const { mutation, what } = 'fa/CEVA'.customSplit()
     expect(mutation).toBe('CEVA')
     expect(what).toBe('fa')
   })
 
   test('throws if "/" sign is not present', () => {
-    const splt = 'caca'.cusomSplit()
+    const splt = 'caca'.customSplit()
     expect(splt).toBe('caca')
   })
 })

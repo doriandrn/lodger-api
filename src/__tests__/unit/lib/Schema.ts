@@ -73,7 +73,7 @@ describe('Schema', () => {
       expect(schema.properties.cucu).toBeDefined()
     })
 
-    test('inserts a required field in .required[]', () => {
+    test('puts required field in .required[]', () => {
       const id = 'reqTest'
       schema.add(id, new Field({ required: true }))
       expect(schema.required).toContain(id)

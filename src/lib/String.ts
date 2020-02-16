@@ -11,7 +11,7 @@ type SplitObject = {
  * @enum {number}
  */
 export enum strings {
-  search, select, string, text, textarea
+  bani, search, select, string, text, textarea
 }
 
 /**
@@ -39,7 +39,7 @@ export enum arrays {
  * @enum {number}
  */
 export enum objects {
-  bani, object, organizatie
+  object, organizatie
 }
 
 
@@ -51,7 +51,7 @@ declare global {
    */
   interface String {
     stripLeading$: () => string,
-    cusomSplit: () => SplitObject,
+    customSplit: () => SplitObject,
     slugify: () => string,
     toRxDBType: () => JsonSchemaTypes
     plural: () => Plural<string>

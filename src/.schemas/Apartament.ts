@@ -38,16 +38,16 @@ const fields: FieldsCreator<Apartament> = {
     type: 'number',
     default: g => {
       //TODO: numerotare pentru hoteluri, 101 et 1, 201 et 2
-      const { apartamente } = g['bloc/activeDoc']
-      if (!apartamente || !apartamente.length) return 1
+      // const { apartamente } = g['bloc/activeDoc']
+      // if (!apartamente || !apartamente.length) return 1
 
-      // TODO: asta e pt hoteluri, daca toate ap de pe etaj la scara
-      const sortate = apartamente
-        .map(ap => g.apartamente[ap].nr)
-        .sort((a, b) => Number(a) - Number(b))
-        .reverse()
+      // // TODO: asta e pt hoteluri, daca toate ap de pe etaj la scara
+      // const sortate = apartamente
+      //   .map(ap => g.apartamente[ap].nr)
+      //   .sort((a, b) => Number(a) - Number(b))
+      //   .reverse()
 
-      return sortate[0] + 1
+      // return sortate[0] + 1
     },
     value: g => g[selectedApGetter].nr,
     required: true,
@@ -91,23 +91,23 @@ const fields: FieldsCreator<Apartament> = {
   etaj: {
     type: 'number',
     required: true,
-    default: g => g['etaj/selectat'].etaj,
+    // default: g => g['etaj/selectat'].etaj,
     value: g => g[selectedApGetter].etaj
   },
   blocId: {
     required: true,
-    default: g => g['etaj/selectat'].bloc,
+    // default: g => g['etaj/selectat'].bloc,
     value: g => g[selectedApGetter].bloc
   },
   asociatieId: {
     required: true,
-    default: g => g['asociatie/activeDoc']._id,
+    // default: g => g['asociatie/activeDoc']._id,
     value: g => g['asociatie/activeDoc']._id
   },
   scara: {
     type: 'number',
     required: true,
-    default: g => g['etaj/selectat'].scara,
+    // default: g => g['etaj/selectat'].scara,
     value: g => g[selectedApGetter].scara
   },
   balanta: {

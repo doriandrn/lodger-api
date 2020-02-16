@@ -95,8 +95,6 @@ let plugins: LodgerPlugin[] = []
 class Lodger implements LodgerAPI {
   /**
    * Creates an instance of Lodger.
-   * @param {FormsHolder} forms
-   * @param {RxDatabase} db
    * @memberof Lodger
    */
   constructor (
@@ -236,10 +234,7 @@ class Lodger implements LodgerAPI {
     // )
 
     const taxesSchemas = await loadSchemas(taxonomies)
-    const Taxonomies = taxesSchemas.map(async schema => {
-      console.log('schemaffs', schema)
-      return await Taxonomy.init(schema)
-    })
+    const Taxonomies = taxesSchemas.map(async schema => await Taxonomy.init(schema))
 
     // const Taxonomies = Object.assign({},
     //   ...taxonomies.map(async tax => {
@@ -336,8 +331,12 @@ class Lodger implements LodgerAPI {
    *
    */
   async destroy () {
-    await this.unsubscribeAll()
-    await Taxonomy.destroy()
+    try {
+      // await this.unsubscribeAll()
+      await Taxonomy.destroy()
+    } catch (e) {
+      console.error('Lodger could not be destroyed. Reason: ', e)
+    }
   }
 
   /**

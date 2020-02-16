@@ -177,7 +177,7 @@ const setari = {
   },
 }
 
-export default <LodgerTaxonomyCreator>{
+export {
   fields,
   methods,
   statics,

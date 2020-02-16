@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Lodger .build() positive matches snapshot: lodger-new 1`] = `
+Lodger {
+  "plugins": Array [],
+}
+`;
