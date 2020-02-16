@@ -101,7 +101,13 @@ class Lodger implements LodgerAPI {
     taxonomies: TaxesList = taxonomies,
     protected plugins: LodgerPlugin[] = []
   ) {
-    Object.defineProperties(this, taxonomies)
+    // Assign taxonomies to this
+    taxonomies.map(tax => {
+      Object.defineProperty(this, tax.form.plural, {
+        value: tax,
+        writable: false
+      })
+    })
   }
 
   /**
@@ -234,7 +240,7 @@ class Lodger implements LodgerAPI {
     // )
 
     const taxesSchemas = await loadSchemas(taxonomies)
-    const Taxonomies = taxesSchemas.map(async schema => await Taxonomy.init(schema))
+    const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema)))
 
     // const Taxonomies = Object.assign({},
     //   ...taxonomies.map(async tax => {
