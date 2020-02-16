@@ -1,4 +1,5 @@
 {
   "workbench.colorTheme": "Tomorrow Night Blue",
-  "terminal.integrated.scrollback": 10000
+  "terminal.integrated.scrollback": 10000,
+  "workbench.editor.limit.value": 3
 }

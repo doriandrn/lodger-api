@@ -122,6 +122,17 @@ describe('Field', () => {
     })
   })
 
+  describe('.label', () => {
+    test('is assigned', () => {
+      const field = new Field()
+      expect(field.label).toBeDefined()
+    })
+  })
+
+  describe('.description', () => {
+
+  })
+
   describe('.rxSchema', () => {
     const testField = new Field().rxSchema
 

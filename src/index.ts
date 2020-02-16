@@ -85,6 +85,8 @@ interface LodgerAPI {
 }
 
 let plugins: LodgerPlugin[] = []
+let navigator = window.navigator || { language: 'ro-RO' }
+let translations
 
 /**
  *
@@ -108,6 +110,34 @@ class Lodger implements LodgerAPI {
         writable: false
       })
     })
+
+    this.taxonomies = taxonomies.map(tax => tax.form.plural)
+  }
+
+  static get locale () {
+    return navigator.language
+  }
+
+  static set locale (language) {
+    try {
+      translations = require('locales/' + this.locale).default
+    } catch (e) {
+      throw new Error('Could not find translations file for language: ', language, e)
+    }
+  }
+
+
+  /**
+   * Gets the translation for a specific item.
+   *
+   * @static
+   * @param {string} key
+   * @param {string} context
+   * @returns
+   * @memberof Lodger
+   */
+  static translate (key: string, context: string) {
+    return translations[context][key] || translations[key]
   }
 
   /**

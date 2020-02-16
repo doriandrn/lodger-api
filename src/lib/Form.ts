@@ -82,7 +82,7 @@ implements FormAPI<I> {
     }
 
     this.name = name
-    this.fields = { ...fields }
+    this.fields = {}
 
     this.plural = this.name.plural()
 

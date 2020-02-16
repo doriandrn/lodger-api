@@ -544,7 +544,7 @@ function () {
         name = _a.name;
 
     this.name = name;
-    this.fields = __assign({}, fields);
+    this.fields = {};
     this.plural = this.name.plural();
 
     if (fields) {
@@ -1206,6 +1206,10 @@ var Forms;
 })(exports.Errors || (exports.Errors = {}));
 
 var plugins = [];
+var navigator = window.navigator || {
+  language: 'ro-RO'
+};
+var translations;
 /**
  *
  * @class The main API
@@ -1239,7 +1243,38 @@ function () {
         writable: false
       });
     });
+    this.taxonomies = taxonomies.map(function (tax) {
+      return tax.form.plural;
+    });
   }
+
+  Object.defineProperty(Lodger, "locale", {
+    get: function () {
+      return navigator.language;
+    },
+    set: function (language) {
+      try {
+        translations = require('locales/' + this.locale).default;
+      } catch (e) {
+        throw new Error('Could not find translations file for language: ', language, e);
+      }
+    },
+    enumerable: true,
+    configurable: true
+  });
+  /**
+   * Gets the translation for a specific item.
+   *
+   * @static
+   * @param {string} key
+   * @param {string} context
+   * @returns
+   * @memberof Lodger
+   */
+
+  Lodger.translate = function (key, context) {
+    return translations[context][key] || translations[key];
+  };
   /**
    * @alias Taxonomy.put
    *
