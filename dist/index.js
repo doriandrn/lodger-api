@@ -1124,7 +1124,10 @@ function load(schemas) {
 
                   case 1:
                     schema = _a.sent();
-                    schema.name = String(fileName.split('.')[0]).toLowerCase();
+                    Object.defineProperty(schema, 'name', {
+                      writable: false,
+                      value: String(fileName.split('.')[0]).toLowerCase()
+                    });
                     return [2
                     /*return*/
                     , schema];
