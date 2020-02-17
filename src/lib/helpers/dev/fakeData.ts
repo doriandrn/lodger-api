@@ -6,20 +6,20 @@ export default function fakeData (taxonomy: Taxonomie) {
   const monede = ['ron', 'usd', 'eur']
   const moneda = faker.random.arrayElement(monede)
 
-  switch (taxonomy) {
-    case 'Asociatie':
+  switch (+taxonomy) {
+    case Taxonomii.Asociatie:
       return {
         name,
         moneda,
         balanta: Number(faker.finance.amount(100, 10000, 4))
       }
 
-    case 'Bloc':
+    case Taxonomii.Bloc:
       return {
         name: faker.random.alphaNumeric(2)
       }
 
-    case 'Apartament':
+    case Taxonomii.Apartament:
       return {
         nr: 1,
         proprietar: `${faker.name.firstName()} ${faker.name.lastName()}`,
@@ -30,14 +30,14 @@ export default function fakeData (taxonomy: Taxonomie) {
         locatari: faker.random.number({ min: 0, max: 9 })
       }
 
-    case 'Incasare':
+    case Taxonomii.Incasare:
       return {
         moneda,
         suma: Number(faker.finance.amount(100, 10000, 4)),
         nrChitanta: 1
       }
 
-    case 'Factura':
+    case Taxonomii.Factura:
       return {
         nrFactura: 1,
         suma: faker.random.number({ min: -100000, max: -100 }),
@@ -45,19 +45,19 @@ export default function fakeData (taxonomy: Taxonomie) {
         dataScadenta: Date.now() + faker.random.number({ min: 9000000, max: 100000000 })
       }
 
-    case 'Furnizor':
+    case Taxonomii.Furnizor:
       return {
         name: faker.company.companyName(),
         servicii: []
         // servicii: faker.random.arrayElement(this.$store.getters[''])
       }
 
-    case 'Serviciu':
+    case Taxonomii.Serviciu:
       return {
         denumire: faker.hacker.adjective()
       }
 
-    case 'Cheltuiala':
+    case Taxonomii.Cheltuiala:
       return {
         moneda,
         // suma: Number(faker.finance.amount(1000, 10000, 6))
@@ -65,7 +65,7 @@ export default function fakeData (taxonomy: Taxonomie) {
 
       }
 
-    case 'Utilizator':
+    case Taxonomii.Utilizator:
       return {
         name: `${faker.name.firstName()} ${faker.name.lastName()}`,
         rol: 'administrator'

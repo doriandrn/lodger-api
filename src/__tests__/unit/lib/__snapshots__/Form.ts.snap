@@ -9,13 +9,17 @@ Form {
   "fields": Object {
     "x1": Field {
       "default": undefined,
+      "fakeValue": null,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "value": [Function],
     },
     "x2": Field {
       "default": undefined,
+      "fakeValue": null,
       "index": true,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "v": "required|undefined",
@@ -23,18 +27,24 @@ Form {
     },
     "x3": Field {
       "default": undefined,
+      "fakeValue": 214,
+      "label": undefined,
       "storage": "db",
       "type": "number",
       "value": [Function],
     },
     "x4": Field {
       "default": undefined,
+      "fakeValue": null,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "value": [Function],
     },
     "x5": Field {
       "default": undefined,
+      "fakeValue": null,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "v": "required|undefined",
@@ -48,19 +58,24 @@ Form {
     "name": "xx",
     "properties": Object {
       "x1": Object {
+        "fakeValue": null,
         "type": "string",
       },
       "x2": Object {
+        "fakeValue": null,
         "index": true,
         "type": "string",
       },
       "x3": Object {
+        "fakeValue": 214,
         "type": "number",
       },
       "x4": Object {
+        "fakeValue": null,
         "type": "string",
       },
       "x5": Object {
+        "fakeValue": null,
         "type": "string",
       },
     },
@@ -83,27 +98,35 @@ Form {
   "fields": Object {
     "createdAt": Field {
       "default": undefined,
+      "fakeValue": 1581958739403,
       "index": true,
+      "label": undefined,
       "storage": "db",
       "type": "number",
       "value": [Function],
     },
     "updatedAt": Field {
       "default": undefined,
+      "fakeValue": 1582034357504,
       "index": true,
+      "label": undefined,
       "storage": "db",
       "type": "number",
       "value": [Function],
     },
     "x1": Field {
       "default": undefined,
+      "fakeValue": null,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "value": [Function],
     },
     "x2": Field {
       "default": undefined,
+      "fakeValue": null,
       "index": true,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "v": "required|undefined",
@@ -111,18 +134,24 @@ Form {
     },
     "x3": Field {
       "default": undefined,
+      "fakeValue": 211,
+      "label": undefined,
       "storage": "db",
       "type": "number",
       "value": [Function],
     },
     "x4": Field {
       "default": undefined,
+      "fakeValue": null,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "value": [Function],
     },
     "x5": Field {
       "default": undefined,
+      "fakeValue": null,
+      "label": undefined,
       "storage": "db",
       "type": "string",
       "v": "required|undefined",
@@ -138,27 +167,34 @@ Form {
     "name": "xx",
     "properties": Object {
       "createdAt": Object {
+        "fakeValue": 1581958739403,
         "index": true,
         "type": "number",
       },
       "updatedAt": Object {
+        "fakeValue": 1582034357504,
         "index": true,
         "type": "number",
       },
       "x1": Object {
+        "fakeValue": null,
         "type": "string",
       },
       "x2": Object {
+        "fakeValue": null,
         "index": true,
         "type": "string",
       },
       "x3": Object {
+        "fakeValue": 211,
         "type": "number",
       },
       "x4": Object {
+        "fakeValue": null,
         "type": "string",
       },
       "x5": Object {
+        "fakeValue": null,
         "type": "string",
       },
     },

@@ -33,7 +33,7 @@ describe('Field', () => {
   describe('.v - validation string', () => {
     test('adds "required" to it if field is required', () => {
       const field = new Field({ required: true })
-      expect(field.v.indexOf('required')).toBeGreaterThan(-1)
+      expect(field.v && field.v.indexOf('required')).toBeGreaterThan(-1)
     })
   })
 
@@ -122,9 +122,25 @@ describe('Field', () => {
     })
   })
 
+  describe('.fakeValue', () => {
+    let field
+    beforeAll(() => { field = new Field() })
+    test('is defined', () => {
+      expect(field.fakeValue).toBeDefined()
+    })
+
+    describe('generates fake values accordingly', () => {
+      test('numbeer fields', () => {
+        const field = new Field({ type: 'bani' })
+        expect(field.fakeValue).toBeGreaterThan(0)
+      })
+    })
+  })
+
   describe('.label', () => {
-    test('is assigned', () => {
+    test('can be set programatically', () => {
       const field = new Field()
+      field.label = 'Something'
       expect(field.label).toBeDefined()
     })
   })
@@ -139,7 +155,7 @@ describe('Field', () => {
     describe('+', () => {
       test('type gets converted with .toRxDBtype()', () => {
         const field = new Field({ type: 'bani' }).rxSchema
-        expect(field.type).toBe('object')
+        expect(field.type).toBe('string')
       })
 
       test('adds references to fields', () => {

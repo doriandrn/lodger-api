@@ -11,7 +11,7 @@ type SplitObject = {
  * @enum {number}
  */
 export enum strings {
-  bani, search, select, string, text, textarea
+  bani, blocName, fullName, search, select, string, text, textarea
 }
 
 /**
@@ -64,24 +64,24 @@ declare global {
  * @returns {String} the parsed string
  * @memberof String
  */
-String.prototype.stripLeading$ = function (): string {
-  if (this.indexOf('$') !== 0) return String(this)
-  return String(this.replace('$', '').trim().stripLeading$())
+String.prototype.stripLeading = function (symbol: string): String {
+  if (this.indexOf(symbol) !== 0) return String(this)
+  return String(this.replace(symbol, '').trim().stripLeading(symbol))
 }
 
-/**
- * Splits a mutation string (eg. 'asociatie/INCASEAZA')
- * @memberof String
- * @returns {SplitObject}
- */
-String.prototype.customSplit = function (): SplitObject {
-  const split = this.split('/')
+// /**
+//  * Splits a mutation string (eg. 'asociatie/INCASEAZA')
+//  * @memberof String
+//  * @returns {SplitObject}
+//  */
+// String.prototype.customSplit = function (): SplitObject {
+//   const split = this.split('/')
 
-  return {
-    what: split[0],
-    mutation: split[1]
-  }
-}
+//   return {
+//     what: split[0],
+//     mutation: split[1]
+//   }
+// }
 
 /**
  * Slugifies a string

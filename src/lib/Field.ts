@@ -1,4 +1,6 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
+import faker from 'faker'
+
 import FieldError from './Error'
 
 // These 3 lines are a hack for Rollup & Jest to work together.
@@ -30,7 +32,6 @@ declare global {
   type FieldCreator = {
     // id : keyof T // item's identifier, correlates to DB's item key
 
-    label ?: string // what the user sees
     placeholder ?: string // sample data
 
     // values
@@ -99,6 +100,8 @@ export type FieldsCreator<Schema> = {
 export class Field implements FieldAPI {
   readonly type: JsonSchemaTypes = 'string'
 
+  // readonly label : string = translate(_id, 'fields')
+
   readonly ref ?: ReferenceTaxonomy
   readonly items ?: { type: 'string' }
   readonly index ?: boolean // should be indexed to search for
@@ -109,6 +112,8 @@ export class Field implements FieldAPI {
 
   readonly default : any
   readonly value : (context : FieldGivenContext<any>) => any = () => this.default || undefined
+  readonly fakeValue : any
+  label ?: string
 
   /**
    * Creates an instance of Field.
@@ -124,8 +129,10 @@ export class Field implements FieldAPI {
       return
     }
 
-    const { index, ref, indexRef, type, step, required, v, value } = data
+    const { index, label, ref, indexRef, type, step, required, v, value } = data
     this.type = String(type || '').toRxDBType()
+
+    this.label = label
 
     if (index) this.index = true
 
@@ -160,7 +167,33 @@ export class Field implements FieldAPI {
     const { storage } = this
     if (value && typeof value === 'function')
       this.value = value.bind({ storage })
+
+    this.fakeValue = (() => {
+      switch (type) {
+        default:
+          return null
+
+        case 'bani':
+          return Number(faker.finance.amount(100, 10000, 4))
+
+        case 'number':
+          return Number(faker.random.number({ min: 20, max: 300 }))
+
+        case 'fullName':
+          return `${faker.name.firstName()} ${faker.name.lastName()}`
+
+        case 'dateTime':
+          return Date.now() + faker.random.number({ min: 9000000, max: 100000000 })
+
+        case 'blocName':
+          return faker.random.alphaNumeric(2)
+
+        case 'serviceName':
+          return faker.hacker.adjective()
+      }
+    })()
   }
+
 
   /**
    * Used for Schema constructors,

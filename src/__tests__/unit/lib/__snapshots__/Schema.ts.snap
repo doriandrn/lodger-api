@@ -5,13 +5,16 @@ Schema {
   "name": "schema1",
   "properties": Object {
     "x1": Object {
+      "fakeValue": null,
       "type": "string",
     },
     "x2": Object {
+      "fakeValue": null,
       "index": true,
       "type": "string",
     },
     "x3": Object {
+      "fakeValue": 261,
       "type": "number",
     },
   },

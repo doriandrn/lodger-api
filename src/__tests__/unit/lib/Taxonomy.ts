@@ -172,9 +172,23 @@ describe('Taxonomy class', () => {
 
 
   // })
+  describe('.fakeData', () => {
+    let fakeData
+
+    beforeAll(() => {
+      fakeData = $tax.fakeData
+    })
+
+    test('generates a fake object based on taxonomy', () => {
+      expect(fakeData).toBeDefined()
+    })
+
+    test('contains the keys of the form fields', () => {
+      expect(Object.keys(fakeData)).toContain($tax.form.fieldsIds)
+    })
+  })
 
   describe('.destroy()', () => {
-
     beforeAll(async () => {
       await Taxonomy.destroy()
     })
