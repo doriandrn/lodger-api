@@ -16,6 +16,7 @@ module.exports = {
     'js',
     'jsx',
     'json',
+    'd.ts',
     'ts',
     'tsx'
   ],

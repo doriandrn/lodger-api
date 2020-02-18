@@ -4,14 +4,14 @@ import { FieldsCreator } from '../lib/Field'
 declare global {
   type Distribuire = {
     [apartamentId: string]: {
-      suma: Bani,
+      suma: Money,
       procent: number
     }
   }
 
   interface Cheltuiala {
     catre: Furnizor,
-    suma: Bani,
+    suma: Money,
     facturi: Factura[],
     dataScadenta: Date,
     distribuire: Distribuire
@@ -40,7 +40,7 @@ const fields: FieldsCreator<Cheltuiala> = {
     // required: true TODO: e necesar? ?????????
   },
   suma: {
-    type: 'bani',
+    type: '$',
     required: true,
     index: true,
     showInList: 'secondary'

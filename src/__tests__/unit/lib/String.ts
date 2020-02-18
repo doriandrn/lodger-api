@@ -62,9 +62,7 @@ describe('.toRxDBType()', () => {
           })
         })
     })
-
   })
-
 })
 
 describe('slugify()', () => {

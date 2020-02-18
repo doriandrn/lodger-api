@@ -12,22 +12,12 @@ declare global {
   type LodgerDocument = {
     _id: string,
 
-    '@': string
-    'upd@': string
+    '@' ?: string
+    'upd@' ?: string
   }
 
-  type Bani = {
-    suma: number
-    moneda: Monede
+  type Money = {
+    amount: string // string because could be saved from bigInt. support for cryptocurrencies
+    currency: Currency
   }
-}
-
-/**
- * Monede
- *
- * @enum {number}
- * @todo add all
- */
-export enum Monede {
-  RON, EUR, USD, BCH
 }

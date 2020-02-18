@@ -1,5 +1,6 @@
 import { Form, LodgerFormCreator } from '~/lib/Form'
 import fieldsWithExcludedItems from 'fixtures/fields/withExcludedItems'
+import { _ensureStorageTokenExists } from 'rxdb/dist/typings/rx-database'
 
 /**
  * DO NOT CHANGE ANY OF THESE
@@ -50,14 +51,13 @@ describe('Form', () => {
         expect(formWithCT).toMatchSnapshot('options.captureTimestamp')
       })
 
-      test('.fields[createdAt] is defined', () => {
+      test('field.createdAt is defined', () => {
         expect(formWithCT.fieldsIds.indexOf('createdAt')).toBeGreaterThan(-1)
       })
 
-      test('.fields[updatedAt] is defined', () => {
+      test('field.updatedAt is defined', () => {
         expect(formWithCT.fieldsIds.indexOf('updatedAt')).toBeGreaterThan(-1)
       })
-
 
     })
   })
@@ -65,6 +65,10 @@ describe('Form', () => {
   describe('.fields', () => {
     test('contains all fields', () => {
       expect(Object.keys(formData.fields).length).toEqual(Object.keys(form.fields).length)
+    })
+
+    test('labels are properly translated based on locale', () => {
+      expect('')
     })
   })
 
@@ -75,10 +79,8 @@ describe('Form', () => {
 
     test('properties obj contains the same no as fields', () => {
       const { properties } = schema
-      // console.info('properties', Object.keys(properties))
-      // console.info('ff', Object.keys(form.fields))
       expect(Object.keys(properties)).toEqual(Object.keys(form.fields))
-      // expect(Object.keys(properties).length).toEqual(Object.keys(form.fields).length)
+
     })
   })
 
@@ -87,6 +89,20 @@ describe('Form', () => {
     test('it contains all keys', () => {
       expect(Object.keys(form.value()))
       .toEqual(form.fieldsIds)
+    })
+  })
+
+  describe('.fakeData', () => {
+    test('it contains the schema keys', () => {
+      expect(Object.keys(form.fakeData)).toEqual(Object.keys(form.schema.properties))
+    })
+
+    test('at least one property has value', () => {
+      expect(Object.values(form.fakeData).filter(v => v !== undefined).length).toBeGreaterThan(0)
+    })
+
+    test('generates diferrent data when requested again', () => {
+      expect(Object.values(form.fakeData)).not.toEqual(Object.values(form.fakeData))
     })
   })
 

@@ -12,7 +12,7 @@ declare global {
   interface Asociatie extends LodgerDocument {
     _id: string
     name: string
-    balanta: Bani
+    balanta: Money
 
     servicii: Serviciu[]
     organizatie?: Organizatie,
@@ -104,7 +104,7 @@ const fields: FieldsCreator<Asociatie> = {
 
 
 const methods: RxCollectionBase<Asociatie, AsociatieAPI> = {
-  async initBalanta (data: {balanta: Bani}) {
+  async initBalanta (data: {balanta: Money}) {
     if (this.balanta !== undefined) return
     this.balanta = data.balanta
     await this.save()

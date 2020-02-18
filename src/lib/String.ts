@@ -1,17 +1,15 @@
 import { JsonSchemaTypes } from "rxdb";
-
-type SplitObject = {
-  what: string,
-  mutation: string
-}
+import { Currency } from "main";
 
 /**
- * Accepted 'string's for a LodgerSchema field
+ * Accepted -strings- for a LodgerSchema field's type
  *
  * @enum {number}
  */
 export enum strings {
-  bani, blocName, fullName, search, select, string, text, textarea
+  $, buildingName, fullName,
+  search, select, serviceName,
+  string, textarea
 }
 
 /**
@@ -50,8 +48,8 @@ declare global {
    * @interface String
    */
   interface String {
-    stripLeading$: () => string,
-    customSplit: () => SplitObject,
+    stripLeading: (symbol: string) => String,
+    moneySplit: () => Money,
     slugify: () => string,
     toRxDBType: () => JsonSchemaTypes
     plural: () => Plural<string>
@@ -69,19 +67,19 @@ String.prototype.stripLeading = function (symbol: string): String {
   return String(this.replace(symbol, '').trim().stripLeading(symbol))
 }
 
-// /**
-//  * Splits a mutation string (eg. 'asociatie/INCASEAZA')
-//  * @memberof String
-//  * @returns {SplitObject}
-//  */
-// String.prototype.customSplit = function (): SplitObject {
-//   const split = this.split('/')
+/**
+ * Splits a $ string into Money object
+ * @memberof String
+ * @returns {Money}
+ */
+String.prototype.moneySplit = function (): Money {
+  const split = this.split(' ')
 
-//   return {
-//     what: split[0],
-//     mutation: split[1]
-//   }
-// }
+  return {
+    currency: split[0] as unknown as Currency,
+    amount: split[1]
+  }
+}
 
 /**
  * Slugifies a string

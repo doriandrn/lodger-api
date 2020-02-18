@@ -9,7 +9,7 @@ declare global {
    */
   interface Apartament extends LodgerDocument {
     nr : number
-    balanta: Bani
+    balanta: Money
 
     proprietar ?: string
     suprafata ?: number
@@ -111,7 +111,7 @@ const fields: FieldsCreator<Apartament> = {
     value: g => g[selectedApGetter].scara
   },
   balanta: {
-    type: 'bani',
+    type: '$',
     default: null,
     required: true,
     showInList: ['details'],

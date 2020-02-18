@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Field .rxSchema + matches snapshot: testField 1`] = `
+exports[`.rxSchema + matches snapshot: testField 1`] = `
 Object {
   "type": "string",
 }

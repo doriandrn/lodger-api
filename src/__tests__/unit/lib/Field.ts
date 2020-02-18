@@ -1,4 +1,5 @@
 import { Field } from '~/lib/Field'
+import { strings, arrays, objects, numbers } from '~/lib/String'
 
 /**
  * Setup a dummy id to use everywhere
@@ -49,7 +50,9 @@ describe('Field', () => {
         const field = new Field({ ref })
 
         expect(field.ref).toBe(ref)
-        expect(field.items.type).toBe('string')
+        if (field.items) {
+          expect(field.items.type).toBe('string')
+        }
       })
     })
   })
@@ -123,16 +126,34 @@ describe('Field', () => {
   })
 
   describe('.fakeValue', () => {
-    let field
-    beforeAll(() => { field = new Field() })
-    test('is defined', () => {
-      expect(field.fakeValue).toBeDefined()
-    })
-
     describe('generates fake values accordingly', () => {
-      test('numbeer fields', () => {
-        const field = new Field({ type: 'bani' })
-        expect(field.fakeValue).toBeGreaterThan(0)
+      describe('strings', () => {
+        Object
+          .keys(strings)
+          .filter(s => typeof strings[s as any] === 'number')
+          .map(type => {
+            test(type, () => {
+              const field = new Field({ type })
+              expect(typeof field.fakeValue).toBe('string')
+              expect(field.fakeValue.length).toBeGreaterThan(1)
+            })
+          })
+      })
+
+      describe('numbers', () => {
+        Object
+          .keys(numbers)
+          .filter(s => typeof numbers[s as any] === 'number')
+          .map(type => {
+            test(type, () => {
+              const field = new Field({ type })
+              expect(typeof field.fakeValue).toBe('number')
+            })
+          })
+      })
+
+
+      // todo: add for other types
       })
     })
   })
@@ -154,7 +175,7 @@ describe('Field', () => {
 
     describe('+', () => {
       test('type gets converted with .toRxDBtype()', () => {
-        const field = new Field({ type: 'bani' }).rxSchema
+        const field = new Field({ type: '$' }).rxSchema
         expect(field.type).toBe('string')
       })
 

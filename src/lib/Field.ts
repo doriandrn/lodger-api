@@ -7,6 +7,8 @@ import FieldError from './Error'
 // Test with: yarn rollup -c & jest field
 import { strings, numbers, arrays, objects } from './String'
 import S from './String'
+import currencies from './maintainable/currencies'
+
 const { String } = S
 
 type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
@@ -36,7 +38,7 @@ declare global {
 
     // values
     default?: any | Function
-    value?: (context : FieldGivenContext<any>) => any
+    value?: (context ?: FieldGivenContext<any>) => any
 
     // field description
     type ?: FieldTypes // our form types. DEFAULT: 'string'
@@ -80,13 +82,13 @@ interface FieldAPI {
   readonly default : any | Function
   readonly rxSchema : RxJsonSchemaTopLevel
 
-  value (context : FieldGivenContext<any>): any
+  value (context ?: FieldGivenContext<any>): any
   onclick ?: (context ?: FieldGivenContext<any>) => void
 }
 
-// excluded _id, we use it as a key.
+// excluded _id, we use it as a key. others are optional
 export type FieldsCreator<Schema> = {
-  [i in Exclude<keyof Schema, '_id'>]: FieldCreator
+  [i in Exclude<keyof Schema, ['_id', '@', 'upd@']>]: FieldCreator
 }
 
 
@@ -111,7 +113,7 @@ export class Field implements FieldAPI {
   readonly storage ?: 'db' | 'store'  = 'db' // where to store data, in db or store
 
   readonly default : any
-  readonly value : (context : FieldGivenContext<any>) => any = () => this.default || undefined
+  readonly value : (context ?: FieldGivenContext<any>) => any = () => this.default || undefined
   readonly fakeValue : any
   label ?: string
 
@@ -129,10 +131,8 @@ export class Field implements FieldAPI {
       return
     }
 
-    const { index, label, ref, indexRef, type, step, required, v, value } = data
+    const { index, ref, indexRef, type, step, required, v, value } = data
     this.type = String(type || '').toRxDBType()
-
-    this.label = label
 
     if (index) this.index = true
 
@@ -168,30 +168,32 @@ export class Field implements FieldAPI {
     if (value && typeof value === 'function')
       this.value = value.bind({ storage })
 
-    this.fakeValue = (() => {
-      switch (type) {
-        default:
-          return null
+    Object.defineProperty(this, 'fakeValue', {
+      get () {
+        switch (type) {
+          default:
+            return undefined
 
-        case 'bani':
-          return Number(faker.finance.amount(100, 10000, 4))
+          case '$':
+            return `${faker.random.arrayElement(currencies)} ${faker.finance.amount(100, 10000, 4)}`
 
-        case 'number':
-          return Number(faker.random.number({ min: 20, max: 300 }))
+          case 'number':
+            return Number(faker.random.number({ min: 20, max: 300 }))
 
-        case 'fullName':
-          return `${faker.name.firstName()} ${faker.name.lastName()}`
+          case 'fullName':
+            return `${faker.name.firstName()} ${faker.name.lastName()}`
 
-        case 'dateTime':
-          return Date.now() + faker.random.number({ min: 9000000, max: 100000000 })
+          case 'dateTime':
+            return Date.now() + faker.random.number({ min: 9000000, max: 100000000 })
 
-        case 'blocName':
-          return faker.random.alphaNumeric(2)
+          case 'buildingName':
+            return faker.random.alphaNumeric(2)
 
-        case 'serviceName':
-          return faker.hacker.adjective()
+          case 'serviceName':
+            return faker.hacker.adjective()
+        }
       }
-    })()
+    })
   }
 
 

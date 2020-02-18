@@ -3,7 +3,7 @@ import { FieldsCreator } from '../lib/Field'
 
 declare global {
   interface Incasare extends LodgerDocument {
-    suma: Bani,
+    suma: Money,
     nrChitanta: number
 
     apartamentId: string
@@ -14,11 +14,10 @@ declare global {
 
 const fields: FieldsCreator<Incasare> = {
   suma: {
-    type: 'bani',
+    type: '$',
     showInList: 'primary',
     index: true,
-    required: true,
-    label: 'defaults.sum'
+    required: true
   },
   nrChitanta: {
     type: 'number',

@@ -24,7 +24,7 @@ const fields: FieldsCreator<Bloc> = {
     oninput: {
       transform: 'uppercase:all',
     },
-    type: 'text',
+    type: 'buildingName',
     required: true,
     showInList: 'primary',
     index: true,

@@ -10,7 +10,7 @@ type Distribuire = {
 
 declare global {
   interface Factura {
-    suma: Bani
+    suma: Money
     nrFactura  ?: number
     dataScadenta ?: Date
     distribuire ?: Distribuire
@@ -23,11 +23,10 @@ declare global {
 
 const fields: FieldsCreator<Factura>  = {
   suma: {
-    type: 'bani',
+    type: '$',
     showInList: 'primary',
     index: true,
-    required: true,
-    label: 'defaults.sum'
+    required: true
   },
   nrFactura: {
     type: 'number',

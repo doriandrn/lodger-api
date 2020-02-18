@@ -1,15 +1,14 @@
 // import FormError from './Error'
 import { Field, FieldsCreator } from './Field'
 import Schema from './Schema';
-import String from './String';
 
 type FormOptions = {
   captureTimestamp ?: boolean
 }
 
 type FormFields<I> = {
-  [k in keyof I] : Field
-}
+  [k in Extract<keyof I, string>] : Field
+} | {}
 
 export type LodgerFormCreator<T> = {
   name: string
@@ -59,10 +58,10 @@ implements FormAPI<I> {
   readonly plural : string
   // readonly captureTimestamp : boolean = false
   readonly schema : Schema<string, I>
+  readonly fields : FormFields<I> = {}
 
   $active: boolean = false
 
-  readonly fields !: FormFields<I>
 
   /**
    * Creates an instance of Form.
@@ -87,8 +86,8 @@ implements FormAPI<I> {
     this.plural = this.name.plural()
 
     if (fields) {
-      Object.keys(fields).map(field => {
-        this.fields[ field ] = new Field(fields[field])
+      Object.keys(fields).map((fieldId) => {
+        this.fields[ fieldId ] = new Field( fields[ fieldId ] )
       })
     }
 
@@ -96,19 +95,16 @@ implements FormAPI<I> {
       const { captureTimestamp } = opts
 
       if (captureTimestamp) {
-        this.fields['createdAt'] = new Field({
+        const timestampKeys: string[] = ['createdAt', 'updatedAt']
+        const captureTimestampField: FieldCreator = {
           type: 'dateTime',
           // required: true, // for filters / sorts
           index: true,
           excludeFrom: ['addForm', 'editForm'],
           showInList: 'secondary'
-        })
-
-        this.fields['updatedAt'] = new Field({
-          type: 'dateTime',
-          index: true,
-          excludeFrom: ['addForm', 'editForm'],
-          showInList: 'secondary'
+        }
+        timestampKeys.map(key => {
+          this.fields[key] = new Field({ ...captureTimestampField })
         })
       }
     }
@@ -116,9 +112,19 @@ implements FormAPI<I> {
     this.schema = new Schema(name, this.fields)
 
     // default onsubmit func
-    this.onsubmit = () => {
+    this.onsubmit = () => {}
+  }
 
-    }
+  /**
+   * Fakes data for testing
+   *
+   * @readonly
+   * @memberof Form
+   */
+  get fakeData () {
+    return Object
+      .fromEntries(this.fieldsIds
+        .map(fieldId => ([fieldId, this.fields[fieldId].fakeValue ])))
   }
 
   /**
