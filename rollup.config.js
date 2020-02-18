@@ -24,6 +24,7 @@ export default {
     'rxdb',
     'mobx',
     'consola',
+    'faker',
     'rxcollection-subscriber'
   ],
 
