@@ -18,7 +18,7 @@ declare global {
   interface Utilizator {
     _id: string
     name: string
-    rol: 'dev' | 'admin' | 'presedinte' | 'locator'
+    rol: keyof ['dev' | 'admin' | 'presedinte' | 'locator']
     contact?: DateContact
     preferinte: PreferinteUtilizator
   }
@@ -26,6 +26,7 @@ declare global {
 
 const fields: FieldsCreator<Utilizator> = {
   name: {
+    type: 'fullName',
     required: true,
     primary: true,
     showInList: 'primary',
@@ -37,6 +38,7 @@ const fields: FieldsCreator<Utilizator> = {
     value: ({ activeDoc }) => activeDoc.contact
   },
   rol: {
+    type: 'number',
     required: true,
     excludeFrom: [],
     value: ({ activeDoc }) => activeDoc.rol

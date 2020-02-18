@@ -2470,6 +2470,7 @@ var Tranzactie = /*#__PURE__*/Object.freeze({
 
 var fields$a = {
   name: {
+    type: 'fullName',
     required: true,
     primary: true,
     showInList: 'primary',
@@ -2487,6 +2488,7 @@ var fields$a = {
     }
   },
   rol: {
+    type: 'number',
     required: true,
     excludeFrom: [],
     value: function (_a) {
