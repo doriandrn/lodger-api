@@ -6,6 +6,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var RxDB = require('rxdb');
 var mobx = require('mobx');
+var faker = _interopDefault(require('faker'));
 var consola = _interopDefault(require('consola'));
 var Subscriber = _interopDefault(require('rxcollection-subscriber'));
 
@@ -170,19 +171,21 @@ switch (env) {
 }
 
 /**
- * Accepted 'string's for a LodgerSchema field
+ * Accepted -strings- for a LodgerSchema field's type
  *
  * @enum {number}
  */
 var strings;
 
 (function (strings) {
-  strings[strings["bani"] = 0] = "bani";
-  strings[strings["search"] = 1] = "search";
-  strings[strings["select"] = 2] = "select";
-  strings[strings["string"] = 3] = "string";
-  strings[strings["text"] = 4] = "text";
-  strings[strings["textarea"] = 5] = "textarea";
+  strings[strings["$"] = 0] = "$";
+  strings[strings["buildingName"] = 1] = "buildingName";
+  strings[strings["fullName"] = 2] = "fullName";
+  strings[strings["search"] = 3] = "search";
+  strings[strings["select"] = 4] = "select";
+  strings[strings["serviceName"] = 5] = "serviceName";
+  strings[strings["string"] = 6] = "string";
+  strings[strings["textarea"] = 7] = "textarea";
 })(strings || (strings = {}));
 /**
  * Accepted 'number's for a LodgerSchema field
@@ -238,22 +241,22 @@ var objects;
  */
 
 
-String.prototype.stripLeading$ = function () {
-  if (this.indexOf('$') !== 0) return String(this);
-  return String(this.replace('$', '').trim().stripLeading$());
+String.prototype.stripLeading = function (symbol) {
+  if (this.indexOf(symbol) !== 0) return String(this);
+  return String(this.replace(symbol, '').trim().stripLeading(symbol));
 };
 /**
- * Splits a mutation string (eg. 'asociatie/INCASEAZA')
+ * Splits a $ string into Money object
  * @memberof String
- * @returns {SplitObject}
+ * @returns {Money}
  */
 
 
-String.prototype.customSplit = function () {
-  var split = this.split('/');
+String.prototype.moneySplit = function () {
+  var split = this.split(' ');
   return {
-    what: split[0],
-    mutation: split[1]
+    currency: split[0],
+    amount: split[1]
   };
 };
 /**
@@ -306,6 +309,26 @@ String.prototype.plural = function () {
 var S = {
   String: String
 };
+
+/**
+ * Monede
+ *
+ * @enum {number}
+ * @todo add all
+ */
+var Currency;
+
+(function (Currency) {
+  Currency[Currency["BTC"] = 0] = "BTC";
+  Currency[Currency["RON"] = 1] = "RON";
+  Currency[Currency["EUR"] = 2] = "EUR";
+  Currency[Currency["USD"] = 3] = "USD";
+  Currency[Currency["TRX"] = 4] = "TRX";
+})(Currency || (Currency = {}));
+
+var currencies = Object.keys(Currency).filter(function (tax) {
+  return typeof Currency[tax] === 'number';
+});
 
 var String$1 = S.String;
 /**
@@ -376,6 +399,38 @@ function () {
     var storage = this.storage;
     if (value && typeof value === 'function') this.value = value.bind({
       storage: storage
+    });
+    Object.defineProperty(this, 'fakeValue', {
+      get: function () {
+        switch (type) {
+          default:
+            return undefined;
+
+          case '$':
+            return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
+
+          case 'number':
+            return Number(faker.random.number({
+              min: 20,
+              max: 300
+            }));
+
+          case 'fullName':
+            return faker.name.firstName() + " " + faker.name.lastName();
+
+          case 'dateTime':
+            return Date.now() + faker.random.number({
+              min: 9000000,
+              max: 100000000
+            });
+
+          case 'buildingName':
+            return faker.random.alphaNumeric(2);
+
+          case 'serviceName':
+            return faker.hacker.adjective();
+        }
+      }
     });
   }
 
@@ -534,6 +589,7 @@ function () {
     this.opts = opts;
     this._onsubmit = []; // hooks
 
+    this.fields = {};
     this.$active = false;
 
     var _a = data || {
@@ -548,8 +604,8 @@ function () {
     this.plural = this.name.plural();
 
     if (fields) {
-      Object.keys(fields).map(function (field) {
-        _this.fields[field] = new Field(fields[field]);
+      Object.keys(fields).map(function (fieldId) {
+        _this.fields[fieldId] = new Field(fields[fieldId]);
       });
     }
 
@@ -557,18 +613,16 @@ function () {
       var captureTimestamp = opts.captureTimestamp;
 
       if (captureTimestamp) {
-        this.fields['createdAt'] = new Field({
+        var timestampKeys = ['createdAt', 'updatedAt'];
+        var captureTimestampField_1 = {
           type: 'dateTime',
           // required: true, // for filters / sorts
           index: true,
           excludeFrom: ['addForm', 'editForm'],
           showInList: 'secondary'
-        });
-        this.fields['updatedAt'] = new Field({
-          type: 'dateTime',
-          index: true,
-          excludeFrom: ['addForm', 'editForm'],
-          showInList: 'secondary'
+        };
+        timestampKeys.map(function (key) {
+          _this.fields[key] = new Field(__assign({}, captureTimestampField_1));
         });
       }
     }
@@ -578,6 +632,23 @@ function () {
     this.onsubmit = function () {};
   }
 
+  Object.defineProperty(Form.prototype, "fakeData", {
+    /**
+     * Fakes data for testing
+     *
+     * @readonly
+     * @memberof Form
+     */
+    get: function () {
+      var _this = this;
+
+      return Object.fromEntries(this.fieldsIds.map(function (fieldId) {
+        return [fieldId, _this.fields[fieldId].fakeValue];
+      }));
+    },
+    enumerable: true,
+    configurable: true
+  });
   Object.defineProperty(Form.prototype, "data", {
     /**
      * Makes a Vue-ready $data {object} suitable to be completed
@@ -1800,7 +1871,7 @@ var fields = {
     }
   },
   balanta: {
-    type: 'bani',
+    type: '$',
     default: null,
     required: true,
     showInList: ['details'],
@@ -2095,7 +2166,7 @@ var fields$2 = {
     oninput: {
       transform: 'uppercase:all'
     },
-    type: 'text',
+    type: 'buildingName',
     required: true,
     showInList: 'primary',
     index: true,
@@ -2174,7 +2245,7 @@ var fields$3 = {
     ref: 'facturi'
   },
   suma: {
-    type: 'bani',
+    type: '$',
     required: true,
     index: true,
     showInList: 'secondary'
@@ -2207,11 +2278,10 @@ var Contor = /*#__PURE__*/Object.freeze({
 
 var fields$5 = {
   suma: {
-    type: 'bani',
+    type: '$',
     showInList: 'primary',
     index: true,
-    required: true,
-    label: 'defaults.sum'
+    required: true
   },
   nrFactura: {
     type: 'number',
@@ -2293,11 +2363,10 @@ var Furnizor = /*#__PURE__*/Object.freeze({
 
 var fields$8 = {
   suma: {
-    type: 'bani',
+    type: '$',
     showInList: 'primary',
     index: true,
-    required: true,
-    label: 'defaults.sum'
+    required: true
   },
   nrChitanta: {
     type: 'number',
