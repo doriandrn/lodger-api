@@ -1,13 +1,14 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
-import faker from 'faker'
-
 import FieldError from './Error'
 
 // These 3 lines are a hack for Rollup & Jest to work together.
 // Test with: yarn rollup -c & jest field
 import { strings, numbers, arrays, objects } from './String'
 import S from './String'
-import currencies from './maintainable/currencies'
+
+// This should only be imported for DEVELOPMENT PURPOSES
+import fakeData from 'helper/dev/fakeData'
+
 
 const { String } = S
 
@@ -169,30 +170,7 @@ export class Field implements FieldAPI {
       this.value = value.bind({ storage })
 
     Object.defineProperty(this, 'fakeValue', {
-      get () {
-        switch (type) {
-          default:
-            return undefined
-
-          case '$':
-            return `${faker.random.arrayElement(currencies)} ${faker.finance.amount(100, 10000, 4)}`
-
-          case 'number':
-            return Number(faker.random.number({ min: 20, max: 300 }))
-
-          case 'fullName':
-            return `${faker.name.firstName()} ${faker.name.lastName()}`
-
-          case 'dateTime':
-            return Date.now() + faker.random.number({ min: 9000000, max: 100000000 })
-
-          case 'buildingName':
-            return faker.random.alphaNumeric(2)
-
-          case 'serviceName':
-            return faker.hacker.adjective()
-        }
-      }
+      get () { return fakeData[type] }
     })
   }
 

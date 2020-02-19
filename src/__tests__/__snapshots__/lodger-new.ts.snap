@@ -5,8 +5,8 @@ Lodger {
   "plugins": Array [],
   "taxonomies": Array [
     "apartamenti",
-    "asociatiei",
-    "bloci",
+    "asociatii",
+    "blocuri",
     "cheltuialai",
     "contori",
     "facturai",
