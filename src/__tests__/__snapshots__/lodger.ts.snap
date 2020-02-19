@@ -3,6 +3,7 @@
 exports[`Lodger .build() positive matches snapshot: lodger 1`] = `
 Lodger {
   "plugins": Array [],
+  "supportedLangs": Array [],
   "taxonomies": Array [
     "apartamente",
     "asociatii",

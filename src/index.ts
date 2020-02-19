@@ -9,6 +9,7 @@ import DB from '~/lib/DB'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
 import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
+import supportedLangs from '~/lib/maintainable/langs'
 
 /**
  * Taxonomies
@@ -40,19 +41,13 @@ enum Forms {
  * @enum {string}
  */
 enum Errors {
-  missingDB = 'Missing database',
-  invalidPluginDefinition = 'Invalid plugin definition',
-  pluralsAlreadyDefined = 'Plurals are already defined, aborting',
-  missingCoreDefinitions = 'Invalid Lodger build. Missing core definitions',
-  invalidPreferenceIndex = 'Invalid preference index supplied',
-  invalidPropertySupplied = 'Invalid property supplied',
-  noPlural = 'Could not find plural definition for %%',
-  missingData = 'Missing data %%',
-  couldNotWriteFile = 'Cannot write file'
+  missingDB,
+  invalidPluginDefinition,
+  couldNotWriteFile
 }
 
 
-type FormsHolder = { [k in Taxonomie & Forms]: Form<k> }
+// type FormsHolder = { [k in Taxonomie & Forms]: Form<k> }
 
 type BuildOptions = {
   db: RxDatabaseCreator,
@@ -87,7 +82,7 @@ interface LodgerAPI {
 let plugins: LodgerPlugin[] = []
 let navigator = { language: 'ro-RO' } // window.navigator :
 
-let translations
+let locale, translations
 
 /**
  *
@@ -117,13 +112,18 @@ class Lodger implements LodgerAPI {
     })
 
     this.taxonomies = taxonomies.map(tax => tax.form.plural)
+    this.supportedLangs = supportedLangs
   }
 
   static get locale () {
-    return navigator.language
+    return locale || navigator.language
   }
 
   static set locale (language) {
+    if (supportedLangs.map(lang => lang.code).indexOf(language) < 0) {
+      throw new LodgerError('Language not supported')
+    }
+
     try {
       translations = require('locales/' + this.locale).default
     } catch (e) {

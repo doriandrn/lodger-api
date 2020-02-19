@@ -233,6 +233,18 @@ var objects;
   objects[objects["object"] = 0] = "object";
   objects[objects["organizatie"] = 1] = "organizatie";
 })(objects || (objects = {}));
+
+var plurals = {
+  apartament: 'apartamente',
+  asociatie: 'asociatii',
+  bloc: 'blocuri',
+  contor: 'contoare',
+  cheltuiala: 'cheltuieli',
+  factura: 'facturi',
+  incasare: 'incasari',
+  serviciu: 'servicii',
+  tranzactie: 'tranzactii'
+};
 /**
  * Removes the '$' at the begining of a string
  *
@@ -240,72 +252,77 @@ var objects;
  * @memberof String
  */
 
-
 String.prototype.stripLeading = function (symbol) {
   if (this.indexOf(symbol) !== 0) return String(this);
   return String(this.replace(symbol, '').trim().stripLeading(symbol));
 };
-/**
- * Splits a $ string into Money object
- * @memberof String
- * @returns {Money}
- */
 
+Object.defineProperties(String.prototype, {
+  /**
+   * Plurals. @todo use Intl
+   */
+  plural: {
+    get: function () {
+      return plurals[this] || String(this + "i");
+    }
+  },
 
-String.prototype.moneySplit = function () {
-  var split = this.split(' ');
-  return {
-    currency: split[0],
-    amount: split[1]
-  };
-};
-/**
- * Slugifies a string
- *
- * @memberof String
- * @returns {String} the slug
- */
+  /**
+   * Converts a LodgerField type to RxDB compatible one
+   *
+   * Explicatie:
+   * DB-ul nu stie decat de tipurile primare:
+   * -> boolean, string, number, array, object
+   * Schema noastra e mult mai detaliata
+   *
+   * @returns {string} - tipul primar, eg. 'string'
+   */
+  asRxDBType: {
+    get: function () {
+      var _default = 'string';
 
+      var _this = this.toString();
 
-String.prototype.slugify = function () {
-  return this.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
-  .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-  .replace(/\-\-+/g, '-') // Replace multiple - with single -
-  .replace(/^-+/, '') // Trim - from start of text
-  .replace(/-+$/, ''); // Trim - from end of text
-};
-/**
- * Converts a LodgerField type to RxDB compatible one
- *
- * Explicatie:
- * DB-ul nu stie decat de tipurile primare:
- * -> boolean, string, number, array, object
- * Schema noastra e mult mai detaliata
- *
- * @returns {string} - tipul primar, eg. 'string'
- */
+      if (Object.keys(strings).indexOf(_this) > -1) return _default;
+      if (Object.keys(objects).indexOf(_this) > -1) return 'object';
+      if (Object.keys(numbers).indexOf(_this) > -1) return 'number';
+      if (Object.keys(arrays).indexOf(_this) > -1) return 'array';
+      return _default;
+    }
+  },
 
+  /**
+   * Splits a $ string into Money object
+   *
+   * @memberof String
+   * @returns {Money}
+   */
+  asMoney: {
+    get: function () {
+      var split = this.split(' ');
+      return {
+        currency: split[0],
+        amount: split[1]
+      };
+    }
+  },
 
-String.prototype.toRxDBType = function () {
-  var _default = 'string';
-
-  var _this = this.toString();
-
-  if (Object.keys(strings).indexOf(_this) > -1) return _default;
-  if (Object.keys(objects).indexOf(_this) > -1) return 'object';
-  if (Object.keys(numbers).indexOf(_this) > -1) return 'number';
-  if (Object.keys(arrays).indexOf(_this) > -1) return 'array';
-  return _default;
-};
-/**
- * Plurals. @todo use Intl
- */
-
-
-String.prototype.plural = function () {
-  return String(this + "i");
-};
-
+  /**
+   * Slugifies a string
+   *
+   * @memberof String
+   * @returns {String} the slug
+   */
+  slug: {
+    get: function () {
+      return this.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
+      .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+      .replace(/\-\-+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start of text
+      .replace(/-+$/, ''); // Trim - from end of text
+    }
+  }
+});
 var S = {
   String: String
 };
@@ -328,6 +345,46 @@ var Currency;
 
 var currencies = Object.keys(Currency).filter(function (tax) {
   return typeof Currency[tax] === 'number';
+});
+
+var holder = {};
+Object.defineProperties(holder, {
+  $: {
+    get: function () {
+      return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
+    }
+  },
+  number: {
+    get: function () {
+      return Number(faker.random.number({
+        min: 20,
+        max: 300
+      }));
+    }
+  },
+  fullName: {
+    get: function () {
+      return faker.name.firstName() + " " + faker.name.lastName();
+    }
+  },
+  dateTime: {
+    get: function () {
+      return Date.now() + faker.random.number({
+        min: 9000000,
+        max: 100000000
+      });
+    }
+  },
+  buildingName: {
+    get: function () {
+      return faker.random.alphaNumeric(2);
+    }
+  },
+  serviceName: {
+    get: function () {
+      return faker.hacker.adjective();
+    }
+  }
 });
 
 var String$1 = S.String;
@@ -371,7 +428,7 @@ function () {
         required = data.required,
         v = data.v,
         value = data.value;
-    this.type = String$1(type || '').toRxDBType();
+    this.type = String$1(type || '').asRxDBType;
     if (index) this.index = true; // transform the ref
 
     if (ref) {
@@ -402,34 +459,7 @@ function () {
     });
     Object.defineProperty(this, 'fakeValue', {
       get: function () {
-        switch (type) {
-          default:
-            return undefined;
-
-          case '$':
-            return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
-
-          case 'number':
-            return Number(faker.random.number({
-              min: 20,
-              max: 300
-            }));
-
-          case 'fullName':
-            return faker.name.firstName() + " " + faker.name.lastName();
-
-          case 'dateTime':
-            return Date.now() + faker.random.number({
-              min: 9000000,
-              max: 100000000
-            });
-
-          case 'buildingName':
-            return faker.random.alphaNumeric(2);
-
-          case 'serviceName':
-            return faker.hacker.adjective();
-        }
+        return holder[type];
       }
     });
   }
@@ -601,7 +631,7 @@ function () {
 
     this.name = name;
     this.fields = {};
-    this.plural = this.name.plural();
+    this.plural = this.name.plural;
 
     if (fields) {
       Object.keys(fields).map(function (fieldId) {
@@ -1218,6 +1248,976 @@ function load(schemas) {
   });
 }
 
+var fs = {};
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+function resolve() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : '/';
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+}
+// path.normalize(path)
+// posix version
+function normalize(path) {
+  var isPathAbsolute = isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isPathAbsolute).join('/');
+
+  if (!path && !isPathAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isPathAbsolute ? '/' : '') + path;
+}
+// posix version
+function isAbsolute(path) {
+  return path.charAt(0) === '/';
+}
+
+// posix version
+function join() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+}
+
+
+// path.relative(from, to)
+// posix version
+function relative(from, to) {
+  from = resolve(from).substr(1);
+  to = resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+}
+
+var sep = '/';
+var delimiter = ':';
+
+function dirname(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+}
+
+function basename(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+}
+
+
+function extname(path) {
+  return splitPath(path)[3];
+}
+var path = {
+  extname: extname,
+  basename: basename,
+  dirname: dirname,
+  sep: sep,
+  delimiter: delimiter,
+  relative: relative,
+  join: join,
+  isAbsolute: isAbsolute,
+  normalize: normalize,
+  resolve: resolve
+};
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b' ?
+    function (str, start, len) { return str.substr(start, len) } :
+    function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+var allLangs = [{
+  "code": "ab",
+  "name": "Abkhaz",
+  "nativeName": "аҧсуа"
+}, {
+  "code": "aa",
+  "name": "Afar",
+  "nativeName": "Afaraf"
+}, {
+  "code": "af",
+  "name": "Afrikaans",
+  "nativeName": "Afrikaans"
+}, {
+  "code": "ak",
+  "name": "Akan",
+  "nativeName": "Akan"
+}, {
+  "code": "sq",
+  "name": "Albanian",
+  "nativeName": "Shqip"
+}, {
+  "code": "am",
+  "name": "Amharic",
+  "nativeName": "አማርኛ"
+}, {
+  "code": "ar",
+  "name": "Arabic",
+  "nativeName": "العربية"
+}, {
+  "code": "an",
+  "name": "Aragonese",
+  "nativeName": "Aragonés"
+}, {
+  "code": "hy",
+  "name": "Armenian",
+  "nativeName": "Հայերեն"
+}, {
+  "code": "as",
+  "name": "Assamese",
+  "nativeName": "অসমীয়া"
+}, {
+  "code": "av",
+  "name": "Avaric",
+  "nativeName": "авар мацӀ, магӀарул мацӀ"
+}, {
+  "code": "ae",
+  "name": "Avestan",
+  "nativeName": "avesta"
+}, {
+  "code": "ay",
+  "name": "Aymara",
+  "nativeName": "aymar aru"
+}, {
+  "code": "az",
+  "name": "Azerbaijani",
+  "nativeName": "azərbaycan dili"
+}, {
+  "code": "bm",
+  "name": "Bambara",
+  "nativeName": "bamanankan"
+}, {
+  "code": "ba",
+  "name": "Bashkir",
+  "nativeName": "башҡорт теле"
+}, {
+  "code": "eu",
+  "name": "Basque",
+  "nativeName": "euskara, euskera"
+}, {
+  "code": "be",
+  "name": "Belarusian",
+  "nativeName": "Беларуская"
+}, {
+  "code": "bn",
+  "name": "Bengali",
+  "nativeName": "বাংলা"
+}, {
+  "code": "bh",
+  "name": "Bihari",
+  "nativeName": "भोजपुरी"
+}, {
+  "code": "bi",
+  "name": "Bislama",
+  "nativeName": "Bislama"
+}, {
+  "code": "bs",
+  "name": "Bosnian",
+  "nativeName": "bosanski jezik"
+}, {
+  "code": "br",
+  "name": "Breton",
+  "nativeName": "brezhoneg"
+}, {
+  "code": "bg",
+  "name": "Bulgarian",
+  "nativeName": "български език"
+}, {
+  "code": "my",
+  "name": "Burmese",
+  "nativeName": "ဗမာစာ"
+}, {
+  "code": "ca",
+  "name": "Catalan; Valencian",
+  "nativeName": "Català"
+}, {
+  "code": "ch",
+  "name": "Chamorro",
+  "nativeName": "Chamoru"
+}, {
+  "code": "ce",
+  "name": "Chechen",
+  "nativeName": "нохчийн мотт"
+}, {
+  "code": "ny",
+  "name": "Chichewa; Chewa; Nyanja",
+  "nativeName": "chiCheŵa, chinyanja"
+}, {
+  "code": "zh",
+  "name": "Chinese",
+  "nativeName": "中文 (Zhōngwén), 汉语, 漢語"
+}, {
+  "code": "cv",
+  "name": "Chuvash",
+  "nativeName": "чӑваш чӗлхи"
+}, {
+  "code": "kw",
+  "name": "Cornish",
+  "nativeName": "Kernewek"
+}, {
+  "code": "co",
+  "name": "Corsican",
+  "nativeName": "corsu, lingua corsa"
+}, {
+  "code": "cr",
+  "name": "Cree",
+  "nativeName": "ᓀᐦᐃᔭᐍᐏᐣ"
+}, {
+  "code": "hr",
+  "name": "Croatian",
+  "nativeName": "hrvatski"
+}, {
+  "code": "cs",
+  "name": "Czech",
+  "nativeName": "česky, čeština"
+}, {
+  "code": "da",
+  "name": "Danish",
+  "nativeName": "dansk"
+}, {
+  "code": "dv",
+  "name": "Divehi; Dhivehi; Maldivian;",
+  "nativeName": "ދިވެހި"
+}, {
+  "code": "nl",
+  "name": "Dutch",
+  "nativeName": "Nederlands, Vlaams"
+}, {
+  "code": "en",
+  "name": "English",
+  "nativeName": "English"
+}, {
+  "code": "eo",
+  "name": "Esperanto",
+  "nativeName": "Esperanto"
+}, {
+  "code": "et",
+  "name": "Estonian",
+  "nativeName": "eesti, eesti keel"
+}, {
+  "code": "ee",
+  "name": "Ewe",
+  "nativeName": "Eʋegbe"
+}, {
+  "code": "fo",
+  "name": "Faroese",
+  "nativeName": "føroyskt"
+}, {
+  "code": "fj",
+  "name": "Fijian",
+  "nativeName": "vosa Vakaviti"
+}, {
+  "code": "fi",
+  "name": "Finnish",
+  "nativeName": "suomi, suomen kieli"
+}, {
+  "code": "fr",
+  "name": "French",
+  "nativeName": "français, langue française"
+}, {
+  "code": "ff",
+  "name": "Fula; Fulah; Pulaar; Pular",
+  "nativeName": "Fulfulde, Pulaar, Pular"
+}, {
+  "code": "gl",
+  "name": "Galician",
+  "nativeName": "Galego"
+}, {
+  "code": "ka",
+  "name": "Georgian",
+  "nativeName": "ქართული"
+}, {
+  "code": "de",
+  "name": "German",
+  "nativeName": "Deutsch"
+}, {
+  "code": "el",
+  "name": "Greek, Modern",
+  "nativeName": "Ελληνικά"
+}, {
+  "code": "gn",
+  "name": "Guaraní",
+  "nativeName": "Avañeẽ"
+}, {
+  "code": "gu",
+  "name": "Gujarati",
+  "nativeName": "ગુજરાતી"
+}, {
+  "code": "ht",
+  "name": "Haitian; Haitian Creole",
+  "nativeName": "Kreyòl ayisyen"
+}, {
+  "code": "ha",
+  "name": "Hausa",
+  "nativeName": "Hausa, هَوُسَ"
+}, {
+  "code": "he",
+  "name": "Hebrew (modern)",
+  "nativeName": "עברית"
+}, {
+  "code": "hz",
+  "name": "Herero",
+  "nativeName": "Otjiherero"
+}, {
+  "code": "hi",
+  "name": "Hindi",
+  "nativeName": "हिन्दी, हिंदी"
+}, {
+  "code": "ho",
+  "name": "Hiri Motu",
+  "nativeName": "Hiri Motu"
+}, {
+  "code": "hu",
+  "name": "Hungarian",
+  "nativeName": "Magyar"
+}, {
+  "code": "ia",
+  "name": "Interlingua",
+  "nativeName": "Interlingua"
+}, {
+  "code": "id",
+  "name": "Indonesian",
+  "nativeName": "Bahasa Indonesia"
+}, {
+  "code": "ie",
+  "name": "Interlingue",
+  "nativeName": "Originally called Occidental; then Interlingue after WWII"
+}, {
+  "code": "ga",
+  "name": "Irish",
+  "nativeName": "Gaeilge"
+}, {
+  "code": "ig",
+  "name": "Igbo",
+  "nativeName": "Asụsụ Igbo"
+}, {
+  "code": "ik",
+  "name": "Inupiaq",
+  "nativeName": "Iñupiaq, Iñupiatun"
+}, {
+  "code": "io",
+  "name": "Ido",
+  "nativeName": "Ido"
+}, {
+  "code": "is",
+  "name": "Icelandic",
+  "nativeName": "Íslenska"
+}, {
+  "code": "it",
+  "name": "Italian",
+  "nativeName": "Italiano"
+}, {
+  "code": "iu",
+  "name": "Inuktitut",
+  "nativeName": "ᐃᓄᒃᑎᑐᑦ"
+}, {
+  "code": "ja",
+  "name": "Japanese",
+  "nativeName": "日本語 (にほんご／にっぽんご)"
+}, {
+  "code": "jv",
+  "name": "Javanese",
+  "nativeName": "basa Jawa"
+}, {
+  "code": "kl",
+  "name": "Kalaallisut, Greenlandic",
+  "nativeName": "kalaallisut, kalaallit oqaasii"
+}, {
+  "code": "kn",
+  "name": "Kannada",
+  "nativeName": "ಕನ್ನಡ"
+}, {
+  "code": "kr",
+  "name": "Kanuri",
+  "nativeName": "Kanuri"
+}, {
+  "code": "ks",
+  "name": "Kashmiri",
+  "nativeName": "कश्मीरी, كشميري‎"
+}, {
+  "code": "kk",
+  "name": "Kazakh",
+  "nativeName": "Қазақ тілі"
+}, {
+  "code": "km",
+  "name": "Khmer",
+  "nativeName": "ភាសាខ្មែរ"
+}, {
+  "code": "ki",
+  "name": "Kikuyu, Gikuyu",
+  "nativeName": "Gĩkũyũ"
+}, {
+  "code": "rw",
+  "name": "Kinyarwanda",
+  "nativeName": "Ikinyarwanda"
+}, {
+  "code": "ky",
+  "name": "Kirghiz, Kyrgyz",
+  "nativeName": "кыргыз тили"
+}, {
+  "code": "kv",
+  "name": "Komi",
+  "nativeName": "коми кыв"
+}, {
+  "code": "kg",
+  "name": "Kongo",
+  "nativeName": "KiKongo"
+}, {
+  "code": "ko",
+  "name": "Korean",
+  "nativeName": "한국어 (韓國語), 조선말 (朝鮮語)"
+}, {
+  "code": "ku",
+  "name": "Kurdish",
+  "nativeName": "Kurdî, كوردی‎"
+}, {
+  "code": "kj",
+  "name": "Kwanyama, Kuanyama",
+  "nativeName": "Kuanyama"
+}, {
+  "code": "la",
+  "name": "Latin",
+  "nativeName": "latine, lingua latina"
+}, {
+  "code": "lb",
+  "name": "Luxembourgish, Letzeburgesch",
+  "nativeName": "Lëtzebuergesch"
+}, {
+  "code": "lg",
+  "name": "Luganda",
+  "nativeName": "Luganda"
+}, {
+  "code": "li",
+  "name": "Limburgish, Limburgan, Limburger",
+  "nativeName": "Limburgs"
+}, {
+  "code": "ln",
+  "name": "Lingala",
+  "nativeName": "Lingála"
+}, {
+  "code": "lo",
+  "name": "Lao",
+  "nativeName": "ພາສາລາວ"
+}, {
+  "code": "lt",
+  "name": "Lithuanian",
+  "nativeName": "lietuvių kalba"
+}, {
+  "code": "lu",
+  "name": "Luba-Katanga",
+  "nativeName": ""
+}, {
+  "code": "lv",
+  "name": "Latvian",
+  "nativeName": "latviešu valoda"
+}, {
+  "code": "gv",
+  "name": "Manx",
+  "nativeName": "Gaelg, Gailck"
+}, {
+  "code": "mk",
+  "name": "Macedonian",
+  "nativeName": "македонски јазик"
+}, {
+  "code": "mg",
+  "name": "Malagasy",
+  "nativeName": "Malagasy fiteny"
+}, {
+  "code": "ms",
+  "name": "Malay",
+  "nativeName": "bahasa Melayu, بهاس ملايو‎"
+}, {
+  "code": "ml",
+  "name": "Malayalam",
+  "nativeName": "മലയാളം"
+}, {
+  "code": "mt",
+  "name": "Maltese",
+  "nativeName": "Malti"
+}, {
+  "code": "mi",
+  "name": "Māori",
+  "nativeName": "te reo Māori"
+}, {
+  "code": "mr",
+  "name": "Marathi (Marāṭhī)",
+  "nativeName": "मराठी"
+}, {
+  "code": "mh",
+  "name": "Marshallese",
+  "nativeName": "Kajin M̧ajeļ"
+}, {
+  "code": "mn",
+  "name": "Mongolian",
+  "nativeName": "монгол"
+}, {
+  "code": "na",
+  "name": "Nauru",
+  "nativeName": "Ekakairũ Naoero"
+}, {
+  "code": "nv",
+  "name": "Navajo, Navaho",
+  "nativeName": "Diné bizaad, Dinékʼehǰí"
+}, {
+  "code": "nb",
+  "name": "Norwegian Bokmål",
+  "nativeName": "Norsk bokmål"
+}, {
+  "code": "nd",
+  "name": "North Ndebele",
+  "nativeName": "isiNdebele"
+}, {
+  "code": "ne",
+  "name": "Nepali",
+  "nativeName": "नेपाली"
+}, {
+  "code": "ng",
+  "name": "Ndonga",
+  "nativeName": "Owambo"
+}, {
+  "code": "nn",
+  "name": "Norwegian Nynorsk",
+  "nativeName": "Norsk nynorsk"
+}, {
+  "code": "no",
+  "name": "Norwegian",
+  "nativeName": "Norsk"
+}, {
+  "code": "ii",
+  "name": "Nuosu",
+  "nativeName": "ꆈꌠ꒿ Nuosuhxop"
+}, {
+  "code": "nr",
+  "name": "South Ndebele",
+  "nativeName": "isiNdebele"
+}, {
+  "code": "oc",
+  "name": "Occitan",
+  "nativeName": "Occitan"
+}, {
+  "code": "oj",
+  "name": "Ojibwe, Ojibwa",
+  "nativeName": "ᐊᓂᔑᓈᐯᒧᐎᓐ"
+}, {
+  "code": "cu",
+  "name": "Old Church Slavonic, Church Slavic, Church Slavonic, Old Bulgarian, Old Slavonic",
+  "nativeName": "ѩзыкъ словѣньскъ"
+}, {
+  "code": "om",
+  "name": "Oromo",
+  "nativeName": "Afaan Oromoo"
+}, {
+  "code": "or",
+  "name": "Oriya",
+  "nativeName": "ଓଡ଼ିଆ"
+}, {
+  "code": "os",
+  "name": "Ossetian, Ossetic",
+  "nativeName": "ирон æвзаг"
+}, {
+  "code": "pa",
+  "name": "Panjabi, Punjabi",
+  "nativeName": "ਪੰਜਾਬੀ, پنجابی‎"
+}, {
+  "code": "pi",
+  "name": "Pāli",
+  "nativeName": "पाऴि"
+}, {
+  "code": "fa",
+  "name": "Persian",
+  "nativeName": "فارسی"
+}, {
+  "code": "pl",
+  "name": "Polish",
+  "nativeName": "polski"
+}, {
+  "code": "ps",
+  "name": "Pashto, Pushto",
+  "nativeName": "پښتو"
+}, {
+  "code": "pt",
+  "name": "Portuguese",
+  "nativeName": "Português"
+}, {
+  "code": "qu",
+  "name": "Quechua",
+  "nativeName": "Runa Simi, Kichwa"
+}, {
+  "code": "rm",
+  "name": "Romansh",
+  "nativeName": "rumantsch grischun"
+}, {
+  "code": "rn",
+  "name": "Kirundi",
+  "nativeName": "kiRundi"
+}, {
+  "code": "ro",
+  "name": "Romanian, Moldavian, Moldovan",
+  "nativeName": "română"
+}, {
+  "code": "ru",
+  "name": "Russian",
+  "nativeName": "русский язык"
+}, {
+  "code": "sa",
+  "name": "Sanskrit (Saṁskṛta)",
+  "nativeName": "संस्कृतम्"
+}, {
+  "code": "sc",
+  "name": "Sardinian",
+  "nativeName": "sardu"
+}, {
+  "code": "sd",
+  "name": "Sindhi",
+  "nativeName": "सिन्धी, سنڌي، سندھی‎"
+}, {
+  "code": "se",
+  "name": "Northern Sami",
+  "nativeName": "Davvisámegiella"
+}, {
+  "code": "sm",
+  "name": "Samoan",
+  "nativeName": "gagana faa Samoa"
+}, {
+  "code": "sg",
+  "name": "Sango",
+  "nativeName": "yângâ tî sängö"
+}, {
+  "code": "sr",
+  "name": "Serbian",
+  "nativeName": "српски језик"
+}, {
+  "code": "gd",
+  "name": "Scottish Gaelic; Gaelic",
+  "nativeName": "Gàidhlig"
+}, {
+  "code": "sn",
+  "name": "Shona",
+  "nativeName": "chiShona"
+}, {
+  "code": "si",
+  "name": "Sinhala, Sinhalese",
+  "nativeName": "සිංහල"
+}, {
+  "code": "sk",
+  "name": "Slovak",
+  "nativeName": "slovenčina"
+}, {
+  "code": "sl",
+  "name": "Slovene",
+  "nativeName": "slovenščina"
+}, {
+  "code": "so",
+  "name": "Somali",
+  "nativeName": "Soomaaliga, af Soomaali"
+}, {
+  "code": "st",
+  "name": "Southern Sotho",
+  "nativeName": "Sesotho"
+}, {
+  "code": "es",
+  "name": "Spanish; Castilian",
+  "nativeName": "español, castellano"
+}, {
+  "code": "su",
+  "name": "Sundanese",
+  "nativeName": "Basa Sunda"
+}, {
+  "code": "sw",
+  "name": "Swahili",
+  "nativeName": "Kiswahili"
+}, {
+  "code": "ss",
+  "name": "Swati",
+  "nativeName": "SiSwati"
+}, {
+  "code": "sv",
+  "name": "Swedish",
+  "nativeName": "svenska"
+}, {
+  "code": "ta",
+  "name": "Tamil",
+  "nativeName": "தமிழ்"
+}, {
+  "code": "te",
+  "name": "Telugu",
+  "nativeName": "తెలుగు"
+}, {
+  "code": "tg",
+  "name": "Tajik",
+  "nativeName": "тоҷикӣ, toğikī, تاجیکی‎"
+}, {
+  "code": "th",
+  "name": "Thai",
+  "nativeName": "ไทย"
+}, {
+  "code": "ti",
+  "name": "Tigrinya",
+  "nativeName": "ትግርኛ"
+}, {
+  "code": "bo",
+  "name": "Tibetan Standard, Tibetan, Central",
+  "nativeName": "བོད་ཡིག"
+}, {
+  "code": "tk",
+  "name": "Turkmen",
+  "nativeName": "Türkmen, Түркмен"
+}, {
+  "code": "tl",
+  "name": "Tagalog",
+  "nativeName": "Wikang Tagalog, ᜏᜒᜃᜅ᜔ ᜆᜄᜎᜓᜄ᜔"
+}, {
+  "code": "tn",
+  "name": "Tswana",
+  "nativeName": "Setswana"
+}, {
+  "code": "to",
+  "name": "Tonga (Tonga Islands)",
+  "nativeName": "faka Tonga"
+}, {
+  "code": "tr",
+  "name": "Turkish",
+  "nativeName": "Türkçe"
+}, {
+  "code": "ts",
+  "name": "Tsonga",
+  "nativeName": "Xitsonga"
+}, {
+  "code": "tt",
+  "name": "Tatar",
+  "nativeName": "татарча, tatarça, تاتارچا‎"
+}, {
+  "code": "tw",
+  "name": "Twi",
+  "nativeName": "Twi"
+}, {
+  "code": "ty",
+  "name": "Tahitian",
+  "nativeName": "Reo Tahiti"
+}, {
+  "code": "ug",
+  "name": "Uighur, Uyghur",
+  "nativeName": "Uyƣurqə, ئۇيغۇرچە‎"
+}, {
+  "code": "uk",
+  "name": "Ukrainian",
+  "nativeName": "українська"
+}, {
+  "code": "ur",
+  "name": "Urdu",
+  "nativeName": "اردو"
+}, {
+  "code": "uz",
+  "name": "Uzbek",
+  "nativeName": "zbek, Ўзбек, أۇزبېك‎"
+}, {
+  "code": "ve",
+  "name": "Venda",
+  "nativeName": "Tshivenḓa"
+}, {
+  "code": "vi",
+  "name": "Vietnamese",
+  "nativeName": "Tiếng Việt"
+}, {
+  "code": "vo",
+  "name": "Volapük",
+  "nativeName": "Volapük"
+}, {
+  "code": "wa",
+  "name": "Walloon",
+  "nativeName": "Walon"
+}, {
+  "code": "cy",
+  "name": "Welsh",
+  "nativeName": "Cymraeg"
+}, {
+  "code": "wo",
+  "name": "Wolof",
+  "nativeName": "Wollof"
+}, {
+  "code": "fy",
+  "name": "Western Frisian",
+  "nativeName": "Frysk"
+}, {
+  "code": "xh",
+  "name": "Xhosa",
+  "nativeName": "isiXhosa"
+}, {
+  "code": "yi",
+  "name": "Yiddish",
+  "nativeName": "ייִדיש"
+}, {
+  "code": "yo",
+  "name": "Yoruba",
+  "nativeName": "Yorùbá"
+}, {
+  "code": "za",
+  "name": "Zhuang, Chuang",
+  "nativeName": "Saɯ cueŋƅ, Saw cuengh"
+}];
+var localesDir = path.resolve(__dirname, '../locales');
+var supported = fs.readdirSync(localesDir);
+var supportedLangs = allLangs.filter(function (lang) {
+  return supported.indexOf(lang.code) > -1;
+});
+
 /**
  * Taxonomies
  *
@@ -1265,21 +2265,16 @@ var Forms;
 
 
 (function (Errors) {
-  Errors["missingDB"] = "Missing database";
-  Errors["invalidPluginDefinition"] = "Invalid plugin definition";
-  Errors["pluralsAlreadyDefined"] = "Plurals are already defined, aborting";
-  Errors["missingCoreDefinitions"] = "Invalid Lodger build. Missing core definitions";
-  Errors["invalidPreferenceIndex"] = "Invalid preference index supplied";
-  Errors["invalidPropertySupplied"] = "Invalid property supplied";
-  Errors["noPlural"] = "Could not find plural definition for %%";
-  Errors["missingData"] = "Missing data %%";
-  Errors["couldNotWriteFile"] = "Cannot write file";
+  Errors[Errors["missingDB"] = 0] = "missingDB";
+  Errors[Errors["invalidPluginDefinition"] = 1] = "invalidPluginDefinition";
+  Errors[Errors["couldNotWriteFile"] = 2] = "couldNotWriteFile";
 })(exports.Errors || (exports.Errors = {}));
 
 var plugins = [];
-var navigator = window.navigator || {
+var navigator = {
   language: 'ro-RO'
-};
+}; // window.navigator :
+
 var translations;
 /**
  *
@@ -1313,17 +2308,29 @@ function () {
         value: tax,
         writable: false
       });
+      tax.dependants = taxonomies.filter(function (t) {
+        return t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1;
+      }).map(function (t) {
+        return t.form.schema.name;
+      });
     });
     this.taxonomies = taxonomies.map(function (tax) {
       return tax.form.plural;
     });
+    this.supportedLangs = supportedLangs;
   }
 
   Object.defineProperty(Lodger, "locale", {
     get: function () {
-      return navigator.language;
+      return  navigator.language;
     },
     set: function (language) {
+      if (supportedLangs.map(function (lang) {
+        return lang.code;
+      }).indexOf(language) < 0) {
+        throw new LodgerError('Language not supported');
+      }
+
       try {
         translations = require('locales/' + this.locale).default;
       } catch (e) {

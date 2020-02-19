@@ -1,12 +1,7 @@
-import { Lodger, BuildOptions, Errors, Taxonomii } from '~/index'
+import { Lodger, BuildOptions } from '~/index'
 import Debug from 'debug'
-import { isRxDatabase } from 'rxdb'
-import fakeData from '~/lib/helpers/dev/fakeData'
 import BroadcastChannel from 'broadcast-channel'
 // import { predefinite } from '~/lib/.schemas/Serviciu'
-
-const taxonomii: Taxonomii[] = <Taxonomii[]>Object.keys(Taxonomii)
-
 
 Debug.enable('lodger:*')
 
