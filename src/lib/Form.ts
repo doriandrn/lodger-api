@@ -83,7 +83,7 @@ implements FormAPI<I> {
     this.name = name
     this.fields = {}
 
-    this.plural = this.name.plural()
+    this.plural = this.name.plural
 
     if (fields) {
       Object.keys(fields).map((fieldId) => {

@@ -85,7 +85,8 @@ interface LodgerAPI {
 }
 
 let plugins: LodgerPlugin[] = []
-let navigator = window.navigator || { language: 'ro-RO' }
+let navigator = { language: 'ro-RO' } // window.navigator :
+
 let translations
 
 /**
@@ -109,6 +110,10 @@ class Lodger implements LodgerAPI {
         value: tax,
         writable: false
       })
+
+      tax.dependants = taxonomies.filter(t => {
+        return t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1
+      }).map(t => t.form.schema.name)
     })
 
     this.taxonomies = taxonomies.map(tax => tax.form.plural)

@@ -174,7 +174,7 @@ describe('Field', () => {
     const testField = new Field().rxSchema
 
     describe('+', () => {
-      test('type gets converted with .toRxDBtype()', () => {
+      test('type gets converted with String.asRxDBtype', () => {
         const field = new Field({ type: '$' }).rxSchema
         expect(field.type).toBe('string')
       })

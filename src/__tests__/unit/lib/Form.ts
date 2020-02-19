@@ -108,7 +108,7 @@ describe('Form', () => {
 
   describe('.plural', () => {
     test('returns the inernationalized name string', () => {
-      expect(form.plural).toEqual(form.name.plural())
+      expect(form.plural).toEqual(form.name.plural)
     })
   })
 

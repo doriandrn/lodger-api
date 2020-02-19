@@ -2,16 +2,16 @@
 const S = require('~/lib/String')
 const { strings, numbers, arrays, objects } = S
 
-describe('.toRxDBType()', () => {
+describe('.asRxDBType', () => {
   describe('+', () => {
     describe('strings', () => {
       const testType = 'string'
 
       test('Anything else but known string types returns string', () => {
-        expect('whatever'.toRxDBType()).toBe(testType)
-        expect('blablaunknown'.toRxDBType()).toBe(testType)
-        expect('string'.toRxDBType()).toBe(testType)
-        expect(''.toRxDBType()).toBe(testType)
+        expect('whatever'.asRxDBType).toBe(testType)
+        expect('blablaunknown'.asRxDBType).toBe(testType)
+        expect('string'.asRxDBType).toBe(testType)
+        expect(''.asRxDBType).toBe(testType)
       })
 
       Object
@@ -19,7 +19,7 @@ describe('.toRxDBType()', () => {
         .filter(s => typeof strings[s as string] === 'number')
         .map(type => {
           test(type, () => {
-            expect(type.toRxDBType()).toBe(testType)
+            expect(type.asRxDBType).toBe(testType)
           })
         })
     })
@@ -32,7 +32,7 @@ describe('.toRxDBType()', () => {
         .filter(s => typeof numbers[s as string] === 'number')
         .map(type => {
           test(type, () => {
-            expect(type.toRxDBType()).toBe(testType)
+            expect(type.asRxDBType).toBe(testType)
           })
         })
     })
@@ -45,7 +45,7 @@ describe('.toRxDBType()', () => {
         .filter(s => typeof arrays[s as string] === 'number')
         .map(type => {
           test(type, () => {
-            expect(type.toRxDBType()).toBe(testType)
+            expect(type.asRxDBType).toBe(testType)
           })
         })
     })
@@ -58,16 +58,16 @@ describe('.toRxDBType()', () => {
         .filter(s => typeof objects[s as string] === 'number')
         .map(type => {
           test(type, () => {
-            expect(type.toRxDBType()).toBe(testType)
+            expect(type.asRxDBType).toBe(testType)
           })
         })
     })
   })
 })
 
-describe('slugify()', () => {
+describe('slug', () => {
   test('slugifica', () => {
-    expect('Dorian haleste'.slugify()).toBe('dorian-haleste')
+    expect('Dorian haleste'.slug).toBe('dorian-haleste')
   })
 })
 
@@ -77,6 +77,15 @@ describe('.stripLeading()', () => {
     expect('$$test'.stripLeading('$')).toBe('test')
     expect('test 4$'.stripLeading('$')).toBe('test 4$')
     expect('test'.stripLeading('$')).toBe('test')
+  })
+})
+
+describe('.plural', () => {
+  describe('taxonomies', () => {
+    test('returns the correct RO plural', () => {
+      expect('asociatie'.plural).toEqual('asociatii')
+      expect('apartament'.plural).toEqual('apartamente')
+    })
   })
 })
 

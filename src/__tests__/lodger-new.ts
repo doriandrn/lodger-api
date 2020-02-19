@@ -32,6 +32,18 @@ describe('Lodger', () => {
         expect(L.db).toBeUndefined()
       })
 
+      describe('assigns taxonomies dependants', () => {
+        test('all taxes have the "dependants" key with a value', () => {
+          expect(L.taxonomies
+            .map(tax => L[tax])
+            .filter(tax => {
+              console.log(tax.form.schema.name, tax.dependants)
+              return tax.dependants })
+            .length
+          ).toEqual(L.taxonomies.length)
+        })
+      })
+
 
       // test('.forms = object containing all forms based on tax', () => {
       //   expect(L.forms).toBeDefined()
