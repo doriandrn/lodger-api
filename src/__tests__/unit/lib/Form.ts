@@ -111,49 +111,4 @@ describe('Form', () => {
       expect(form.plural).toEqual(form.name.plural)
     })
   })
-
-
-  // describe('.load() - Loads a form by name', () => {
-  //   let form: Form<string,any>
-  //   const formToLoadAndTest = 'apartament'
-  //   beforeAll(async () => {
-  //     try {
-  //       form = await Form.load(formToLoadAndTest)
-  //     } catch (e) {
-  //       console.error('wtf', e)
-  //     }
-  //   })
-
-  //   describe('positive', () => {
-
-  //     test('returns a fully inited <Form> if found and ok', () => {
-  //       expect(form).toBeDefined()
-  //       expect(form.name).toBeDefined()
-  //     })
-
-  //     test('form name is the same  as requested', () => {
-  //       expect(form.name).toBe(formToLoadAndTest)
-  //     })
-  //   })
-
-  //   describe('negative', () => {
-  //     test('throws if called with anything else than string', async () => {
-  //       try {
-  //         await Form.load('')
-  //       } catch (e) {
-  //         expect(e).toBeDefined()
-  //       }
-
-  //     })
-  //     test('throws for unknown filenames', async () => {
-  //       try {
-  //         await Form.load('ceva')
-  //       } catch (e) {
-  //         expect(e).toBeDefined()
-  //       }
-  //     })
-  //   })
-  // })
-
-
 })

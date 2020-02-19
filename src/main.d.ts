@@ -1,4 +1,5 @@
 import { Taxonomii } from './index'
+import { Currency } from 'lib/maintainable/currencies'
 
 declare module "*.json" {
   const value: any;

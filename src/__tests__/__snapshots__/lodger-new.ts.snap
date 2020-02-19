@@ -4,15 +4,15 @@ exports[`Lodger .build() positive matches snapshot: lodger-new 1`] = `
 Lodger {
   "plugins": Array [],
   "taxonomies": Array [
-    "apartamenti",
+    "apartamente",
     "asociatii",
     "blocuri",
-    "cheltuialai",
-    "contori",
-    "facturai",
+    "cheltuieli",
+    "contoare",
+    "facturi",
     "furnizori",
-    "incasarei",
-    "serviciui",
+    "incasari",
+    "servicii",
     "utilizatori",
   ],
 }

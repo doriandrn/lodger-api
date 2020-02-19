@@ -1,5 +1,5 @@
 import { JsonSchemaTypes } from "rxdb";
-import { Currency } from "main";
+import { Currency } from './maintainable/currencies'
 
 /**
  * Accepted -strings- for a LodgerSchema field's type
@@ -57,6 +57,18 @@ declare global {
   }
 }
 
+const plurals = {
+  apartament: 'apartamente',
+  asociatie: 'asociatii',
+  bloc: 'blocuri',
+  contor: 'contoare',
+  cheltuiala: 'cheltuieli',
+  factura: 'facturi',
+  incasare: 'incasari',
+  serviciu: 'servicii',
+  tranzactie: 'tranzactii'
+}
+
 /**
  * Removes the '$' at the begining of a string
  *
@@ -74,16 +86,7 @@ Object.defineProperties(String.prototype, {
    */
   plural: {
     get () {
-      switch (this) {
-        default:
-          return String(`${this}i`)
-
-        case 'asociatie':
-          return 'asociatii'
-
-        case 'bloc':
-          return 'blocuri'
-      }
+      return plurals[this] || String(`${this}i`)
     }
   },
 
