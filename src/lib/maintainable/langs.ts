@@ -41,7 +41,7 @@ const allLangs = [
   {"code":"da","name":"Danish","nativeName":"dansk"},
   {"code":"dv","name":"Divehi; Dhivehi; Maldivian;","nativeName":"ދިވެހި"},
   {"code":"nl","name":"Dutch","nativeName":"Nederlands, Vlaams"},
-  {"code":"en","name":"English","nativeName":"English"},
+  {"code":"en","name":"English","nativeName":"English","supported":true},
   {"code":"eo","name":"Esperanto","nativeName":"Esperanto"},
   {"code":"et","name":"Estonian","nativeName":"eesti, eesti keel"},
   {"code":"ee","name":"Ewe","nativeName":"Eʋegbe"},
@@ -133,7 +133,7 @@ const allLangs = [
   {"code":"qu","name":"Quechua","nativeName":"Runa Simi, Kichwa"},
   {"code":"rm","name":"Romansh","nativeName":"rumantsch grischun"},
   {"code":"rn","name":"Kirundi","nativeName":"kiRundi"},
-  {"code":"ro","name":"Romanian, Moldavian, Moldovan","nativeName":"română"},
+  {"code":"ro","name":"Romanian, Moldavian, Moldovan","nativeName":"română","supported":true},
   {"code":"ru","name":"Russian","nativeName":"русский язык"},
   {"code":"sa","name":"Sanskrit (Saṁskṛta)","nativeName":"संस्कृतम्"},
   {"code":"sc","name":"Sardinian","nativeName":"sardu"},
@@ -186,7 +186,7 @@ const allLangs = [
   {"code":"za","name":"Zhuang, Chuang","nativeName":"Saɯ cueŋƅ, Saw cuengh"}
 ]
 
-const localesDir = path.resolve(__dirname, '../locales')
-const supported = (() => fs.readdirSync(localesDir))()
+// const localesDir = path.resolve(__dirname, '../locales')
+const supported = allLangs.filter(lang => lang.supported).map(lang => lang.code)
 
 export default allLangs.filter(lang => supported.indexOf(lang.code) > -1)
