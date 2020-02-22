@@ -3,7 +3,20 @@
 exports[`Lodger .build() positive matches snapshot: lodger-new 1`] = `
 Lodger {
   "plugins": Array [],
-  "supportedLangs": Array [],
+  "supportedLangs": Array [
+    Object {
+      "code": "en",
+      "name": "English",
+      "nativeName": "English",
+      "supported": true,
+    },
+    Object {
+      "code": "ro",
+      "name": "Romanian, Moldavian, Moldovan",
+      "nativeName": "română",
+      "supported": true,
+    },
+  ],
   "taxonomies": Array [
     "apartamente",
     "asociatii",

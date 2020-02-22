@@ -107,7 +107,16 @@ class Lodger implements LodgerAPI {
       })
 
       tax.dependants = taxonomies.filter(t => {
-        return t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1
+        let has = false
+        if (t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1)
+          has = true
+
+        taxonomies.map(tx => {
+          if (t.form.fieldsIds.indexOf(tx) > -1)
+            has = true
+        })
+
+        return has
       }).map(t => t.form.schema.name)
     })
 
