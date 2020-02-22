@@ -187,6 +187,6 @@ const allLangs = [
 ]
 
 const localesDir = path.resolve(__dirname, '../locales')
-const supported = fs.readdirSync(localesDir)
+const supported = (() => fs.readdirSync(localesDir))()
 
 export default allLangs.filter(lang => supported.indexOf(lang.code) > -1)

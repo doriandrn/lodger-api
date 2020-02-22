@@ -2213,7 +2213,11 @@ var allLangs = [{
   "nativeName": "Saɯ cueŋƅ, Saw cuengh"
 }];
 var localesDir = path.resolve(__dirname, '../locales');
-var supported = fs.readdirSync(localesDir);
+
+var supported = function () {
+  return fs.readdirSync(localesDir);
+}();
+
 var supportedLangs = allLangs.filter(function (lang) {
   return supported.indexOf(lang.code) > -1;
 });
