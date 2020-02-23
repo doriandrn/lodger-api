@@ -27,13 +27,13 @@ describe('Lodger', () => {
         expect(L.db).toBeUndefined()
       })
 
-      describe('assigns taxonomies dependants', () => {
-        test('all taxes have the "dependants" key with a value', () => {
+      describe('assigns taxonomies children', () => {
+        test('all taxes have the "children" key with a value', () => {
           expect(L.taxonomies
             .map(tax => L[tax])
             .filter(tax => {
-              console.log(tax.form.schema.name, tax.dependants)
-              return tax.dependants })
+              console.log(tax.form.schema.name, 'parents:', tax.parents)
+              return tax.children })
             .length
           ).toEqual(L.taxonomies.length)
         })

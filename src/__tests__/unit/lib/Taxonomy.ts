@@ -173,10 +173,10 @@ describe('Taxonomy class', () => {
 
   // })
 
-  describe('.dependants', () => {
+  describe('.children', () => {
     test('can be set', () => {
-      $tax.dependants = [1, 2]
-      expect($tax.dependants).toBeDefined()
+      $tax.children = [1, 2]
+      expect($tax.children).toBeDefined()
     })
 
     test('throws if not an array', () => {})
