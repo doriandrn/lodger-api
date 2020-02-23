@@ -2074,20 +2074,34 @@ function () {
 
     this.plugins = plugins; // Assign taxonomies to this
 
-    taxonomies.map(function (tax) {
+    this.taxonomies = taxonomies.map(function (tax) {
       Object.defineProperty(_this, tax.form.plural, {
         value: tax,
         writable: false
-      });
-      tax.dependants = taxonomies.filter(function (t) {
-        return t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1;
+      }); // tax.children = taxonomies.filter(t => {
+      //   let has = false
+      //   if (t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1)
+      //     has = true
+      //   taxonomies.map(tx => {
+      //     if (t.form.fieldsIds.indexOf(tx) > -1)
+      //       has = true
+      //   })
+      //   return has
+      // }).map(t => t.form.schema.name)
+
+      var parents = taxonomies.filter(function (t) {
+        return tax.form.fieldsIds.indexOf(t.form.name + 'Id') > -1 || tax.form.fieldsIds.indexOf(t.form.plural) > -1;
       }).map(function (t) {
-        return t.form.schema.name;
+        return t.form.plural;
       });
-    });
-    this.taxonomies = taxonomies.map(function (tax) {
+
+      if (parents && parents.length > 0) {
+        tax.parents = parents;
+      }
+
       return tax.form.plural;
-    });
+    }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
+
     this.supportedLangs = supportedLangs;
   }
 
@@ -2160,20 +2174,7 @@ function () {
     Object.keys(taxonomii).forEach(function (taxonomie) {
       _this.taxonomies[taxonomie].subscribe(subscriberName, criteriuCerut);
     });
-  }; // /**
-  //  * Array of taxonomies that have no reference
-  //  * root taxonomies
-  //  *
-  //  * @returns {Array}
-  //  */
-  // get taxonomiesWithoutReference () {
-  //   const { forms } = this
-  //   return this.taxonomies.filter(tax => {
-  //     const refs = forms[tax].referenceTaxonomies
-  //     return !(refs && refs.length)
-  //   })
-  // }
-
+  };
   /**
    * Sets a preference either in DB or store
    *
