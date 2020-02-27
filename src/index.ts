@@ -106,25 +106,38 @@ class Lodger implements LodgerAPI {
         writable: false
       })
 
-      // tax.children = taxonomies.filter(t => {
-      //   let has = false
-      //   if (t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1)
-      //     has = true
+      /**
+       * Assign taxonomy relations
+       * children / parents
+       * parents are required for a taxonomy to be added
+       * children are just relations
+       *
+       */
+      const parents = []
+      const children = []
+      const { fieldsIds, schema: { required } } = tax.form
 
-      //   taxonomies.map(tx => {
-      //     if (t.form.fieldsIds.indexOf(tx) > -1)
-      //       has = true
-      //   })
+      taxonomies.forEach(t => {
+        const { name, plural } = t.form
+        const checkKeys = [`${name}Id`, plural]
+        const detected = checkKeys
+          .filter(key => fieldsIds.indexOf(key) > -1)[0]
 
-      //   return has
-      // }).map(t => t.form.schema.name)
+        if (detected) {
+          if (required.indexOf(detected) > -1) {
+            parents.push(detected)
+          } else {
+            children.push(detected)
+          }
+        }
+      })
 
-      const parents = taxonomies.filter(t => {
-        return tax.form.fieldsIds.indexOf(t.form.name + 'Id') > -1 ||
-        tax.form.fieldsIds.indexOf(t.form.plural) > -1
-      }).map(t => t.form.plural)
       if (parents && parents.length > 0) {
         tax.parents = parents
+      }
+
+      if (children && children.length > 0) {
+        tax.children = children
       }
 
       return tax.form.plural

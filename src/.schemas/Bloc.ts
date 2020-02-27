@@ -47,6 +47,7 @@ const fields: FieldsCreator<Bloc> = {
     value: ({ activeDoc }) => activeDoc.adresa
   },
   asociatieId: {
+    required: true,
     value: ({ g }) => g.asociatieId
   }
 }
@@ -60,7 +61,7 @@ export {
  */
 
 // Building
-//   @parents Taxonomies.Organization
+//   @parents Taxonomies.Organization (generated for UX purposes)
 
 //   _id
 //     value // this means it has a value, it's stored in the store and so it will get it from there

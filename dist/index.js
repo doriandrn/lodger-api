@@ -2078,25 +2078,44 @@ function () {
       Object.defineProperty(_this, tax.form.plural, {
         value: tax,
         writable: false
-      }); // tax.children = taxonomies.filter(t => {
-      //   let has = false
-      //   if (t.form.fieldsIds.indexOf(tax.form.schema.name + 'Id') > -1)
-      //     has = true
-      //   taxonomies.map(tx => {
-      //     if (t.form.fieldsIds.indexOf(tx) > -1)
-      //       has = true
-      //   })
-      //   return has
-      // }).map(t => t.form.schema.name)
+      });
+      /**
+       * Assign taxonomy relations
+       * children / parents
+       * parents are required for a taxonomy to be added
+       * children are just relations
+       *
+       */
 
-      var parents = taxonomies.filter(function (t) {
-        return tax.form.fieldsIds.indexOf(t.form.name + 'Id') > -1 || tax.form.fieldsIds.indexOf(t.form.plural) > -1;
-      }).map(function (t) {
-        return t.form.plural;
+      var parents = [];
+      var children = [];
+      var _a = tax.form,
+          fieldsIds = _a.fieldsIds,
+          required = _a.schema.required;
+      taxonomies.forEach(function (t) {
+        var _a = t.form,
+            name = _a.name,
+            plural = _a.plural;
+        var checkKeys = [name + "Id", plural];
+        var detected = checkKeys.filter(function (key) {
+          return fieldsIds.indexOf(key) > -1;
+        })[0];
+
+        if (detected) {
+          if (required.indexOf(detected) > -1) {
+            parents.push(detected);
+          } else {
+            children.push(detected);
+          }
+        }
       });
 
       if (parents && parents.length > 0) {
         tax.parents = parents;
+      }
+
+      if (children && children.length > 0) {
+        tax.children = children;
       }
 
       return tax.form.plural;
@@ -2752,6 +2771,7 @@ var fields$1 = {
   utilizatori: {
     type: 'array',
     ref: 'utilizatori',
+    required: true,
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.utilizatori;
@@ -2977,6 +2997,7 @@ var fields$2 = {
     }
   },
   asociatieId: {
+    required: true,
     value: function (_a) {
       var g = _a.g;
       return g.asociatieId;
@@ -2987,7 +3008,7 @@ var fields$2 = {
  * It's assumed the item has an _id
  */
 // Building
-//   @parents Taxonomies.Organization
+//   @parents Taxonomies.Organization (generated for UX purposes)
 //   _id
 //     value // this means it has a value, it's stored in the store and so it will get it from there
 //   !name : string // ! = indexable

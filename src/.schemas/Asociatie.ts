@@ -79,6 +79,7 @@ const fields: FieldsCreator<Asociatie> = {
   utilizatori: {
     type: 'array',
     ref: 'utilizatori',
+    required: true,
     value: ({ activeDoc }) => activeDoc.utilizatori,
     excludeFrom: ['addForm', 'editForm']
   },

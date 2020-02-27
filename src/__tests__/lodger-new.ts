@@ -27,16 +27,16 @@ describe('Lodger', () => {
         expect(L.db).toBeUndefined()
       })
 
-      describe('assigns taxonomies children', () => {
-        test('all taxes have the "children" key with a value', () => {
-          expect(L.taxonomies
-            .map(tax => L[tax])
-            .filter(tax => {
-              console.log(tax.form.schema.name, 'parents:', tax.parents)
-              return tax.children })
-            .length
-          ).toEqual(L.taxonomies.length)
-        })
+      describe('taxonomies\' relationship', () => {
+        // test('all taxes have the "children" key with a value', () => {
+        //   expect(L.taxonomies
+        //     .map(tax => L[tax])
+        //     .filter(tax => {
+        //       console.log(tax.form.schema.name.toUpperCase(), '\n parents:', tax.parents, '\n children:', tax.children)
+        //       return tax.children })
+        //     .length
+        //   ).toEqual(L.taxonomies.length)
+        // })
       })
 
 
