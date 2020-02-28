@@ -69,6 +69,6 @@
   "dependencies": {
     "pouchdb-adapter-leveldb": "^7.2.1",
     "rxdb": "^8.7.5",
-    "rxjs": "^6.5.4"
+    "rxjs": "^7.0.0-alpha.1"
   }
 }
