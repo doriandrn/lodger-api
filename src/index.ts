@@ -122,9 +122,9 @@ class Lodger implements LodgerAPI {
         const checkKeys = [`${name}Id`, plural]
         const detected = checkKeys
           .filter(key => fieldsIds.indexOf(key) > -1)[0]
-          .replace('Id', '')
 
         if (detected) {
+          detected.replace('Id', '') // keep singular intact
           if (required.indexOf(detected) > -1) {
             parents.push(detected)
           } else {

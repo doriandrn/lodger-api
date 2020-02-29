@@ -2100,9 +2100,11 @@ function () {
         var checkKeys = [name + "Id", plural];
         var detected = checkKeys.filter(function (key) {
           return fieldsIds.indexOf(key) > -1;
-        })[0].replace('Id', '');
+        })[0];
 
         if (detected) {
+          detected.replace('Id', ''); // keep singular intact
+
           if (required.indexOf(detected) > -1) {
             parents.push(detected);
           } else {
