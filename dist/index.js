@@ -2103,7 +2103,8 @@ function () {
         })[0];
 
         if (detected) {
-          detected.replace('Id', ''); // keep singular intact
+          detected = detected.replace('Id', ''); // keep singular intact
+          // console.log('d', detected)
 
           if (required.indexOf(detected) > -1) {
             parents.push(detected);

@@ -120,11 +120,13 @@ class Lodger implements LodgerAPI {
       taxonomies.forEach(t => {
         const { name, plural } = t.form
         const checkKeys = [`${name}Id`, plural]
-        const detected = checkKeys
+        let detected = checkKeys
           .filter(key => fieldsIds.indexOf(key) > -1)[0]
 
+
         if (detected) {
-          detected.replace('Id', '') // keep singular intact
+          detected = detected.replace('Id', '') // keep singular intact
+          // console.log('d', detected)
           if (required.indexOf(detected) > -1) {
             parents.push(detected)
           } else {
