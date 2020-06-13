@@ -78,5 +78,6 @@ Taxonomy {
   "options": Object {
     "timestamps": true,
   },
+  "refsIds": Array [],
 }
 `;

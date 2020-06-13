@@ -1,7 +1,11 @@
 export default {
   taxonomies: {
     asociatie: {
-
+      name: 'Asociație',
+      plural: 'Asociații',
+      fields: {
+        
+      }
     }
   },
   errors: {

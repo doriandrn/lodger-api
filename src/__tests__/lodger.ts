@@ -1,7 +1,7 @@
 import { Lodger, Errors, Taxonomii } from '~/index'
 import Debug from 'debug'
 // import { isRxDatabase } from 'rxdb'
-import fakeData from '~/lib/helpers/dev/fakeData'
+import fakeData from '~/lib/helpers/dev/____fakeData'
 import BroadcastChannel from 'broadcast-channel'
 // import { predefinite } from '~/lib/.schemas/Serviciu'
 

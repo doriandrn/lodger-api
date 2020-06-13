@@ -47,6 +47,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   implements LodgerTaxonomy<T, Interface> {
 
   @observable lastItems: string[] = []
+  @observable refsIds: string[] = []
 
   /**
    * Last added item's id

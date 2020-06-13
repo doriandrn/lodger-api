@@ -103,13 +103,11 @@ describe('@extends Taxonomy', () => {
       let subscribers = {}
       beforeAll(() => {
         subscribers = $tax.subscribers
-        console.info('ss', Object.keys(subscribers))
         try {
           $tax.unsubscribeAll()
         } catch (e) {
-          console.error('e', e)
+          console.error('Could not unsubscribe', e)
         }
-        console.info('ss', Object.keys(subscribers))
       })
 
       test('kills all', () => {
@@ -118,6 +116,7 @@ describe('@extends Taxonomy', () => {
     })
 
     afterAll(async () => {
+      await $tax.unsubscribeAll()
       await SubscribableTaxonomy.db.destroy()
     })
   })
