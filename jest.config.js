@@ -1,6 +1,6 @@
 module.exports = {
   verbose: true,
-  bail: false,
+  bail: 1,
   coverageReporters: [
     'html',
     'text'

@@ -1,15 +1,17 @@
-import * as RxDB from 'rxdb'
+import { addRxPlugin, createRxDatabase } from 'rxdb'
 
 import { env } from 'defs/env'
 
 switch (env) {
   default:
-    RxDB.plugin(require('pouchdb-adapter-memory'))
+    addRxPlugin(require('pouchdb-adapter-memory'))
     break
 
   case 'production':
-    RxDB.plugin(require('pouchdb-adapter-leveldb'))
+    addRxPlugin(require('pouchdb-adapter-leveldb'))
     break
 }
 
-export default RxDB
+export default {
+  create: createRxDatabase
+}
