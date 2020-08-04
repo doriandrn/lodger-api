@@ -2,6 +2,9 @@
 
 exports[`Schema ctor matches sshot: schema1 1`] = `
 Schema {
+  "indexes": Array [
+    "x2",
+  ],
   "name": "schema1",
   "properties": Object {
     "x1": Object {

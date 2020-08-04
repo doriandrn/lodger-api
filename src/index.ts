@@ -1,10 +1,10 @@
 
-import { RxDatabaseCreator, RxDocument } from 'rxdb'
+
 // import yaml from 'json2yaml'
 
 // import { env } from '~/lib/defs/env'
 import config from './lodger.config'
-import DB from '~/lib/DB'
+import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
 import supportedLangs from '~/lib/maintainable/langs'
 
 import LodgerError from '~/lib/Error'
@@ -12,6 +12,16 @@ import Taxonomy from '~/lib/Taxonomy/Subscribable'
 
 import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
+
+switch (process.env) {
+  default:
+    addRxPlugin(require('pouchdb-adapter-memory'))
+    break
+
+  case 'production':
+    addRxPlugin(require('pouchdb-adapter-leveldb'))
+    break
+}
 
 /**
  * Taxonomies
@@ -39,7 +49,7 @@ enum Forms {
 
 /**
  * Errors definitions
- *
+
  * @enum {string}
  */
 enum Errors {
@@ -226,11 +236,10 @@ class Lodger implements LodgerAPI {
    *
    */
   static async build (options: BuildOptions = { ... config.build }) {
-    Taxonomy.db = await DB.create(options.db)
+    Taxonomy.db = await createRxDatabase(options.db)
 
     const taxesSchemas = await loadSchemas(taxonomies)
     const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema)))
-
 
     return new Lodger(
       Taxonomies,

@@ -37,6 +37,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
   readonly version = 0
   readonly properties : SchemaProperties<Interface> = {}
   readonly required: string[] = []
+  readonly indexes : string[] = []
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -77,7 +78,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     if (field && !field.rxSchema)
       throw new SchemaError(Errors.invalidField, field)
 
-    const { rxSchema, v, storage } = field
+    const { rxSchema, v, storage, index } = field
 
     if (storage !== 'db') return
 
@@ -86,19 +87,13 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
 
     if (required && this.required.indexOf(id) < 0)
       this.required.push(id)
+
+    if (index) {
+      this.indexes.push(id)
+    }
   }
 
   get ids () {
     return Object.keys(this.properties)
-  }
-
-  /**
-   *
-   *
-   * @readonly
-   * @memberof Schema
-   */
-  get indexables () {
-    return this.ids.filter(fieldId => this.properties[fieldId].index)
   }
 }

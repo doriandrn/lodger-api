@@ -132,10 +132,10 @@ export class Field implements FieldAPI {
       return
     }
 
-    const { index, ref, indexRef, type, step, required, v, value } = data
+    const { ref, indexRef, type, step, required, v, value } = data
     this.type = String(type || '').asRxDBType
 
-    if (index) this.index = true
+    // if (index) this.index = true
 
     // transform the ref
     if (ref) {

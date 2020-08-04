@@ -50,6 +50,17 @@ describe('Schema', () => {
     )
   })
 
+  describe('.indexes[]', () => {
+    test('contains all fields\' ids with index: true', () => {
+      expect(schema.indexes).toContainEqual('x2')
+    })
+
+    // test('contains keys from commmon methods', () => {
+    //   const cfskeys = commonFields.map(field => field.id)
+    //   expect(Object.keys(schema.properties)).toContain(cfskeys)
+    // })
+  })
+
   describe('.properties', () => {
     test('excluded from db fields dont show up', () => {
       expect(schema.properties.x5).toBeUndefined()
@@ -78,17 +89,6 @@ describe('Schema', () => {
       schema.add(id, new Field({ required: true }))
       expect(schema.required).toContain(id)
     })
-  })
-
-  describe('.indexables', () => {
-    test('contains all fields\' ids with index: true', () => {
-      expect(schema.indexables).toContainEqual('x2')
-    })
-
-    // test('contains keys from commmon methods', () => {
-    //   const cfskeys = commonFields.map(field => field.id)
-    //   expect(Object.keys(schema.properties)).toContain(cfskeys)
-    // })
   })
 
   // obsolete, not for schemas

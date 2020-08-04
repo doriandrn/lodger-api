@@ -22,7 +22,7 @@ type LodgerConfig = {
 
 const build = {
   db: {
-    name: 'Lodger/',
+    name: 'Lodger/$',
     adapter: 'memory',
     password: 'l0dg3rp4$$',
     ignoreDuplicate: Boolean(env === 'test')

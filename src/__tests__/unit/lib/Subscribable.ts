@@ -1,7 +1,7 @@
 import SubscribableTaxonomy from '~/lib/Taxonomy/Subscribable'
 
 import Subscriber from 'rxcollection-subscriber'
-import DB from '~/lib/DB'
+import { createRxDatabase, addRxPlugin } from 'rxdb'
 
 import sosete from 'fixtures/taxes/sosete'
 import testdbsetup from 'fixtures/db/test'
@@ -13,7 +13,8 @@ describe('@extends Taxonomy', () => {
     let $tax: SubscribableTaxonomy<any>
 
     beforeAll(async () => {
-      SubscribableTaxonomy.db = await DB.create(testdbsetup)
+      addRxPlugin(require('pouchdb-adapter-memory'))
+      SubscribableTaxonomy.db = await createRxDatabase(testdbsetup)
       $tax = await SubscribableTaxonomy.init(sosete)
     })
 
@@ -81,7 +82,7 @@ describe('@extends Taxonomy', () => {
       })
 
       describe('Relations', () => {
-        
+
       })
     })
 

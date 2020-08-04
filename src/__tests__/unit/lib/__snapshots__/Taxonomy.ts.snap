@@ -10,7 +10,6 @@ Taxonomy {
     "fields": Object {
       "createdAt": Field {
         "default": undefined,
-        "index": true,
         "storage": "db",
         "type": "number",
         "value": [Function],
@@ -29,14 +28,12 @@ Taxonomy {
       },
       "numar": Field {
         "default": undefined,
-        "index": true,
         "storage": "db",
         "type": "number",
         "value": [Function],
       },
       "updatedAt": Field {
         "default": undefined,
-        "index": true,
         "storage": "db",
         "type": "number",
         "value": [Function],
@@ -48,10 +45,10 @@ Taxonomy {
     },
     "plural": "sosetai",
     "schema": Schema {
+      "indexes": Array [],
       "name": "soseta",
       "properties": Object {
         "createdAt": Object {
-          "index": true,
           "type": "number",
         },
         "lungime": Object {
@@ -61,11 +58,9 @@ Taxonomy {
           "type": "string",
         },
         "numar": Object {
-          "index": true,
           "type": "number",
         },
         "updatedAt": Object {
-          "index": true,
           "type": "number",
         },
       },

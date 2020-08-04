@@ -60,7 +60,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
     "rollup-plugin-uglify": "^6.0.4",
-    "rxcollection-subscriber": "^1.0.11",
+    "rxcollection-subscriber": "^1.0.12",
     "source-map-loader": "^1.0.1",
     "ts-jest": "^26.1.4",
     "ts-loader": "^8.0.2",
@@ -70,5 +70,8 @@
     "pouchdb-adapter-leveldb": "^7.2.2",
     "rxdb": "^9.5.0",
     "rxjs": "^6.6.2"
+  },
+  "peerDependencies": {
+    "mobx": "^5.15.4"
   }
 }
