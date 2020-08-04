@@ -4,8 +4,8 @@ declare type FormOptions = {
     captureTimestamp?: boolean;
 };
 declare type FormFields<I> = {
-    [k in keyof I]: Field;
-};
+    [k in Extract<keyof I, string>]: Field;
+} | {};
 export declare type LodgerFormCreator<T> = {
     name: string;
     plural?: Plural<String>;
@@ -46,8 +46,8 @@ declare class Form<I> implements FormAPI<I> {
     readonly name: string;
     readonly plural: string;
     readonly schema: Schema<string, I>;
-    $active: boolean;
     readonly fields: FormFields<I>;
+    $active: boolean;
     /**
      * Creates an instance of Form.
      *
@@ -57,6 +57,15 @@ declare class Form<I> implements FormAPI<I> {
      * @memberof Form
      */
     constructor(data?: LodgerFormCreator<I>, opts?: FormOptions | undefined);
+    /**
+     * Fakes data for testing
+     *
+     * @readonly
+     * @memberof Form
+     */
+    get fakeData(): {
+        [k: string]: any;
+    };
     /**
      * Makes a Vue-ready $data {object} suitable to be completed
      * by the user in the frontend -> new form

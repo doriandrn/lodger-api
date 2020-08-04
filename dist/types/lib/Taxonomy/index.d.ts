@@ -29,6 +29,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
     protected form: Form<Interface>;
     readonly options?: LodgerTaxonomyCreatorOptions | undefined;
     lastItems: string[];
+    refsIds: string[];
     /**
      * Last added item's id
      *
@@ -61,7 +62,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
      * @returns {Taxonomy}
      * @memberof Taxonomy
      */
-    static init(data: TaxonomyCreator<Taxonomie>, options?: LodgerTaxonomyCreatorOptions): Promise<Taxonomy<"Apartament" | "Asociatie" | "Bloc" | "Cheltuiala" | "Contor" | "Factura" | "Furnizor" | "Incasare" | "Serviciu" | "Utilizator", "Apartament" | "Asociatie" | "Bloc" | "Cheltuiala" | "Contor" | "Factura" | "Furnizor" | "Incasare" | "Serviciu" | "Utilizator">>;
+    static init(data: TaxonomyCreator<Taxonomie>, options?: LodgerTaxonomyCreatorOptions): Promise<Taxonomy<any, "Apartament" | "Asociatie" | "Bloc" | "Cheltuiala" | "Contor" | "Factura" | "Furnizor" | "Incasare" | "Serviciu" | "Utilizator">>;
     /**
      * Creates an instance of Taxonomy.
      *

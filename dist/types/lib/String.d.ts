@@ -1,19 +1,18 @@
 import { JsonSchemaTypes } from "rxdb";
-declare type SplitObject = {
-    what: string;
-    mutation: string;
-};
 /**
- * Accepted 'string's for a LodgerSchema field
+ * Accepted -strings- for a LodgerSchema field's type
  *
  * @enum {number}
  */
 export declare enum strings {
-    search = 0,
-    select = 1,
-    string = 2,
-    text = 3,
-    textarea = 4
+    $ = 0,
+    buildingName = 1,
+    fullName = 2,
+    search = 3,
+    select = 4,
+    serviceName = 5,
+    string = 6,
+    textarea = 7
 }
 /**
  * Accepted 'number's for a LodgerSchema field
@@ -46,9 +45,8 @@ export declare enum arrays {
  * @enum {number}
  */
 export declare enum objects {
-    bani = 0,
-    object = 1,
-    organizatie = 2
+    object = 0,
+    organizatie = 1
 }
 declare global {
     /**
@@ -57,11 +55,11 @@ declare global {
      * @interface String
      */
     interface String {
-        stripLeading$: () => string;
-        cusomSplit: () => SplitObject;
-        slugify: () => string;
-        toRxDBType: () => JsonSchemaTypes;
-        plural: () => Plural<string>;
+        stripLeading: (symbol: string) => String;
+        slug: string;
+        plural: Plural<string>;
+        asMoney: Money;
+        asRxDBType: JsonSchemaTypes;
     }
 }
 declare const _default_1: {

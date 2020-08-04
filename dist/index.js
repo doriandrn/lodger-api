@@ -4,25 +4,25 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var RxDB = require('rxdb');
+var rxdb = require('rxdb');
 var mobx = require('mobx');
 var faker = _interopDefault(require('faker'));
 var consola = _interopDefault(require('consola'));
 var Subscriber = _interopDefault(require('rxcollection-subscriber'));
 
 /*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright (c) Microsoft Corporation.
 
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 /* global Reflect, Promise */
 
@@ -108,7 +108,7 @@ var env = String(process.env.NODE_ENV);
 var version = require('../package.json').version;
 var build = {
   db: {
-    name: 'Lodger/',
+    name: 'Lodger/$',
     adapter: 'memory',
     password: 'l0dg3rp4$$',
     ignoreDuplicate: Boolean(env === 'test')
@@ -134,1120 +134,6 @@ var config = {
   taxonomii: taxonomii,
   build: build
 };
-
-// import fx from 'fx'
-/**
- * Error logger
- */
-
-var LodgerError =
-/** @class */
-function (_super) {
-  __extends(LodgerError, _super);
-
-  function LodgerError(m, details) {
-    var _this = this;
-
-    if (details) {
-      m = String(m).replace('%%', "\"" + JSON.stringify(details) + "\"");
-    }
-
-    _this = _super.call(this, m) || this; // Set the prototype explicitly.
-
-    Object.setPrototypeOf(_this, LodgerError.prototype);
-    return _this;
-  }
-
-  return LodgerError;
-}(Error);
-
-switch (env) {
-  default:
-    RxDB.plugin(require('pouchdb-adapter-memory'));
-    break;
-
-  case 'production':
-    RxDB.plugin(require('pouchdb-adapter-leveldb'));
-    break;
-}
-
-/**
- * Accepted -strings- for a LodgerSchema field's type
- *
- * @enum {number}
- */
-var strings;
-
-(function (strings) {
-  strings[strings["$"] = 0] = "$";
-  strings[strings["buildingName"] = 1] = "buildingName";
-  strings[strings["fullName"] = 2] = "fullName";
-  strings[strings["search"] = 3] = "search";
-  strings[strings["select"] = 4] = "select";
-  strings[strings["serviceName"] = 5] = "serviceName";
-  strings[strings["string"] = 6] = "string";
-  strings[strings["textarea"] = 7] = "textarea";
-})(strings || (strings = {}));
-/**
- * Accepted 'number's for a LodgerSchema field
- *
- * @enum {number}
- */
-
-
-var numbers;
-
-(function (numbers) {
-  numbers[numbers["date"] = 0] = "date";
-  numbers[numbers["dateTime"] = 1] = "dateTime";
-  numbers[numbers["number"] = 2] = "number";
-})(numbers || (numbers = {}));
-/**
- * Accepted 'array's for a LodgerSchema field
- *
- * @enum {number}
- */
-
-
-var arrays;
-
-(function (arrays) {
-  arrays[arrays["array"] = 0] = "array";
-  arrays[arrays["contactFields"] = 1] = "contactFields";
-  arrays[arrays["contoare"] = 2] = "contoare";
-  arrays[arrays["distribuire"] = 3] = "distribuire";
-  arrays[arrays["furnizori"] = 4] = "furnizori";
-  arrays[arrays["selApartamente"] = 5] = "selApartamente";
-  arrays[arrays["servicii"] = 6] = "servicii";
-  arrays[arrays["scari"] = 7] = "scari";
-})(arrays || (arrays = {}));
-/**
- * Accepted 'object's for a LodgerSchema field
- *
- * @enum {number}
- */
-
-
-var objects;
-
-(function (objects) {
-  objects[objects["object"] = 0] = "object";
-  objects[objects["organizatie"] = 1] = "organizatie";
-})(objects || (objects = {}));
-
-var plurals = {
-  apartament: 'apartamente',
-  asociatie: 'asociatii',
-  bloc: 'blocuri',
-  contor: 'contoare',
-  cheltuiala: 'cheltuieli',
-  factura: 'facturi',
-  incasare: 'incasari',
-  serviciu: 'servicii',
-  tranzactie: 'tranzactii'
-};
-/**
- * Removes the '$' at the begining of a string
- *
- * @returns {String} the parsed string
- * @memberof String
- */
-
-String.prototype.stripLeading = function (symbol) {
-  if (this.indexOf(symbol) !== 0) return String(this);
-  return String(this.replace(symbol, '').trim().stripLeading(symbol));
-};
-
-Object.defineProperties(String.prototype, {
-  /**
-   * Plurals. @todo use Intl
-   */
-  plural: {
-    get: function () {
-      return plurals[this] || String(this + "i");
-    }
-  },
-
-  /**
-   * Converts a LodgerField type to RxDB compatible one
-   *
-   * Explicatie:
-   * DB-ul nu stie decat de tipurile primare:
-   * -> boolean, string, number, array, object
-   * Schema noastra e mult mai detaliata
-   *
-   * @returns {string} - tipul primar, eg. 'string'
-   */
-  asRxDBType: {
-    get: function () {
-      var _default = 'string';
-
-      var _this = this.toString();
-
-      if (Object.keys(strings).indexOf(_this) > -1) return _default;
-      if (Object.keys(objects).indexOf(_this) > -1) return 'object';
-      if (Object.keys(numbers).indexOf(_this) > -1) return 'number';
-      if (Object.keys(arrays).indexOf(_this) > -1) return 'array';
-      return _default;
-    }
-  },
-
-  /**
-   * Splits a $ string into Money object
-   *
-   * @memberof String
-   * @returns {Money}
-   */
-  asMoney: {
-    get: function () {
-      var split = this.split(' ');
-      return {
-        currency: split[0],
-        amount: split[1]
-      };
-    }
-  },
-
-  /**
-   * Slugifies a string
-   *
-   * @memberof String
-   * @returns {String} the slug
-   */
-  slug: {
-    get: function () {
-      return this.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
-      .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-      .replace(/\-\-+/g, '-') // Replace multiple - with single -
-      .replace(/^-+/, '') // Trim - from start of text
-      .replace(/-+$/, ''); // Trim - from end of text
-    }
-  }
-});
-var S = {
-  String: String
-};
-
-/**
- * Monede
- *
- * @enum {number}
- * @todo add all
- */
-var Currency;
-
-(function (Currency) {
-  Currency[Currency["BTC"] = 0] = "BTC";
-  Currency[Currency["RON"] = 1] = "RON";
-  Currency[Currency["EUR"] = 2] = "EUR";
-  Currency[Currency["USD"] = 3] = "USD";
-  Currency[Currency["TRX"] = 4] = "TRX";
-})(Currency || (Currency = {}));
-
-var currencies = Object.keys(Currency).filter(function (tax) {
-  return typeof Currency[tax] === 'number';
-});
-
-var holder = {};
-Object.defineProperties(holder, {
-  $: {
-    get: function () {
-      return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
-    }
-  },
-  number: {
-    get: function () {
-      return Number(faker.random.number({
-        min: 20,
-        max: 300
-      }));
-    }
-  },
-  fullName: {
-    get: function () {
-      return faker.name.firstName() + " " + faker.name.lastName();
-    }
-  },
-  dateTime: {
-    get: function () {
-      return Date.now() + faker.random.number({
-        min: 9000000,
-        max: 100000000
-      });
-    }
-  },
-  buildingName: {
-    get: function () {
-      return faker.random.alphaNumeric(2);
-    }
-  },
-  serviceName: {
-    get: function () {
-      return faker.hacker.adjective();
-    }
-  }
-});
-
-var String$1 = S.String;
-/**
- *
- * @class Form Field Item
- * @implements {SchemaField}
- * @requires [String]
- * @extends RxJsonSchemaTopLevel
- */
-
-var Field =
-/** @class */
-function () {
-  /**
-   * Creates an instance of Field.
-   *
-   * @param {FieldCreator<T>} data
-   * @memberof Field
-   */
-  function Field(data) {
-    var _this = this;
-
-    this.type = 'string';
-    this.storage = 'db'; // where to store data, in db or store
-
-    this.value = function () {
-      return _this.default || undefined;
-    };
-
-    if (!data) {
-      // throw new FieldError('Field could not be created. No data supplied.')
-      return;
-    }
-
-    var index = data.index,
-        ref = data.ref,
-        indexRef = data.indexRef,
-        type = data.type,
-        step = data.step,
-        required = data.required,
-        v = data.v,
-        value = data.value;
-    this.type = String$1(type || '').asRxDBType;
-    if (index) this.index = true; // transform the ref
-
-    if (ref) {
-      this.ref = ref;
-      this.items = {
-        type: 'string'
-      };
-      if (indexRef) this.index = indexRef;
-    } // steps for numbers
-
-
-    if (step !== undefined) {
-      if (this.type !== 'number') throw new LodgerError('Type must be "number" for .step');
-      this.multipleOf = step;
-    } // hook in required to validation string
-
-
-    if (required) {
-      this.v = required && v && v.indexOf('required') < 0 ? v : "required|" + v;
-    } // assign default value, can be undefined
-
-
-    this.default = typeof data.default === 'function' ? data.default() : data.default; // bind the value function
-
-    var storage = this.storage;
-    if (value && typeof value === 'function') this.value = value.bind({
-      storage: storage
-    });
-    Object.defineProperty(this, 'fakeValue', {
-      get: function () {
-        return holder[type];
-      }
-    });
-  }
-
-  Object.defineProperty(Field.prototype, "rxSchema", {
-    /**
-     * Used for Schema constructors,
-     * returns only the properties needed for it
-     */
-    get: function () {
-      var _this = this;
-
-      var schema = {};
-      var excludes = ['storage', 'value', 'default', 'v'];
-      Object.keys(this).forEach(function (prop) {
-        if (_this[prop] === undefined) return;
-        if (excludes.indexOf(prop) > -1) return;
-        schema[prop] = _this[prop];
-      });
-      return schema;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  return Field;
-}();
-
-var Errors;
-
-(function (Errors) {
-  Errors["missingProps"] = "Missing properties on schema %%";
-  Errors["propExists"] = "Property \"%%\" already exists";
-  Errors["idUndef"] = "ID for field %% cannot be undefined";
-  Errors["invalidField"] = "Invalid field %% supplied";
-})(Errors || (Errors = {}));
-/**s
- *
- *
- * @class Schema
- * @extends {RxJsonSchema}
- * @implements {LodgerSchema}
- */
-
-var Schema =
-/** @class */
-function () {
-  /**
-   * Constructs a valid RxJsonSchema out of a Lodger Form Data item
-   *
-   * @param {LodgerFormCreator} form
-   * @param {boolean} [addCommonMethods]
-   *
-   * @memberof Schema
-   * @returns {RxJsonSchema} schema
-   */
-  function Schema(name, fields, options) {
-    var _this = this;
-
-    this.name = name;
-    this.type = 'object';
-    this.version = 0;
-    this.properties = {};
-    this.required = [];
-    if (!fields || !Object.keys(fields).length) throw new LodgerError(Errors.missingFields, {
-      name: name
-    });
-    Object.keys(fields).map(function (f) {
-      return _this.add(fields[f].id || f, fields[f]);
-    });
-  }
-  /**
-   * Adds properties programatically as
-   * we also need to fill in the required array
-   *
-   * @param {FieldCreator} field
-   * @memberof Schema
-   */
-
-
-  Schema.prototype.add = function (id, field) {
-    if (!id) throw new LodgerError(Errors.idUndef, field);
-    if (this.properties[id]) throw new LodgerError(Errors.propExists, id);
-    if (field && !field.rxSchema) throw new LodgerError(Errors.invalidField, field);
-    var rxSchema = field.rxSchema,
-        v = field.v,
-        storage = field.storage;
-    if (storage !== 'db') return;
-    var required = v && v.indexOf('required') > -1;
-    this.properties[id] = rxSchema || {};
-    if (required && this.required.indexOf(id) < 0) this.required.push(id);
-  };
-
-  Object.defineProperty(Schema.prototype, "ids", {
-    get: function () {
-      return Object.keys(this.properties);
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Schema.prototype, "indexables", {
-    /**
-     *
-     *
-     * @readonly
-     * @memberof Schema
-     */
-    get: function () {
-      var _this = this;
-
-      return this.ids.filter(function (fieldId) {
-        return _this.properties[fieldId].index;
-      });
-    },
-    enumerable: true,
-    configurable: true
-  });
-  return Schema;
-}();
-
-/**
- * Errors Definition
- * @readonly
- * @enum {string}
- *
- * @todo account for translations
- */
-
-var Errors$1;
-
-(function (Errors) {
-  Errors["invalidRequested"] = "Invalid file requested: %%";
-  Errors["invalidName"] = "Invalid name supplied: %%";
-  Errors["missingFields"] = "Missing fields on form %%";
-})(Errors$1 || (Errors$1 = {}));
-/**
- * Lodder Form class
- *
- * @class Form
- * @implements {LodgerForm}
- */
-
-
-var Form =
-/** @class */
-function () {
-  /**
-   * Creates an instance of Form.
-   *
-   * @param {LodgerFormCreator} data - Form input data
-   * @param {boolean} [generateRxCollection=true] - some forms don't require this
-   *
-   * @memberof Form
-   */
-  function Form(data, opts) {
-    var _this = this;
-
-    this.opts = opts;
-    this._onsubmit = []; // hooks
-
-    this.fields = {};
-    this.$active = false;
-
-    var _a = data || {
-      name: 'untitled',
-      fields: {}
-    },
-        fields = _a.fields,
-        name = _a.name;
-
-    this.name = name;
-    this.fields = {};
-    this.plural = this.name.plural;
-
-    if (fields) {
-      Object.keys(fields).map(function (fieldId) {
-        _this.fields[fieldId] = new Field(fields[fieldId]);
-      });
-    }
-
-    if (opts) {
-      var captureTimestamp = opts.captureTimestamp;
-
-      if (captureTimestamp) {
-        var timestampKeys = ['createdAt', 'updatedAt'];
-        var captureTimestampField_1 = {
-          type: 'dateTime',
-          // required: true, // for filters / sorts
-          index: true,
-          excludeFrom: ['addForm', 'editForm'],
-          showInList: 'secondary'
-        };
-        timestampKeys.map(function (key) {
-          _this.fields[key] = new Field(__assign({}, captureTimestampField_1));
-        });
-      }
-    }
-
-    this.schema = new Schema(name, this.fields); // default onsubmit func
-
-    this.onsubmit = function () {};
-  }
-
-  Object.defineProperty(Form.prototype, "fakeData", {
-    /**
-     * Fakes data for testing
-     *
-     * @readonly
-     * @memberof Form
-     */
-    get: function () {
-      var _this = this;
-
-      return Object.fromEntries(this.fieldsIds.map(function (fieldId) {
-        return [fieldId, _this.fields[fieldId].fakeValue];
-      }));
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Form.prototype, "data", {
-    /**
-     * Makes a Vue-ready $data {object} suitable to be completed
-     * by the user in the frontend -> new form
-     * (as it will turn reactive)
-     *
-     * @readonly
-     * @memberof Form
-     * @returns {Object}
-     */
-    get: function () {
-      return Object.assign.apply(Object, __spreadArrays([{}], Object.keys(this.fields)));
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Form.prototype, "fieldsIds", {
-    /**
-     * Quick access to all fields' ids
-     *
-     * @readonly
-     * @memberof Form
-     * @returns {string[]}
-     */
-    get: function () {
-      return Object.keys(this.fields);
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Form.prototype, "onsubmit", {
-    /**
-     * register a new onsubmit function
-     *
-     * @memberof Form
-     */
-    set: function (f) {
-      this._onsubmit.push(f.bind(this));
-    },
-    enumerable: true,
-    configurable: true
-  });
-  /**
-   * Gets the value of current active form
-   *
-   * @summary for new forms, values are all undefined
-   * @returns {Object} data item (Vue $data - ready)
-   */
-
-  Form.prototype.value = function (context) {
-    var _this = this;
-
-    var $data = {};
-    this.fieldsIds.forEach(function (fieldId) {
-      var field = _this.fields[fieldId];
-      if (field.storage !== 'db') return; // todo: pune din store
-
-      $data[fieldId] = field.value(context);
-    });
-    return $data;
-  };
-
-  return Form;
-}();
-
-/**
- * Notifies the user and also us, the devs, of anything!
- *
- * @kind Store action wrapper
- * fallsback to console
- *
- * @param {Notification} notification
- */
-
-function notify(notification) {
-  /**
-   * if/when bound to Store
-   * to be used on frontend mostly
-   *
-   */
-  if (this && typeof this.dispatch === 'function' && this.actions.notify) {
-    this.dispatch('notify', notification);
-    return;
-  } // Fallback -> Consola
-
-
-  var type = notification.type,
-      text = notification.text;
-  consola[type](text); // Always throw the err for stack reporting
-
-  if (type === 'error') throw new Error(text);
-}
-
-var Errors$2;
-
-(function (Errors) {
-  Errors["noDB"] = "Please setup a DB first!";
-})(Errors$2 || (Errors$2 = {}));
-
-var db;
-/**
- * @class Taxonomy
- * @implements {LodgerTaxonomy}
- *
- * @requires Form
- *
- * @param {Taxonomie} name - name of the form
- * @param {Form} form - the constructed form item
- */
-
-var Taxonomy =
-/** @class */
-function () {
-  /**
-   * Creates an instance of Taxonomy.
-   *
-   * @param {Form<T, Interface>} form
-   * @param {RxCollection<T>} collection
-   * @memberof Taxonomy
-   */
-  function Taxonomy(form, collection, options) {
-    this.form = form;
-    this.options = options;
-    this.lastItems = []; // kinda hide the property for snapshots
-
-    Object.defineProperty(this, 'collection', {
-      enumerable: false,
-      writable: false,
-      value: collection
-    });
-  }
-
-  Object.defineProperty(Taxonomy.prototype, "last", {
-    /**
-     * Last added item's id
-     *
-     * @readonly
-     * @memberof Taxonomy
-     */
-    get: function () {
-      return this.lastItems[0];
-    },
-    set: function (id) {
-      if (id) this.lastItems.unshift(id);else this.lastItems.shift();
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Taxonomy, "db", {
-    /**
-     * DB handler
-     *
-     * @static
-     * @memberof Taxonomy
-     */
-    set: function (xdb) {
-      db = xdb;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  /**
-   * @alias db.destroy
-   *
-   * @static
-   * @memberof Taxonomy
-   */
-
-  Taxonomy.destroy = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            if (!db) return [2
-            /*return*/
-            ];
-            return [4
-            /*yield*/
-            , db.destroy()];
-
-          case 1:
-            _a.sent();
-
-            return [2
-            /*return*/
-            ];
-        }
-      });
-    });
-  };
-
-  Object.defineProperty(Taxonomy.prototype, "plural", {
-    get: function () {
-      return this.form.plural;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  /**
-   * Init function that builds up the form and collection
-   *
-   * @static
-   * @param {TaxonomyCreator<Taxonomie>} data
-   * @param {LodgerTaxonomyCreatorOptions} [options={}]
-   * @returns {Taxonomy}
-   * @memberof Taxonomy
-   */
-
-  Taxonomy.init = function (data, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      var name, fields, methods, statics, timestamps, form, schema, collectionCreator, collection, e_1;
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            if (!db) throw new LodgerError(Errors$2.noDB);
-            _a.label = 1;
-
-          case 1:
-            _a.trys.push([1, 3,, 4]);
-
-            name = data.name, fields = data.fields, methods = data.methods, statics = data.statics;
-            timestamps = options.timestamps;
-            form = new Form({
-              name: name,
-              fields: fields
-            }, {
-              captureTimestamp: timestamps
-            });
-            schema = form.schema;
-            collectionCreator = {
-              name: name,
-              schema: schema,
-              methods: methods,
-              statics: statics
-            };
-            return [4
-            /*yield*/
-            , db.collection(collectionCreator)];
-
-          case 2:
-            collection = _a.sent();
-            return [2
-            /*return*/
-            , new this(form, collection, options)];
-
-          case 3:
-            e_1 = _a.sent();
-            throw new LodgerError(e_1);
-
-          case 4:
-            return [2
-            /*return*/
-            ];
-        }
-      });
-    });
-  };
-
-  Object.defineProperty(Taxonomy.prototype, "name", {
-    /**
-     *
-     *
-     * @readonly
-     * @memberof Taxonomy
-     */
-    get: function () {
-      return this.collection.name;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  /**
-   * Removes a Document by ID from the collection
-   *
-   * @param {string} id
-   * @returns {RxDocument<T>} removed document
-   * @memberof Taxonomy
-   */
-
-  Taxonomy.prototype.trash = function (id) {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            if (this.last === id) this.last = undefined;
-            return [4
-            /*yield*/
-            , this.collection.findOne(id).remove()];
-
-          case 1:
-            return [2
-            /*return*/
-            , _a.sent()];
-        }
-      });
-    });
-  };
-  /**
-   * Inserts/upserts a new item in DB
-   *
-   * @param {Object} doc
-   * @returns {RxDocument<Taxonomie>} the fresh document
-   *
-   * @memberof Taxonomy
-   */
-
-
-  Taxonomy.prototype.put = function (doc) {
-    return __awaiter(this, void 0, void 0, function () {
-      var method, _a, name, options, _doc, id, e_2;
-
-      var _b;
-
-      return __generator(this, function (_c) {
-        switch (_c.label) {
-          case 0:
-            if (!doc || Object.keys(doc).length < 1) throw new LodgerError('Invalid doc supplied %%', {
-              doc: doc
-            });
-            method = doc._id ? 'upsert' : 'insert';
-            _a = this, name = _a.name, options = _a.options;
-
-            if (options && options.timestamps) {
-              Object.assign(doc, (_b = {}, _b[method === 'insert' ? 'createdAt' : 'updatedAt'] = new Date().getTime(), _b));
-            }
-
-            _c.label = 1;
-
-          case 1:
-            _c.trys.push([1, 3,, 4]);
-
-            return [4
-            /*yield*/
-            , this.collection[method](doc)];
-
-          case 2:
-            _doc = _c.sent();
-            id = _doc._id;
-            this.last = id;
-            notify({
-              type: 'success',
-              text: "[" + method + "] " + name + "!" + (['dev', 'test'].indexOf(env) > -1 ? "(" + id + ")" : '')
-            });
-            return [2
-            /*return*/
-            , _doc];
-
-          case 3:
-            e_2 = _c.sent();
-            notify({
-              type: 'error',
-              text: String(e_2)
-            });
-            return [3
-            /*break*/
-            , 4];
-
-          case 4:
-            return [2
-            /*return*/
-            ];
-        }
-      });
-    });
-  };
-
-  Object.defineProperty(Taxonomy.prototype, "config", {
-    /**
-     * @readonly
-     * @memberof Taxonomy
-     * Taxonomy default config
-     */
-    get: function () {
-      var taxonomii = config.taxonomii;
-      var defaults = taxonomii.defaults;
-      return taxonomii[this.name] || defaults;
-    },
-    enumerable: true,
-    configurable: true
-  });
-
-  __decorate([mobx.observable], Taxonomy.prototype, "lastItems", void 0);
-
-  __decorate([mobx.computed], Taxonomy.prototype, "last", null);
-
-  return Taxonomy;
-}();
-
-var STaxonomy =
-/** @class */
-function (_super) {
-  __extends(STaxonomy, _super);
-
-  function STaxonomy() {
-    var _this = _super.apply(this, arguments) || this;
-
-    _this.subscribers = {};
-    return _this;
-  }
-
-  STaxonomy.init = function () {
-    return _super.init.apply(this, arguments);
-  };
-
-  Object.defineProperty(STaxonomy.prototype, "data", {
-    /**
-     * Returns all data from subscribers
-     *
-     * @readonly
-     * @memberof Taxonomy
-     */
-    get: function () {
-      return this.subscribers;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(STaxonomy.prototype, "subscribed", {
-    /**
-     * @readonly
-     * @memberof Taxonomy
-     * @returns {Boolean} if subscribed anywhere
-     */
-    get: function () {
-      return Object.keys(this.subscribers).length > 0;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(STaxonomy.prototype, "defaultCriteria", {
-    get: function () {
-      return _super.prototype.config.criteriu;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  /**
-   * Subscribes.
-   *
-   * @param {string} [subscriberName='main']
-   * @param {Criteriu} [criteriuCerut]
-   * @returns {Promise<Subscriber<T>>} the unwatcher for subscriber
-   * @memberof Taxonomy
-   */
-
-  STaxonomy.prototype.subscribe = function (subscriberName, options) {
-    if (subscriberName === void 0) {
-      subscriberName = 'main';
-    }
-
-    if (this.subscribers[subscriberName]) return;
-    this.subscribers[subscriberName] = new Subscriber(this.collection, options);
-  };
-  /**
-   *
-   *
-   * @param {string} [subscriberName='main']
-   * @memberof STaxonomy
-   */
-
-
-  STaxonomy.prototype.unsubscribe = function (subscriberName) {
-    if (subscriberName === void 0) {
-      subscriberName = 'main';
-    }
-
-    var subscriber = this.subscribers[subscriberName];
-
-    try {
-      if (subscriber.kill) subscriber.kill();
-    } catch (e) {}
-
-    delete this.subscribers[subscriberName];
-  };
-  /**
-   * Kills all active listeners for a given subscriber name
-   *
-   * @returns {Promise}
-   * @memberof Taxonomy
-   */
-
-
-  STaxonomy.prototype.unsubscribeAll = function () {
-    var _this = this;
-
-    var subscribers = this.subscribers;
-    if (!subscribers || !Object.keys(subscribers).length) throw new LodgerError('no subs');
-    Object.keys(subscribers).forEach(function (s) {
-      _this.unsubscribe(s);
-    });
-  };
-
-  return STaxonomy;
-}(Taxonomy);
-
-var dynamicTargets = {
-  'Apartament.ts': () => Promise.resolve().then(function () { return Apartament; }),
-  'Asociatie.ts': () => Promise.resolve().then(function () { return Asociatie; }),
-  'Bloc.ts': () => Promise.resolve().then(function () { return Bloc; }),
-  'Cheltuiala.ts': () => Promise.resolve().then(function () { return Cheltuiala; }),
-  'Contor.ts': () => Promise.resolve().then(function () { return Contor; }),
-  'Factura.ts': () => Promise.resolve().then(function () { return Factura; }),
-  'Feedback.ts': () => Promise.resolve().then(function () { return Feedback; }),
-  'Furnizor.ts': () => Promise.resolve().then(function () { return Furnizor; }),
-  'Incasare.ts': () => Promise.resolve().then(function () { return Incasare; }),
-  'Serviciu.ts': () => Promise.resolve().then(function () { return Serviciu; }),
-  'Tranzactie.ts': () => Promise.resolve().then(function () { return Tranzactie; }),
-  'Utilizator.ts': () => Promise.resolve().then(function () { return Utilizator; })
-};
-
-/**
- * Rollup helper file
- * to dynamically load schemas based on filename
- */
-
-var capitalize = function (s) {
-  if (typeof s !== 'string') return '';
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
-
-function load(schemas) {
-  return __awaiter(this, void 0, void 0, function () {
-    var _this = this;
-
-    return __generator(this, function (_a) {
-      switch (_a.label) {
-        case 0:
-          return [4
-          /*yield*/
-          , Promise.all(schemas.map(function (schemaFileName) {
-            return __awaiter(_this, void 0, void 0, function () {
-              var fileName, schema, _a;
-
-              return __generator(this, function (_b) {
-                switch (_b.label) {
-                  case 0:
-                    fileName = capitalize(schemaFileName) + ".ts";
-                    _a = [{}];
-                    return [4
-                    /*yield*/
-                    , dynamicTargets[fileName]()];
-
-                  case 1:
-                    schema = __assign.apply(void 0, _a.concat([_b.sent()]));
-                    Object.defineProperty(schema, 'name', {
-                      writable: false,
-                      value: String(fileName.split('.')[0]).toLowerCase()
-                    });
-                    return [2
-                    /*return*/
-                    , schema];
-                }
-              });
-            });
-          }))];
-
-        case 1:
-          return [2
-          /*return*/
-          , _a.sent()];
-      }
-    });
-  });
-}
 
 var allLangs = [{
   "code": "ab",
@@ -1990,11 +876,1123 @@ var supportedLangs = allLangs.filter(function (lang) {
   return supported.indexOf(lang.code) > -1;
 });
 
+// import fx from 'fx'
+/**
+ * Error logger
+ */
+
+var LodgerError =
+/** @class */
+function (_super) {
+  __extends(LodgerError, _super);
+
+  function LodgerError(m, details) {
+    var _this = this;
+
+    if (details) {
+      m = String(m).replace('%%', "\"" + JSON.stringify(details) + "\"");
+    }
+
+    _this = _super.call(this, m) || this; // Set the prototype explicitly.
+
+    Object.setPrototypeOf(_this, LodgerError.prototype);
+    return _this;
+  }
+
+  return LodgerError;
+}(Error);
+
+/**
+ * Accepted -strings- for a LodgerSchema field's type
+ *
+ * @enum {number}
+ */
+var strings;
+
+(function (strings) {
+  strings[strings["$"] = 0] = "$";
+  strings[strings["buildingName"] = 1] = "buildingName";
+  strings[strings["fullName"] = 2] = "fullName";
+  strings[strings["search"] = 3] = "search";
+  strings[strings["select"] = 4] = "select";
+  strings[strings["serviceName"] = 5] = "serviceName";
+  strings[strings["string"] = 6] = "string";
+  strings[strings["textarea"] = 7] = "textarea";
+})(strings || (strings = {}));
+/**
+ * Accepted 'number's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+
+
+var numbers;
+
+(function (numbers) {
+  numbers[numbers["date"] = 0] = "date";
+  numbers[numbers["dateTime"] = 1] = "dateTime";
+  numbers[numbers["number"] = 2] = "number";
+})(numbers || (numbers = {}));
+/**
+ * Accepted 'array's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+
+
+var arrays;
+
+(function (arrays) {
+  arrays[arrays["array"] = 0] = "array";
+  arrays[arrays["contactFields"] = 1] = "contactFields";
+  arrays[arrays["contoare"] = 2] = "contoare";
+  arrays[arrays["distribuire"] = 3] = "distribuire";
+  arrays[arrays["furnizori"] = 4] = "furnizori";
+  arrays[arrays["selApartamente"] = 5] = "selApartamente";
+  arrays[arrays["servicii"] = 6] = "servicii";
+  arrays[arrays["scari"] = 7] = "scari";
+})(arrays || (arrays = {}));
+/**
+ * Accepted 'object's for a LodgerSchema field
+ *
+ * @enum {number}
+ */
+
+
+var objects;
+
+(function (objects) {
+  objects[objects["object"] = 0] = "object";
+  objects[objects["organizatie"] = 1] = "organizatie";
+})(objects || (objects = {}));
+
+var plurals = {
+  apartament: 'apartamente',
+  asociatie: 'asociatii',
+  bloc: 'blocuri',
+  contor: 'contoare',
+  cheltuiala: 'cheltuieli',
+  factura: 'facturi',
+  incasare: 'incasari',
+  serviciu: 'servicii',
+  tranzactie: 'tranzactii'
+};
+/**
+ * Removes the '$' at the begining of a string
+ *
+ * @returns {String} the parsed string
+ * @memberof String
+ */
+
+String.prototype.stripLeading = function (symbol) {
+  if (this.indexOf(symbol) !== 0) return String(this);
+  return String(this.replace(symbol, '').trim().stripLeading(symbol));
+};
+
+Object.defineProperties(String.prototype, {
+  /**
+   * Plurals. @todo use Intl
+   */
+  plural: {
+    get: function () {
+      return plurals[this] || String(this + "i");
+    }
+  },
+
+  /**
+   * Converts a LodgerField type to RxDB compatible one
+   *
+   * Explicatie:
+   * DB-ul nu stie decat de tipurile primare:
+   * -> boolean, string, number, array, object
+   * Schema noastra e mult mai detaliata
+   *
+   * @returns {string} - tipul primar, eg. 'string'
+   */
+  asRxDBType: {
+    get: function () {
+      var _default = 'string';
+
+      var _this = this.toString();
+
+      if (Object.keys(strings).indexOf(_this) > -1) return _default;
+      if (Object.keys(objects).indexOf(_this) > -1) return 'object';
+      if (Object.keys(numbers).indexOf(_this) > -1) return 'number';
+      if (Object.keys(arrays).indexOf(_this) > -1) return 'array';
+      return _default;
+    }
+  },
+
+  /**
+   * Splits a $ string into Money object
+   *
+   * @memberof String
+   * @returns {Money}
+   */
+  asMoney: {
+    get: function () {
+      var split = this.split(' ');
+      return {
+        currency: split[0],
+        amount: split[1]
+      };
+    }
+  },
+
+  /**
+   * Slugifies a string
+   *
+   * @memberof String
+   * @returns {String} the slug
+   */
+  slug: {
+    get: function () {
+      return this.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
+      .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+      .replace(/\-\-+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start of text
+      .replace(/-+$/, ''); // Trim - from end of text
+    }
+  }
+});
+var S = {
+  String: String
+};
+
+/**
+ * Monede
+ *
+ * @enum {number}
+ * @todo add all
+ */
+var Currency;
+
+(function (Currency) {
+  Currency[Currency["BTC"] = 0] = "BTC";
+  Currency[Currency["RON"] = 1] = "RON";
+  Currency[Currency["EUR"] = 2] = "EUR";
+  Currency[Currency["USD"] = 3] = "USD";
+  Currency[Currency["TRX"] = 4] = "TRX";
+})(Currency || (Currency = {}));
+
+var currencies = Object.keys(Currency).filter(function (tax) {
+  return typeof Currency[tax] === 'number';
+});
+
+var holder = {};
+Object.defineProperties(holder, {
+  $: {
+    get: function () {
+      return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
+    }
+  },
+  number: {
+    get: function () {
+      return Number(faker.random.number({
+        min: 20,
+        max: 300
+      }));
+    }
+  },
+  fullName: {
+    get: function () {
+      return faker.name.firstName() + " " + faker.name.lastName();
+    }
+  },
+  dateTime: {
+    get: function () {
+      return Date.now() + faker.random.number({
+        min: 9000000,
+        max: 100000000
+      });
+    }
+  },
+  buildingName: {
+    get: function () {
+      return faker.random.alphaNumeric(2);
+    }
+  },
+  serviceName: {
+    get: function () {
+      return faker.hacker.adjective();
+    }
+  }
+});
+
+var String$1 = S.String;
+/**
+ *
+ * @class Form Field Item
+ * @implements {SchemaField}
+ * @requires [String]
+ * @extends RxJsonSchemaTopLevel
+ */
+
+var Field =
+/** @class */
+function () {
+  /**
+   * Creates an instance of Field.
+   *
+   * @param {FieldCreator<T>} data
+   * @memberof Field
+   */
+  function Field(data) {
+    var _this = this;
+
+    this.type = 'string';
+    this.storage = 'db'; // where to store data, in db or store
+
+    this.value = function () {
+      return _this.default || undefined;
+    };
+
+    if (!data) {
+      // throw new FieldError('Field could not be created. No data supplied.')
+      return;
+    }
+
+    var ref = data.ref,
+        indexRef = data.indexRef,
+        type = data.type,
+        step = data.step,
+        required = data.required,
+        v = data.v,
+        value = data.value;
+    this.type = String$1(type || '').asRxDBType; // if (index) this.index = true
+    // transform the ref
+
+    if (ref) {
+      this.ref = ref;
+      this.items = {
+        type: 'string'
+      };
+      if (indexRef) this.index = indexRef;
+    } // steps for numbers
+
+
+    if (step !== undefined) {
+      if (this.type !== 'number') throw new LodgerError('Type must be "number" for .step');
+      this.multipleOf = step;
+    } // hook in required to validation string
+
+
+    if (required) {
+      this.v = required && v && v.indexOf('required') < 0 ? v : "required|" + v;
+    } // assign default value, can be undefined
+
+
+    this.default = typeof data.default === 'function' ? data.default() : data.default; // bind the value function
+
+    var storage = this.storage;
+    if (value && typeof value === 'function') this.value = value.bind({
+      storage: storage
+    });
+    Object.defineProperty(this, 'fakeValue', {
+      get: function () {
+        return holder[type];
+      }
+    });
+  }
+
+  Object.defineProperty(Field.prototype, "rxSchema", {
+    /**
+     * Used for Schema constructors,
+     * returns only the properties needed for it
+     */
+    get: function () {
+      var _this = this;
+
+      var schema = {};
+      var excludes = ['storage', 'value', 'default', 'v'];
+      Object.keys(this).forEach(function (prop) {
+        if (_this[prop] === undefined) return;
+        if (excludes.indexOf(prop) > -1) return;
+        schema[prop] = _this[prop];
+      });
+      return schema;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  return Field;
+}();
+
+var Errors;
+
+(function (Errors) {
+  Errors["missingProps"] = "Missing properties on schema %%";
+  Errors["propExists"] = "Property \"%%\" already exists";
+  Errors["idUndef"] = "ID for field %% cannot be undefined";
+  Errors["invalidField"] = "Invalid field %% supplied";
+})(Errors || (Errors = {}));
+/**s
+ *
+ *
+ * @class Schema
+ * @extends {RxJsonSchema}
+ * @implements {LodgerSchema}
+ */
+
+var Schema =
+/** @class */
+function () {
+  /**
+   * Constructs a valid RxJsonSchema out of a Lodger Form Data item
+   *
+   * @param {LodgerFormCreator} form
+   * @param {boolean} [addCommonMethods]
+   *
+   * @memberof Schema
+   * @returns {RxJsonSchema} schema
+   */
+  function Schema(name, fields, options) {
+    var _this = this;
+
+    this.name = name;
+    this.type = 'object';
+    this.version = 0;
+    this.properties = {};
+    this.required = [];
+    this.indexes = [];
+    if (!fields || !Object.keys(fields).length) throw new LodgerError(Errors.missingFields, {
+      name: name
+    });
+    Object.keys(fields).map(function (f) {
+      return _this.add(fields[f].id || f, fields[f]);
+    });
+  }
+  /**
+   * Adds properties programatically as
+   * we also need to fill in the required array
+   *
+   * @param {FieldCreator} field
+   * @memberof Schema
+   */
+
+
+  Schema.prototype.add = function (id, field) {
+    if (!id) throw new LodgerError(Errors.idUndef, field);
+    if (this.properties[id]) throw new LodgerError(Errors.propExists, id);
+    if (field && !field.rxSchema) throw new LodgerError(Errors.invalidField, field);
+    var rxSchema = field.rxSchema,
+        v = field.v,
+        storage = field.storage,
+        index = field.index;
+    if (storage !== 'db') return;
+    var required = v && v.indexOf('required') > -1;
+    this.properties[id] = rxSchema || {};
+    if (required && this.required.indexOf(id) < 0) this.required.push(id);
+
+    if (index) {
+      this.indexes.push(id);
+    }
+  };
+
+  Object.defineProperty(Schema.prototype, "ids", {
+    get: function () {
+      return Object.keys(this.properties);
+    },
+    enumerable: false,
+    configurable: true
+  });
+  return Schema;
+}();
+
+/**
+ * Errors Definition
+ * @readonly
+ * @enum {string}
+ *
+ * @todo account for translations
+ */
+
+var Errors$1;
+
+(function (Errors) {
+  Errors["invalidRequested"] = "Invalid file requested: %%";
+  Errors["invalidName"] = "Invalid name supplied: %%";
+  Errors["missingFields"] = "Missing fields on form %%";
+})(Errors$1 || (Errors$1 = {}));
+/**
+ * Lodder Form class
+ *
+ * @class Form
+ * @implements {LodgerForm}
+ */
+
+
+var Form =
+/** @class */
+function () {
+  /**
+   * Creates an instance of Form.
+   *
+   * @param {LodgerFormCreator} data - Form input data
+   * @param {boolean} [generateRxCollection=true] - some forms don't require this
+   *
+   * @memberof Form
+   */
+  function Form(data, opts) {
+    var _this = this;
+
+    this.opts = opts;
+    this._onsubmit = []; // hooks
+
+    this.fields = {};
+    this.$active = false;
+
+    var _a = data || {
+      name: 'untitled',
+      fields: {}
+    },
+        fields = _a.fields,
+        name = _a.name;
+
+    this.name = name;
+    this.fields = {};
+    this.plural = this.name.plural;
+
+    if (fields) {
+      Object.keys(fields).map(function (fieldId) {
+        _this.fields[fieldId] = new Field(fields[fieldId]);
+      });
+    }
+
+    if (opts) {
+      var captureTimestamp = opts.captureTimestamp;
+
+      if (captureTimestamp) {
+        var timestampKeys = ['createdAt', 'updatedAt'];
+        var captureTimestampField_1 = {
+          type: 'dateTime',
+          // required: true, // for filters / sorts
+          index: true,
+          excludeFrom: ['addForm', 'editForm'],
+          showInList: 'secondary'
+        };
+        timestampKeys.map(function (key) {
+          _this.fields[key] = new Field(__assign({}, captureTimestampField_1));
+        });
+      }
+    }
+
+    this.schema = new Schema(name, this.fields); // default onsubmit func
+
+    this.onsubmit = function () {};
+  }
+
+  Object.defineProperty(Form.prototype, "fakeData", {
+    /**
+     * Fakes data for testing
+     *
+     * @readonly
+     * @memberof Form
+     */
+    get: function () {
+      var _this = this;
+
+      return Object.fromEntries(this.fieldsIds.map(function (fieldId) {
+        return [fieldId, _this.fields[fieldId].fakeValue];
+      }));
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(Form.prototype, "data", {
+    /**
+     * Makes a Vue-ready $data {object} suitable to be completed
+     * by the user in the frontend -> new form
+     * (as it will turn reactive)
+     *
+     * @readonly
+     * @memberof Form
+     * @returns {Object}
+     */
+    get: function () {
+      return Object.assign.apply(Object, __spreadArrays([{}], Object.keys(this.fields)));
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(Form.prototype, "fieldsIds", {
+    /**
+     * Quick access to all fields' ids
+     *
+     * @readonly
+     * @memberof Form
+     * @returns {string[]}
+     */
+    get: function () {
+      return Object.keys(this.fields);
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(Form.prototype, "onsubmit", {
+    /**
+     * register a new onsubmit function
+     *
+     * @memberof Form
+     */
+    set: function (f) {
+      this._onsubmit.push(f.bind(this));
+    },
+    enumerable: false,
+    configurable: true
+  });
+  /**
+   * Gets the value of current active form
+   *
+   * @summary for new forms, values are all undefined
+   * @returns {Object} data item (Vue $data - ready)
+   */
+
+  Form.prototype.value = function (context) {
+    var _this = this;
+
+    var $data = {};
+    this.fieldsIds.forEach(function (fieldId) {
+      var field = _this.fields[fieldId];
+      if (field.storage !== 'db') return; // todo: pune din store
+
+      $data[fieldId] = field.value(context);
+    });
+    return $data;
+  };
+
+  return Form;
+}();
+
+/**
+ * Notifies the user and also us, the devs, of anything!
+ *
+ * @kind Store action wrapper
+ * fallsback to console
+ *
+ * @param {Notification} notification
+ */
+
+function notify(notification) {
+  /**
+   * if/when bound to Store
+   * to be used on frontend mostly
+   *
+   */
+  if (this && typeof this.dispatch === 'function' && this.actions.notify) {
+    this.dispatch('notify', notification);
+    return;
+  } // Fallback -> Consola
+
+
+  var type = notification.type,
+      text = notification.text;
+  consola[type](text); // Always throw the err for stack reporting
+
+  if (type === 'error') throw new Error(text);
+}
+
+var Errors$2;
+
+(function (Errors) {
+  Errors["noDB"] = "Please setup a DB first!";
+})(Errors$2 || (Errors$2 = {}));
+
+var db;
+/**
+ * @class Taxonomy
+ * @implements {LodgerTaxonomy}
+ *
+ * @requires Form
+ *
+ * @param {Taxonomie} name - name of the form
+ * @param {Form} form - the constructed form item
+ */
+
+var Taxonomy =
+/** @class */
+function () {
+  /**
+   * Creates an instance of Taxonomy.
+   *
+   * @param {Form<T, Interface>} form
+   * @param {RxCollection<T>} collection
+   * @memberof Taxonomy
+   */
+  function Taxonomy(form, collection, options) {
+    this.form = form;
+    this.options = options;
+    this.lastItems = [];
+    this.refsIds = []; // kinda hide the property for snapshots
+
+    Object.defineProperty(this, 'collection', {
+      enumerable: false,
+      writable: false,
+      value: collection
+    });
+  }
+
+  Object.defineProperty(Taxonomy.prototype, "last", {
+    /**
+     * Last added item's id
+     *
+     * @readonly
+     * @memberof Taxonomy
+     */
+    get: function () {
+      return this.lastItems[0];
+    },
+    set: function (id) {
+      if (id) this.lastItems.unshift(id);else this.lastItems.shift();
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(Taxonomy, "db", {
+    /**
+     * DB handler
+     *
+     * @static
+     * @memberof Taxonomy
+     */
+    set: function (xdb) {
+      db = xdb;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  /**
+   * @alias db.destroy
+   *
+   * @static
+   * @memberof Taxonomy
+   */
+
+  Taxonomy.destroy = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            if (!db) return [2
+            /*return*/
+            ];
+            return [4
+            /*yield*/
+            , db.destroy()];
+
+          case 1:
+            _a.sent();
+
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  };
+
+  Object.defineProperty(Taxonomy.prototype, "plural", {
+    get: function () {
+      return this.form.plural;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  /**
+   * Init function that builds up the form and collection
+   *
+   * @static
+   * @param {TaxonomyCreator<Taxonomie>} data
+   * @param {LodgerTaxonomyCreatorOptions} [options={}]
+   * @returns {Taxonomy}
+   * @memberof Taxonomy
+   */
+
+  Taxonomy.init = function (data, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      var name, fields, methods, statics, timestamps, form, schema, collectionCreator, collection, e_1;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            if (!db) throw new LodgerError(Errors$2.noDB);
+            _a.label = 1;
+
+          case 1:
+            _a.trys.push([1, 3,, 4]);
+
+            name = data.name, fields = data.fields, methods = data.methods, statics = data.statics;
+            timestamps = options.timestamps;
+            form = new Form({
+              name: name,
+              fields: fields
+            }, {
+              captureTimestamp: timestamps
+            });
+            schema = form.schema;
+            collectionCreator = {
+              name: name,
+              schema: schema,
+              methods: methods,
+              statics: statics
+            };
+            return [4
+            /*yield*/
+            , db.collection(collectionCreator)];
+
+          case 2:
+            collection = _a.sent();
+            return [2
+            /*return*/
+            , new this(form, collection, options)];
+
+          case 3:
+            e_1 = _a.sent();
+            throw new LodgerError(e_1);
+
+          case 4:
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  };
+
+  Object.defineProperty(Taxonomy.prototype, "name", {
+    /**
+     *
+     *
+     * @readonly
+     * @memberof Taxonomy
+     */
+    get: function () {
+      return this.collection.name;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  /**
+   * Removes a Document by ID from the collection
+   *
+   * @param {string} id
+   * @returns {RxDocument<T>} removed document
+   * @memberof Taxonomy
+   */
+
+  Taxonomy.prototype.trash = function (id) {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            if (this.last === id) this.last = undefined;
+            return [4
+            /*yield*/
+            , this.collection.findOne(id).remove()];
+
+          case 1:
+            return [2
+            /*return*/
+            , _a.sent()];
+        }
+      });
+    });
+  };
+  /**
+   * Inserts/upserts a new item in DB
+   *
+   * @param {Object} doc
+   * @returns {RxDocument<Taxonomie>} the fresh document
+   *
+   * @memberof Taxonomy
+   */
+
+
+  Taxonomy.prototype.put = function (doc) {
+    return __awaiter(this, void 0, void 0, function () {
+      var method, _a, name, options, _doc, id, e_2;
+
+      var _b;
+
+      return __generator(this, function (_c) {
+        switch (_c.label) {
+          case 0:
+            if (!doc || Object.keys(doc).length < 1) throw new LodgerError('Invalid doc supplied %%', {
+              doc: doc
+            });
+            method = doc._id ? 'upsert' : 'insert';
+            _a = this, name = _a.name, options = _a.options;
+
+            if (options && options.timestamps) {
+              Object.assign(doc, (_b = {}, _b[method === 'insert' ? 'createdAt' : 'updatedAt'] = new Date().getTime(), _b));
+            }
+
+            _c.label = 1;
+
+          case 1:
+            _c.trys.push([1, 3,, 4]);
+
+            return [4
+            /*yield*/
+            , this.collection[method](doc)];
+
+          case 2:
+            _doc = _c.sent();
+            id = _doc._id;
+            this.last = id;
+            notify({
+              type: 'success',
+              text: "[" + method + "] " + name + "!" + (['dev', 'test'].indexOf(env) > -1 ? "(" + id + ")" : '')
+            });
+            return [2
+            /*return*/
+            , _doc];
+
+          case 3:
+            e_2 = _c.sent();
+            notify({
+              type: 'error',
+              text: String(e_2)
+            });
+            return [3
+            /*break*/
+            , 4];
+
+          case 4:
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  };
+
+  Object.defineProperty(Taxonomy.prototype, "config", {
+    /**
+     * @readonly
+     * @memberof Taxonomy
+     * Taxonomy default config
+     */
+    get: function () {
+      var taxonomii = config.taxonomii;
+      var defaults = taxonomii.defaults;
+      return taxonomii[this.name] || defaults;
+    },
+    enumerable: false,
+    configurable: true
+  });
+
+  __decorate([mobx.observable], Taxonomy.prototype, "lastItems", void 0);
+
+  __decorate([mobx.observable], Taxonomy.prototype, "refsIds", void 0);
+
+  __decorate([mobx.computed], Taxonomy.prototype, "last", null);
+
+  return Taxonomy;
+}();
+
+var STaxonomy =
+/** @class */
+function (_super) {
+  __extends(STaxonomy, _super);
+
+  function STaxonomy() {
+    var _this = _super.apply(this, arguments) || this;
+
+    _this.subscribers = {};
+    return _this;
+  }
+
+  STaxonomy.init = function () {
+    return _super.init.apply(this, arguments);
+  };
+
+  Object.defineProperty(STaxonomy.prototype, "data", {
+    /**
+     * Returns all data from subscribers
+     *
+     * @readonly
+     * @memberof Taxonomy
+     */
+    get: function () {
+      return this.subscribers;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(STaxonomy.prototype, "subscribed", {
+    /**
+     * @readonly
+     * @memberof Taxonomy
+     * @returns {Boolean} if subscribed anywhere
+     */
+    get: function () {
+      return Object.keys(this.subscribers).length > 0;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(STaxonomy.prototype, "defaultCriteria", {
+    get: function () {
+      return _super.prototype.config.criteriu;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  /**
+   * Subscribes.
+   *
+   * @param {string} [subscriberName='main']
+   * @param {Criteriu} [criteriuCerut]
+   * @returns {Promise<Subscriber<T>>} the unwatcher for subscriber
+   * @memberof Taxonomy
+   */
+
+  STaxonomy.prototype.subscribe = function (subscriberName, options) {
+    if (subscriberName === void 0) {
+      subscriberName = 'main';
+    }
+
+    if (this.subscribers[subscriberName]) return;
+    this.subscribers[subscriberName] = new Subscriber(this.collection, options);
+  };
+  /**
+   *
+   *
+   * @param {string} [subscriberName='main']
+   * @memberof STaxonomy
+   */
+
+
+  STaxonomy.prototype.unsubscribe = function (subscriberName) {
+    if (subscriberName === void 0) {
+      subscriberName = 'main';
+    }
+
+    var subscriber = this.subscribers[subscriberName];
+
+    try {
+      if (subscriber.kill) subscriber.kill();
+    } catch (e) {}
+
+    delete this.subscribers[subscriberName];
+  };
+  /**
+   * Kills all active listeners for a given subscriber name
+   *
+   * @returns {Promise}
+   * @memberof Taxonomy
+   */
+
+
+  STaxonomy.prototype.unsubscribeAll = function () {
+    var _this = this;
+
+    var subscribers = this.subscribers;
+    if (!subscribers || !Object.keys(subscribers).length) throw new LodgerError('no subs');
+    Object.keys(subscribers).forEach(function (s) {
+      _this.unsubscribe(s);
+    });
+  };
+
+  Object.defineProperty(STaxonomy.prototype, "subscriberParentIds", {
+    get: function () {},
+    enumerable: false,
+    configurable: true
+  });
+  return STaxonomy;
+}(Taxonomy);
+
+var dynamicTargets = {
+  'Apartament.ts': () => Promise.resolve().then(function () { return Apartament; }),
+  'Asociatie.ts': () => Promise.resolve().then(function () { return Asociatie; }),
+  'Bloc.ts': () => Promise.resolve().then(function () { return Bloc; }),
+  'Cheltuiala.ts': () => Promise.resolve().then(function () { return Cheltuiala; }),
+  'Contor.ts': () => Promise.resolve().then(function () { return Contor; }),
+  'Factura.ts': () => Promise.resolve().then(function () { return Factura; }),
+  'Feedback.ts': () => Promise.resolve().then(function () { return Feedback; }),
+  'Furnizor.ts': () => Promise.resolve().then(function () { return Furnizor; }),
+  'Incasare.ts': () => Promise.resolve().then(function () { return Incasare; }),
+  'Serviciu.ts': () => Promise.resolve().then(function () { return Serviciu; }),
+  'Tranzactie.ts': () => Promise.resolve().then(function () { return Tranzactie; }),
+  'Utilizator.ts': () => Promise.resolve().then(function () { return Utilizator; })
+};
+
+/**
+ * Rollup helper file
+ * to dynamically load schemas based on filename
+ */
+
+var capitalize = function (s) {
+  if (typeof s !== 'string') return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
+function load(schemas) {
+  return __awaiter(this, void 0, void 0, function () {
+    var _this = this;
+
+    return __generator(this, function (_a) {
+      switch (_a.label) {
+        case 0:
+          return [4
+          /*yield*/
+          , Promise.all(schemas.map(function (schemaFileName) {
+            return __awaiter(_this, void 0, void 0, function () {
+              var fileName, schema, _a;
+
+              return __generator(this, function (_b) {
+                switch (_b.label) {
+                  case 0:
+                    fileName = capitalize(schemaFileName) + ".ts";
+                    _a = [{}];
+                    return [4
+                    /*yield*/
+                    , dynamicTargets[fileName]()];
+
+                  case 1:
+                    schema = __assign.apply(void 0, _a.concat([_b.sent()]));
+                    Object.defineProperty(schema, 'name', {
+                      writable: false,
+                      value: String(fileName.split('.')[0]).toLowerCase()
+                    });
+                    return [2
+                    /*return*/
+                    , schema];
+                }
+              });
+            });
+          }))];
+
+        case 1:
+          return [2
+          /*return*/
+          , _a.sent()];
+      }
+    });
+  });
+}
+
+// import yaml from 'json2yaml'
+
+switch (process.env) {
+  default:
+    rxdb.addRxPlugin(require('pouchdb-adapter-memory'));
+    break;
+
+  case 'production':
+    rxdb.addRxPlugin(require('pouchdb-adapter-leveldb'));
+    break;
+}
 /**
  * Taxonomies
  *
  * @enum {number}
  */
+
 
 
 
@@ -2029,7 +2027,7 @@ var Forms;
 })(Forms || (Forms = {}));
 /**
  * Errors definitions
- *
+
  * @enum {string}
  */
 
@@ -2104,7 +2102,6 @@ function () {
 
         if (detected) {
           detected = detected.replace('Id', ''); // keep singular intact
-          // console.log('d', detected)
 
           if (required.indexOf(detected) > -1) {
             parents.push(detected);
@@ -2113,15 +2110,8 @@ function () {
           }
         }
       });
-
-      if (parents && parents.length > 0) {
-        tax.parents = parents;
-      }
-
-      if (children && children.length > 0) {
-        tax.children = children;
-      }
-
+      if (parents && parents.length > 0) tax.parents = parents;
+      if (children && children.length > 0) tax.children = children;
       return tax.form.plural;
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
 
@@ -2145,7 +2135,7 @@ function () {
         throw new Error('Could not find translations file for language: ', language, e);
       }
     },
-    enumerable: true,
+    enumerable: false,
     configurable: true
   });
   /**
@@ -2199,55 +2189,6 @@ function () {
     });
   };
   /**
-   * Sets a preference either in DB or store
-   *
-   */
-  // async setPreference (preference: string, value: any) {
-  //   const debug = Debug('lodger:set')
-  //   const { store } = this
-  //   const allowedTaxonomies = ['client', 'user']
-  //   if (!preference) throw new LodgerError(Errors.invalidPreferenceIndex)
-  //   const taxonomy = preference.split('.')[0]
-  //   if (!taxonomy || allowedTaxonomies.indexOf(taxonomy) < 0) {
-  //     throw new LodgerError(Errors.invalidPreferenceIndex)
-  //   }
-  //   debug('setting preference', preference, value)
-  //   switch (taxonomy) {
-  //     case 'client':
-  //       store.commit('preferences/update', {
-  //         path: preference.replace('client.', ''),
-  //         value
-  //       })
-  //       break
-  //     case 'user':
-  //       // db.collections.utilizator....
-  //       break
-  //   }
-  // }
-  // /**
-  //  * Lodger Getters
-  //  * All UI connects with this
-  //  * combines DB & Store getters
-  //  *
-  //  */
-  // get getters () {
-  //   return this.store.getters
-  // }
-
-  /**
-   * Combined preferences getter
-   * gets values from DB and store
-   */
-  // get preferences () {
-  //   const { db, store } = this
-  //   const preferences: Preferences = {
-  //     client: store.getters.preferences,
-  //     user: db.collections['preferences']
-  //   }
-  //   return preferences
-  // }
-
-  /**
    * Init / build function
    *
    * Build steps: (order matters)
@@ -2278,15 +2219,7 @@ function () {
             _a = STaxonomy;
             return [4
             /*yield*/
-            , RxDB.create(options.db) // strings only from enums
-            // const formsNames = [...taxes, ...Object.keys(Forms).filter(form => typeof Forms[form as any] === 'number')]
-            // // objects initializers / clses
-            // const forms: FormsHolder = Object.assign({},
-            //   ...await Promise.all(formsNames.map(formName =>
-            //     ({ [formName]: Form.load(formName) })
-            //   ))
-            // )
-            ];
+            , rxdb.createRxDatabase(options.db)];
 
           case 1:
             _a.db = _b.sent();
@@ -2314,132 +2247,10 @@ function () {
                   }
                 });
               });
-            })) // const Taxonomies = Object.assign({},
-            //   ...taxonomies.map(async tax => {
-            //     const filename = `./.schemas/${tax}`
-            //     const _tax = await import(filename)
-            //     return { [tax]: await Taxonomy.init(_tax) }
-            //   }
-            // ))
-            // taxonomies.map(async tax => {
-            //   this[tax] = await Taxonomy.init()
-            // })
-
-            /**
-             * When a taxonomy item gets SELECTED,
-             * try to call all DB methods for refrences of the taxonomy
-             *
-             */
-            // store.subscribe(async ({ type, payload }, state) => {
-            //   const path = type.split('/')
-            //   if (path[1] !== 'select') return
-            //   const debug = Debug('lodger:SELECTstoreSubscriber')
-            //   const tax = path[0]
-            //   debug('payload', payload)
-            //   if (!payload) return
-            //   const id = typeof payload === 'string' ? payload : payload.id
-            //   if (id === store.getters[`tax/selected`]) return
-            //   const reference = { [`${tax}Id`]: id }
-            //   const { referenceTaxonomies } = forms[tax]
-            //   // taxonomies that depend on the selected tax and subscriber
-            //   // todo: move from here
-            //   const dependentTaxonomies: Taxonomie[] = []
-            //   Object.keys(forms).forEach((taxForm) => {
-            //     const { referenceTaxonomies } = forms[taxForm]
-            //     if (!referenceTaxonomies || referenceTaxonomies.indexOf(tax) < 0) return
-            //     dependentTaxonomies.push(<Taxonomie>taxForm)
-            //   })
-            //   debug(`${tax} dep taxes:`, dependentTaxonomies)
-            //   // call methods of references documents
-            //   referenceTaxonomies.forEach(async (refTax: Taxonomie) => {
-            //     const refdoc = store.getters[`${refTax}/activeDoc`]
-            //     // debug(`refdoc ${tax} (${refTax})`, refdoc)
-            //     if (!refdoc) return
-            //     const method = refdoc[`toggle_${tax}`]
-            //     if (!method || typeof method !== 'function') return
-            //     await method(id)
-            //     debug(`called references methods for ${refTax}`)
-            //   })
-            //   // update find criteria in DH with selected Item
-            //   if (dependentTaxonomies.length) {
-            //     dependentTaxonomies.forEach(dTax => {
-            //       const subscriber = payload.subscriber || 'main'
-            //       const { plural } = forms[dTax]
-            //       const holder = vueHelper.subsData[subscriber][plural]
-            //       if (!holder || !holder.criteriu) return
-            //       debug('asignez', dTax, subscriber, reference)
-            //       holder.criteriu.find = { ...reference }
-            //       // deselect
-            //       store.dispatch(`${dTax}/select`, { id: null, subscriber })
-            //     })
-            //     debug('ass dun')
-            //   }
-            // })
-            ];
+            }))];
 
           case 3:
-            Taxonomies = _b.sent(); // const Taxonomies = Object.assign({},
-            //   ...taxonomies.map(async tax => {
-            //     const filename = `./.schemas/${tax}`
-            //     const _tax = await import(filename)
-            //     return { [tax]: await Taxonomy.init(_tax) }
-            //   }
-            // ))
-            // taxonomies.map(async tax => {
-            //   this[tax] = await Taxonomy.init()
-            // })
-
-            /**
-             * When a taxonomy item gets SELECTED,
-             * try to call all DB methods for refrences of the taxonomy
-             *
-             */
-            // store.subscribe(async ({ type, payload }, state) => {
-            //   const path = type.split('/')
-            //   if (path[1] !== 'select') return
-            //   const debug = Debug('lodger:SELECTstoreSubscriber')
-            //   const tax = path[0]
-            //   debug('payload', payload)
-            //   if (!payload) return
-            //   const id = typeof payload === 'string' ? payload : payload.id
-            //   if (id === store.getters[`tax/selected`]) return
-            //   const reference = { [`${tax}Id`]: id }
-            //   const { referenceTaxonomies } = forms[tax]
-            //   // taxonomies that depend on the selected tax and subscriber
-            //   // todo: move from here
-            //   const dependentTaxonomies: Taxonomie[] = []
-            //   Object.keys(forms).forEach((taxForm) => {
-            //     const { referenceTaxonomies } = forms[taxForm]
-            //     if (!referenceTaxonomies || referenceTaxonomies.indexOf(tax) < 0) return
-            //     dependentTaxonomies.push(<Taxonomie>taxForm)
-            //   })
-            //   debug(`${tax} dep taxes:`, dependentTaxonomies)
-            //   // call methods of references documents
-            //   referenceTaxonomies.forEach(async (refTax: Taxonomie) => {
-            //     const refdoc = store.getters[`${refTax}/activeDoc`]
-            //     // debug(`refdoc ${tax} (${refTax})`, refdoc)
-            //     if (!refdoc) return
-            //     const method = refdoc[`toggle_${tax}`]
-            //     if (!method || typeof method !== 'function') return
-            //     await method(id)
-            //     debug(`called references methods for ${refTax}`)
-            //   })
-            //   // update find criteria in DH with selected Item
-            //   if (dependentTaxonomies.length) {
-            //     dependentTaxonomies.forEach(dTax => {
-            //       const subscriber = payload.subscriber || 'main'
-            //       const { plural } = forms[dTax]
-            //       const holder = vueHelper.subsData[subscriber][plural]
-            //       if (!holder || !holder.criteriu) return
-            //       debug('asignez', dTax, subscriber, reference)
-            //       holder.criteriu.find = { ...reference }
-            //       // deselect
-            //       store.dispatch(`${dTax}/select`, { id: null, subscriber })
-            //     })
-            //     debug('ass dun')
-            //   }
-            // })
-
+            Taxonomies = _b.sent();
             return [2
             /*return*/
             , new Lodger(Taxonomies, plugins)];
@@ -2550,32 +2361,6 @@ function () {
     });
   };
 
-  Object.defineProperty(Lodger.prototype, "subscribedTaxes", {
-    get: function () {
-      return subscribedTaxes;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Lodger.prototype, "activeReferencesIds", {
-    /**
-     * For taxonomies that have references
-     * get the referred ids
-     *
-     * @returns {Object}
-     */
-    get: function () {
-      var getters = this.store.getters;
-      return function (references) {
-        return assignRefIdsFromStore({
-          references: references,
-          getters: getters
-        });
-      };
-    },
-    enumerable: true,
-    configurable: true
-  });
   return Lodger;
 }();
 
@@ -3265,8 +3050,6 @@ var Serviciu = /*#__PURE__*/Object.freeze({
     predefinite: predefinite,
     hooks: hooks
 });
-
-
 
 var Tranzactie = /*#__PURE__*/Object.freeze({
     __proto__: null
