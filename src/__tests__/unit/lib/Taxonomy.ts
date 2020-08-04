@@ -1,19 +1,20 @@
-import DB from '~/lib/DB'
 import Taxonomy from '~/lib/Taxonomy/index'
 
+import { createRxDatabase, addRxPlugin } from 'rxdb'
 import sosete from 'fixtures/taxes/sosete'
-
 import testdbsetup from 'fixtures/db/test'
 
 describe('Taxonomy class', () => {
   let $tax: Taxonomy<any>
 
   beforeAll(async () => {
-    const db = await DB.create(testdbsetup)
+    addRxPlugin(require('pouchdb-adapter-memory'))
+    const db = await createRxDatabase(testdbsetup)
     Taxonomy.db = db
     try {
       $tax = await Taxonomy.init(sosete, { timestamps: true })
     } catch (e) {
+      console.log('Taxonomy init failed', e)
     }
   })
 

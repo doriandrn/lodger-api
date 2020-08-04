@@ -79,6 +79,10 @@ describe('@extends Taxonomy', () => {
           expect(Object.keys($tax.subscribers)).toEqual(expect.arrayContaining(subs))
         })
       })
+
+      describe('Relations', () => {
+        
+      })
     })
 
     describe('.unsubscribe()', () => {

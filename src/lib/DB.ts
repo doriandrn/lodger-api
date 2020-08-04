@@ -12,6 +12,6 @@ switch (env) {
     break
 }
 
-export default {
+export {
   create: createRxDatabase
 }
