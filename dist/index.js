@@ -2095,19 +2095,19 @@ function () {
         var _a = t.form,
             name = _a.name,
             plural = _a.plural;
-        var checkKeys = [name + "Id", plural];
-        var detected = checkKeys.filter(function (key) {
+        var parentsKeys = [name + "Id", plural].filter(function (key) {
           return fieldsIds.indexOf(key) > -1;
         })[0];
+        var childrenKeys = t.form.fieldsIds.filter(function (key) {
+          return [tax.form.name + "Id", tax.form.plural].indexOf(key) > -1;
+        });
 
-        if (detected) {
-          detected = detected.replace('Id', ''); // keep singular intact
+        if (parentsKeys) {
+          parents.push(parentsKeys.replace('Id', ''));
+        }
 
-          if (required.indexOf(detected) > -1) {
-            parents.push(detected);
-          } else {
-            children.push(detected);
-          }
+        if (childrenKeys.length) {
+          children.push(t.form.plural);
         }
       });
       if (parents && parents.length > 0) tax.parents = parents;

@@ -131,17 +131,15 @@ class Lodger implements LodgerAPI {
 
       taxonomies.forEach(t => {
         const { name, plural } = t.form
-        const checkKeys = [`${name}Id`, plural]
-        let detected = checkKeys
-          .filter(key => fieldsIds.indexOf(key) > -1)[0]
+        const parentsKeys = [`${name}Id`, plural].filter(key => fieldsIds.indexOf(key) > -1)[0]
+        const childrenKeys = t.form.fieldsIds.filter(key => [`${tax.form.name}Id`, tax.form.plural].indexOf(key) > -1)
 
-        if (detected) {
-          detected = detected.replace('Id', '') // keep singular intact
-          if (required.indexOf(detected) > -1) {
-            parents.push(detected)
-          } else {
-            children.push(detected)
-          }
+        if (parentsKeys) {
+          parents.push(parentsKeys.replace('Id', ''))
+        }
+
+        if (childrenKeys.length) {
+          children.push(t.form.plural)
         }
       })
 
@@ -151,8 +149,10 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         tax.children = children
 
+
       return tax.form.plural
     })
+
 
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
