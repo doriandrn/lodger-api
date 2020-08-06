@@ -1086,6 +1086,11 @@ Object.defineProperties(holder, {
       return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
     }
   },
+  name: {
+    get: function () {
+      return faker.company.companyName();
+    }
+  },
   number: {
     get: function () {
       return Number(faker.random.number({
@@ -2088,15 +2093,12 @@ function () {
 
       var parents = [];
       var children = [];
-      var _a = tax.form,
-          fieldsIds = _a.fieldsIds,
-          required = _a.schema.required;
       taxonomies.forEach(function (t) {
         var _a = t.form,
             name = _a.name,
             plural = _a.plural;
         var parentsKeys = [name + "Id", plural].filter(function (key) {
-          return fieldsIds.indexOf(key) > -1;
+          return tax.form.fieldsIds.indexOf(key) > -1;
         })[0];
         var childrenKeys = t.form.fieldsIds.filter(function (key) {
           return [tax.form.name + "Id", tax.form.plural].indexOf(key) > -1;
