@@ -7,8 +7,8 @@ Object.defineProperties(holder, {
   $: {
     get () { return `${faker.random.arrayElement(currencies)} ${faker.finance.amount(100, 10000, 4)}` }
   },
-  name: {
-    get () { return faker.company.companyName() }
+  string: {
+    get () { return faker.lorem.words(3) }
   },
   number: {
     get () { return Number(faker.random.number({ min: 20, max: 300 })) }

@@ -1086,9 +1086,9 @@ Object.defineProperties(holder, {
       return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
     }
   },
-  name: {
+  string: {
     get: function () {
-      return faker.company.companyName();
+      return faker.lorem.words(3);
     }
   },
   number: {
