@@ -1195,7 +1195,8 @@ function () {
     });
     Object.defineProperty(this, 'fakeValue', {
       get: function () {
-        return holder[type];
+        console.log(type);
+        return holder[type || 'string'];
       }
     });
   }
