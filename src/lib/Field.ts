@@ -170,7 +170,7 @@ export class Field implements FieldAPI {
       this.value = value.bind({ storage })
 
     Object.defineProperty(this, 'fakeValue', {
-      get () { console.log(type); return fakeData[type || 'string'] }
+      get () { return fakeData[type || 'string'] }
     })
   }
 

@@ -1195,7 +1195,6 @@ function () {
     });
     Object.defineProperty(this, 'fakeValue', {
       get: function () {
-        console.log(type);
         return holder[type || 'string'];
       }
     });
@@ -2389,6 +2388,7 @@ var fields = {
     showInList: 'secondary'
   },
   proprietar: {
+    type: 'fullName',
     placeholder: 'Ion Barbu',
     oninput: {
       transform: 'capitalize'

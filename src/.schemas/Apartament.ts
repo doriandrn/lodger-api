@@ -55,6 +55,7 @@ const fields: FieldsCreator<Apartament> = {
     showInList: 'secondary'
   },
   proprietar: {
+    type: 'fullName',
     placeholder: 'Ion Barbu',
     oninput: {
       transform: 'capitalize'
