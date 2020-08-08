@@ -124,6 +124,7 @@ implements FormAPI<I> {
   get fakeData () {
     return Object
       .fromEntries(this.fieldsIds
+        .filter(fieldId => fieldId.indexOf('Id') < 0)
         .map(fieldId => ([fieldId, this.fields[fieldId].fakeValue ])))
   }
 

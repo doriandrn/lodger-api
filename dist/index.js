@@ -1086,6 +1086,11 @@ Object.defineProperties(holder, {
       return faker.random.arrayElement(currencies) + " " + faker.finance.amount(100, 10000, 4);
     }
   },
+  id: {
+    get: function () {
+      return;
+    }
+  },
   string: {
     get: function () {
       return faker.lorem.words(3);
@@ -1397,7 +1402,9 @@ function () {
     get: function () {
       var _this = this;
 
-      return Object.fromEntries(this.fieldsIds.map(function (fieldId) {
+      return Object.fromEntries(this.fieldsIds.filter(function (fieldId) {
+        return fieldId.indexOf('Id') < 0;
+      }).map(function (fieldId) {
         return [fieldId, _this.fields[fieldId].fakeValue];
       }));
     },
