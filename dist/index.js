@@ -2569,7 +2569,7 @@ var fields$1 = {
   },
   utilizatori: {
     type: 'array',
-    ref: 'utilizatori',
+    ref: 'utilizator',
     required: true,
     value: function (_a) {
       var activeDoc = _a.activeDoc;
