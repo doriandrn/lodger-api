@@ -2797,6 +2797,7 @@ var fields$2 = {
   },
   asociatieId: {
     required: true,
+    ref: 'asociatie',
     value: function (_a) {
       var g = _a.g;
       return g.asociatieId;

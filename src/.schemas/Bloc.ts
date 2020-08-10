@@ -48,6 +48,7 @@ const fields: FieldsCreator<Bloc> = {
   },
   asociatieId: {
     required: true,
+    ref: 'asociatie',
     value: ({ g }) => g.asociatieId
   }
 }
