@@ -78,7 +78,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     if (field && !field.rxSchema)
       throw new SchemaError(Errors.invalidField, field)
 
-    const { rxSchema, v, storage, index } = field
+    const { rxSchema, v, storage, _index } = field
 
     if (storage !== 'db') return
 
@@ -88,7 +88,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     if (required && this.required.indexOf(id) < 0)
       this.required.push(id)
 
-    if (index) {
+    if (_index) {
       this.indexes.push(id)
     }
   }

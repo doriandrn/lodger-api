@@ -11,7 +11,7 @@ Schema {
       "type": "string",
     },
     "x2": Object {
-      "index": true,
+      "_index": true,
       "type": "string",
     },
     "x3": Object {

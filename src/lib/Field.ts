@@ -9,7 +9,6 @@ import S from './String'
 // This should only be imported for DEVELOPMENT PURPOSES
 import fakeData from 'helper/dev/fakeData'
 
-
 const { String } = S
 
 type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
@@ -109,7 +108,6 @@ export class Field implements FieldAPI {
 
   readonly ref ?: ReferenceTaxonomy
   readonly items ?: { type: 'string' }
-  readonly index ?: boolean // should be indexed to search for
   readonly multipleOf ?: number // multiplier if number
   readonly v ?: string // validation string
 
@@ -119,8 +117,10 @@ export class Field implements FieldAPI {
   readonly value : (context ?: FieldGivenContext<any>) => any = () => this.default || undefined
   readonly fakeValue : any
   readonly preview ?: number
-  label ?: string
-  _type ?: FieldTypes
+  readonly label ?: string
+
+  readonly _type ?: FieldTypes
+  readonly _index ?: boolean // should be indexed to search for
 
   /**
    * Creates an instance of Field.
@@ -141,7 +141,7 @@ export class Field implements FieldAPI {
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
 
-    if (index) this.index = true
+    if (index) this._index = true
 
     // transform the ref
     if (ref) {

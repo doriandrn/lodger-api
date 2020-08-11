@@ -1176,7 +1176,7 @@ function () {
     this._type = type; // hold this for reference
 
     this.type = String$1(type || '').asRxDBType;
-    if (index) this.index = true; // transform the ref
+    if (index) this._index = true; // transform the ref
 
     if (ref) {
       this.ref = ref;
@@ -1294,13 +1294,13 @@ function () {
     var rxSchema = field.rxSchema,
         v = field.v,
         storage = field.storage,
-        index = field.index;
+        _index = field._index;
     if (storage !== 'db') return;
     var required = v && v.indexOf('required') > -1;
     this.properties[id] = rxSchema || {};
     if (required && this.required.indexOf(id) < 0) this.required.push(id);
 
-    if (index) {
+    if (_index) {
       this.indexes.push(id);
     }
   };
