@@ -11,9 +11,6 @@ Object.defineProperties(holder, {
   id: {
     get () { return }
   },
-  userAvatar: {
-    get () { return btoa(faker.internet.avatar()) }
-  },
   string: {
     get () { return faker.lorem.words(3) }
   },
