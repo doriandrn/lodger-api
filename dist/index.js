@@ -1383,8 +1383,7 @@ function () {
         var captureTimestampField_1 = {
           type: 'dateTime',
           // required: true, // for filters / sorts
-          index: true,
-          excludeFrom: ['addForm', 'editForm']
+          index: true
         };
         timestampKeys.map(function (key) {
           _this.fields[key] = new Field(__assign({}, captureTimestampField_1));
@@ -2574,12 +2573,11 @@ var fields$1 = {
   },
   incasari: {
     type: 'array',
-    ref: 'incasari',
+    ref: 'incasare',
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.incasari;
-    },
-    excludeFrom: ['addForm', 'editForm']
+    }
   },
   utilizatori: {
     type: 'array',
@@ -2588,8 +2586,7 @@ var fields$1 = {
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.utilizatori;
-    },
-    excludeFrom: ['addForm', 'editForm']
+    }
   },
   servicii: {
     type: 'array',
@@ -2597,8 +2594,7 @@ var fields$1 = {
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.servicii;
-    },
-    excludeFrom: ['addForm', 'editForm']
+    }
   },
   furnizori: {
     type: 'array',
@@ -2606,16 +2602,14 @@ var fields$1 = {
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.furnizori;
-    },
-    excludeFrom: ['addForm', 'editForm']
+    }
   },
   preferinte: {
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.preferinte;
     },
-    type: 'object',
-    excludeFrom: ['addForm', 'editForm']
+    type: 'object'
   }
 };
 var methods$1 = {
@@ -3030,7 +3024,7 @@ var fields$9 = {
    * excludem asta din db, pastram pt referinta
    */
   asociatieId: {
-    excludeFrom: ['db']
+    ref: 'asociatie'
   },
   denumire: {
     required: true,
@@ -3040,10 +3034,11 @@ var fields$9 = {
   },
   furnizori: {
     type: 'array',
-    excludeFrom: ['addForm', 'editForm']
+    ref: 'furnizor'
   },
   contoare: {
     type: 'contoare',
+    ref: 'contoare',
     preview: 1
   }
 };
@@ -3101,7 +3096,6 @@ var fields$a = {
   },
   contact: {
     type: 'contactFields',
-    excludeFrom: 'addForm',
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.contact;
@@ -3110,15 +3104,13 @@ var fields$a = {
   rol: {
     type: 'number',
     required: true,
-    excludeFrom: [],
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.rol;
     }
   },
   preferinte: {
-    type: 'object',
-    excludeFrom: []
+    type: 'object'
   }
 };
 var methods$2 = {
