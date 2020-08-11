@@ -15,6 +15,7 @@ Schema {
       "type": "string",
     },
     "x3": Object {
+      "_type": "number",
       "type": "number",
     },
   },

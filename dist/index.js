@@ -1164,6 +1164,7 @@ function () {
     }
 
     var ref = data.ref,
+        index = data.index,
         indexRef = data.indexRef,
         type = data.type,
         step = data.step,
@@ -1174,8 +1175,8 @@ function () {
     this.preview = preview;
     this._type = type; // hold this for reference
 
-    this.type = String$1(type || '').asRxDBType; // if (index) this.index = true
-    // transform the ref
+    this.type = String$1(type || '').asRxDBType;
+    if (index) this.index = true; // transform the ref
 
     if (ref) {
       this.ref = ref;
