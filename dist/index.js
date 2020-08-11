@@ -2602,7 +2602,6 @@ var fields$1 = {
       var activeDoc = _a.activeDoc;
       return activeDoc.servicii;
     },
-    showInList: 'secondary',
     excludeFrom: ['addForm', 'editForm']
   },
   furnizori: {

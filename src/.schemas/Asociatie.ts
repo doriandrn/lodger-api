@@ -87,7 +87,6 @@ const fields: FieldsCreator<Asociatie> = {
     type: 'array',
     ref: 'servicii',
     value: ({ activeDoc }) => activeDoc.servicii,
-    showInList: 'secondary',
     excludeFrom: ['addForm', 'editForm']
   },
   furnizori: {
