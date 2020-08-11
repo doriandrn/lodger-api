@@ -54,7 +54,7 @@ const fields: FieldsCreator<Asociatie> = {
     required: true,
     focus: true,
     index: true,
-    showInList: 'primary',
+    preview: 0,
     value: ({ activeDoc }) => activeDoc.name,
     v: 'max:32|min:3',
     oninput: { transform: 'capitalize' }
@@ -67,8 +67,8 @@ const fields: FieldsCreator<Asociatie> = {
 
   balanta: {
     type: 'number',
+    preview: 1,
     value: ({ activeDoc }) => activeDoc.balanta,
-    showInList: ['details']
   },
   incasari: {
     type: 'array',

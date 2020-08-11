@@ -26,7 +26,7 @@ const fields: FieldsCreator<Bloc> = {
     },
     type: 'buildingName',
     required: true,
-    showInList: 'primary',
+    preview: 0,
     index: true,
     v: 'min:1|max:20',
     focus: true,
@@ -34,6 +34,7 @@ const fields: FieldsCreator<Bloc> = {
   },
   scari: {
     type: 'scari',
+    preview: 1,
     default: [{
       id: 1,
       etaje: 4,

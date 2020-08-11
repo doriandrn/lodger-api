@@ -9,7 +9,7 @@ import { Currency } from './maintainable/currencies'
 export enum strings {
   $, buildingName, fullName,
   search, select, serviceName,
-  string, textarea
+  string, textarea, userAvatar
 }
 
 /**

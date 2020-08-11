@@ -65,7 +65,8 @@ declare global {
     indexRef ?: boolean // index by references?
 
     // frontend stuff
-    showInList ?: 'primary' | 'secondary' | 'details'[]
+    // showInList ?: 'primary' | 'secondary' | 'details'[]
+    preview ?: number
     onclick ?: {
       [method: string]: string
     }
@@ -117,6 +118,7 @@ export class Field implements FieldAPI {
   readonly default : any
   readonly value : (context ?: FieldGivenContext<any>) => any = () => this.default || undefined
   readonly fakeValue : any
+  readonly preview ?: number
   label ?: string
   _type ?: FieldTypes
 
@@ -134,7 +136,8 @@ export class Field implements FieldAPI {
       return
     }
 
-    const { ref, indexRef, type, step, required, v, value } = data
+    const { ref, indexRef, type, step, required, v, value, preview } = data
+    if (preview) this.preview = preview
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
 

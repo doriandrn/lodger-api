@@ -3,12 +3,16 @@ import currencies from '../../maintainable/currencies'
 
 const holder = {}
 
+
 Object.defineProperties(holder, {
   $: {
     get () { return `${faker.random.arrayElement(currencies)} ${faker.finance.amount(100, 10000, 4)}` }
   },
   id: {
     get () { return }
+  },
+  userAvatar: {
+    get () { return btoa(faker.internet.avatar()) }
   },
   string: {
     get () { return faker.lorem.words(3) }

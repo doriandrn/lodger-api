@@ -52,7 +52,7 @@ const fields: FieldsCreator<Apartament> = {
     value: g => g[selectedApGetter].nr,
     required: true,
     index: true,
-    showInList: 'secondary'
+    preview: 0,
   },
   proprietar: {
     type: 'fullName',
@@ -60,13 +60,12 @@ const fields: FieldsCreator<Apartament> = {
     oninput: {
       transform: 'capitalize'
     },
-    showInList: 'primary',
+    preview: 1,
     v: 'alpha_spaces|max:32',
     value: g => g[selectedApGetter].proprietar
   },
   suprafata: {
     type: 'number',
-    showInList: ['details'],
     default: null, // TODO: ia de la apartamentul de la etajul de dedesubt, in functie de cate ap sunt
     step: 0.01,
     value: g => g[selectedApGetter].suprafata
@@ -74,7 +73,6 @@ const fields: FieldsCreator<Apartament> = {
   locatari: {
     index: true,
     type: 'number',
-    showInList: ['details'],
     default: 2,
     min: 0,
     max: 10,
@@ -83,7 +81,6 @@ const fields: FieldsCreator<Apartament> = {
   camere: {
     type: 'number',
     index: true,
-    showInList: ['details'],
     default: 2,
     max: 12,
     min: 1,
@@ -115,13 +112,12 @@ const fields: FieldsCreator<Apartament> = {
     type: '$',
     default: null,
     required: true,
-    showInList: ['details'],
+    preview: 2,
     index: true,
     value: g => g[selectedApGetter].balanta
   },
   contoare: {
     type: 'contoare',
-    showInList: ['details'],
     value: g => g[selectedApGetter].contoare
   },
   incasari: {

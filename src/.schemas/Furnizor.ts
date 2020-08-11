@@ -12,7 +12,7 @@ declare global {
 export const fields: FieldsCreator<Furnizor> = {
   name: {
     required: true,
-    showInList: 'primary',
+    preview: 0,
     index: true
   },
   servicii: {

@@ -28,7 +28,8 @@ const fields: FieldsCreator<Cheltuiala> = {
     index: true,
   },
   dataScadenta: {
-    type: 'dateTime'
+    type: 'dateTime',
+    preview: 0,
   },
   catre: {
     type: 'string',
@@ -43,7 +44,7 @@ const fields: FieldsCreator<Cheltuiala> = {
     type: '$',
     required: true,
     index: true,
-    showInList: 'secondary'
+    preview: 1,
   },
   distribuire: {
     type: 'distribuire'

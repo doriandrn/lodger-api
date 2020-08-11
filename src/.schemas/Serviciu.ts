@@ -22,7 +22,7 @@ const fields: FieldsCreator<Serviciu> = {
 
   denumire: {
     required: true,
-    showInList: 'primary',
+    preview: 0,
     primary: true,
     index: true
   },
@@ -33,7 +33,8 @@ const fields: FieldsCreator<Serviciu> = {
   },
 
   contoare: {
-    type: 'contoare'
+    type: 'contoare',
+    preview: 1
   }
 }
 

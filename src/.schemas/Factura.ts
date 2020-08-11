@@ -24,7 +24,7 @@ declare global {
 const fields: FieldsCreator<Factura>  = {
   suma: {
     type: '$',
-    showInList: 'primary',
+    preview: 0,
     index: true,
     required: true
   },
@@ -36,7 +36,7 @@ const fields: FieldsCreator<Factura>  = {
   },
   dataScadenta: {
     type: 'date',
-    showInList: 'secondary'
+    preview: 1
   },
 
   furnizorId: {

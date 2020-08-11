@@ -15,13 +15,14 @@ declare global {
 const fields: FieldsCreator<Incasare> = {
   suma: {
     type: '$',
-    showInList: 'primary',
+    preview: 1,
     index: true,
     required: true
   },
   nrChitanta: {
     type: 'number',
     default: 1,
+    preview: 0,
     index: true,
     value: ({ activeDoc }) => (activeDoc.nrUltimaChitanta || 0) + 1
   },
@@ -30,7 +31,8 @@ const fields: FieldsCreator<Incasare> = {
   apartamentId: {
     required: true,
     type: 'search',
-    ref: 'apartamente'
+    ref: 'apartamente',
+    preview: 2
   },
 
   // ASTEA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE

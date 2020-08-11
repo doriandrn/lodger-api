@@ -101,7 +101,6 @@ implements FormAPI<I> {
           // required: true, // for filters / sorts
           index: true,
           excludeFrom: ['addForm', 'editForm'],
-          showInList: 'secondary'
         }
         timestampKeys.map(key => {
           this.fields[key] = new Field({ ...captureTimestampField })
@@ -150,6 +149,12 @@ implements FormAPI<I> {
    */
   get fieldsIds () {
     return Object.keys(this.fields)
+  }
+
+  get previewFields () {
+    return this.fieldsIds
+      .filter(field => this.fields[field].preview)
+      .sort((a, b) => this.fields[a].preview - this.fields[b].preview)
   }
 
   /**
