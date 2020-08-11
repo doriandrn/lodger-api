@@ -17,7 +17,7 @@ const fields: FieldsCreator<Serviciu> = {
    * excludem asta din db, pastram pt referinta
    */
   asociatieId: {
-    excludeFrom: ['db']
+    ref: 'asociatie'
   },
 
   denumire: {
@@ -29,11 +29,12 @@ const fields: FieldsCreator<Serviciu> = {
 
   furnizori: {
     type: 'array',
-    excludeFrom: ['addForm', 'editForm']
+    ref: 'furnizor'
   },
 
   contoare: {
     type: 'contoare',
+    ref: 'contoare',
     preview: 1
   }
 }

@@ -39,18 +39,15 @@ const fields: FieldsCreator<Utilizator> = {
   },
   contact: {
     type: 'contactFields',
-    excludeFrom: 'addForm',
     value: ({ activeDoc }) => activeDoc.contact
   },
   rol: {
     type: 'number',
     required: true,
-    excludeFrom: [],
     value: ({ activeDoc }) => activeDoc.rol
   },
   preferinte: {
-    type: 'object',
-    excludeFrom: [],
+    type: 'object'
   }
 }
 

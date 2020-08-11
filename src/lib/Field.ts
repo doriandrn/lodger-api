@@ -46,7 +46,7 @@ declare global {
     encrypted ?: boolean // encrypt field's value
     index ?: boolean // should be indexable <=> sorts & search
     primary ?: boolean // skip _id field and make this primary instead
-    excludeFrom ?: ItemExcludableFrom | ItemExcludableFrom[]
+    // excludeFrom ?: ItemExcludableFrom | ItemExcludableFrom[]
 
     name ?: string // used for grouping checkboxes / radio groups
     options ?: Array<any> | Object // for selects and other multiple options els
