@@ -153,7 +153,7 @@ implements FormAPI<I> {
 
   get previewFields () {
     return this.fieldsIds
-      .filter(field => this.fields[field].preview)
+      .filter(field => this.fields[field].preview > -1)
       .sort((a, b) => this.fields[a].preview - this.fields[b].preview)
   }
 

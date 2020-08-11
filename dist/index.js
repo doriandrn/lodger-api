@@ -1455,7 +1455,7 @@ function () {
       var _this = this;
 
       return this.fieldsIds.filter(function (field) {
-        return _this.fields[field].preview;
+        return _this.fields[field].preview > -1;
       }).sort(function (a, b) {
         return _this.fields[a].preview - _this.fields[b].preview;
       });
