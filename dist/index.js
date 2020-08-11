@@ -1176,7 +1176,7 @@ function () {
         v = data.v,
         value = data.value,
         preview = data.preview;
-    if (preview) this.preview = preview;
+    this.preview = preview;
     this._type = type; // hold this for reference
 
     this.type = String$1(type || '').asRxDBType; // if (index) this.index = true
