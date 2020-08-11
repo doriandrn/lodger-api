@@ -137,7 +137,7 @@ export class Field implements FieldAPI {
     }
 
     const { ref, indexRef, type, step, required, v, value, preview } = data
-    if (preview) this.preview = preview
+    this.preview = preview
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
 
