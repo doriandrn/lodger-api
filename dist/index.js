@@ -918,6 +918,7 @@ var strings;
   strings[strings["serviceName"] = 5] = "serviceName";
   strings[strings["string"] = 6] = "string";
   strings[strings["textarea"] = 7] = "textarea";
+  strings[strings["userAvatar"] = 8] = "userAvatar";
 })(strings || (strings = {}));
 /**
  * Accepted 'number's for a LodgerSchema field
@@ -1091,6 +1092,11 @@ Object.defineProperties(holder, {
       return;
     }
   },
+  userAvatar: {
+    get: function () {
+      return btoa(faker.internet.avatar());
+    }
+  },
   string: {
     get: function () {
       return faker.lorem.words(3);
@@ -1168,7 +1174,9 @@ function () {
         step = data.step,
         required = data.required,
         v = data.v,
-        value = data.value;
+        value = data.value,
+        preview = data.preview;
+    if (preview) this.preview = preview;
     this._type = type; // hold this for reference
 
     this.type = String$1(type || '').asRxDBType; // if (index) this.index = true
@@ -1380,8 +1388,7 @@ function () {
           type: 'dateTime',
           // required: true, // for filters / sorts
           index: true,
-          excludeFrom: ['addForm', 'editForm'],
-          showInList: 'secondary'
+          excludeFrom: ['addForm', 'editForm']
         };
         timestampKeys.map(function (key) {
           _this.fields[key] = new Field(__assign({}, captureTimestampField_1));
@@ -1439,6 +1446,19 @@ function () {
      */
     get: function () {
       return Object.keys(this.fields);
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(Form.prototype, "previewFields", {
+    get: function () {
+      var _this = this;
+
+      return this.fieldsIds.filter(function (field) {
+        return _this.fields[field].preview;
+      }).sort(function (a, b) {
+        return _this.fields[a].preview - _this.fields[b].preview;
+      });
     },
     enumerable: false,
     configurable: true
@@ -2394,7 +2414,7 @@ var fields = {
     },
     required: true,
     index: true,
-    showInList: 'secondary'
+    preview: 0
   },
   proprietar: {
     type: 'fullName',
@@ -2402,7 +2422,7 @@ var fields = {
     oninput: {
       transform: 'capitalize'
     },
-    showInList: 'primary',
+    preview: 1,
     v: 'alpha_spaces|max:32',
     value: function (g) {
       return g[selectedApGetter].proprietar;
@@ -2410,7 +2430,6 @@ var fields = {
   },
   suprafata: {
     type: 'number',
-    showInList: ['details'],
     default: null,
     step: 0.01,
     value: function (g) {
@@ -2420,7 +2439,6 @@ var fields = {
   locatari: {
     index: true,
     type: 'number',
-    showInList: ['details'],
     default: 2,
     min: 0,
     max: 10,
@@ -2431,7 +2449,6 @@ var fields = {
   camere: {
     type: 'number',
     index: true,
-    showInList: ['details'],
     default: 2,
     max: 12,
     min: 1,
@@ -2473,7 +2490,7 @@ var fields = {
     type: '$',
     default: null,
     required: true,
-    showInList: ['details'],
+    preview: 2,
     index: true,
     value: function (g) {
       return g[selectedApGetter].balanta;
@@ -2481,7 +2498,6 @@ var fields = {
   },
   contoare: {
     type: 'contoare',
-    showInList: ['details'],
     value: function (g) {
       return g[selectedApGetter].contoare;
     }
@@ -2534,7 +2550,7 @@ var fields$1 = {
     required: true,
     focus: true,
     index: true,
-    showInList: 'primary',
+    preview: 0,
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.name;
@@ -2554,11 +2570,11 @@ var fields$1 = {
   },
   balanta: {
     type: 'number',
+    preview: 1,
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.balanta;
-    },
-    showInList: ['details']
+    }
   },
   incasari: {
     type: 'array',
@@ -2768,7 +2784,7 @@ var fields$2 = {
     },
     type: 'buildingName',
     required: true,
-    showInList: 'primary',
+    preview: 0,
     index: true,
     v: 'min:1|max:20',
     focus: true,
@@ -2779,6 +2795,7 @@ var fields$2 = {
   },
   scari: {
     type: 'scari',
+    preview: 1,
     default: [{
       id: 1,
       etaje: 4,
@@ -2836,7 +2853,8 @@ var fields$3 = {
     index: true
   },
   dataScadenta: {
-    type: 'dateTime'
+    type: 'dateTime',
+    preview: 0
   },
   catre: {
     type: 'string',
@@ -2850,7 +2868,7 @@ var fields$3 = {
     type: '$',
     required: true,
     index: true,
-    showInList: 'secondary'
+    preview: 1
   },
   distribuire: {
     type: 'distribuire'
@@ -2881,7 +2899,7 @@ var Contor = /*#__PURE__*/Object.freeze({
 var fields$5 = {
   suma: {
     type: '$',
-    showInList: 'primary',
+    preview: 0,
     index: true,
     required: true
   },
@@ -2895,7 +2913,7 @@ var fields$5 = {
   },
   dataScadenta: {
     type: 'date',
-    showInList: 'secondary'
+    preview: 1
   },
   furnizorId: {
     required: true,
@@ -2941,7 +2959,7 @@ var Feedback = /*#__PURE__*/Object.freeze({
 var fields$7 = {
   name: {
     required: true,
-    showInList: 'primary',
+    preview: 0,
     index: true
   },
   servicii: {
@@ -2966,13 +2984,14 @@ var Furnizor = /*#__PURE__*/Object.freeze({
 var fields$8 = {
   suma: {
     type: '$',
-    showInList: 'primary',
+    preview: 1,
     index: true,
     required: true
   },
   nrChitanta: {
     type: 'number',
     default: 1,
+    preview: 0,
     index: true,
     value: function (_a) {
       var activeDoc = _a.activeDoc;
@@ -2983,7 +3002,8 @@ var fields$8 = {
   apartamentId: {
     required: true,
     type: 'search',
-    ref: 'apartamente'
+    ref: 'apartamente',
+    preview: 2
   },
   // ASTEA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
   // TREBUIE SA FIGUREZE
@@ -3019,7 +3039,7 @@ var fields$9 = {
   },
   denumire: {
     required: true,
-    showInList: 'primary',
+    preview: 0,
     primary: true,
     index: true
   },
@@ -3028,7 +3048,8 @@ var fields$9 = {
     excludeFrom: ['addForm', 'editForm']
   },
   contoare: {
-    type: 'contoare'
+    type: 'contoare',
+    preview: 1
   }
 };
 var predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
@@ -3069,11 +3090,15 @@ var Tranzactie = /*#__PURE__*/Object.freeze({
 });
 
 var fields$a = {
+  avatar: {
+    type: 'userAvatar',
+    preview: 0
+  },
   name: {
     type: 'fullName',
     required: true,
     primary: true,
-    showInList: 'primary',
+    preview: 1,
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.name;
