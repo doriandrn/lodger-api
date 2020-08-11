@@ -1169,6 +1169,8 @@ function () {
         required = data.required,
         v = data.v,
         value = data.value;
+    this._type = type; // hold this for reference
+
     this.type = String$1(type || '').asRxDBType; // if (index) this.index = true
     // transform the ref
 

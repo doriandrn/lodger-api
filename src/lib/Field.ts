@@ -82,6 +82,7 @@ declare global {
 interface FieldAPI {
   readonly default : any | Function
   readonly rxSchema : RxJsonSchemaTopLevel
+  readonly _type: FieldTypes
 
   value (context ?: FieldGivenContext<any>): any
   onclick ?: (context ?: FieldGivenContext<any>) => void
@@ -117,6 +118,7 @@ export class Field implements FieldAPI {
   readonly value : (context ?: FieldGivenContext<any>) => any = () => this.default || undefined
   readonly fakeValue : any
   label ?: string
+  _type ?: FieldTypes
 
   /**
    * Creates an instance of Field.
@@ -133,6 +135,7 @@ export class Field implements FieldAPI {
     }
 
     const { ref, indexRef, type, step, required, v, value } = data
+    this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
 
     // if (index) this.index = true
