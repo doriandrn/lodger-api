@@ -1092,11 +1092,6 @@ Object.defineProperties(holder, {
       return;
     }
   },
-  userAvatar: {
-    get: function () {
-      return btoa(faker.internet.avatar());
-    }
-  },
   string: {
     get: function () {
       return faker.lorem.words(3);
