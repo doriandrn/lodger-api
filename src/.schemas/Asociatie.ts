@@ -83,12 +83,12 @@ const fields: FieldsCreator<Asociatie> = {
   },
   servicii: {
     type: 'array',
-    ref: 'servicii',
+    ref: 'serviciu',
     value: ({ activeDoc }) => activeDoc.servicii
   },
   furnizori: {
     type: 'array',
-    ref: 'furnizori',
+    ref: 'furnizor',
     value: ({ activeDoc }) => activeDoc.furnizori
   },
   preferinte: {

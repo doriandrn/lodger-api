@@ -43,6 +43,7 @@ const fields: FieldsCreator<Utilizator> = {
   },
   rol: {
     type: 'number',
+    preview: 2,
     required: true,
     value: ({ activeDoc }) => activeDoc.rol
   },

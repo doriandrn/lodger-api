@@ -2590,7 +2590,7 @@ var fields$1 = {
   },
   servicii: {
     type: 'array',
-    ref: 'servicii',
+    ref: 'serviciu',
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.servicii;
@@ -2598,7 +2598,7 @@ var fields$1 = {
   },
   furnizori: {
     type: 'array',
-    ref: 'furnizori',
+    ref: 'furnizor',
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.furnizori;
@@ -3103,6 +3103,7 @@ var fields$a = {
   },
   rol: {
     type: 'number',
+    preview: 2,
     required: true,
     value: function (_a) {
       var activeDoc = _a.activeDoc;
