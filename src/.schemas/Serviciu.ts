@@ -16,9 +16,9 @@ const fields: FieldsCreator<Serviciu> = {
    * desi globale, serviciile sunt pt asociatii.
    * excludem asta din db, pastram pt referinta
    */
-  asociatieId: {
-    ref: 'asociatie'
-  },
+  // asociatieId: {
+  //   ref: 'asociatie'
+  // },
 
   denumire: {
     required: true,

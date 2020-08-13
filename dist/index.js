@@ -1552,7 +1552,8 @@ function () {
     this.form = form;
     this.options = options;
     this.lastItems = [];
-    this.refsIds = []; // kinda hide the property for snapshots
+    this.refsIds = [];
+    this.totals = 0; // kinda hide the property for snapshots
 
     Object.defineProperty(this, 'collection', {
       enumerable: false,
@@ -1714,18 +1715,39 @@ function () {
 
   Taxonomy.prototype.trash = function (id) {
     return __awaiter(this, void 0, void 0, function () {
+      var e_2;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
-            if (this.last === id) this.last = undefined;
+            _a.trys.push([0, 2,, 3]);
+
             return [4
             /*yield*/
             , this.collection.findOne(id).remove()];
 
           case 1:
+            _a.sent();
+
+            if (this.last === id) this.last = undefined;
+            this.totals -= 1;
+            return [3
+            /*break*/
+            , 3];
+
+          case 2:
+            e_2 = _a.sent();
+            notify({
+              type: 'error',
+              text: e_2
+            });
+            return [3
+            /*break*/
+            , 3];
+
+          case 3:
             return [2
             /*return*/
-            , _a.sent()];
+            ];
         }
       });
     });
@@ -1742,7 +1764,7 @@ function () {
 
   Taxonomy.prototype.put = function (doc) {
     return __awaiter(this, void 0, void 0, function () {
-      var method, _a, name, options, _doc, id, e_2;
+      var method, _a, name, options, _doc, id, e_3;
 
       var _b;
 
@@ -1772,6 +1794,7 @@ function () {
             _doc = _c.sent();
             id = _doc._id;
             this.last = id;
+            this.totals += 1;
             notify({
               type: 'success',
               text: "[" + method + "] " + name + "!" + (['dev', 'test'].indexOf(env) > -1 ? "(" + id + ")" : '')
@@ -1781,10 +1804,10 @@ function () {
             , _doc];
 
           case 3:
-            e_2 = _c.sent();
+            e_3 = _c.sent();
             notify({
               type: 'error',
-              text: String(e_2)
+              text: String(e_3)
             });
             return [3
             /*break*/
@@ -1817,6 +1840,8 @@ function () {
   __decorate([mobx.observable], Taxonomy.prototype, "lastItems", void 0);
 
   __decorate([mobx.observable], Taxonomy.prototype, "refsIds", void 0);
+
+  __decorate([mobx.observable], Taxonomy.prototype, "totals", void 0);
 
   __decorate([mobx.computed], Taxonomy.prototype, "last", null);
 
@@ -3023,9 +3048,9 @@ var fields$9 = {
    * desi globale, serviciile sunt pt asociatii.
    * excludem asta din db, pastram pt referinta
    */
-  asociatieId: {
-    ref: 'asociatie'
-  },
+  // asociatieId: {
+  //   ref: 'asociatie'
+  // },
   denumire: {
     required: true,
     preview: 0,

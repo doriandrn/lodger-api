@@ -29,7 +29,7 @@ interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
   readonly last ?: string
 
   put (doc: LodgerDocument & Partial<Interface>): Promise<RxDocument<N>> | void
-  trash (id: string): Promise<RxDocument<N> | null>
+  trash (id: string): Promise<void | null>
 }
 
 let db: RxDatabase
@@ -48,6 +48,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
 
   @observable lastItems: string[] = []
   @observable refsIds: string[] = []
+  @observable totals: number = 0
 
   /**
    * Last added item's id
@@ -168,8 +169,16 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * @memberof Taxonomy
    */
   async trash (id: string) {
-    if (this.last === id) this.last = undefined
-    return await this.collection.findOne(id).remove()
+    try {
+      await this.collection.findOne(id).remove()
+      if (this.last === id) this.last = undefined
+      this.totals -= 1
+    } catch (e) {
+      notify({
+        type: 'error',
+        text: e
+      })
+    }
   }
 
   /**
@@ -207,6 +216,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       const id = _doc._id
 
       this.last = id
+      this.totals += 1
 
       notify({
         type: 'success',
