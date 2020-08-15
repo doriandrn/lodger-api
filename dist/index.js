@@ -1972,7 +1972,9 @@ var dynamicTargets = {
   'Incasare.ts': () => Promise.resolve().then(function () { return Incasare; }),
   'Serviciu.ts': () => Promise.resolve().then(function () { return Serviciu; }),
   'Tranzactie.ts': () => Promise.resolve().then(function () { return Tranzactie; }),
-  'Utilizator.ts': () => Promise.resolve().then(function () { return Utilizator; })
+  'Utilizator.ts': () => Promise.resolve().then(function () { return Utilizator; }),
+  'en.ts': () => Promise.resolve().then(function () { return en$1; }),
+  'ro.ts': () => Promise.resolve().then(function () { return ro$1; })
 };
 
 /**
@@ -2097,8 +2099,7 @@ var Forms;
 var plugins = [];
 var navigator = window && window.navigator ? window.navigator : {
   language: 'ro-RO'
-}; // window.navigator :
-
+};
 var locale, translations;
 /**
  *
@@ -2173,7 +2174,7 @@ function () {
 
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
-      return require('locales/' + this.locale.split('-')[0]).default;
+      return translations;
     },
     enumerable: false,
     configurable: true
@@ -2189,11 +2190,13 @@ function () {
         throw new LodgerError('Language not supported');
       }
 
-      locale = language; // try {
-      //   translations = require('locales/' + this.locale.split('-')[0]).default
-      // } catch (e) {
-      //   throw new Error('Could not find translations file for language: ', language, e)
-      // }
+      locale = language;
+
+      try {
+        translations = __assign({}, require('locales/' + this.locale.split('-')[0]).default);
+      } catch (e) {
+        throw new Error('Could not find translations file for language: ', language, e);
+      }
     },
     enumerable: false,
     configurable: true
@@ -3225,6 +3228,58 @@ var Utilizator = /*#__PURE__*/Object.freeze({
     hooks: hooks$1,
     methods: methods$2,
     settings: settings
+});
+
+var en = {
+  defaults: {
+    fields: {}
+  },
+  taxonomies: {
+    asociatie: {
+      name: 'Association',
+      plural: 'Associations',
+      fields: {},
+      form: {
+        added: 'Association added',
+        add: 'New Association',
+        edit: 'Edit Association Data'
+      }
+    }
+  },
+  errors: {
+    index: {
+      missingDB: 'Missing database',
+      invalidPluginDefinition: 'Invalid plugin definition',
+      couldNotWriteFile: 'Cannot write file %%'
+    }
+  }
+};
+
+var en$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    'default': en
+});
+
+var ro = {
+  taxonomies: {
+    asociatie: {
+      name: 'Asociație',
+      plural: 'Asociații',
+      fields: {}
+    }
+  },
+  errors: {
+    index: {
+      missingDB: 'Bază de date nespecificată',
+      invalidPluginDefinition: 'Plugin invalid',
+      couldNotWriteFile: 'Fișierul %% nu poate fi scris'
+    }
+  }
+};
+
+var ro$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    'default': ro
 });
 
 exports.Lodger = Lodger;

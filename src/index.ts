@@ -93,7 +93,7 @@ interface LodgerAPI {
 }
 
 let plugins: LodgerPlugin[] = []
-let navigator = window && window.navigator ? window.navigator : { language: 'ro-RO' } // window.navigator :
+let navigator = (window && window.navigator ? window.navigator : { language: 'ro-RO' })
 
 let locale: string, translations
 
@@ -106,7 +106,7 @@ let locale: string, translations
 class Lodger implements LodgerAPI {
   @observable locale: string = locale
   @computed get i18n () {
-    return require('locales/' + this.locale.split('-')[0]).default
+    return translations
   }
 
   /**
@@ -174,11 +174,11 @@ class Lodger implements LodgerAPI {
     }
     locale = language
 
-    // try {
-    //   translations = require('locales/' + this.locale.split('-')[0]).default
-    // } catch (e) {
-    //   throw new Error('Could not find translations file for language: ', language, e)
-    // }
+    try {
+      translations = { ... require('locales/' + this.locale.split('-')[0]).default  }
+    } catch (e) {
+      throw new Error('Could not find translations file for language: ', language, e)
+    }
   }
 
 

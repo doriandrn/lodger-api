@@ -45,13 +45,23 @@ export default {
       // functions that import those files as values
       load(id) {
         if (id === 'dynamic-targets') {
-          const targetDir = path.join(__dirname, 'src/.schemas');
-          let files = fs.readdirSync(targetDir);
-          files.splice(files.indexOf('.DS_Store'), 1)
-          const objectEntries = files
-            .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`);
-            // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
-          return `export default {\n${objectEntries.join(',\n')}\n};`;
+          const dirs = ['src/.schemas', 'src/lib/locales']
+          let objectEntries = []
+
+          dirs.map(dir => {
+            const targetDir = path.join(__dirname, dir);
+            let files = fs.readdirSync(targetDir);
+
+            if (files.indexOf('.DS_Store') > -1)
+              files.splice(0, 1)
+
+            if (!files.length) return
+            objectEntries.push(...files
+              .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`));
+              // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
+          })
+
+          if (objectEntries) return `export default {\n${objectEntries.join(',\n')}\n};`;
         }
         return null;
       }
