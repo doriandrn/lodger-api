@@ -12,6 +12,7 @@ import Taxonomy from '~/lib/Taxonomy/Subscribable'
 
 import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
+import { observable, computed } from 'mobx'
 
 switch (process.env) {
   default:
@@ -92,9 +93,9 @@ interface LodgerAPI {
 }
 
 let plugins: LodgerPlugin[] = []
-let navigator = { language: 'ro-RO' } // window.navigator :
+let navigator = window && window.navigator ? window.navigator : { language: 'ro-RO' } // window.navigator :
 
-let locale, translations
+let locale: string, translations
 
 /**
  *
@@ -103,6 +104,11 @@ let locale, translations
  * @requires <rxdb> RxDatabase
  */
 class Lodger implements LodgerAPI {
+  @observable locale: string = locale
+  @computed get i18n () {
+    return require('locales/' + this.locale.split('-')[0]).default
+  }
+
   /**
    * Creates an instance of Lodger.
    * @memberof Lodger
@@ -155,6 +161,7 @@ class Lodger implements LodgerAPI {
 
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
+    this.i18n = translations
   }
 
   static get locale () {
@@ -165,12 +172,13 @@ class Lodger implements LodgerAPI {
     if (supportedLangs.map(lang => lang.code).indexOf(language) < 0) {
       throw new LodgerError('Language not supported')
     }
+    locale = language
 
-    try {
-      translations = require('locales/' + this.locale).default
-    } catch (e) {
-      throw new Error('Could not find translations file for language: ', language, e)
-    }
+    // try {
+    //   translations = require('locales/' + this.locale.split('-')[0]).default
+    // } catch (e) {
+    //   throw new Error('Could not find translations file for language: ', language, e)
+    // }
   }
 
 

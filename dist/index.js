@@ -2095,11 +2095,11 @@ var Forms;
 })(exports.Errors || (exports.Errors = {}));
 
 var plugins = [];
-var navigator = {
+var navigator = window && window.navigator ? window.navigator : {
   language: 'ro-RO'
 }; // window.navigator :
 
-var translations;
+var locale, translations;
 /**
  *
  * @class The main API
@@ -2125,7 +2125,8 @@ function () {
       plugins = [];
     }
 
-    this.plugins = plugins; // Assign taxonomies to this
+    this.plugins = plugins;
+    this.locale = locale; // Assign taxonomies to this
 
     this.taxonomies = taxonomies.map(function (tax) {
       Object.defineProperty(_this, tax.form.plural, {
@@ -2167,11 +2168,19 @@ function () {
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
 
     this.supportedLangs = supportedLangs;
+    this.i18n = translations;
   }
 
+  Object.defineProperty(Lodger.prototype, "i18n", {
+    get: function () {
+      return require('locales/' + this.locale.split('-')[0]).default;
+    },
+    enumerable: false,
+    configurable: true
+  });
   Object.defineProperty(Lodger, "locale", {
     get: function () {
-      return  navigator.language;
+      return locale || navigator.language;
     },
     set: function (language) {
       if (supportedLangs.map(function (lang) {
@@ -2180,11 +2189,11 @@ function () {
         throw new LodgerError('Language not supported');
       }
 
-      try {
-        translations = require('locales/' + this.locale).default;
-      } catch (e) {
-        throw new Error('Could not find translations file for language: ', language, e);
-      }
+      locale = language; // try {
+      //   translations = require('locales/' + this.locale.split('-')[0]).default
+      // } catch (e) {
+      //   throw new Error('Could not find translations file for language: ', language, e)
+      // }
     },
     enumerable: false,
     configurable: true
@@ -2411,6 +2420,10 @@ function () {
       });
     });
   };
+
+  __decorate([mobx.observable], Lodger.prototype, "locale", void 0);
+
+  __decorate([mobx.computed], Lodger.prototype, "i18n", null);
 
   return Lodger;
 }();
