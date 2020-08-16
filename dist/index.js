@@ -2096,10 +2096,8 @@ var Forms;
   Errors[Errors["couldNotWriteFile"] = 2] = "couldNotWriteFile";
 })(exports.Errors || (exports.Errors = {}));
 
-var plugins = [];
-var navigator = window && window.navigator ? window.navigator : {
-  language: 'ro-RO'
-};
+var plugins = []; // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
+
 var locale,
     translations = mobx.observable({});
 /**
@@ -2181,12 +2179,12 @@ function () {
   });
   Object.defineProperty(Lodger, "locale", {
     get: function () {
-      return locale || navigator.language;
+      return locale;
     },
     set: function (language) {
       if (supportedLangs.map(function (lang) {
         return lang.code;
-      }).indexOf(language) < 0) {
+      }).indexOf(language.split('-')[0]) < 0) {
         throw new LodgerError('Language not supported');
       }
 

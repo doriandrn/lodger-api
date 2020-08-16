@@ -93,7 +93,7 @@ interface LodgerAPI {
 }
 
 let plugins: LodgerPlugin[] = []
-let navigator = (window && window.navigator ? window.navigator : { language: 'ro-RO' })
+// let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
 let locale: string, translations = observable({})
 
@@ -164,11 +164,12 @@ class Lodger implements LodgerAPI {
   }
 
   static get locale () {
-    return locale || navigator.language
+    return locale
   }
 
   static set locale (language) {
-    if (supportedLangs.map(lang => lang.code).indexOf(language) < 0) {
+    if (supportedLangs.map(lang => lang.code).indexOf(language.split
+      ('-')[0]) < 0) {
       throw new LodgerError('Language not supported')
     }
     locale = language
