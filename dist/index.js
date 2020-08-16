@@ -2189,9 +2189,10 @@ function () {
       }
 
       locale = language;
+      console.log('Neew locale', locale);
 
       try {
-        translations = __assign({}, require('locales/' + this.locale.split('-')[0]).default);
+        translations = __assign({}, require('locales/' + locale.split('-')[0]).default);
       } catch (e) {
         throw new Error('Could not find translations file for language: ', language, e);
       }

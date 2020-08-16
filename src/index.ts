@@ -170,12 +170,12 @@ class Lodger implements LodgerAPI {
   static set locale (language) {
     if (supportedLangs.map(lang => lang.code).indexOf(language.split
       ('-')[0]) < 0) {
-      throw new LodgerError('Language not supported')
-    }
+        throw new LodgerError('Language not supported')
+      }
     locale = language
-
+    console.log('Neew locale', locale)
     try {
-      translations = { ... require('locales/' + this.locale.split('-')[0]).default  }
+      translations = { ... require('locales/' + locale.split('-')[0]).default  }
     } catch (e) {
       throw new Error('Could not find translations file for language: ', language, e)
     }
