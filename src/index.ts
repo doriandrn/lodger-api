@@ -95,7 +95,7 @@ interface LodgerAPI {
 let plugins: LodgerPlugin[] = []
 let navigator = (window && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-let locale: string, translations
+let locale: string, translations = observable({})
 
 /**
  *

@@ -2100,7 +2100,8 @@ var plugins = [];
 var navigator = window && window.navigator ? window.navigator : {
   language: 'ro-RO'
 };
-var locale, translations;
+var locale,
+    translations = mobx.observable({});
 /**
  *
  * @class The main API
