@@ -161,7 +161,6 @@ class Lodger implements LodgerAPI {
 
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
-    this.i18n = translations
   }
 
   static get locale () {

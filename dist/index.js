@@ -2169,7 +2169,6 @@ function () {
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
 
     this.supportedLangs = supportedLangs;
-    this.i18n = translations;
   }
 
   Object.defineProperty(Lodger.prototype, "i18n", {
