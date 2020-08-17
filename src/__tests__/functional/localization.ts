@@ -44,6 +44,16 @@ describe('Lodger', () => {
     })
   })
 
+  describe('change lang', () => {
+    test('it changse and loads translations', () => {
+      L.locale = 'ro-RO'
+      expect(L.i18n).toBeDefined()
+      expect(L.shit).toBeDefined()
+      // console.log(L.locale, L.i18n)
+      expect(L.i18n.taxonomies).toBeDefined()
+    })
+  })
+
   afterAll(async () => {
     await L.destroy()
   })

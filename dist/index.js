@@ -2098,8 +2098,7 @@ var Forms;
 
 var plugins = []; // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-var locale,
-    translations = mobx.observable({});
+var locale, translations;
 /**
  *
  * @class The main API
@@ -2182,20 +2181,27 @@ function () {
       return locale;
     },
     set: function (language) {
+      var langCode = language.indexOf('-') > -1 ? language.split('-')[0] : language;
+      console.log('l', langCode);
       if (supportedLangs.map(function (lang) {
         return lang.code;
-      }).indexOf(language.split('-')[0]) < 0) {
-        throw new LodgerError('Language not supported');
-      }
-
-      locale = language;
-      console.log('Neew locale', locale);
+      }).indexOf(langCode) < 0) throw new LodgerError('Language not supported');
+      locale = langCode;
+      console.log('ll', locale);
 
       try {
-        translations = __assign({}, require('locales/' + locale.split('-')[0]).default);
+        translations = __assign({}, require('./lib/locales/' + langCode).default);
+        console.log('x', translations);
       } catch (e) {
-        throw new Error('Could not find translations file for language: ', language, e);
+        throw new Error('Could not find translations file for language: ', langCode, e);
       }
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(Lodger, "shit", {
+    get: function () {
+      return translations;
     },
     enumerable: false,
     configurable: true
@@ -2424,8 +2430,6 @@ function () {
   };
 
   __decorate([mobx.observable], Lodger.prototype, "locale", void 0);
-
-  __decorate([mobx.computed], Lodger.prototype, "i18n", null);
 
   return Lodger;
 }();
