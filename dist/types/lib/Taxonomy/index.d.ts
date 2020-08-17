@@ -14,7 +14,7 @@ interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
     readonly collection: RxCollection;
     readonly last?: string;
     put(doc: LodgerDocument & Partial<Interface>): Promise<RxDocument<N>> | void;
-    trash(id: string): Promise<RxDocument<N> | null>;
+    trash(id: string): Promise<void | null>;
 }
 /**
  * @class Taxonomy
@@ -30,6 +30,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
     readonly options?: LodgerTaxonomyCreatorOptions | undefined;
     lastItems: string[];
     refsIds: string[];
+    totals: number;
     /**
      * Last added item's id
      *
@@ -85,7 +86,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}> implements Lo
      * @returns {RxDocument<T>} removed document
      * @memberof Taxonomy
      */
-    trash(id: string): Promise<any>;
+    trash(id: string): Promise<void>;
     /**
      * Inserts/upserts a new item in DB
      *

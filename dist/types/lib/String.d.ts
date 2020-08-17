@@ -12,7 +12,8 @@ export declare enum strings {
     select = 4,
     serviceName = 5,
     string = 6,
-    textarea = 7
+    textarea = 7,
+    userAvatar = 8
 }
 /**
  * Accepted 'number's for a LodgerSchema field

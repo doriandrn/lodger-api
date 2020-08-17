@@ -1,6 +1,5 @@
 import { RxJsonSchemaTopLevel, RxDocument, JsonSchemaTypes } from "rxdb";
 import { strings, numbers, arrays, objects } from './String';
-declare type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all';
 declare type ReferenceTaxonomy = Plural<Taxonomie>;
 declare type FieldGivenContext<T> = {
     selectedDoc?: RxDocument<T>;
@@ -17,7 +16,6 @@ declare global {
         encrypted?: boolean;
         index?: boolean;
         primary?: boolean;
-        excludeFrom?: ItemExcludableFrom | ItemExcludableFrom[];
         name?: string;
         options?: Array<any> | Object;
         step?: number;
@@ -27,7 +25,7 @@ declare global {
         v?: string;
         ref?: ReferenceTaxonomy;
         indexRef?: boolean;
-        showInList?: 'primary' | 'secondary' | 'details'[];
+        preview?: number;
         onclick?: {
             [method: string]: string;
         };
@@ -43,6 +41,7 @@ declare global {
 interface FieldAPI {
     readonly default: any | Function;
     readonly rxSchema: RxJsonSchemaTopLevel;
+    readonly _type: FieldTypes;
     value(context?: FieldGivenContext<any>): any;
     onclick?: (context?: FieldGivenContext<any>) => void;
 }
@@ -62,14 +61,16 @@ export declare class Field implements FieldAPI {
     readonly items?: {
         type: 'string';
     };
-    readonly index?: boolean;
     readonly multipleOf?: number;
     readonly v?: string;
     readonly storage?: 'db' | 'store';
     readonly default: any;
     readonly value: (context?: FieldGivenContext<any>) => any;
     readonly fakeValue: any;
-    label?: string;
+    readonly preview?: number;
+    readonly label?: string;
+    readonly _type?: FieldTypes;
+    readonly _index?: boolean;
     /**
      * Creates an instance of Field.
      *

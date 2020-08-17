@@ -1,10 +1,10 @@
-export default {
+module.exports = {
   taxonomies: {
     asociatie: {
       name: 'Asociație',
       plural: 'Asociații',
       fields: {
-        
+
       }
     }
   },

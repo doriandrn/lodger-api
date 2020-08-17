@@ -84,6 +84,7 @@ declare class Form<I> implements FormAPI<I> {
      * @returns {string[]}
      */
     get fieldsIds(): string[];
+    get previewFields(): string[];
     /**
      * register a new onsubmit function
      *

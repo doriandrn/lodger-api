@@ -1,6 +1,3 @@
-import fs from 'fs'
-import path from 'path'
-
 const allLangs = [
   {"code":"ab","name":"Abkhaz","nativeName":"аҧсуа"},
   {"code":"aa","name":"Afar","nativeName":"Afaraf"},
@@ -189,4 +186,4 @@ const allLangs = [
 // const localesDir = path.resolve(__dirname, '../locales')
 const supported = allLangs.filter(lang => lang.supported).map(lang => lang.code)
 
-export default allLangs.filter(lang => supported.indexOf(lang.code) > -1)
+module.exports = allLangs.filter(lang => supported.indexOf(lang.code) > -1)

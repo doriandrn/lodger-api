@@ -8,6 +8,7 @@ import builtins from 'rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
+import copy from 'rollup-plugin-copy'
 import { uglify } from 'rollup-plugin-uglify'
 
 const extensions = [ 'js', 'jsx', `ts`, 'tsx' ];
@@ -45,7 +46,7 @@ export default {
       // functions that import those files as values
       load(id) {
         if (id === 'dynamic-targets') {
-          const dirs = ['src/.schemas', 'src/lib/locales']
+          const dirs = ['src/.schemas']
           let objectEntries = []
 
           dirs.map(dir => {
@@ -92,6 +93,11 @@ export default {
       runtimeHelpers: true,
       include: ['src/**/*', 'src/.schemas/*'],
       exclude: 'node_modules/**'
+    }),
+    copy({
+      targets: [
+        { src: 'src/lib/locales/**/*', dest: 'dist/locales' }
+      ]
     }),
 
     builtins(),
