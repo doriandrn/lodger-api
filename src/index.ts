@@ -97,7 +97,7 @@ interface LodgerAPI {
 let plugins: LodgerPlugin[] = []
 // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-let locale: string, translations, locales
+let locale: string = 'ro', translations, locales
 
 /**
  *
@@ -162,7 +162,7 @@ class Lodger implements LodgerAPI {
 
 
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
-    // this.supportedLangs = supportedLangs
+    this.supportedLangs = supportedLangs
   }
 
   static get locale () {
@@ -180,8 +180,8 @@ class Lodger implements LodgerAPI {
 
     console.log('l' ,langCode)
 
-    // if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
-    //   throw new LodgerError('Language not supported')
+    if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
+      throw new LodgerError('Language not supported')
 
     locale = langCode
     // console.log('ll', locale)

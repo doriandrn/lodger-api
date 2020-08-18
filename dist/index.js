@@ -872,8 +872,7 @@ const allLangs = [{
 }]; // const localesDir = path.resolve(__dirname, '../locales')
 
 const supported = allLangs.filter(lang => lang.supported).map(lang => lang.code);
-const supportedLangs = allLangs.filter(lang => supported.indexOf(lang.code) > -1);
-module.exports = supportedLangs;
+const supportedLangs = allLangs.filter(lang => supported.indexOf(lang.code) > -1); // module.exports = supportedLangs
 
 // import fx from 'fx'
 /**
@@ -2147,7 +2146,9 @@ var Forms;
 
 var plugins = []; // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-var locale, translations, locales$1;
+var locale = 'ro',
+    translations,
+    locales$1;
 /**
  *
  * @class The main API
@@ -2214,7 +2215,8 @@ function () {
       if (children && children.length > 0) tax.children = children;
       return tax.form.plural;
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
-    // this.supportedLangs = supportedLangs
+
+    this.supportedLangs = supportedLangs;
   }
 
   Object.defineProperty(Lodger.prototype, "i18n", {
@@ -2230,9 +2232,10 @@ function () {
     },
     set: function (language) {
       var langCode = language.indexOf('-') > -1 ? language.split('-')[0] : language;
-      console.log('l', langCode); // if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
-      //   throw new LodgerError('Language not supported')
-
+      console.log('l', langCode);
+      if (supportedLangs.map(function (lang) {
+        return lang.code;
+      }).indexOf(langCode) < 0) throw new LodgerError('Language not supported');
       locale = langCode; // console.log('ll', locale)
 
       try {
