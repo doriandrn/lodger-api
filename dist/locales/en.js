@@ -1,0 +1,1 @@
+export default {"taxonomies":{"asociatie":{"name":"Association","plural":" Associations","fields":{}}},"errors":{"index":{"missingDB":" Unspecified database","invalidPluginDefinition":" Invalid plugin","couldNotWriteFile":" %% file cannot be written"}}}

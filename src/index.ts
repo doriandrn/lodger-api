@@ -5,7 +5,9 @@
 // import { env } from '~/lib/defs/env'
 import config from './lodger.config'
 import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
+
 const supportedLangs = require('~/lib/maintainable/langs')
+import locales from 'locales'
 
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
@@ -185,7 +187,7 @@ class Lodger implements LodgerAPI {
     // console.log('ll', locale)
 
     try {
-      translations = require('locales/' + langCode).default
+      translations = locales[locale]
       console.log('x', translations)
     } catch (e) {
       throw new Error('Could not find translations file for language: ', langCode, e)

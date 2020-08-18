@@ -3,6 +3,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var rxdb = require('rxdb');
+var locales = require('locales');
 var mobx = require('mobx');
 var faker = require('faker');
 var consola = require('consola');
@@ -10,6 +11,7 @@ var Subscriber = require('rxcollection-subscriber');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+var locales__default = /*#__PURE__*/_interopDefaultLegacy(locales);
 var faker__default = /*#__PURE__*/_interopDefaultLegacy(faker);
 var consola__default = /*#__PURE__*/_interopDefaultLegacy(consola);
 var Subscriber__default = /*#__PURE__*/_interopDefaultLegacy(Subscriber);
@@ -1452,7 +1454,7 @@ function () {
       locale = langCode; // console.log('ll', locale)
 
       try {
-        translations = require('locales/' + langCode).default;
+        translations = locales__default['default'][locale];
         console.log('x', translations);
       } catch (e) {
         throw new Error('Could not find translations file for language: ', langCode, e);

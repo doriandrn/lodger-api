@@ -30,6 +30,32 @@ export default {
   ],
 
   plugins: [
+    {
+      resolve(id) {
+        return id === 'locales' ? id : null
+      },
+      load (id) {
+        if (id !== 'locales') return
+
+        const dirs = ['src/lib/locales']
+        let objectEntries = []
+
+        dirs.map(dir => {
+          const targetDir = path.join(__dirname, dir);
+          let files = fs.readdirSync(targetDir);
+
+          if (files.indexOf('.DS_Store') > -1)
+            files.splice(0, 1)
+
+          if (!files.length) return
+          objectEntries.push(...files
+            .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`));
+            // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
+        })
+
+        if (objectEntries) return `export default {\n${objectEntries.join(',\n')}\n};`;
+      }
+    },
     // VIRTUAL MODULE
     // for dynamic schema loading
     {
