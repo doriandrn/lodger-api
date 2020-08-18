@@ -30,50 +30,27 @@ export default {
   ],
 
   plugins: [
-    {
-      resolve(id) {
-        return id === 'locales' ? id : null
-      },
-      load (id) {
-        if (id !== 'locales') return
 
-        const dirs = ['src/lib/locales']
-        let objectEntries = []
-
-        dirs.map(dir => {
-          const targetDir = path.join(__dirname, dir);
-          let files = fs.readdirSync(targetDir);
-
-          if (files.indexOf('.DS_Store') > -1)
-            files.splice(0, 1)
-
-          if (!files.length) return
-          objectEntries.push(...files
-            .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`));
-            // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
-        })
-
-        if (objectEntries) return `export default {\n${objectEntries.join(',\n')}\n};`;
-      }
-    },
     // VIRTUAL MODULE
     // for dynamic schema loading
     {
       // this is necessary to tell rollup that it should not try to resolve "dynamic-targets"
       // via other means
       resolveId(id) {
-        if (id === 'dynamic-targets') {
-          return id;
-        }
-        return null;
+        return ['dynamic-targets', 'locales'].indexOf(id) > -1 ? id : null
+        // if (id === 'dynamic-targets') {
+        //   return id;
+        // }
+        // return null;
       },
 
       // create a module that exports an object containing file names as keys and
       // functions that import those files as values
       load(id) {
+        let objectEntries = []
+        let dirs
         if (id === 'dynamic-targets') {
-          const dirs = ['src/.schemas']
-          let objectEntries = []
+          dirs = ['src/.schemas']
 
           dirs.map(dir => {
             const targetDir = path.join(__dirname, dir);
@@ -90,6 +67,26 @@ export default {
 
           if (objectEntries) return `export default {\n${objectEntries.join(',\n')}\n};`;
         }
+
+        if (id === 'locales') {
+          dirs = ['src/lib/locales']
+
+          dirs.map(dir => {
+            const targetDir = path.join(__dirname, dir);
+            let files = fs.readdirSync(targetDir);
+
+            if (files.indexOf('.DS_Store') > -1)
+              files.splice(0, 1)
+
+            if (!files.length) return
+            objectEntries.push(...files
+              .map(file => `  '${file.split('.')[0]}': () => import('${path.join(targetDir, file)}')`));
+              // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
+          })
+
+          if (objectEntries) return `export default {\n${objectEntries.join(',\n')}\n};`;
+        }
+
         return null;
       }
     },

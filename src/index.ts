@@ -7,13 +7,13 @@ import config from './lodger.config'
 import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
 
 const supportedLangs = require('~/lib/maintainable/langs')
-import locales from 'locales'
 
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
 
 import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
+import loadLocales from 'helper/loadLocales'
 import { observable, computed } from 'mobx'
 
 switch (process.env) {
@@ -97,7 +97,7 @@ interface LodgerAPI {
 let plugins: LodgerPlugin[] = []
 // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-let locale: string, translations
+let locale: string, translations, locales
 
 /**
  *
@@ -257,6 +257,7 @@ class Lodger implements LodgerAPI {
    */
   static async build (options: BuildOptions = { ... config.build }) {
     Taxonomy.db = await createRxDatabase(options.db)
+    locales = await loadLocales(supportedLangs)
 
     const taxesSchemas = await loadSchemas(taxonomies)
     const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema)))

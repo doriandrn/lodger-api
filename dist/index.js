@@ -3,7 +3,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var rxdb = require('rxdb');
-var locales = require('locales');
 var mobx = require('mobx');
 var faker = require('faker');
 var consola = require('consola');
@@ -11,7 +10,6 @@ var Subscriber = require('rxcollection-subscriber');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var locales__default = /*#__PURE__*/_interopDefaultLegacy(locales);
 var faker__default = /*#__PURE__*/_interopDefaultLegacy(faker);
 var consola__default = /*#__PURE__*/_interopDefaultLegacy(consola);
 var Subscriber__default = /*#__PURE__*/_interopDefaultLegacy(Subscriber);
@@ -1295,6 +1293,55 @@ function load(schemas) {
   });
 }
 
+var locales = {
+  'en': () => Promise.resolve().then(function () { return en$1; }),
+  'ro': () => Promise.resolve().then(function () { return ro; })
+};
+
+/**
+ * Rollup helper file
+ * to dynamically load schemas based on filename
+ */
+
+function load$1(langs) {
+  return __awaiter(this, void 0, void 0, function () {
+    var _this = this;
+
+    return __generator(this, function (_a) {
+      switch (_a.label) {
+        case 0:
+          return [4
+          /*yield*/
+          , Promise.all(langs.map(function (langCode) {
+            return __awaiter(_this, void 0, void 0, function () {
+              var _a;
+
+              return __generator(this, function (_b) {
+                switch (_b.label) {
+                  case 0:
+                    _a = [{}];
+                    return [4
+                    /*yield*/
+                    , locales[langCode]()];
+
+                  case 1:
+                    return [2
+                    /*return*/
+                    , __assign.apply(void 0, _a.concat([_b.sent()]))];
+                }
+              });
+            });
+          }))];
+
+        case 1:
+          return [2
+          /*return*/
+          , _a.sent()];
+      }
+    });
+  });
+}
+
 // import yaml from 'json2yaml'
 
 var supportedLangs = require('~/lib/maintainable/langs');
@@ -1363,7 +1410,7 @@ var Forms;
 
 var plugins = []; // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-var locale, translations;
+var locale, translations, locales$1;
 /**
  *
  * @class The main API
@@ -1454,7 +1501,7 @@ function () {
       locale = langCode; // console.log('ll', locale)
 
       try {
-        translations = locales__default['default'][locale];
+        translations = locales$1[locale];
         console.log('x', translations);
       } catch (e) {
         throw new Error('Could not find translations file for language: ', langCode, e);
@@ -1557,9 +1604,15 @@ function () {
             _a.db = _b.sent();
             return [4
             /*yield*/
-            , load(taxonomies)];
+            , load$1(supportedLangs)];
 
           case 2:
+            locales$1 = _b.sent();
+            return [4
+            /*yield*/
+            , load(taxonomies)];
+
+          case 3:
             taxesSchemas = _b.sent();
             return [4
             /*yield*/
@@ -1581,7 +1634,7 @@ function () {
               });
             }))];
 
-          case 3:
+          case 4:
             Taxonomies = _b.sent();
             return [2
             /*return*/
@@ -2495,6 +2548,49 @@ var Utilizator = /*#__PURE__*/Object.freeze({
     hooks: hooks$1,
     methods: methods$2,
     settings: settings
+});
+
+var en = {
+  "taxonomies": {
+    "asociatie": {
+      "name": "Association",
+      "plural": " Associations",
+      "fields": {}
+    }
+  },
+  "errors": {
+    "index": {
+      "missingDB": " Unspecified database",
+      "invalidPluginDefinition": " Invalid plugin",
+      "couldNotWriteFile": " %% file cannot be written"
+    }
+  }
+};
+
+var en$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    'default': en
+});
+
+module.exports = {
+  taxonomies: {
+    asociatie: {
+      name: 'Asociație',
+      plural: 'Asociații',
+      fields: {}
+    }
+  },
+  errors: {
+    index: {
+      missingDB: 'Bază de date nespecificată',
+      invalidPluginDefinition: 'Plugin invalid',
+      couldNotWriteFile: 'Fișierul %% nu poate fi scris'
+    }
+  }
+};
+
+var ro = /*#__PURE__*/Object.freeze({
+    __proto__: null
 });
 
 exports.Lodger = Lodger;
