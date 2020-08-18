@@ -1305,6 +1305,8 @@ var locales = {
 
 function load$1(langs) {
   return __awaiter(this, void 0, void 0, function () {
+    var x;
+
     var _this = this;
 
     return __generator(this, function (_a) {
@@ -1314,37 +1316,36 @@ function load$1(langs) {
           /*yield*/
           , Promise.all(langs.map(function (langCode) {
             return __awaiter(_this, void 0, void 0, function () {
-              var _a;
-
-              return __generator(this, function (_b) {
-                switch (_b.label) {
+              return __generator(this, function (_a) {
+                switch (_a.label) {
                   case 0:
-                    _a = [{}];
                     return [4
                     /*yield*/
-                    , locales[langCode]()];
+                    , locales[langCode]().default];
 
                   case 1:
                     return [2
                     /*return*/
-                    , __assign.apply(void 0, _a.concat([_b.sent()]))];
+                    , _a.sent()];
                 }
               });
             });
           }))];
 
         case 1:
+          x = _a.sent();
+          console.log('x', x);
           return [2
           /*return*/
-          , _a.sent()];
+          , {
+            default: x[0]
+          }];
       }
     });
   });
 }
 
 // import yaml from 'json2yaml'
-
-var supportedLangs = require('~/lib/maintainable/langs');
 
 switch (process.env) {
   default:
@@ -1477,8 +1478,6 @@ function () {
       if (children && children.length > 0) tax.children = children;
       return tax.form.plural;
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
-
-    this.supportedLangs = supportedLangs;
   }
 
   Object.defineProperty(Lodger.prototype, "i18n", {
@@ -1588,7 +1587,7 @@ function () {
     }
 
     return __awaiter(this, void 0, void 0, function () {
-      var _a, taxesSchemas, Taxonomies;
+      var _a, supportedLangs, taxesSchemas, Taxonomies;
 
       var _this = this;
 
@@ -1604,15 +1603,24 @@ function () {
             _a.db = _b.sent();
             return [4
             /*yield*/
-            , load$1(supportedLangs)];
+            , Promise.resolve().then(() => require('~/lib/maintainable/langs.js'))];
 
           case 2:
+            supportedLangs = _b.sent();
+            supportedLangs = supportedLangs.default;
+            return [4
+            /*yield*/
+            , load$1(supportedLangs.map(function (l) {
+              return l.code;
+            }))];
+
+          case 3:
             locales$1 = _b.sent();
             return [4
             /*yield*/
             , load(taxonomies)];
 
-          case 3:
+          case 4:
             taxesSchemas = _b.sent();
             return [4
             /*yield*/
@@ -1634,7 +1642,7 @@ function () {
               });
             }))];
 
-          case 4:
+          case 5:
             Taxonomies = _b.sent();
             return [2
             /*return*/
