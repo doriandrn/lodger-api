@@ -38,10 +38,6 @@ export default {
       // via other means
       resolveId(id) {
         return ['dynamic-targets', 'locales'].indexOf(id) > -1 ? id : null
-        // if (id === 'dynamic-targets') {
-        //   return id;
-        // }
-        // return null;
       },
 
       // create a module that exports an object containing file names as keys and
@@ -106,7 +102,10 @@ export default {
 
     commonjs({
       extensions,
-      include: ['node_modules/**/*', 'src/.schemas/*', 'src/lib/*'],
+      namedExports: {
+        'maintainable/langs': ['supportedLangs']
+      },
+      include: ['node_modules/**/*', 'src/.schemas/*', 'src/lib/*', 'src/lib/maintainable/*'],
       ignore: ["conditional-runtime-dependency"]
     }),
 

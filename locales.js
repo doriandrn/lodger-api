@@ -1,7 +1,7 @@
 import fs from 'fs'
 
 import ro from './src/lib/locales/ro'
-const supportedLangs = import('./src/lib/maintainable/langs.js')
+import supportedLangs from './src/lib/maintainable/langs.js'
 
 const { TranslationServiceClient } = require('@google-cloud/translate')
 const translations = []
@@ -45,7 +45,7 @@ supportedLangs
       const [response] = await translationClient.translateText(request);
       const { translatedText } = response.translations[0]
 
-      let original = JSON.stringify(ro.default)
+      let original = JSON.stringify(ro)
 
       translatedText.split(delimiter).map((phrase, i) => {
         original = original.replace(contents[0].split(delimiter)[i], phrase)

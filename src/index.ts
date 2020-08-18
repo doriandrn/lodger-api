@@ -6,7 +6,7 @@
 import config from './lodger.config'
 import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
 
-// import supportedLangs from '~/lib/maintainable/langs'
+import supportedLangs from '~/lib/maintainable/langs'
 
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
@@ -162,6 +162,7 @@ class Lodger implements LodgerAPI {
 
 
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
+    // this.supportedLangs = supportedLangs
   }
 
   static get locale () {
@@ -179,8 +180,8 @@ class Lodger implements LodgerAPI {
 
     console.log('l' ,langCode)
 
-    if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
-      throw new LodgerError('Language not supported')
+    // if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
+    //   throw new LodgerError('Language not supported')
 
     locale = langCode
     // console.log('ll', locale)
@@ -256,8 +257,6 @@ class Lodger implements LodgerAPI {
    */
   static async build (options: BuildOptions = { ... config.build }) {
     Taxonomy.db = await createRxDatabase(options.db)
-    let supportedLangs = await import('~/lib/maintainable/langs.js')
-    supportedLangs = supportedLangs.default
 
     locales = await loadLocales(supportedLangs.map(l => l.code))
 
