@@ -1,7 +1,7 @@
 import fs from 'fs'
 
 import ro from './src/lib/locales/ro'
-import supportedLangs from './src/lib/maintainable/langs.js'
+import { supportedLangs } from '~/lib/maintainable/langs.js'
 
 const { TranslationServiceClient } = require('@google-cloud/translate')
 const translations = []

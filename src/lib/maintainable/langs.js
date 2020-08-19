@@ -187,5 +187,6 @@ const allLangs = [
 const supported = allLangs.filter(lang => lang.supported).map(lang => lang.code)
 const supportedLangs = allLangs.filter(lang => supported.indexOf(lang.code) > -1)
 
-module.exports = supportedLangs
-// export default supportedLangs
+// module.exports = { supportedLangs }
+// exports.supportedLangs = supportedLangs
+export { supportedLangs }

@@ -872,7 +872,7 @@ const allLangs = [{
 }]; // const localesDir = path.resolve(__dirname, '../locales')
 
 const supported = allLangs.filter(lang => lang.supported).map(lang => lang.code);
-const supportedLangs = allLangs.filter(lang => supported.indexOf(lang.code) > -1); // module.exports = supportedLangs
+const supportedLangs = allLangs.filter(lang => supported.indexOf(lang.code) > -1); // module.exports = { supportedLangs }
 
 // import fx from 'fx'
 /**

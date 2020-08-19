@@ -102,9 +102,9 @@ export default {
 
     commonjs({
       extensions,
-      namedExports: {
-        'maintainable/langs': ['supportedLangs']
-      },
+      // namedExports: {
+      //   'src/lib/maintainable/langs.js': ['supportedLangs']
+      // },
       include: ['node_modules/**/*', 'src/.schemas/*', 'src/lib/*', 'src/lib/maintainable/*'],
       ignore: ["conditional-runtime-dependency"]
     }),
