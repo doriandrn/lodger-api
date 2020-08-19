@@ -9,7 +9,7 @@ import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
 import copy from 'rollup-plugin-copy'
-import { uglify } from 'rollup-plugin-uglify'
+import { terser } from "rollup-plugin-terser"
 
 const extensions = [ 'js', 'jsx', `ts`, 'tsx' ];
 const input = ['src/index.ts'] //, 'src/.schemas/Asociatie.ts'
@@ -124,7 +124,7 @@ export default {
 
     builtins(),
 
-    // uglify()
+    terser()
   ],
 
   output: {
