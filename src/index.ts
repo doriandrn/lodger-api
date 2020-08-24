@@ -259,6 +259,7 @@ class Lodger implements LodgerAPI {
     Taxonomy.db = await createRxDatabase(options.db)
 
     locales = await loadLocales(supportedLangs.map(l => l.code))
+    console.log('locales', locales)
 
     const taxesSchemas = await loadSchemas(taxonomies)
     const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema)))

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   taxonomies: {
     asociatie: {
       name: 'Asociație',

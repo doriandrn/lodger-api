@@ -2030,7 +2030,7 @@ function load(schemas) {
 
 var locales = {
   'en': () => Promise.resolve().then(function () { return en$1; }),
-  'ro': () => Promise.resolve().then(function () { return ro; })
+  'ro': () => Promise.resolve().then(function () { return ro$1; })
 };
 
 /**
@@ -2342,6 +2342,7 @@ function () {
 
           case 2:
             locales$1 = _b.sent();
+            console.log('locales', locales$1);
             return [4
             /*yield*/
             , load(taxonomies)];
@@ -3306,8 +3307,26 @@ var en$1 = /*#__PURE__*/Object.freeze({
     'default': en
 });
 
-var ro = /*#__PURE__*/Object.freeze({
-    __proto__: null
+var ro = {
+  taxonomies: {
+    asociatie: {
+      name: 'Asociație',
+      plural: 'Asociații',
+      fields: {}
+    }
+  },
+  errors: {
+    index: {
+      missingDB: 'Bază de date nespecificată',
+      invalidPluginDefinition: 'Plugin invalid',
+      couldNotWriteFile: 'Fișierul %% nu poate fi scris'
+    }
+  }
+};
+
+var ro$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    'default': ro
 });
 
 exports.Lodger = Lodger;
