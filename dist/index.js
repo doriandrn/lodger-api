@@ -2164,8 +2164,6 @@ function () {
    * @memberof Lodger
    */
   function Lodger(taxonomies, plugins) {
-    var _this = this;
-
     if (taxonomies === void 0) {
       taxonomies = taxonomies;
     }
@@ -2178,7 +2176,7 @@ function () {
     this.locale = locale; // Assign taxonomies to this
 
     this.taxonomies = taxonomies.map(function (tax) {
-      Object.defineProperty(_this, tax.form.plural, {
+      Object.defineProperty(Lodger.prototype, tax.form.plural, {
         value: tax,
         writable: false
       });
@@ -2221,7 +2219,7 @@ function () {
 
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
-      return __assign({}, translations);
+      if (translations) return __assign({}, translations);
     },
     enumerable: false,
     configurable: true

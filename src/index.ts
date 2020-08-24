@@ -108,7 +108,7 @@ let locale: string = 'ro', translations, locales
 class Lodger implements LodgerAPI {
   @observable locale: string = locale
   get i18n () {
-    return { ...translations }
+    if (translations) return { ...translations }
   }
 
   /**
@@ -121,7 +121,7 @@ class Lodger implements LodgerAPI {
   ) {
     // Assign taxonomies to this
     this.taxonomies = taxonomies.map(tax => {
-      Object.defineProperty(this, tax.form.plural, {
+      Object.defineProperty(Lodger.prototype, tax.form.plural, {
         value: tax,
         writable: false
       })
