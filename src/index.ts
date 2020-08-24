@@ -169,9 +169,9 @@ class Lodger implements LodgerAPI {
     return locale
   }
 
-  static get shit () {
-    return translations
-  }
+  // static get shit () {
+  //   return translations
+  // }
 
   static set locale (language) {
     const langCode = language.indexOf('-') > -1 ?
