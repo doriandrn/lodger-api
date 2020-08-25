@@ -2056,7 +2056,7 @@ function load$1(langs) {
                   case 0:
                     return [4
                     /*yield*/
-                    , locales[langCode]().default];
+                    , locales[langCode]()];
 
                   case 1:
                     return [2
