@@ -197,12 +197,11 @@ class Lodger implements LodgerAPI {
    *
    * @static
    * @param {string} key
-   * @param {string} context
    * @returns
    * @memberof Lodger
    */
-  static translate (key: string, context: string) {
-    return translations[context][key] || translations[key]
+  translate (key: string) {
+    return key.split('.').reduce((o,i)=>o[i], this.i18n)
   }
 
   /**

@@ -2252,13 +2252,14 @@ function () {
    *
    * @static
    * @param {string} key
-   * @param {string} context
    * @returns
    * @memberof Lodger
    */
 
-  Lodger.translate = function (key, context) {
-    return translations[context][key] || translations[key];
+  Lodger.prototype.translate = function (key) {
+    return key.split('.').reduce(function (o, i) {
+      return o[i];
+    }, this.i18n);
   };
   /**
    * @alias Taxonomy.put
