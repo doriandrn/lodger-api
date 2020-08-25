@@ -2149,7 +2149,6 @@ var Forms;
 var plugins = []; // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
 var locale = 'ro',
-    translations,
     locales$1;
 /**
  *
@@ -2221,7 +2220,7 @@ function () {
 
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
-      if (translations) return __assign({}, translations);
+      return locales$1 ? locales$1[locale] : {};
     },
     enumerable: false,
     configurable: true
@@ -2235,18 +2234,15 @@ function () {
     // }
     set: function (language) {
       var langCode = language.indexOf('-') > -1 ? language.split('-')[0] : language;
-      console.log('l', langCode);
       if (supportedLangs.map(function (lang) {
         return lang.code;
       }).indexOf(langCode) < 0) throw new LodgerError('Language not supported');
-      locale = langCode; // console.log('ll', locale)
-
-      try {
-        translations = locales$1[locale];
-        console.log('x', translations);
-      } catch (e) {
-        throw new Error('Could not find translations file for language: ', langCode, e);
-      }
+      locale = langCode; // try {
+      //   translations = locales[locale]
+      //   console.log('x', translations)
+      // } catch (e) {
+      //   throw new Error('Could not find translations file for language: ', langCode, e)
+      // }
     },
     enumerable: false,
     configurable: true
@@ -2484,6 +2480,8 @@ function () {
   };
 
   __decorate([mobx.observable], Lodger.prototype, "locale", void 0);
+
+  __decorate([mobx.computed], Lodger.prototype, "i18n", null);
 
   return Lodger;
 }();

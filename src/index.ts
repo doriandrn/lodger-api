@@ -97,7 +97,7 @@ interface LodgerAPI {
 let plugins: LodgerPlugin[] = []
 // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-let locale: string = 'ro', translations, locales
+let locale: string = 'ro', locales
 
 /**
  *
@@ -107,8 +107,8 @@ let locale: string = 'ro', translations, locales
  */
 class Lodger implements LodgerAPI {
   @observable locale: string = locale
-  get i18n () {
-    if (translations) return { ...translations }
+  @computed get i18n () {
+    return locales ? locales[locale] : {}
   }
 
   /**
@@ -178,20 +178,17 @@ class Lodger implements LodgerAPI {
       language.split('-')[0] :
       language
 
-    console.log('l' ,langCode)
-
     if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
       throw new LodgerError('Language not supported')
 
     locale = langCode
-    // console.log('ll', locale)
 
-    try {
-      translations = locales[locale]
-      console.log('x', translations)
-    } catch (e) {
-      throw new Error('Could not find translations file for language: ', langCode, e)
-    }
+    // try {
+    //   translations = locales[locale]
+    //   console.log('x', translations)
+    // } catch (e) {
+    //   throw new Error('Could not find translations file for language: ', langCode, e)
+    // }
   }
 
 
