@@ -2040,47 +2040,43 @@ var locales = {
 
 function load$1(langs) {
   return __awaiter(this, void 0, void 0, function () {
-    var x;
+    var _locales;
 
     var _this = this;
 
     return __generator(this, function (_a) {
       switch (_a.label) {
         case 0:
-          x = {};
+          _locales = {};
           return [4
           /*yield*/
           , Promise.all(langs.map(function (langCode) {
             return __awaiter(_this, void 0, void 0, function () {
-              var _a, _b;
-
-              return __generator(this, function (_c) {
-                switch (_c.label) {
+              var t;
+              return __generator(this, function (_a) {
+                switch (_a.label) {
                   case 0:
-                    _a = x;
-                    _b = langCode;
                     return [4
                     /*yield*/
-                    , locales[langCode]().default];
+                    , locales[langCode]()];
 
                   case 1:
-                    _a[_b] = _c.sent();
+                    t = _a.sent();
+                    _locales[langCode] = t.default;
                     return [2
                     /*return*/
                     ];
                 }
               });
             });
-          })) // console.log('x',  x)
-          ];
+          }))];
 
         case 1:
-          _a.sent(); // console.log('x',  x)
-
+          _a.sent();
 
           return [2
           /*return*/
-          , x];
+          , _locales];
       }
     });
   });
