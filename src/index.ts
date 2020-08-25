@@ -108,7 +108,7 @@ let locale: string = 'ro', translations, locales
 class Lodger implements LodgerAPI {
   @observable locale: string = locale
   get i18n () {
-    if (translations) return { ...translations.default }
+    if (translations) return { ...translations }
   }
 
   /**

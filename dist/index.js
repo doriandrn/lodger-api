@@ -2061,7 +2061,7 @@ function load$1(langs) {
                     _b = langCode;
                     return [4
                     /*yield*/
-                    , locales[langCode]()];
+                    , locales[langCode]().default];
 
                   case 1:
                     _a[_b] = _c.sent();
@@ -2225,7 +2225,7 @@ function () {
 
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
-      if (translations) return __assign({}, translations.default);
+      if (translations) return __assign({}, translations);
     },
     enumerable: false,
     configurable: true

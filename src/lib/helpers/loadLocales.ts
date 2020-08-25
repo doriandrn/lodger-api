@@ -7,7 +7,7 @@ import locales from 'locales'; // This is a virtual module for Rollup
 
 export default async function load (langs: string[]) {
   const x = {}
-  await Promise.all(langs.map(async langCode => { x[langCode] = await locales[langCode]() } ))
+  await Promise.all(langs.map(async langCode => { x[langCode] = await locales[langCode]().default } ))
   // console.log('x',  x)
   return x
 }
