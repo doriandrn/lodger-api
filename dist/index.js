@@ -2225,7 +2225,7 @@ function () {
 
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
-      if (translations) return __assign({}, translations);
+      if (translations) return __assign({}, translations.default);
     },
     enumerable: false,
     configurable: true
