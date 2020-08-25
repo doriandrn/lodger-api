@@ -2040,8 +2040,6 @@ var locales = {
 
 function load$1(langs) {
   return __awaiter(this, void 0, void 0, function () {
-    var x;
-
     var _this = this;
 
     return __generator(this, function (_a) {
@@ -2065,16 +2063,16 @@ function load$1(langs) {
                 }
               });
             });
-          }))];
+          })) // console.log('x',  x)
+          // return { default: x[0] }
+          ];
 
         case 1:
-          x = _a.sent();
-          console.log('x', x);
           return [2
           /*return*/
-          , {
-            default: x[0]
-          }];
+          , _a.sent() // console.log('x',  x)
+          // return { default: x[0] }
+          ];
       }
     });
   });
