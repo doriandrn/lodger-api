@@ -1,9 +1,11 @@
 import fs from 'fs'
 
-import ro from './src/lib/locales/ro'
-import { supportedLangs } from '~/lib/maintainable/langs.js'
+import ro from './src/lib/locales/ro.js'
+import { supportedLangs } from './src/lib/maintainable/langs.js'
 
-const { TranslationServiceClient } = require('@google-cloud/translate')
+import G from '@google-cloud/translate'
+
+const { TranslationServiceClient } = G
 const translations = []
 
 function getTranslationsArrayFrom (obj) {

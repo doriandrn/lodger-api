@@ -3294,11 +3294,15 @@ var en = {
       "fields": {}
     }
   },
+  "welcome": {
+    "title": " Welcome!",
+    "intro": " Thank you for choosing Lodger!"
+  },
   "errors": {
     "index": {
       "missingDB": " Unspecified database",
       "invalidPluginDefinition": " Invalid plugin",
-      "couldNotWriteFile": " %% file cannot be written"
+      "couldNotWriteFile": " %% file could not be written"
     }
   }
 };
@@ -3315,6 +3319,10 @@ var ro = {
       plural: 'Asociații',
       fields: {}
     }
+  },
+  welcome: {
+    title: 'Bun venit!',
+    intro: 'Îți mulțumim că ai ales să încerci Lodger!'
   },
   errors: {
     index: {
