@@ -1,10 +1,22 @@
 export default {
   taxonomies: {
-    asociatie: {
+    asociatii: {
       name: 'Asociație',
       plural: 'Asociații',
       fields: {
 
+      }
+    },
+    utilizatori: {
+      new: {
+        title: 'Hai să facem cunoștință!'
+      },
+      fields: {
+        name: 'Nume complet',
+        avatar: 'Avatar',
+        contact: 'Detalii de contacta',
+        rol: 'Rol',
+        preferinte: 'Preferințe'
       }
     }
   },

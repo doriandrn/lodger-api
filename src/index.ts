@@ -108,7 +108,6 @@ const locale = observable.box('ro')
  */
 class Lodger implements LodgerAPI {
   @computed get i18n () {
-    // if (locale === Lodger.locale) return
     return locales ? locales[locale.get()] : {}
   }
 
@@ -170,10 +169,6 @@ class Lodger implements LodgerAPI {
     return locale.get()
   }
 
-  // static get shit () {
-  //   return translations
-  // }
-
   static set locale (language) {
     const langCode = language.indexOf('-') > -1 ?
       language.split('-')[0] :
@@ -183,13 +178,6 @@ class Lodger implements LodgerAPI {
       throw new LodgerError('Language not supported')
 
     locale.set(langCode)
-
-    // try {
-    //   translations = locales[locale]
-    //   console.log('x', translations)
-    // } catch (e) {
-    //   throw new Error('Could not find translations file for language: ', langCode, e)
-    // }
   }
 
 
@@ -257,7 +245,6 @@ class Lodger implements LodgerAPI {
     Taxonomy.db = await createRxDatabase(options.db)
 
     locales = await loadLocales(supportedLangs.map(l => l.code))
-    console.log('locales', locales)
 
     const taxesSchemas = await loadSchemas(taxonomies)
     const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema)))

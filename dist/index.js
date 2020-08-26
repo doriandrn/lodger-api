@@ -1209,6 +1209,17 @@ function () {
     });
   }
 
+  Object.defineProperty(Field.prototype, "label", {
+    get: function () {
+      var _this = this;
+
+      return function (o) {
+        return o[_this.name] || 'undefined label';
+      };
+    },
+    enumerable: false,
+    configurable: true
+  });
   Object.defineProperty(Field.prototype, "rxSchema", {
     /**
      * Used for Schema constructors,
@@ -1229,6 +1240,9 @@ function () {
     enumerable: false,
     configurable: true
   });
+
+  __decorate([mobx.computed], Field.prototype, "label", null);
+
   return Field;
 }();
 
@@ -2219,7 +2233,6 @@ function () {
 
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
-      // if (locale === Lodger.locale) return
       return locales$1 ? locales$1[locale.get()] : {};
     },
     enumerable: false,
@@ -2229,20 +2242,12 @@ function () {
     get: function () {
       return locale.get();
     },
-    // static get shit () {
-    //   return translations
-    // }
     set: function (language) {
       var langCode = language.indexOf('-') > -1 ? language.split('-')[0] : language;
       if (supportedLangs.map(function (lang) {
         return lang.code;
       }).indexOf(langCode) < 0) throw new LodgerError('Language not supported');
-      locale.set(langCode); // try {
-      //   translations = locales[locale]
-      //   console.log('x', translations)
-      // } catch (e) {
-      //   throw new Error('Could not find translations file for language: ', langCode, e)
-      // }
+      locale.set(langCode);
     },
     enumerable: false,
     configurable: true
@@ -2346,7 +2351,6 @@ function () {
 
           case 2:
             locales$1 = _b.sent();
-            console.log('locales', locales$1);
             return [4
             /*yield*/
             , load(taxonomies)];
@@ -3319,10 +3323,22 @@ var en$1 = /*#__PURE__*/Object.freeze({
 
 var ro = {
   taxonomies: {
-    asociatie: {
+    asociatii: {
       name: 'Asociație',
       plural: 'Asociații',
       fields: {}
+    },
+    utilizatori: {
+      new: {
+        title: 'Hai să facem cunoștință!'
+      },
+      fields: {
+        name: 'Nume complet',
+        avatar: 'Avatar',
+        contact: 'Detalii de contacta',
+        rol: 'Rol',
+        preferinte: 'Preferințe'
+      }
     }
   },
   welcome: {

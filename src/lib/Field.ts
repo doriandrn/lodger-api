@@ -9,6 +9,8 @@ import S from './String'
 // This should only be imported for DEVELOPMENT PURPOSES
 import fakeData from 'helper/dev/fakeData'
 
+import { observable, computed } from 'mobx'
+
 const { String } = S
 
 type ItemExcludableFrom = 'db' | 'addForm' | 'editForm' | 'all'
@@ -117,7 +119,6 @@ export class Field implements FieldAPI {
   readonly value : (context ?: FieldGivenContext<any>) => any = () => this.default || undefined
   readonly fakeValue : any
   readonly preview ?: number
-  readonly label ?: string
 
   readonly _type ?: FieldTypes
   readonly _index ?: boolean // should be indexed to search for
@@ -178,6 +179,10 @@ export class Field implements FieldAPI {
     Object.defineProperty(this, 'fakeValue', {
       get () { return fakeData[type || 'string'] }
     })
+  }
+
+  @computed get label (): string {
+    return (o: Object) => o[this.name] || 'undefined label'
   }
 
 
