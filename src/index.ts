@@ -200,8 +200,9 @@ class Lodger implements LodgerAPI {
    * @returns
    * @memberof Lodger
    */
-  translate (key: string) {
-    return key.split('.').reduce((o,i)=>o[i], this.i18n)
+  @computed get translate () {
+    const { i18n } = this
+    return (key: string) => key.split('.').reduce((o,i)=>o[i], i18n)
   }
 
   /**

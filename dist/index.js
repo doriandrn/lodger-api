@@ -2247,20 +2247,26 @@ function () {
     enumerable: false,
     configurable: true
   });
-  /**
-   * Gets the translation for a specific item.
-   *
-   * @static
-   * @param {string} key
-   * @returns
-   * @memberof Lodger
-   */
-
-  Lodger.prototype.translate = function (key) {
-    return key.split('.').reduce(function (o, i) {
-      return o[i];
-    }, this.i18n);
-  };
+  Object.defineProperty(Lodger.prototype, "translate", {
+    /**
+     * Gets the translation for a specific item.
+     *
+     * @static
+     * @param {string} key
+     * @returns
+     * @memberof Lodger
+     */
+    get: function () {
+      var i18n = this.i18n;
+      return function (key) {
+        return key.split('.').reduce(function (o, i) {
+          return o[i];
+        }, i18n);
+      };
+    },
+    enumerable: false,
+    configurable: true
+  });
   /**
    * @alias Taxonomy.put
    *
@@ -2272,7 +2278,6 @@ function () {
    * @returns {Promise<RxDocument<Taxonomie>>}
    * @memberof Lodger
    */
-
 
   Lodger.prototype.put = function (taxonomie, data) {
     this[taxonomie].put(data);
@@ -2483,6 +2488,8 @@ function () {
   __decorate([mobx.observable], Lodger.prototype, "locale", void 0);
 
   __decorate([mobx.computed], Lodger.prototype, "i18n", null);
+
+  __decorate([mobx.computed], Lodger.prototype, "translate", null);
 
   return Lodger;
 }();
