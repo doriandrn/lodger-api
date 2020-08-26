@@ -3302,21 +3302,33 @@ var Utilizator = /*#__PURE__*/Object.freeze({
 
 var en = {
   "taxonomies": {
-    "asociatie": {
+    "asociatii": {
       "name": "Association",
       "plural": " Associations",
       "fields": {}
+    },
+    "utilizatori": {
+      "new": {
+        "title": " Let's Meet!"
+      },
+      "fields": {
+        "name": " Full Name",
+        "avatar": " Avatar",
+        "contact": " Contact Details",
+        "rol": " Role",
+        "preferinte": " Preferences"
+      }
     }
   },
   "welcome": {
     "title": " Welcome!",
-    "intro": " Thank you for choosing Lodger!"
+    "intro": " Thank You for Choosing Lodger!"
   },
   "errors": {
     "index": {
-      "missingDB": " Unspecified database",
-      "invalidPluginDefinition": " Invalid plugin",
-      "couldNotWriteFile": " %% file could not be written"
+      "missingDB": " be written",
+      "invalidPluginDefinition": "Plugin invalid",
+      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
     }
   }
 };
@@ -3340,7 +3352,7 @@ var ro = {
       fields: {
         name: 'Nume complet',
         avatar: 'Avatar',
-        contact: 'Detalii de contacta',
+        contact: 'Detalii de contact',
         rol: 'Rol',
         preferinte: 'Preferințe'
       }

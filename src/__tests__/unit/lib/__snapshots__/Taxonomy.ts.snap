@@ -9,31 +9,47 @@ Taxonomy {
     ],
     "fields": Object {
       "createdAt": Field {
+        "_index": true,
+        "_type": "dateTime",
         "default": undefined,
+        "preview": undefined,
         "storage": "db",
         "type": "number",
         "value": [Function],
       },
       "lungime": Field {
+        "_type": "number",
         "default": undefined,
+        "key": "lungime",
+        "preview": undefined,
         "storage": "db",
         "type": "number",
         "value": [Function],
       },
       "name": Field {
+        "_type": undefined,
         "default": undefined,
+        "key": "name",
+        "preview": undefined,
         "storage": "db",
         "type": "string",
         "value": [Function],
       },
       "numar": Field {
+        "_index": true,
+        "_type": "number",
         "default": undefined,
+        "key": "numar",
+        "preview": undefined,
         "storage": "db",
         "type": "number",
         "value": [Function],
       },
       "updatedAt": Field {
+        "_index": true,
+        "_type": "dateTime",
         "default": undefined,
+        "preview": undefined,
         "storage": "db",
         "type": "number",
         "value": [Function],
@@ -45,22 +61,36 @@ Taxonomy {
     },
     "plural": "sosetai",
     "schema": Schema {
-      "indexes": Array [],
+      "indexes": Array [
+        "numar",
+        "createdAt",
+        "updatedAt",
+      ],
       "name": "soseta",
       "properties": Object {
         "createdAt": Object {
+          "_index": true,
+          "_type": "dateTime",
           "type": "number",
         },
         "lungime": Object {
+          "_type": "number",
+          "key": "lungime",
           "type": "number",
         },
         "name": Object {
+          "key": "name",
           "type": "string",
         },
         "numar": Object {
+          "_index": true,
+          "_type": "number",
+          "key": "numar",
           "type": "number",
         },
         "updatedAt": Object {
+          "_index": true,
+          "_type": "dateTime",
           "type": "number",
         },
       },
@@ -74,5 +104,6 @@ Taxonomy {
     "timestamps": true,
   },
   "refsIds": Array [],
+  "totals": 0,
 }
 `;

@@ -14,7 +14,7 @@ export default {
       fields: {
         name: 'Nume complet',
         avatar: 'Avatar',
-        contact: 'Detalii de contacta',
+        contact: 'Detalii de contact',
         rol: 'Rol',
         preferinte: 'Preferințe'
       }
