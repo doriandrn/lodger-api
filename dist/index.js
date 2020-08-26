@@ -1169,11 +1169,13 @@ function () {
         required = data.required,
         v = data.v,
         value = data.value,
-        preview = data.preview;
+        preview = data.preview,
+        key = data.key;
     this.preview = preview;
     this._type = type; // hold this for reference
 
     this.type = String$1(type || '').asRxDBType;
+    if (key) this.key = key;
     if (index) this._index = true; // transform the ref
 
     if (ref) {
@@ -1214,7 +1216,7 @@ function () {
       var _this = this;
 
       return function (o) {
-        return o[_this.name] || 'undefined label';
+        return o[_this.key] || 'undefined label';
       };
     },
     enumerable: false,
@@ -1398,7 +1400,9 @@ function () {
           index: true
         };
         timestampKeys.map(function (key) {
-          _this.fields[key] = new Field(__assign({}, captureTimestampField_1));
+          _this.fields[key] = new Field(__assign(__assign({}, captureTimestampField_1), {
+            key: key
+          }));
         });
       }
     }

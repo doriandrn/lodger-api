@@ -102,7 +102,7 @@ implements FormAPI<I> {
           index: true
         }
         timestampKeys.map(key => {
-          this.fields[key] = new Field({ ...captureTimestampField })
+          this.fields[key] = new Field({ ...captureTimestampField, key })
         })
       }
     }

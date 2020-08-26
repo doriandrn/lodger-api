@@ -50,7 +50,7 @@ declare global {
     primary ?: boolean // skip _id field and make this primary instead
     // excludeFrom ?: ItemExcludableFrom | ItemExcludableFrom[]
 
-    name ?: string // used for grouping checkboxes / radio groups
+    key ?: string // or name -> to be used for grouping checkboxes / radio groups
     options ?: Array<any> | Object // for selects and other multiple options els
 
     // numeric inputs
@@ -137,11 +137,12 @@ export class Field implements FieldAPI {
       return
     }
 
-    const { ref, index, indexRef, type, step, required, v, value, preview } = data
+    const { ref, index, indexRef, type, step, required, v, value, preview, key } = data
     this.preview = preview
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
 
+    if (key) this.key = key
     if (index) this._index = true
 
     // transform the ref
@@ -182,7 +183,7 @@ export class Field implements FieldAPI {
   }
 
   @computed get label (): string {
-    return (o: Object) => o[this.name] || 'undefined label'
+    return (o: Object) => o[this.key] || 'undefined label'
   }
 
 
