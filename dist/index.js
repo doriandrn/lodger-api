@@ -2149,7 +2149,7 @@ var Forms;
 var plugins = []; // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
 var locales$1;
-var locale = mobx.observable('ro');
+var locale = mobx.observable.box('ro');
 /**
  *
  * @class The main API

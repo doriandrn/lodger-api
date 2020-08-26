@@ -98,7 +98,7 @@ let plugins: LodgerPlugin[] = []
 // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
 let locales
-const locale = observable('ro')
+const locale = observable.box('ro')
 
 /**
  *
