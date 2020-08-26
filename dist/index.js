@@ -2219,8 +2219,13 @@ function () {
 
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
-      if (locale === Lodger.locale) return;
-      return locales$1 ? locales$1[locale] : {};
+      // if (locale === Lodger.locale) return
+      try {
+        return locales$1[locale];
+      } catch (e) {
+        console.error(locales$1, e);
+      } // return locales ? locales[locale] : {}
+
     },
     enumerable: false,
     configurable: true
