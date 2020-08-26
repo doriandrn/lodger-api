@@ -2148,8 +2148,8 @@ var Forms;
 
 var plugins = []; // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-var locale = 'ro',
-    locales$1;
+var locales$1;
+var locale = mobx.observable('ro');
 /**
  *
  * @class The main API
@@ -2173,8 +2173,7 @@ function () {
       plugins = [];
     }
 
-    this.plugins = plugins;
-    this.locale = locale; // Assign taxonomies to this
+    this.plugins = plugins; // Assign taxonomies to this
 
     this.taxonomies = taxonomies.map(function (tax) {
       Object.defineProperty(Lodger.prototype, tax.form.plural, {
@@ -2484,8 +2483,6 @@ function () {
       });
     });
   };
-
-  __decorate([mobx.observable], Lodger.prototype, "locale", void 0);
 
   __decorate([mobx.computed], Lodger.prototype, "i18n", null);
 

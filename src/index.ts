@@ -97,7 +97,8 @@ interface LodgerAPI {
 let plugins: LodgerPlugin[] = []
 // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
-let locale: string = 'ro', locales
+let locales
+const locale = observable('ro')
 
 /**
  *
@@ -106,7 +107,6 @@ let locale: string = 'ro', locales
  * @requires <rxdb> RxDatabase
  */
 class Lodger implements LodgerAPI {
-  @observable locale: string = locale
   @computed get i18n () {
     return locales ? locales[locale] : {}
   }
