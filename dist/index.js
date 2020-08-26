@@ -2220,19 +2220,14 @@ function () {
   Object.defineProperty(Lodger.prototype, "i18n", {
     get: function () {
       // if (locale === Lodger.locale) return
-      try {
-        return locales$1[locale];
-      } catch (e) {
-        console.error(locales$1, e);
-      } // return locales ? locales[locale] : {}
-
+      return locales$1 ? locales$1[locale.get()] : {};
     },
     enumerable: false,
     configurable: true
   });
   Object.defineProperty(Lodger, "locale", {
     get: function () {
-      return locale;
+      return locale.get();
     },
     // static get shit () {
     //   return translations
@@ -2242,7 +2237,7 @@ function () {
       if (supportedLangs.map(function (lang) {
         return lang.code;
       }).indexOf(langCode) < 0) throw new LodgerError('Language not supported');
-      locale = langCode; // try {
+      locale.set(langCode); // try {
       //   translations = locales[locale]
       //   console.log('x', translations)
       // } catch (e) {

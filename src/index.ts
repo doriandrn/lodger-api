@@ -109,12 +109,7 @@ const locale = observable.box('ro')
 class Lodger implements LodgerAPI {
   @computed get i18n () {
     // if (locale === Lodger.locale) return
-    try {
-      return locales[locale]
-    } catch (e) {
-      console.error(locales, e)
-    }
-    // return locales ? locales[locale] : {}
+    return locales ? locales[locale.get()] : {}
   }
 
   /**
@@ -172,7 +167,7 @@ class Lodger implements LodgerAPI {
   }
 
   static get locale () {
-    return locale
+    return locale.get()
   }
 
   // static get shit () {
@@ -187,7 +182,7 @@ class Lodger implements LodgerAPI {
     if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
       throw new LodgerError('Language not supported')
 
-    locale = langCode
+    locale.set(langCode)
 
     // try {
     //   translations = locales[locale]
