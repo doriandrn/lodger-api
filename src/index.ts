@@ -108,6 +108,7 @@ const locale = observable.box('ro')
  */
 class Lodger implements LodgerAPI {
   @computed get i18n () {
+    if (locale === Lodger.locale) return
     return locales ? locales[locale] : {}
   }
 
