@@ -1384,8 +1384,11 @@ function () {
     this.plural = this.name.plural;
 
     if (fields) {
-      Object.keys(fields).map(function (fieldId) {
-        _this.fields[fieldId] = new Field(fields[fieldId]);
+      Object.keys(fields).map(function (key) {
+        Object.assign(fields[key], {
+          key: key
+        });
+        _this.fields[key] = new Field(fields[key]);
       });
     }
 
@@ -1400,9 +1403,7 @@ function () {
           index: true
         };
         timestampKeys.map(function (key) {
-          _this.fields[key] = new Field(__assign(__assign({}, captureTimestampField_1), {
-            key: key
-          }));
+          _this.fields[key] = new Field(__assign({}, captureTimestampField_1));
         });
       }
     }

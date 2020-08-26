@@ -86,8 +86,9 @@ implements FormAPI<I> {
     this.plural = this.name.plural
 
     if (fields) {
-      Object.keys(fields).map((fieldId) => {
-        this.fields[ fieldId ] = new Field( fields[ fieldId ] )
+      Object.keys(fields).map((key: string) => {
+        Object.assign(fields[key], { key })
+        this.fields[ key ] = new Field( fields[ key ] )
       })
     }
 
@@ -102,7 +103,7 @@ implements FormAPI<I> {
           index: true
         }
         timestampKeys.map(key => {
-          this.fields[key] = new Field({ ...captureTimestampField, key })
+          this.fields[key] = new Field({ ...captureTimestampField })
         })
       }
     }
