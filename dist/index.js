@@ -3300,9 +3300,17 @@ var Utilizator = /*#__PURE__*/Object.freeze({
 });
 
 var en = {
+  "next": "Continue",
+  "forms": {
+    "langSwitch": {
+      "fields": {
+        "selector": " Change Language"
+      }
+    }
+  },
   "taxonomies": {
     "asociatii": {
-      "name": "Association",
+      "name": " Association",
       "plural": " Associations",
       "fields": {}
     },
@@ -3321,11 +3329,11 @@ var en = {
   },
   "welcome": {
     "title": " Welcome!",
-    "intro": " Thank You for Choosing Lodger!"
+    "intro": " Thank You for Choosing to Try Lodger! The file %% cannot be written"
   },
   "errors": {
     "index": {
-      "missingDB": " be written",
+      "missingDB": "Bază de date nespecificată",
       "invalidPluginDefinition": "Plugin invalid",
       "couldNotWriteFile": "Fișierul %% nu poate fi scris"
     }
@@ -3338,6 +3346,7 @@ var en$1 = /*#__PURE__*/Object.freeze({
 });
 
 var ro = {
+  next: 'Continuă',
   forms: {
     langSwitch: {
       fields: {

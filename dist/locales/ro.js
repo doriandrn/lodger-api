@@ -1,4 +1,5 @@
 export default {
+  next: 'Continuă',
   forms: {
     langSwitch: {
       fields: {
