@@ -1,4 +1,11 @@
 export default {
+  forms: {
+    langSwitch: {
+      fields: {
+        selector: 'Schimbă limba'
+      }
+    }
+  },
   taxonomies: {
     asociatii: {
       name: 'Asociație',

@@ -41,14 +41,11 @@ const fields: FieldsCreator<Utilizator> = {
     type: 'contactFields',
     value: ({ activeDoc }) => activeDoc.contact
   },
-  rol: {
-    type: 'number',
-    preview: 2,
-    required: true,
-    value: ({ activeDoc }) => activeDoc.rol
-  },
   preferinte: {
-    type: 'object'
+    type: 'object',
+    default: {
+      locale: () => 'ro-RO'
+    }
   }
 }
 
@@ -72,6 +69,9 @@ const hooks = {
 }
 
 const settings = {
+  locale: {
+    type: 'langSelect'
+  },
   online: {
     campuri: [
       {

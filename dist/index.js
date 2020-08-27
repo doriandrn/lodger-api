@@ -3212,17 +3212,13 @@ var fields$a = {
       return activeDoc.contact;
     }
   },
-  rol: {
-    type: 'number',
-    preview: 2,
-    required: true,
-    value: function (_a) {
-      var activeDoc = _a.activeDoc;
-      return activeDoc.rol;
-    }
-  },
   preferinte: {
-    type: 'object'
+    type: 'object',
+    default: {
+      locale: function () {
+        return 'ro-RO';
+      }
+    }
   }
 };
 var methods$2 = {
@@ -3279,6 +3275,9 @@ var hooks$1 = {
   }
 };
 var settings = {
+  locale: {
+    type: 'langSelect'
+  },
   online: {
     campuri: [{
       id: 'parola',
@@ -3339,6 +3338,13 @@ var en$1 = /*#__PURE__*/Object.freeze({
 });
 
 var ro = {
+  forms: {
+    langSwitch: {
+      fields: {
+        selector: 'Schimbă limba'
+      }
+    }
+  },
   taxonomies: {
     asociatii: {
       name: 'Asociație',
