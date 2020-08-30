@@ -1,12 +1,14 @@
 export default {
   next: 'Continuă',
-  forms: {
-    langSwitch: {
-      fields: {
-        selector: 'Schimbă limba'
-      }
-    }
-  },
+  back: 'Înapoi',
+  backTo: 'Înapoi la',
+  // forms: {
+  //   langSwitch: {
+  //     fields: {
+  //       selector: 'Schimbă limba'
+  //     }
+  //   }
+  // },
   taxonomies: {
     asociatii: {
       name: 'Asociație',
@@ -23,8 +25,11 @@ export default {
         name: 'Nume complet',
         avatar: 'Avatar',
         contact: 'Detalii de contact',
-        rol: 'Rol',
-        preferinte: 'Preferințe'
+        tel: 'Număr de telefon',
+        email: 'Adresă e-mail',
+        social: 'Social Media',
+        preferinte: 'Preferințe',
+        langSwitch: 'Schimbă limba'
       }
     }
   },

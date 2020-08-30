@@ -25,7 +25,6 @@ const delimiter = ';'
 
 // const entries = {}
 const contents = [translations.join(delimiter)]
-console.log(contents[0])
 
 const sourceLanguageCode = 'ro'
 
@@ -47,6 +46,7 @@ supportedLangs
       // Run request
       const [response] = await translationClient.translateText(request);
       const { translatedText } = response.translations[0]
+      console.log(translatedText)
 
       let original = JSON.stringify(ro)
 

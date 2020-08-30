@@ -732,7 +732,8 @@ const allLangs = [{
 }, {
   "code": "es",
   "name": "Spanish; Castilian",
-  "nativeName": "español, castellano"
+  "nativeName": "español, castellano",
+  "supported": true
 }, {
   "code": "su",
   "name": "Sundanese",
@@ -2051,6 +2052,7 @@ function load(schemas) {
 
 var locales = {
   'en': () => Promise.resolve().then(function () { return en$1; }),
+  'es': () => Promise.resolve().then(function () { return es$1; }),
   'ro': () => Promise.resolve().then(function () { return ro$1; })
 };
 
@@ -3306,13 +3308,8 @@ var Utilizator = /*#__PURE__*/Object.freeze({
 
 var en = {
   "next": "Continue",
-  "forms": {
-    "langSwitch": {
-      "fields": {
-        "selector": " Change Language"
-      }
-    }
-  },
+  "back": " Back",
+  "backTo": " Back to",
   "taxonomies": {
     "asociatii": {
       "name": " Association",
@@ -3327,20 +3324,23 @@ var en = {
         "name": " Full Name",
         "avatar": " Avatar",
         "contact": " Contact Details",
-        "rol": " Role",
-        "preferinte": " Preferences"
+        "tel": " Phone Number",
+        "email": " Email Address",
+        "social": " Social Media",
+        "preferinte": " Preferences",
+        "langSwitch": " Change Language"
       }
     }
   },
   "welcome": {
     "title": " Welcome!",
-    "intro": " Thank You for Choosing to Try Lodger! The file %% cannot be written"
+    "intro": " Thank You you have chosen to try Lodger!"
   },
   "errors": {
     "index": {
-      "missingDB": "Bază de date nespecificată",
-      "invalidPluginDefinition": "Plugin invalid",
-      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
+      "missingDB": " Unspecified database",
+      "invalidPluginDefinition": " Invalid plugin",
+      "couldNotWriteFile": " %% file cannot be written"
     }
   }
 };
@@ -3350,15 +3350,61 @@ var en$1 = /*#__PURE__*/Object.freeze({
     'default': en
 });
 
-var ro = {
-  next: 'Continuă',
-  forms: {
-    langSwitch: {
-      fields: {
-        selector: 'Schimbă limba'
+var es = {
+  "next": "Continuar",
+  "back": " Volver",
+  "backTo": " Volver a",
+  "taxonomies": {
+    "asociatii": {
+      "name": " Asociación",
+      "plural": " Asociaciones",
+      "fields": {}
+    },
+    "utilizatori": {
+      "new": {
+        "title": " ¡Nos vemos !"
+      },
+      "fields": {
+        "name": " Nombre completo",
+        "avatar": " Avatar",
+        "contact": " Detalles de contacto",
+        "tel": " Número de teléfono",
+        "email": " Dirección de correo electrónico",
+        "social": " Redes sociales",
+        "preferinte": " Preferencias",
+        "langSwitch": " Cambiar idioma"
       }
     }
   },
+  "welcome": {
+    "title": " ¡Bienvenido !",
+    "intro": " Gracias ha elegido probar Lodger !"
+  },
+  "errors": {
+    "index": {
+      "missingDB": " Base de datos no especificada",
+      "invalidPluginDefinition": " Complemento no válido",
+      "couldNotWriteFile": " No se puede escribir el archivo %%"
+    }
+  }
+};
+
+var es$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    'default': es
+});
+
+var ro = {
+  next: 'Continuă',
+  back: 'Înapoi',
+  backTo: 'Înapoi la',
+  // forms: {
+  //   langSwitch: {
+  //     fields: {
+  //       selector: 'Schimbă limba'
+  //     }
+  //   }
+  // },
   taxonomies: {
     asociatii: {
       name: 'Asociație',
@@ -3373,8 +3419,11 @@ var ro = {
         name: 'Nume complet',
         avatar: 'Avatar',
         contact: 'Detalii de contact',
-        rol: 'Rol',
-        preferinte: 'Preferințe'
+        tel: 'Număr de telefon',
+        email: 'Adresă e-mail',
+        social: 'Social Media',
+        preferinte: 'Preferințe',
+        langSwitch: 'Schimbă limba'
       }
     }
   },
