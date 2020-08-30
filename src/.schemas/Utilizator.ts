@@ -35,6 +35,9 @@ const fields: FieldsCreator<Utilizator> = {
     required: true,
     primary: true,
     preview: 1,
+    oninput: {
+      transform: 'capitalize:all'
+    },
     value: ({ activeDoc }) => activeDoc.name
   },
   contact: {

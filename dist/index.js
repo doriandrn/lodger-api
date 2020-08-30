@@ -1170,11 +1170,13 @@ function () {
         v = data.v,
         value = data.value,
         preview = data.preview,
+        oninput = data.oninput,
         key = data.key;
     this.preview = preview;
     this._type = type; // hold this for reference
 
     this.type = String$1(type || '').asRxDBType;
+    this.oninput = oninput;
     if (key) this.key = key;
     if (index) this._index = true; // transform the ref
 
@@ -3200,6 +3202,9 @@ var fields$a = {
     required: true,
     primary: true,
     preview: 1,
+    oninput: {
+      transform: 'capitalize:all'
+    },
     value: function (_a) {
       var activeDoc = _a.activeDoc;
       return activeDoc.name;

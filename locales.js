@@ -25,6 +25,7 @@ const delimiter = ';'
 
 // const entries = {}
 const contents = [translations.join(delimiter)]
+console.log(contents[0])
 
 const sourceLanguageCode = 'ro'
 

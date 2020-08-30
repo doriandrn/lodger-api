@@ -119,6 +119,9 @@ export class Field implements FieldAPI {
   readonly value : (context ?: FieldGivenContext<any>) => any = () => this.default || undefined
   readonly fakeValue : any
   readonly preview ?: number
+  readonly oninput ?: {
+    transform ?: string
+  }
 
   readonly _type ?: FieldTypes
   readonly _index ?: boolean // should be indexed to search for
@@ -137,10 +140,11 @@ export class Field implements FieldAPI {
       return
     }
 
-    const { ref, index, indexRef, type, step, required, v, value, preview, key } = data
+    const { ref, index, indexRef, type, step, required, v, value, preview, oninput, key } = data
     this.preview = preview
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
+    this.oninput = oninput
 
     if (key) this.key = key
     if (index) this._index = true
