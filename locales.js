@@ -36,7 +36,7 @@ supportedLangs
 
     const request = {
       parent: `projects/lodger-286710`,
-      model: `projects/lodger-286710/locations/global/models/general/nmt`,
+      model: `projects/lodger-286710/locations/global/models/general/base`,
       contents,
       mimeType: 'text/plain', // mime types: text/plain, text/html
       sourceLanguageCode,

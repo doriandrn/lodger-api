@@ -3307,40 +3307,40 @@ var Utilizator = /*#__PURE__*/Object.freeze({
 });
 
 var en = {
-  "next": "Continue",
-  "back": " Back",
-  "backTo": " Back to",
+  "next": "Continue, Back, Back to",
+  "back": " Association",
+  "backTo": " Associates",
   "taxonomies": {
     "asociatii": {
-      "name": " Association",
-      "plural": " Associations",
+      "name": " Let's get acquainted!, Full Name,  Plugin invalid, the file can not be written %%, address details, phone number, E-mail, Social Media, Preferences Change language",
+      "plural": " Welcome",
       "fields": {}
     },
     "utilizatori": {
       "new": {
-        "title": " Let's Meet!"
+        "title": " Thank you chose to try Lodger!"
       },
       "fields": {
-        "name": " Full Name",
-        "avatar": " Avatar",
-        "contact": " Contact Details",
-        "tel": " Phone Number",
-        "email": " Email Address",
-        "social": " Social Media",
-        "preferinte": " Preferences",
-        "langSwitch": " Change Language"
+        "name": " database unspecified",
+        "avatar": "Avatar",
+        "contact": "Detalii de contact",
+        "tel": "Număr de telefon",
+        "email": "Adresă e-mail",
+        "social": "Social Media",
+        "preferinte": "Preferințe",
+        "langSwitch": "Schimbă limba"
       }
     }
   },
   "welcome": {
-    "title": " Welcome!",
-    "intro": " Thank You you have chosen to try Lodger!"
+    "title": "Bun venit!",
+    "intro": "Îți mulțumim că ai ales să încerci Lodger!"
   },
   "errors": {
     "index": {
-      "missingDB": " Unspecified database",
-      "invalidPluginDefinition": " Invalid plugin",
-      "couldNotWriteFile": " %% file cannot be written"
+      "missingDB": "Bază de date nespecificată",
+      "invalidPluginDefinition": "Plugin invalid",
+      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
     }
   }
 };
@@ -3351,40 +3351,40 @@ var en$1 = /*#__PURE__*/Object.freeze({
 });
 
 var es = {
-  "next": "Continuar",
-  "back": " Volver",
-  "backTo": " Volver a",
+  "next": "Continuar, Volver, Volver, la Asociación",
+  "back": " Associates",
+  "backTo": " get Vamos !, conoce el nombre completo, Avatar, detalles de la dirección, número de teléfono, correo electrónico, redes sociales, Preferencias Cambiar el idioma",
   "taxonomies": {
     "asociatii": {
-      "name": " Asociación",
-      "plural": " Asociaciones",
+      "name": " Bienvenido",
+      "plural": " Gracias que eligió para tratar Lodger !",
       "fields": {}
     },
     "utilizatori": {
       "new": {
-        "title": " ¡Nos vemos !"
+        "title": " base de datos no especificado"
       },
       "fields": {
-        "name": " Nombre completo",
-        "avatar": " Avatar",
-        "contact": " Detalles de contacto",
-        "tel": " Número de teléfono",
-        "email": " Dirección de correo electrónico",
-        "social": " Redes sociales",
-        "preferinte": " Preferencias",
-        "langSwitch": " Cambiar idioma"
+        "name": " Plugin no válido, el archivo no se puede escribir %%",
+        "avatar": "Avatar",
+        "contact": "Detalii de contact",
+        "tel": "Număr de telefon",
+        "email": "Adresă e-mail",
+        "social": "Social Media",
+        "preferinte": "Preferințe",
+        "langSwitch": "Schimbă limba"
       }
     }
   },
   "welcome": {
-    "title": " ¡Bienvenido !",
-    "intro": " Gracias ha elegido probar Lodger !"
+    "title": "Bun venit!",
+    "intro": "Îți mulțumim că ai ales să încerci Lodger!"
   },
   "errors": {
     "index": {
-      "missingDB": " Base de datos no especificada",
-      "invalidPluginDefinition": " Complemento no válido",
-      "couldNotWriteFile": " No se puede escribir el archivo %%"
+      "missingDB": "Bază de date nespecificată",
+      "invalidPluginDefinition": "Plugin invalid",
+      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
     }
   }
 };
