@@ -21,7 +21,7 @@ function getTranslationsArrayFrom (obj) {
 getTranslationsArrayFrom(ro)
 
 const translationClient = new TranslationServiceClient()
-const delimiter = ';'
+const delimiter = '|'
 
 // const entries = {}
 const contents = [translations.join(delimiter)]
