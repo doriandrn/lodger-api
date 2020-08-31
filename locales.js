@@ -51,7 +51,7 @@ supportedLangs
       let original = JSON.stringify(ro)
 
       translatedText.split(delimiter).map((phrase, i) => {
-        const alters = phrase.indexOf('! ') === 0 ? phrase.substr(0, 2) : phrase
+        const alters = phrase.indexOf('! ') === 0 ? phrase.substr(2, phrase.length) : phrase
         original = original.replace(contents[0].split(delimiter)[i], alters)
       })
 
