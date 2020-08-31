@@ -11,7 +11,7 @@ const translations = []
 function getTranslationsArrayFrom (obj) {
   Object.keys(obj).forEach(o => {
     if (typeof obj[o] === 'string') {
-      translations.push(obj[o])
+      translations.push(String(obj[o]).trim())
     } else {
       getTranslationsArrayFrom(obj[o])
     }

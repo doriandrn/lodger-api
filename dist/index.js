@@ -327,7 +327,8 @@ const allLangs = [{
 }, {
   "code": "fr",
   "name": "French",
-  "nativeName": "français, langue française"
+  "nativeName": "français, langue française",
+  "supported": true
 }, {
   "code": "ff",
   "name": "Fula; Fulah; Pulaar; Pular",
@@ -2053,6 +2054,7 @@ function load(schemas) {
 var locales = {
   'en': () => Promise.resolve().then(function () { return en$1; }),
   'es': () => Promise.resolve().then(function () { return es$1; }),
+  'fr': () => Promise.resolve().then(function () { return fr$1; }),
   'ro': () => Promise.resolve().then(function () { return ro$1; })
 };
 
@@ -3392,6 +3394,50 @@ var es = {
 var es$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     'default': es
+});
+
+var fr = {
+  "next": "Continuer ",
+  "back": " Retour ",
+  "backTo": " Retour à ",
+  "taxonomies": {
+    "asociatii": {
+      "name": " Association ",
+      "plural": " Associations ",
+      "fields": {}
+    },
+    "utilizatori": {
+      "new": {
+        "title": " get de Let connaissance "
+      },
+      "fields": {
+        "name": "! Nom complet ",
+        "avatar": " Avatar ",
+        "contact": " Coordonnées ",
+        "tel": " Numéro de téléphone ",
+        "email": " E-mail ",
+        "social": " Social Media ",
+        "preferinte": " Préférences ",
+        "langSwitch": " langue "
+      }
+    }
+  },
+  "welcome": {
+    "title": " Bienvenue ",
+    "intro": "! Merci vous avez choisi d'essayer Lodger "
+  },
+  "errors": {
+    "index": {
+      "missingDB": "! base de données non spécifiée ",
+      "invalidPluginDefinition": " Plugin invalide ",
+      "couldNotWriteFile": " %% fichier ne peut pas être écrit"
+    }
+  }
+};
+
+var fr$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    'default': fr
 });
 
 var ro = {

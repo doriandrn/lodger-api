@@ -45,7 +45,7 @@ const allLangs = [
   {"code":"fo","name":"Faroese","nativeName":"føroyskt"},
   {"code":"fj","name":"Fijian","nativeName":"vosa Vakaviti"},
   {"code":"fi","name":"Finnish","nativeName":"suomi, suomen kieli"},
-  {"code":"fr","name":"French","nativeName":"français, langue française"},
+  {"code":"fr","name":"French","nativeName":"français, langue française","supported": true},
   {"code":"ff","name":"Fula; Fulah; Pulaar; Pular","nativeName":"Fulfulde, Pulaar, Pular"},
   {"code":"gl","name":"Galician","nativeName":"Galego"},
   {"code":"ka","name":"Georgian","nativeName":"ქართული"},
