@@ -3367,7 +3367,7 @@ var es = {
         "title": " get Vamos familiarizado "
       },
       "fields": {
-        "name": "! Nombre completo ",
+        "name": "! ",
         "avatar": " Avatar ",
         "contact": " Los datos de contacto ",
         "tel": " Teléfono ",
@@ -3380,11 +3380,11 @@ var es = {
   },
   "welcome": {
     "title": " Bienvenido ",
-    "intro": "! Gracias que eligió para tratar Lodger "
+    "intro": "! "
   },
   "errors": {
     "index": {
-      "missingDB": "! base de datos no especificado ",
+      "missingDB": "! ",
       "invalidPluginDefinition": " Plugin inválido ",
       "couldNotWriteFile": " %% archivo no se puede escribir"
     }
@@ -3411,7 +3411,7 @@ var fr = {
         "title": " get de Let connaissance "
       },
       "fields": {
-        "name": "! Nom complet ",
+        "name": "! ",
         "avatar": " Avatar ",
         "contact": " Coordonnées ",
         "tel": " Numéro de téléphone ",
@@ -3424,11 +3424,11 @@ var fr = {
   },
   "welcome": {
     "title": " Bienvenue ",
-    "intro": "! Merci vous avez choisi d'essayer Lodger "
+    "intro": "! "
   },
   "errors": {
     "index": {
-      "missingDB": "! base de données non spécifiée ",
+      "missingDB": "! ",
       "invalidPluginDefinition": " Plugin invalide ",
       "couldNotWriteFile": " %% fichier ne peut pas être écrit"
     }

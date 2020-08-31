@@ -47,16 +47,15 @@ supportedLangs
       // Run request
       const [response] = await translationClient.translateText(request);
       const { translatedText } = response.translations[0]
-      console.log(translatedText)
 
       let original = JSON.stringify(ro)
 
       translatedText.split(delimiter).map((phrase, i) => {
-        original = original.replace(contents[0].split(delimiter)[i], phrase)
+        const alters = phrase.indexOf('! ') === 0 ? phrase.substr(0, 2) : phrase
+        original = original.replace(contents[0].split(delimiter)[i], alters)
       })
 
       fs.writeFileSync(`./src/lib/locales/${ targetLanguageCode }.js`, `export default ${original}`)
-
     } catch (error) {
       console.error(error.details || error);
     }
