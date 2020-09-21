@@ -70,27 +70,27 @@ const fields: FieldsCreator<Asociatie> = {
     preview: 1,
     value: ({ activeDoc }) => activeDoc.balanta,
   },
-  incasari: {
-    type: 'array',
-    ref: 'incasare',
-    value: ({ activeDoc }) => activeDoc.incasari
-  },
+  // incasari: {
+  //   type: 'array',
+  //   ref: 'incasare',
+  //   value: ({ activeDoc }) => activeDoc.incasari
+  // },
   utilizatori: {
     type: 'array',
     ref: 'utilizator',
     required: true,
     value: ({ activeDoc }) => activeDoc.utilizatori
   },
-  servicii: {
-    type: 'array',
-    ref: 'serviciu',
-    value: ({ activeDoc }) => activeDoc.servicii
-  },
-  furnizori: {
-    type: 'array',
-    ref: 'furnizor',
-    value: ({ activeDoc }) => activeDoc.furnizori
-  },
+  // servicii: {
+  //   type: 'array',
+  //   ref: 'serviciu',
+  //   value: ({ activeDoc }) => activeDoc.servicii
+  // },
+  // furnizori: {
+  //   type: 'array',
+  //   ref: 'furnizor',
+  //   value: ({ activeDoc }) => activeDoc.furnizori
+  // },
   preferinte: {
     value: ({ activeDoc }) => activeDoc.preferinte,
     type: 'object'

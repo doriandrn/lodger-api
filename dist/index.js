@@ -2688,14 +2688,11 @@ var fields$1 = {
       return activeDoc.balanta;
     }
   },
-  incasari: {
-    type: 'array',
-    ref: 'incasare',
-    value: function (_a) {
-      var activeDoc = _a.activeDoc;
-      return activeDoc.incasari;
-    }
-  },
+  // incasari: {
+  //   type: 'array',
+  //   ref: 'incasare',
+  //   value: ({ activeDoc }) => activeDoc.incasari
+  // },
   utilizatori: {
     type: 'array',
     ref: 'utilizator',
@@ -2705,22 +2702,16 @@ var fields$1 = {
       return activeDoc.utilizatori;
     }
   },
-  servicii: {
-    type: 'array',
-    ref: 'serviciu',
-    value: function (_a) {
-      var activeDoc = _a.activeDoc;
-      return activeDoc.servicii;
-    }
-  },
-  furnizori: {
-    type: 'array',
-    ref: 'furnizor',
-    value: function (_a) {
-      var activeDoc = _a.activeDoc;
-      return activeDoc.furnizori;
-    }
-  },
+  // servicii: {
+  //   type: 'array',
+  //   ref: 'serviciu',
+  //   value: ({ activeDoc }) => activeDoc.servicii
+  // },
+  // furnizori: {
+  //   type: 'array',
+  //   ref: 'furnizor',
+  //   value: ({ activeDoc }) => activeDoc.furnizori
+  // },
   preferinte: {
     value: function (_a) {
       var activeDoc = _a.activeDoc;
