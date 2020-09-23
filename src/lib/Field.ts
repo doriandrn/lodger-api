@@ -203,7 +203,7 @@ export class Field implements FieldAPI {
   }
 
   @computed get label (): string {
-    return (o: Object) => o[this.key] || 'undefined label'
+    return (o: Object = {[this.key]: 'unnamed'}) => o[this.key] || 'undefined label'
   }
 
 

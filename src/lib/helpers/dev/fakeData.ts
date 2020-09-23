@@ -9,7 +9,7 @@ Object.defineProperties(holder, {
     get () { return `${faker.random.arrayElement(currencies)} ${faker.finance.amount(100, 10000, 4)}` }
   },
   id: {
-    get () { return }
+    get () { return '...' }
   },
   string: {
     get () { return faker.lorem.words(3) }
@@ -18,7 +18,7 @@ Object.defineProperties(holder, {
     get () { return Number(faker.random.number({ min: 20, max: 300 })) }
   },
   fullName: {
-    get () { return `${faker.name.firstName()} ${faker.name.lastName()}` }
+    get: () => `${ faker.name.firstName() } ${ faker.name.lastName() }`
   },
   dateTime: {
     get () { return Date.now() + faker.random.number({ min: 9000000, max: 100000000 }) }

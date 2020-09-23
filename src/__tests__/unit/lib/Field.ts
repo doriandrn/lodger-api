@@ -159,10 +159,9 @@ describe('Field', () => {
   })
 
   describe('.label', () => {
-    test('can be set programatically', () => {
+    test('is defined & unnamed', () => {
       const field = new Field()
-      field.label = 'Something'
-      expect(field.label).toBeDefined()
+      expect(field.label()).toBeDefined()
     })
   })
 
@@ -193,9 +192,10 @@ describe('Field', () => {
         })
       })
 
-      test('has the "index" property if supplied in field', () => {
-        expect(new Field({ index: true }).rxSchema.index).toBeTruthy()
-      })
+      // deprecated
+      // test('has the "index" property if supplied in field', () => {
+      //   expect(new Field({ index: true }).rxSchema.index).toBeTruthy()
+      // })
 
       test('matches snapshot', () => {
         expect(testField).toMatchSnapshot('testField')

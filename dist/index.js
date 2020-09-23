@@ -1089,7 +1089,7 @@ Object.defineProperties(holder, {
   },
   id: {
     get: function () {
-      return;
+      return '...';
     }
   },
   string: {
@@ -1173,14 +1173,16 @@ function () {
         value = data.value,
         preview = data.preview,
         oninput = data.oninput,
-        key = data.key;
+        key = data.key,
+        fieldset = data.fieldset;
     this.preview = preview;
     this._type = type; // hold this for reference
 
     this.type = String$1(type || '').asRxDBType;
     this.oninput = oninput;
     if (key) this.key = key;
-    if (index) this._index = true; // transform the ref
+    if (index !== undefined) this._index = true;
+    if (fieldset !== undefined) this.fieldset = fieldset; // transform the ref
 
     if (ref) {
       this.ref = ref;
@@ -1220,6 +1222,12 @@ function () {
       var _this = this;
 
       return function (o) {
+        var _a;
+
+        if (o === void 0) {
+          o = (_a = {}, _a[_this.key] = 'unnamed', _a);
+        }
+
         return o[_this.key] || 'undefined label';
       };
     },
@@ -2507,6 +2515,7 @@ function () {
   return Lodger;
 }();
 
+var fieldsets = ['descriere', 'localizare', 'registru'];
 var selectedApGetter = 'apartament/activeDoc';
 var fields = {
   nr: {
@@ -2541,6 +2550,7 @@ var fields = {
     }
   },
   suprafata: {
+    fieldset: 0,
     type: 'number',
     default: null,
     step: 0.01,
@@ -2549,6 +2559,7 @@ var fields = {
     }
   },
   locatari: {
+    fieldset: 0,
     index: true,
     type: 'number',
     default: 2,
@@ -2559,6 +2570,7 @@ var fields = {
     }
   },
   camere: {
+    fieldset: 0,
     type: 'number',
     index: true,
     default: 2,
@@ -2569,6 +2581,7 @@ var fields = {
     }
   },
   etaj: {
+    fieldset: 1,
     type: 'number',
     required: true,
     // default: g => g['etaj/selectat'].etaj,
@@ -2591,6 +2604,7 @@ var fields = {
     }
   },
   scara: {
+    fieldset: 1,
     type: 'number',
     required: true,
     // default: g => g['etaj/selectat'].scara,
@@ -2616,11 +2630,13 @@ var fields = {
   },
   incasari: {
     type: 'array',
-    ref: 'incasari'
+    ref: 'incasari',
+    fieldset: 2
   },
   cheltuieli: {
     type: 'array',
-    ref: 'cheltuieli'
+    ref: 'cheltuieli',
+    fieldset: 2
   }
 };
 var methods = {
@@ -2654,7 +2670,8 @@ var methods = {
 var Apartament = /*#__PURE__*/Object.freeze({
     __proto__: null,
     methods: methods,
-    fields: fields
+    fields: fields,
+    fieldsets: fieldsets
 });
 
 var fields$1 = {
@@ -3139,15 +3156,6 @@ var fields$9 = {
     preview: 0,
     primary: true,
     index: true
-  },
-  furnizori: {
-    type: 'array',
-    ref: 'furnizor'
-  },
-  contoare: {
-    type: 'contoare',
-    ref: 'contoare',
-    preview: 1
   }
 };
 var predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
