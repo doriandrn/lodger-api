@@ -17,8 +17,8 @@ declare global {
     camere ?: number
     etaj ?: number
     scara ?: number | string
-    contoare ?: Contor[]
 
+    contoare ?: Contor[]
     incasari ?: Incasare[]
     cheltuieli ?: Cheltuiala[]
 
@@ -30,6 +30,8 @@ declare global {
     incaseaza (): void
   }
 }
+
+const fieldsets = ['descriere', 'localizare', 'registru']
 
 const selectedApGetter = 'apartament/activeDoc'
 
@@ -65,12 +67,14 @@ const fields: FieldsCreator<Apartament> = {
     value: g => g[selectedApGetter].proprietar
   },
   suprafata: {
+    fieldset: 0,
     type: 'number',
     default: null, // TODO: ia de la apartamentul de la etajul de dedesubt, in functie de cate ap sunt
     step: 0.01,
     value: g => g[selectedApGetter].suprafata
   },
   locatari: {
+    fieldset: 0,
     index: true,
     type: 'number',
     default: 2,
@@ -79,6 +83,7 @@ const fields: FieldsCreator<Apartament> = {
     value: g => g[selectedApGetter].locatari
   },
   camere: {
+    fieldset: 0,
     type: 'number',
     index: true,
     default: 2,
@@ -87,6 +92,7 @@ const fields: FieldsCreator<Apartament> = {
     value: g => g[selectedApGetter].camere
   },
   etaj: {
+    fieldset: 1,
     type: 'number',
     required: true,
     // default: g => g['etaj/selectat'].etaj,
@@ -103,6 +109,7 @@ const fields: FieldsCreator<Apartament> = {
     value: g => g['asociatie/activeDoc']._id
   },
   scara: {
+    fieldset: 1,
     type: 'number',
     required: true,
     // default: g => g['etaj/selectat'].scara,
@@ -122,11 +129,13 @@ const fields: FieldsCreator<Apartament> = {
   },
   incasari: {
     type: 'array',
-    ref: 'incasari'
+    ref: 'incasari',
+    fieldset: 2,
   },
   cheltuieli: {
     type: 'array',
-    ref: 'cheltuieli'
+    ref: 'cheltuieli',
+    fieldset: 2,
   }
 }
 
@@ -143,5 +152,6 @@ const methods = {
 
 export {
   methods,
-  fields
+  fields,
+  fieldsets
 }

@@ -52,6 +52,7 @@ declare global {
 
     key ?: string // or name -> to be used for grouping checkboxes / radio groups
     options ?: Array<any> | Object // for selects and other multiple options els
+    fieldset ?: number // corresponding fieldsets' array number - groups fields into fieldsets
 
     // numeric inputs
     step ?: number // incrementer for number inputs, step or multipleOf
@@ -140,14 +141,29 @@ export class Field implements FieldAPI {
       return
     }
 
-    const { ref, index, indexRef, type, step, required, v, value, preview, oninput, key } = data
+    const {
+      ref,
+      index,
+      indexRef,
+      type,
+      step,
+      required,
+      v,
+      value,
+      preview,
+      oninput,
+      key,
+      fieldset
+    } = data
+
     this.preview = preview
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
     this.oninput = oninput
 
     if (key) this.key = key
-    if (index) this._index = true
+    if (index !== undefined) this._index = true
+    if (fieldset !== undefined) this.fieldset = fieldset
 
     // transform the ref
     if (ref) {

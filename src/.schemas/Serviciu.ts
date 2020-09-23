@@ -27,16 +27,11 @@ const fields: FieldsCreator<Serviciu> = {
     index: true
   },
 
-  furnizori: {
-    type: 'array',
-    ref: 'furnizor'
-  },
-
-  contoare: {
-    type: 'contoare',
-    ref: 'contoare',
-    preview: 1
-  }
+  // contoare: {
+  //   type: 'contoare',
+  //   ref: 'contoare',
+  //   preview: 1
+  // }
 }
 
 const predefinite =
