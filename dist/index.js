@@ -3313,10 +3313,42 @@ var en = {
   "backTo": "Back to",
   "nav": [["Statistics", "Statistics"], ["list", "Lists Payment"], ["history", "History"], ["community", "Community"]],
   "taxonomies": {
+    "apartamente": {
+      "name": "Apartment",
+      "plural": "Apartments"
+    },
     "asociatii": {
       "name": "Association",
       "plural": "Associations",
       "fields": {}
+    },
+    "blocuri": {
+      "name": "Building",
+      "plural": "Buildings"
+    },
+    "cheltuieli": {
+      "name": "Expense",
+      "plural": "Expenses"
+    },
+    "contoare": {
+      "name": "Counter",
+      "plural": "Counters"
+    },
+    "facturi": {
+      "name": "Billing",
+      "plural": "Invoices"
+    },
+    "furnizori": {
+      "name": "Supplier",
+      "plural": "Suppliers"
+    },
+    "incasari": {
+      "name": "Cash",
+      "plural": "Proceeds"
+    },
+    "servicii": {
+      "name": "Service",
+      "plural": "Services"
     },
     "utilizatori": {
       "name": "Username",
@@ -3325,10 +3357,10 @@ var en = {
         "title": "Let's get acquainted!"
       },
       "fields": {
-        "name": "Full Name",
+        "name": "full Name",
         "avatar": "Avatar",
-        "contact": "Contact details",
-        "tel": "number telephone",
+        "contact": "contact details",
+        "tel": "phone number",
         "email": "e-mail",
         "social": "Social Media",
         "preferinte": "Preferences",
@@ -3360,22 +3392,54 @@ var es = {
   "backTo": "Volver a",
   "nav": [["Estadísticas", "Estadísticas"], ["", "Lista de lista Pago"], ["Historia", "Historia"], ["Comunidad", "Comunidad"]],
   "taxonomies": {
+    "apartamente": {
+      "name": "",
+      "plural": "Apartamento Apartamentos"
+    },
     "asociatii": {
-      "name": "Asociación",
-      "plural": "Asociaciones",
+      "name": "",
+      "plural": "Asociaciones Asociación",
       "fields": {}
+    },
+    "blocuri": {
+      "name": "",
+      "plural": "Construcción de Edificios"
+    },
+    "cheltuieli": {
+      "name": "Gastos",
+      "plural": "Gastos"
+    },
+    "contoare": {
+      "name": "Contador",
+      "plural": ""
+    },
+    "facturi": {
+      "name": "Contadores de facturación",
+      "plural": ""
+    },
+    "furnizori": {
+      "name": "Las facturas del proveedor",
+      "plural": "Proveedores"
+    },
+    "incasari": {
+      "name": "efectivo",
+      "plural": "ingresos"
+    },
+    "servicii": {
+      "name": "Servicio",
+      "plural": "Servicios"
     },
     "utilizatori": {
       "name": "Nombre de usuario",
-      "plural": "",
+      "plural": "Los usuarios",
       "new": {
-        "title": "Los usuarios Vamos a conocer! Detalles"
+        "title": "Vamos a conocer!"
       },
       "fields": {
-        "name": "Nombre Completo",
+        "name": "Nombre",
         "avatar": "Avatar",
-        "contact": "Contacto",
-        "tel": "Número teléfono",
+        "contact": "detalles de contacto",
+        "tel": "teléfono",
         "email": "e-mail",
         "social": "Social Media",
         "preferinte": "Preferencias",
@@ -3405,12 +3469,44 @@ var fr = {
   "next": "Continuer",
   "back": "Retour",
   "backTo": "Retour",
-  "nav": [["Statistiques", "Statistiques"], ["Liste", "Listes Paiement"], ["Historique", "Histoire"], ["communauté", "Association communautaire"]],
+  "nav": [["Statistiques", "Statistiques"], ["Liste", "Listes Paiement"], ["Historique", "Histoire"], ["communauté", "communautaire"]],
   "taxonomies": {
+    "apartamente": {
+      "name": "Appartement",
+      "plural": "Apartments"
+    },
     "asociatii": {
-      "name": "",
+      "name": "Association",
       "plural": "Associations",
       "fields": {}
+    },
+    "blocuri": {
+      "name": "",
+      "plural": "Bâtiment Bâtiments"
+    },
+    "cheltuieli": {
+      "name": "Dépenses",
+      "plural": "Frais"
+    },
+    "contoare": {
+      "name": "",
+      "plural": "Compteur Compteurs"
+    },
+    "facturi": {
+      "name": "Facturation",
+      "plural": ""
+    },
+    "furnizori": {
+      "name": "Les factures fournisseurs",
+      "plural": "Fournisseurs"
+    },
+    "incasari": {
+      "name": "",
+      "plural": "produits de trésorerie"
+    },
+    "servicii": {
+      "name": "",
+      "plural": "services"
     },
     "utilizatori": {
       "name": "Nom d'utilisateur",
@@ -3421,8 +3517,8 @@ var fr = {
       "fields": {
         "name": "Nom complet",
         "avatar": "Avatar",
-        "contact": "Coordonnées",
-        "tel": "Numéro téléphone",
+        "contact": "coordonnées",
+        "tel": "numéro de téléphone",
         "email": "e-mail",
         "social": "social Media",
         "preferinte": "Préférences",
@@ -3436,7 +3532,7 @@ var fr = {
   },
   "errors": {
     "index": {
-      "missingDB": "base de données non valide non spécifiée",
+      "missingDB": "base de données non spécifiée non valide",
       "invalidPluginDefinition": "",
       "couldNotWriteFile": "fichier Plugin %% n'est pas accessible en écriture"
     }
@@ -3461,10 +3557,42 @@ var ro = {
   //   }
   // },
   taxonomies: {
+    apartamente: {
+      name: 'Apartament',
+      plural: 'Apartamente'
+    },
     asociatii: {
       name: 'Asociație',
       plural: 'Asociații',
       fields: {}
+    },
+    blocuri: {
+      name: 'Clădire',
+      plural: 'Clădiri'
+    },
+    cheltuieli: {
+      name: 'Cheltuială',
+      plural: 'Cheltuieli'
+    },
+    contoare: {
+      name: 'Contor',
+      plural: 'Contoare'
+    },
+    facturi: {
+      name: 'Factură',
+      plural: 'Facturi'
+    },
+    furnizori: {
+      name: 'Furnizor',
+      plural: 'Furnizori'
+    },
+    incasari: {
+      name: 'Încasare',
+      plural: 'Încasări'
+    },
+    servicii: {
+      name: 'Serviciu',
+      plural: 'Servicii'
     },
     utilizatori: {
       name: 'Utilizator',

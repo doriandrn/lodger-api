@@ -16,12 +16,45 @@ export default {
   //   }
   // },
   taxonomies: {
+    apartamente: {
+      name: 'Apartament',
+      plural: 'Apartamente'
+    },
     asociatii: {
       name: 'Asociație',
       plural: 'Asociații',
       fields: {
 
       }
+    },
+    blocuri: {
+      name: 'Clădire',
+      plural: 'Clădiri',
+    },
+    cheltuieli: {
+      name: 'Cheltuială',
+      plural: 'Cheltuieli'
+    },
+    contoare: {
+      name: 'Contor',
+      plural: 'Contoare'
+    },
+    facturi: {
+      name: 'Factură',
+      plural: 'Facturi'
+    },
+    furnizori: {
+      name: 'Furnizor',
+      plural: 'Furnizori'
+    },
+    incasari: {
+      name: 'Încasare',
+      plural: 'Încasări'
+    },
+
+    servicii: {
+      name: 'Serviciu',
+      plural: 'Servicii'
     },
     utilizatori: {
       name: 'Utilizator',
