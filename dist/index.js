@@ -3311,13 +3311,16 @@ var en = {
   "next": "Continue ",
   "back": " Back ",
   "backTo": " Back to ",
+  "nav": [[" stats ", " Stats "], [" lists ", " Lists Payment "], [" History ", " History "], [" Community ", " Community "]],
   "taxonomies": {
     "asociatii": {
-      "name": " Association ",
+      "name": " Company ",
       "plural": " Associations ",
       "fields": {}
     },
     "utilizatori": {
+      "name": " User ",
+      "plural": " Users ",
       "new": {
         "title": " Let's get acquainted! "
       },
@@ -3325,8 +3328,8 @@ var en = {
         "name": " Full name ",
         "avatar": " Avatar ",
         "contact": " Contact details ",
-        "tel": " Phone number ",
-        "email": " E-mail ",
+        "tel": " Number telephone ",
+        "email": " e-mail ",
         "social": " Social Media ",
         "preferinte": " Preferences ",
         "langSwitch": " language "
@@ -3335,7 +3338,7 @@ var en = {
   },
   "welcome": {
     "title": " Welcome! ",
-    "intro": " Thanks you chose to try Lodger! "
+    "intro": " Thank you for choosing to Lodger try! "
   },
   "errors": {
     "index": {
@@ -3355,22 +3358,25 @@ var es = {
   "next": "Continuar ",
   "back": " Volver ",
   "backTo": " Volver ",
+  "nav": [[" Estadísticas ", " Stats "], [" enumera ", " Listas de pago "], [" Historia ", " Historia "], [" Comunidad ", " Comunidad "]],
   "taxonomies": {
     "asociatii": {
-      "name": " Asociación ",
+      "name": " Empresa ",
       "plural": " Asociaciones ",
       "fields": {}
     },
     "utilizatori": {
+      "name": " Usuario ",
+      "plural": " Usuarios ",
       "new": {
-        "title": " get Vamos familiarizado "
+        "title": " get Vamos tuviera conocimiento "
       },
       "fields": {
-        "name": "Nombre completo ",
-        "avatar": " Avatar ",
-        "contact": " Los datos de contacto ",
-        "tel": " Teléfono ",
-        "email": " E-mail ",
+        "name": " ",
+        "avatar": " Nombre completo de Avatar ",
+        "contact": " Datos de contacto Número ",
+        "tel": " telefónicos ",
+        "email": " e-mail ",
         "social": " Social Media ",
         "preferinte": " Preferencias ",
         "langSwitch": " idioma "
@@ -3379,7 +3385,7 @@ var es = {
   },
   "welcome": {
     "title": " Bienvenido ",
-    "intro": "Gracias que eligió para tratar Lodger "
+    "intro": "Gracias por elegir a intentarlo Lodger "
   },
   "errors": {
     "index": {
@@ -3399,37 +3405,40 @@ var fr = {
   "next": "Continuer ",
   "back": " Retour ",
   "backTo": " Retour à ",
+  "nav": [[" Statistiques ", " Stats "], [" listes ", " Listes Paiement "], [" Histoire ", " Histoire "], [" Communauté ", " Société Maplesoft Associations "]],
   "taxonomies": {
     "asociatii": {
-      "name": " Association ",
-      "plural": " Associations ",
+      "name": " Utilisateurs ",
+      "plural": " Utilisateurs ",
       "fields": {}
     },
     "utilizatori": {
+      "name": " Let s Familiarisez-vous ",
+      "plural": " Nom complet ",
       "new": {
-        "title": " get de Let connaissance "
+        "title": "  Nombre de détails téléphone  "
       },
       "fields": {
-        "name": "Nom complet ",
-        "avatar": " Avatar ",
-        "contact": " Coordonnées ",
-        "tel": " Numéro de téléphone ",
-        "email": " E-mail ",
-        "social": " Social Media ",
-        "preferinte": " Préférences ",
-        "langSwitch": " langue "
+        "name": " Contact ",
+        "avatar": "Avatar",
+        "contact": " e-mail ",
+        "tel": " social Media ",
+        "email": " Préférences ",
+        "social": " langue ",
+        "preferinte": " Bienvenue ",
+        "langSwitch": "Merci d'avoir choisi d'essayer Lodger "
       }
     }
   },
   "welcome": {
-    "title": " Bienvenue ",
-    "intro": "Merci vous avez choisi d'essayer Lodger "
+    "title": "base de données non spécifiée ",
+    "intro": " Plugin invalide "
   },
   "errors": {
     "index": {
-      "missingDB": "base de données non spécifiée ",
-      "invalidPluginDefinition": " Plugin invalide ",
-      "couldNotWriteFile": " %% fichier ne peut pas être écrit"
+      "missingDB": " %% fichier ne peut pas être écrit",
+      "invalidPluginDefinition": "Plugin invalid",
+      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
     }
   }
 };
@@ -3443,6 +3452,7 @@ var ro = {
   next: 'Continuă',
   back: 'Înapoi',
   backTo: 'Înapoi la',
+  nav: [['statistici', 'Statistici'], ['liste', 'Liste de plată'], ['istoric', 'Istoric'], ['comunitate', 'Comunitate']],
   // forms: {
   //   langSwitch: {
   //     fields: {
@@ -3457,6 +3467,8 @@ var ro = {
       fields: {}
     },
     utilizatori: {
+      name: 'Utilizator',
+      plural: 'Utilizatori',
       new: {
         title: 'Hai să facem cunoștință!'
       },

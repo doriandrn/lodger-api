@@ -2,6 +2,12 @@ export default {
   next: 'Continuă',
   back: 'Înapoi',
   backTo: 'Înapoi la',
+  nav: [
+    ['statistici', 'Statistici'],
+    ['liste', 'Liste de plată'],
+    ['istoric', 'Istoric'],
+    ['comunitate', 'Comunitate']
+  ],
   // forms: {
   //   langSwitch: {
   //     fields: {
@@ -18,6 +24,8 @@ export default {
       }
     },
     utilizatori: {
+      name: 'Utilizator',
+      plural: 'Utilizatori',
       new: {
         title: 'Hai să facem cunoștință!'
       },
