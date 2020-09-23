@@ -13,7 +13,8 @@ type FormFields<I> = {
 export type LodgerFormCreator<T> = {
   name: string
   plural?: Plural<String>
-  fields?: FieldsCreator<T>
+  fields?: FieldsCreator<T>,
+  fieldsets ?: number[] // consecutive: todo: post gh issue on ts for consecutive type
 }
 
 /**

@@ -3311,7 +3311,14 @@ var en = {
   "next": "Continue",
   "back": "Back",
   "backTo": "Back to",
-  "nav": [["Statistics", "Statistics"], ["list", "Lists Payment"], ["history", "History"], ["community", "Community"]],
+  "nav": {
+    "statistici": "Statistics",
+    "liste": "Lists Payment",
+    "istoric": "history",
+    "comunitate": "Community",
+    "docs": "Documentation",
+    "support": "Technical assistance"
+  },
   "taxonomies": {
     "apartamente": {
       "name": "Apartment",
@@ -3370,7 +3377,7 @@ var en = {
   },
   "welcome": {
     "title": "Welcome!",
-    "intro": "Thank you for choosing to Lodger try!"
+    "intro": "Thanks You are choosing to try Lodger!"
   },
   "errors": {
     "index": {
@@ -3390,7 +3397,14 @@ var es = {
   "next": "Continuar",
   "back": "Volver",
   "backTo": "Volver a",
-  "nav": [["Estadísticas", "Estadísticas"], ["", "Lista de lista Pago"], ["Historia", "Historia"], ["Comunidad", "Comunidad"]],
+  "nav": {
+    "statistici": "Estadísticas",
+    "liste": "Listas de Pago",
+    "istoric": "historia",
+    "comunitate": "Comunidad",
+    "docs": "Documentación",
+    "support": "Asistencia técnica"
+  },
   "taxonomies": {
     "apartamente": {
       "name": "",
@@ -3415,15 +3429,15 @@ var es = {
     },
     "facturi": {
       "name": "Contadores de facturación",
-      "plural": ""
+      "plural": "Facturas"
     },
     "furnizori": {
-      "name": "Las facturas del proveedor",
-      "plural": "Proveedores"
+      "name": "Proveedor",
+      "plural": ""
     },
     "incasari": {
-      "name": "efectivo",
-      "plural": "ingresos"
+      "name": "Proveedores Las ganancias en efectivo",
+      "plural": ""
     },
     "servicii": {
       "name": "Servicio",
@@ -3433,12 +3447,12 @@ var es = {
       "name": "Nombre de usuario",
       "plural": "Los usuarios",
       "new": {
-        "title": "Vamos a conocer!"
+        "title": "Obtener Vamos conoce!"
       },
       "fields": {
-        "name": "Nombre",
+        "name": "Nombre completo",
         "avatar": "Avatar",
-        "contact": "detalles de contacto",
+        "contact": "datos de contacto",
         "tel": "teléfono",
         "email": "e-mail",
         "social": "Social Media",
@@ -3449,7 +3463,7 @@ var es = {
   },
   "welcome": {
     "title": "Cambiar el idioma Bienvenido!",
-    "intro": "Gracias por elegir a Lodger intento!"
+    "intro": "Gracias usted está eligiendo para tratar Lodger!"
   },
   "errors": {
     "index": {
@@ -3469,7 +3483,14 @@ var fr = {
   "next": "Continuer",
   "back": "Retour",
   "backTo": "Retour",
-  "nav": [["Statistiques", "Statistiques"], ["Liste", "Listes Paiement"], ["Historique", "Histoire"], ["communauté", "communautaire"]],
+  "nav": {
+    "statistici": "Statistiques",
+    "liste": "listes",
+    "istoric": "Paiement historique",
+    "comunitate": "Communauté",
+    "docs": "Documentation",
+    "support": "Assistance technique"
+  },
   "taxonomies": {
     "apartamente": {
       "name": "Appartement",
@@ -3497,12 +3518,12 @@ var fr = {
       "plural": ""
     },
     "furnizori": {
-      "name": "Les factures fournisseurs",
+      "name": "Les factures fournisseur",
       "plural": "Fournisseurs"
     },
     "incasari": {
-      "name": "",
-      "plural": "produits de trésorerie"
+      "name": "liquidités",
+      "plural": "Produit"
     },
     "servicii": {
       "name": "",
@@ -3512,7 +3533,7 @@ var fr = {
       "name": "Nom d'utilisateur",
       "plural": "Les utilisateurs",
       "new": {
-        "title": "Faisons connaissance!"
+        "title": "GET Let connaissance!"
       },
       "fields": {
         "name": "Nom complet",
@@ -3528,11 +3549,11 @@ var fr = {
   },
   "welcome": {
     "title": "Bienvenue!",
-    "intro": "Merci d'avoir choisi d'essayer Lodger!"
+    "intro": "Merci vous choisissez d'essayer Lodger!"
   },
   "errors": {
     "index": {
-      "missingDB": "base de données non spécifiée non valide",
+      "missingDB": "base de données non valide non spécifiée",
       "invalidPluginDefinition": "",
       "couldNotWriteFile": "fichier Plugin %% n'est pas accessible en écriture"
     }
@@ -3548,7 +3569,14 @@ var ro = {
   next: 'Continuă',
   back: 'Înapoi',
   backTo: 'Înapoi la',
-  nav: [['statistici', 'Statistici'], ['liste', 'Liste de plată'], ['istoric', 'Istoric'], ['comunitate', 'Comunitate']],
+  nav: {
+    statistici: 'Statistici',
+    liste: 'Liste de plată',
+    istoric: 'Istoric',
+    comunitate: 'Comunitate',
+    docs: 'Documentație',
+    support: 'Asistență tehnică'
+  },
   // forms: {
   //   langSwitch: {
   //     fields: {

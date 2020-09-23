@@ -2,12 +2,14 @@ export default {
   next: 'Continuă',
   back: 'Înapoi',
   backTo: 'Înapoi la',
-  nav: [
-    ['statistici', 'Statistici'],
-    ['liste', 'Liste de plată'],
-    ['istoric', 'Istoric'],
-    ['comunitate', 'Comunitate']
-  ],
+  nav: {
+    statistici: 'Statistici',
+    liste: 'Liste de plată',
+    istoric: 'Istoric',
+    comunitate: 'Comunitate',
+    docs: 'Documentație',
+    support: 'Asistență tehnică'
+  },
   // forms: {
   //   langSwitch: {
   //     fields: {
