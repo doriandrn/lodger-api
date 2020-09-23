@@ -3308,43 +3308,43 @@ var Utilizator = /*#__PURE__*/Object.freeze({
 });
 
 var en = {
-  "next": "Continue ",
-  "back": " Back ",
-  "backTo": " Back to ",
-  "nav": [[" stats ", " Stats "], [" lists ", " Lists Payment "], [" History ", " History "], [" Community ", " Community "]],
+  "next": "Continue",
+  "back": "Back",
+  "backTo": "Back to",
+  "nav": [["Statistics", "Statistics"], ["list", "Lists Payment"], ["history", "History"], ["community", "Community"]],
   "taxonomies": {
     "asociatii": {
-      "name": " Company ",
-      "plural": " Associations ",
+      "name": "Association",
+      "plural": "Associations",
       "fields": {}
     },
     "utilizatori": {
-      "name": " User ",
-      "plural": " Users ",
+      "name": "Username",
+      "plural": "Users",
       "new": {
-        "title": " Let's get acquainted! "
+        "title": "Let's get acquainted!"
       },
       "fields": {
-        "name": " Full name ",
-        "avatar": " Avatar ",
-        "contact": " Contact details ",
-        "tel": " Number telephone ",
-        "email": " e-mail ",
-        "social": " Social Media ",
-        "preferinte": " Preferences ",
-        "langSwitch": " language "
+        "name": "Full Name",
+        "avatar": "Avatar",
+        "contact": "Contact details",
+        "tel": "number telephone",
+        "email": "e-mail",
+        "social": "Social Media",
+        "preferinte": "Preferences",
+        "langSwitch": "Change language"
       }
     }
   },
   "welcome": {
-    "title": " Welcome! ",
-    "intro": " Thank you for choosing to Lodger try! "
+    "title": "Welcome!",
+    "intro": "Thank you for choosing to Lodger try!"
   },
   "errors": {
     "index": {
-      "missingDB": " database unspecified ",
-      "invalidPluginDefinition": " Plugin invalid ",
-      "couldNotWriteFile": " %% file can not be written"
+      "missingDB": "database unspecified invalid",
+      "invalidPluginDefinition": "",
+      "couldNotWriteFile": "Plugin file %% is not writable"
     }
   }
 };
@@ -3355,43 +3355,43 @@ var en$1 = /*#__PURE__*/Object.freeze({
 });
 
 var es = {
-  "next": "Continuar ",
-  "back": " Volver ",
-  "backTo": " Volver ",
-  "nav": [[" Estadísticas ", " Stats "], [" enumera ", " Listas de pago "], [" Historia ", " Historia "], [" Comunidad ", " Comunidad "]],
+  "next": "Continuar",
+  "back": "Volver",
+  "backTo": "Volver a",
+  "nav": [["Estadísticas", "Estadísticas"], ["", "Lista de lista Pago"], ["Historia", "Historia"], ["Comunidad", "Comunidad"]],
   "taxonomies": {
     "asociatii": {
-      "name": " Empresa ",
-      "plural": " Asociaciones ",
+      "name": "Asociación",
+      "plural": "Asociaciones",
       "fields": {}
     },
     "utilizatori": {
-      "name": " Usuario ",
-      "plural": " Usuarios ",
+      "name": "Nombre de usuario",
+      "plural": "",
       "new": {
-        "title": " get Vamos tuviera conocimiento "
+        "title": "Los usuarios Vamos a conocer! Detalles"
       },
       "fields": {
-        "name": " ",
-        "avatar": " Nombre completo de Avatar ",
-        "contact": " Datos de contacto Número ",
-        "tel": " telefónicos ",
-        "email": " e-mail ",
-        "social": " Social Media ",
-        "preferinte": " Preferencias ",
-        "langSwitch": " idioma "
+        "name": "Nombre Completo",
+        "avatar": "Avatar",
+        "contact": "Contacto",
+        "tel": "Número teléfono",
+        "email": "e-mail",
+        "social": "Social Media",
+        "preferinte": "Preferencias",
+        "langSwitch": ""
       }
     }
   },
   "welcome": {
-    "title": " Bienvenido ",
-    "intro": "Gracias por elegir a intentarlo Lodger "
+    "title": "Cambiar el idioma Bienvenido!",
+    "intro": "Gracias por elegir a Lodger intento!"
   },
   "errors": {
     "index": {
-      "missingDB": "base de datos no especificado ",
-      "invalidPluginDefinition": " Plugin inválido ",
-      "couldNotWriteFile": " %% archivo no se puede escribir"
+      "missingDB": "base de datos no válido no especificado",
+      "invalidPluginDefinition": "",
+      "couldNotWriteFile": "%% archivo plugin no se puede escribir"
     }
   }
 };
@@ -3402,43 +3402,43 @@ var es$1 = /*#__PURE__*/Object.freeze({
 });
 
 var fr = {
-  "next": "Continuer ",
-  "back": " Retour ",
-  "backTo": " Retour à ",
-  "nav": [[" Statistiques ", " Stats "], [" listes ", " Listes Paiement "], [" Histoire ", " Histoire "], [" Communauté ", " Société Maplesoft Associations "]],
+  "next": "Continuer",
+  "back": "Retour",
+  "backTo": "Retour",
+  "nav": [["Statistiques", "Statistiques"], ["Liste", "Listes Paiement"], ["Historique", "Histoire"], ["communauté", "Association communautaire"]],
   "taxonomies": {
     "asociatii": {
-      "name": " Utilisateurs ",
-      "plural": " Utilisateurs ",
+      "name": "",
+      "plural": "Associations",
       "fields": {}
     },
     "utilizatori": {
-      "name": " Let s Familiarisez-vous ",
-      "plural": " Nom complet ",
+      "name": "Nom d'utilisateur",
+      "plural": "Les utilisateurs",
       "new": {
-        "title": "  Nombre de détails téléphone  "
+        "title": "Faisons connaissance!"
       },
       "fields": {
-        "name": " Contact ",
+        "name": "Nom complet",
         "avatar": "Avatar",
-        "contact": " e-mail ",
-        "tel": " social Media ",
-        "email": " Préférences ",
-        "social": " langue ",
-        "preferinte": " Bienvenue ",
-        "langSwitch": "Merci d'avoir choisi d'essayer Lodger "
+        "contact": "Coordonnées",
+        "tel": "Numéro téléphone",
+        "email": "e-mail",
+        "social": "social Media",
+        "preferinte": "Préférences",
+        "langSwitch": "Changer de langue"
       }
     }
   },
   "welcome": {
-    "title": "base de données non spécifiée ",
-    "intro": " Plugin invalide "
+    "title": "Bienvenue!",
+    "intro": "Merci d'avoir choisi d'essayer Lodger!"
   },
   "errors": {
     "index": {
-      "missingDB": " %% fichier ne peut pas être écrit",
-      "invalidPluginDefinition": "Plugin invalid",
-      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
+      "missingDB": "base de données non valide non spécifiée",
+      "invalidPluginDefinition": "",
+      "couldNotWriteFile": "fichier Plugin %% n'est pas accessible en écriture"
     }
   }
 };
