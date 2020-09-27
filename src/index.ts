@@ -16,7 +16,7 @@ import loadSchemas from 'helper/loadSchemas'
 import loadLocales from 'helper/loadLocales'
 
 import { observable, computed } from 'mobx'
-import money from 'money'
+import * as money from 'money'
 
 switch (process.env) {
   default:
