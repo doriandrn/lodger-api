@@ -10,6 +10,10 @@ export default {
     docs: 'Documentație',
     support: 'Asistență tehnică'
   },
+  disclaimers: {
+    money: 'Cursul valutar este doar pentru scop informațional',
+    beta: 'Aplicația este în versiunea beta și poate prezenta reacții adverse'
+  },
   // forms: {
   //   langSwitch: {
   //     fields: {

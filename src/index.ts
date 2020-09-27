@@ -14,7 +14,9 @@ import Taxonomy from '~/lib/Taxonomy/Subscribable'
 import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
 import loadLocales from 'helper/loadLocales'
+
 import { observable, computed } from 'mobx'
+import money from 'money'
 
 switch (process.env) {
   default:
@@ -163,6 +165,7 @@ class Lodger implements LodgerAPI {
 
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
+    this.$ = money.noConflict()
   }
 
   static get locale () {

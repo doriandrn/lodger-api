@@ -7,12 +7,14 @@ var mobx = require('mobx');
 var faker = require('faker');
 var consola = require('consola');
 var Subscriber = require('rxcollection-subscriber');
+var money = require('money');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var faker__default = /*#__PURE__*/_interopDefaultLegacy(faker);
 var consola__default = /*#__PURE__*/_interopDefaultLegacy(consola);
 var Subscriber__default = /*#__PURE__*/_interopDefaultLegacy(Subscriber);
+var money__default = /*#__PURE__*/_interopDefaultLegacy(money);
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -2248,6 +2250,7 @@ function () {
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
 
     this.supportedLangs = supportedLangs;
+    this.$ = money__default['default'].noConflict();
   }
 
   Object.defineProperty(Lodger.prototype, "i18n", {
@@ -3319,6 +3322,10 @@ var en = {
     "docs": "Documentation",
     "support": "Technical assistance"
   },
+  "disclaimers": {
+    "money": "The exchange rate is only for informational purposes",
+    "beta": "The application is in beta and may have side effects"
+  },
   "taxonomies": {
     "apartamente": {
       "name": "Apartment",
@@ -3334,11 +3341,11 @@ var en = {
       "plural": "Buildings"
     },
     "cheltuieli": {
-      "name": "Expense",
-      "plural": "Expenses"
+      "name": "expense",
+      "plural": "expenses"
     },
     "contoare": {
-      "name": "Counter",
+      "name": "counter",
       "plural": "Counters"
     },
     "facturi": {
@@ -3377,7 +3384,7 @@ var en = {
   },
   "welcome": {
     "title": "Welcome!",
-    "intro": "Thanks You are choosing to try Lodger!"
+    "intro": "Thank you for choosing to Lodger try!"
   },
   "errors": {
     "index": {
@@ -3405,26 +3412,30 @@ var es = {
     "docs": "Documentación",
     "support": "Asistencia técnica"
   },
+  "disclaimers": {
+    "money": "El tipo de cambio es sólo para fines informativos",
+    "beta": "La aplicación está en fase beta y puede tener efectos secundarios"
+  },
   "taxonomies": {
     "apartamente": {
-      "name": "",
-      "plural": "Apartamento Apartamentos"
+      "name": "Apartamento",
+      "plural": "Apartamentos"
     },
     "asociatii": {
-      "name": "",
-      "plural": "Asociaciones Asociación",
+      "name": "Asociación",
+      "plural": "Asociaciones",
       "fields": {}
     },
     "blocuri": {
-      "name": "",
-      "plural": "Construcción de Edificios"
+      "name": "Construcción",
+      "plural": ""
     },
     "cheltuieli": {
-      "name": "Gastos",
-      "plural": "Gastos"
+      "name": "Edificios de gastos",
+      "plural": ""
     },
     "contoare": {
-      "name": "Contador",
+      "name": "gastos de contador",
       "plural": ""
     },
     "facturi": {
@@ -3432,44 +3443,44 @@ var es = {
       "plural": "Facturas"
     },
     "furnizori": {
-      "name": "Proveedor",
-      "plural": ""
+      "name": "Proveedor Proveedores",
+      "plural": "efectivo"
     },
     "incasari": {
-      "name": "Proveedores Las ganancias en efectivo",
-      "plural": ""
+      "name": "ingresos",
+      "plural": "Servicio"
     },
     "servicii": {
-      "name": "Servicio",
-      "plural": "Servicios"
+      "name": "Servicios",
+      "plural": "Nombre de usuario"
     },
     "utilizatori": {
-      "name": "Nombre de usuario",
-      "plural": "Los usuarios",
+      "name": "Los usuarios",
+      "plural": "Obtener Vamos conoce!",
       "new": {
-        "title": "Obtener Vamos conoce!"
+        "title": "Nombre completo"
       },
       "fields": {
-        "name": "Nombre completo",
+        "name": "datos de contacto",
         "avatar": "Avatar",
-        "contact": "datos de contacto",
-        "tel": "teléfono",
-        "email": "e-mail",
+        "contact": "teléfono",
+        "tel": "e-mail",
+        "email": "Preferencias",
         "social": "Social Media",
-        "preferinte": "Preferencias",
-        "langSwitch": ""
+        "preferinte": "",
+        "langSwitch": "Cambiar el idioma Bienvenido!"
       }
     }
   },
   "welcome": {
-    "title": "Cambiar el idioma Bienvenido!",
-    "intro": "Gracias usted está eligiendo para tratar Lodger!"
+    "title": "Gracias por elegir a Lodger intento!",
+    "intro": "base de datos no válido no especificado"
   },
   "errors": {
     "index": {
-      "missingDB": "base de datos no válido no especificado",
-      "invalidPluginDefinition": "",
-      "couldNotWriteFile": "%% archivo plugin no se puede escribir"
+      "missingDB": "",
+      "invalidPluginDefinition": "%% archivo plugin no se puede escribir",
+      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
     }
   }
 };
@@ -3485,11 +3496,15 @@ var fr = {
   "backTo": "Retour",
   "nav": {
     "statistici": "Statistiques",
-    "liste": "listes",
-    "istoric": "Paiement historique",
+    "liste": "Les listes de paiement",
+    "istoric": "Historique",
     "comunitate": "Communauté",
     "docs": "Documentation",
     "support": "Assistance technique"
+  },
+  "disclaimers": {
+    "money": "Le taux de change est uniquement à des fins d'information",
+    "beta": "L'application est en version bêta et peut avoir des effets secondaires"
   },
   "taxonomies": {
     "apartamente": {
@@ -3502,27 +3517,27 @@ var fr = {
       "fields": {}
     },
     "blocuri": {
-      "name": "",
-      "plural": "Bâtiment Bâtiments"
+      "name": "Bâtiment",
+      "plural": "Bâtiments"
     },
     "cheltuieli": {
-      "name": "Dépenses",
-      "plural": "Frais"
+      "name": "frais",
+      "plural": "frais"
     },
     "contoare": {
-      "name": "",
-      "plural": "Compteur Compteurs"
+      "name": "compteur",
+      "plural": "compteurs"
     },
     "facturi": {
-      "name": "Facturation",
-      "plural": ""
+      "name": "facturation",
+      "plural": "Factures"
     },
     "furnizori": {
-      "name": "Les factures fournisseur",
+      "name": "fournisseur",
       "plural": "Fournisseurs"
     },
     "incasari": {
-      "name": "liquidités",
+      "name": "espèces",
       "plural": "Produit"
     },
     "servicii": {
@@ -3531,17 +3546,17 @@ var fr = {
     },
     "utilizatori": {
       "name": "Nom d'utilisateur",
-      "plural": "Les utilisateurs",
+      "plural": "utilisateurs",
       "new": {
-        "title": "GET Let connaissance!"
+        "title": "Let s connaissance!"
       },
       "fields": {
-        "name": "Nom complet",
+        "name": "nom complet",
         "avatar": "Avatar",
         "contact": "coordonnées",
         "tel": "numéro de téléphone",
         "email": "e-mail",
-        "social": "social Media",
+        "social": "médias sociaux",
         "preferinte": "Préférences",
         "langSwitch": "Changer de langue"
       }
@@ -3549,7 +3564,7 @@ var fr = {
   },
   "welcome": {
     "title": "Bienvenue!",
-    "intro": "Merci vous choisissez d'essayer Lodger!"
+    "intro": "Merci d'avoir choisi d'essayer Lodger!"
   },
   "errors": {
     "index": {
@@ -3576,6 +3591,10 @@ var ro = {
     comunitate: 'Comunitate',
     docs: 'Documentație',
     support: 'Asistență tehnică'
+  },
+  disclaimers: {
+    money: 'Cursul valutar este doar pentru scop informațional',
+    beta: 'Aplicația este în versiunea beta și poate prezenta reacții adverse'
   },
   // forms: {
   //   langSwitch: {
