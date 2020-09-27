@@ -217,6 +217,19 @@ class Lodger implements LodgerAPI {
    */
   put (taxonomie: Taxonomie, data: Taxonomy<Taxonomie>): Promise<RxDocument<Taxonomie>> {
     this[taxonomie].put(data)
+    let userId
+
+    try {
+      userId = this.utilizatori.subscribers.main.activeId
+      console.log('iu', userId)
+    } catch (e) {
+      console.warn('no user selected')
+    }
+    // this.istoric.push({
+    //   userId,
+    //   action: data._id ? 'added' : 'updated',
+    //   taxonomie
+    // })
   }
 
 
@@ -278,6 +291,14 @@ class Lodger implements LodgerAPI {
     }
     const { name } = plugin
     plugins.push(plugin)
+  }
+
+  async search (input: string, taxonomy ?: Taxonomy) {
+    if (taxonomy) {
+
+    }
+
+    return results
   }
 
   /**

@@ -2309,6 +2309,19 @@ function () {
 
   Lodger.prototype.put = function (taxonomie, data) {
     this[taxonomie].put(data);
+    var userId;
+
+    try {
+      userId = this.utilizatori.subscribers.main.activeId;
+      console.log('iu', userId);
+    } catch (e) {
+      console.warn('no user selected');
+    } // this.istoric.push({
+    //   userId,
+    //   action: data._id ? 'added' : 'updated',
+    //   taxonomie
+    // })
+
   };
   /**
    * Subscribes to multiple taxonomies with
@@ -2425,6 +2438,17 @@ function () {
 
     var name = plugin.name;
     plugins.push(plugin);
+  };
+
+  Lodger.prototype.search = function (input, taxonomy) {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+
+        return [2
+        /*return*/
+        , results];
+      });
+    });
   };
   /**
    * Destroys the Lodger instance
@@ -3315,6 +3339,7 @@ var en = {
   "next": "Continue",
   "back": "Back",
   "backTo": "Back to",
+  "search": "Search",
   "nav": {
     "statistici": "Statistics",
     "liste": "Lists Payment",
@@ -3375,7 +3400,7 @@ var en = {
         "name": "full Name",
         "avatar": "Avatar",
         "contact": "contact details",
-        "tel": "phone number",
+        "tel": "number telephone",
         "email": "e-mail",
         "social": "Social Media",
         "preferinte": "Preferences",
@@ -3405,6 +3430,7 @@ var es = {
   "next": "Continuar",
   "back": "Volver",
   "backTo": "Volver a",
+  "search": "Buscar",
   "nav": {
     "statistici": "Estadísticas",
     "liste": "Listas de Pago",
@@ -3420,15 +3446,15 @@ var es = {
   "taxonomies": {
     "apartamente": {
       "name": "Apartamento",
-      "plural": "Apartamentos"
+      "plural": "Apartments"
     },
     "asociatii": {
-      "name": "Asociación",
-      "plural": "Asociaciones",
+      "name": "",
+      "plural": "Asociación Asociaciones",
       "fields": {}
     },
     "blocuri": {
-      "name": "Construcción",
+      "name": "construcción",
       "plural": ""
     },
     "cheltuieli": {
@@ -3456,15 +3482,15 @@ var es = {
       "plural": "Nombre de usuario"
     },
     "utilizatori": {
-      "name": "Los usuarios",
-      "plural": "Obtener Vamos conoce!",
+      "name": "",
+      "plural": "Los usuarios Vamos a conocer!",
       "new": {
         "title": "Nombre completo"
       },
       "fields": {
-        "name": "datos de contacto",
+        "name": "",
         "avatar": "Avatar",
-        "contact": "teléfono",
+        "contact": "número datos de contacto teléfono",
         "tel": "e-mail",
         "email": "Preferencias",
         "social": "Social Media",
@@ -3495,9 +3521,10 @@ var fr = {
   "next": "Continuer",
   "back": "Retour",
   "backTo": "Retour",
+  "search": "Recherche",
   "nav": {
     "statistici": "Statistiques",
-    "liste": "Les listes de paiement",
+    "liste": "Listes Paiement",
     "istoric": "Historique",
     "comunitate": "Communauté",
     "docs": "Documentation",
@@ -3510,7 +3537,7 @@ var fr = {
   "taxonomies": {
     "apartamente": {
       "name": "Appartement",
-      "plural": "Apartments"
+      "plural": "Appartements"
     },
     "asociatii": {
       "name": "Association",
@@ -3518,28 +3545,28 @@ var fr = {
       "fields": {}
     },
     "blocuri": {
-      "name": "Bâtiment",
-      "plural": "Bâtiments"
+      "name": "",
+      "plural": "bâtiment"
     },
     "cheltuieli": {
-      "name": "frais",
+      "name": "bâtiments frais",
       "plural": "frais"
     },
     "contoare": {
-      "name": "compteur",
-      "plural": "compteurs"
+      "name": "",
+      "plural": "compteurs compteur"
     },
     "facturi": {
       "name": "facturation",
       "plural": "Factures"
     },
     "furnizori": {
-      "name": "fournisseur",
+      "name": "Fournisseur",
       "plural": "Fournisseurs"
     },
     "incasari": {
-      "name": "espèces",
-      "plural": "Produit"
+      "name": "",
+      "plural": "produits de trésorerie"
     },
     "servicii": {
       "name": "",
@@ -3547,17 +3574,17 @@ var fr = {
     },
     "utilizatori": {
       "name": "Nom d'utilisateur",
-      "plural": "utilisateurs",
+      "plural": "Les utilisateurs",
       "new": {
-        "title": "Let s connaissance!"
+        "title": "Faisons connaissance!"
       },
       "fields": {
-        "name": "nom complet",
+        "name": "Nom complet",
         "avatar": "Avatar",
         "contact": "coordonnées",
-        "tel": "numéro de téléphone",
+        "tel": "numéro téléphone",
         "email": "e-mail",
-        "social": "médias sociaux",
+        "social": "social Media",
         "preferinte": "Préférences",
         "langSwitch": "Changer de langue"
       }
@@ -3585,6 +3612,7 @@ var ro = {
   next: 'Continuă',
   back: 'Înapoi',
   backTo: 'Înapoi la',
+  search: 'Caută',
   nav: {
     statistici: 'Statistici',
     liste: 'Liste de plată',

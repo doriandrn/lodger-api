@@ -2,6 +2,7 @@ export default {
   next: 'Continuă',
   back: 'Înapoi',
   backTo: 'Înapoi la',
+  search: 'Caută',
   nav: {
     statistici: 'Statistici',
     liste: 'Liste de plată',

@@ -1,7 +1,8 @@
+import { observable, computed } from 'mobx'
 import SubscribableTaxonomy from './Subscribable'
 
 interface SearchableTaxonomy extends SubscribableTaxonomy {
-  search (input: string): Promise<SearchResults> | void
+  search (input: string): void
 }
 
 // a search result
@@ -17,17 +18,17 @@ type SubscribableTaxonomyConfig = {
 
 export default class STaxonomy extends SubscribableTaxonomy implements SearchableTaxonomy {
   protected map: Map<string, string> = new Map()
-  readonly _results: Result[] = []
+  @observable _results: Result[] = []
 
   constructor (protected config: SubscribableTaxonomyConfig) {
     super(...arguments)
   }
 
   clearResults () {
-    Object.keys(this.results).forEach(result => this.results[result] = [])
+    Object.keys(this.results).forEach(result => this._results[result] = [])
   }
 
-  get results () {
+  @computed get results () {
     return this._results
       .sort((a, b) => Number(a.relevance) - Number(b.relevance))
       .reverse()
@@ -42,7 +43,14 @@ export default class STaxonomy extends SubscribableTaxonomy implements Searchabl
   search (
     input: string
   ) {
-    if (!input) return
+    if (!input) {
+      this._results = []
+      return
+    }
+
+    if (!this.sSubscribed) {
+
+    }
 
     const iterator = this.map.entries()
 
