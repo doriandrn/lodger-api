@@ -14,6 +14,7 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var faker__default = /*#__PURE__*/_interopDefaultLegacy(faker);
 var consola__default = /*#__PURE__*/_interopDefaultLegacy(consola);
 var Subscriber__default = /*#__PURE__*/_interopDefaultLegacy(Subscriber);
+var money__default = /*#__PURE__*/_interopDefaultLegacy(money);
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -2249,7 +2250,7 @@ function () {
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
 
     this.supportedLangs = supportedLangs;
-    this.$ = money.noConflict();
+    this.$ = money__default['default']().noConflict();
   }
 
   Object.defineProperty(Lodger.prototype, "i18n", {
