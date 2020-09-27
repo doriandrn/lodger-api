@@ -7,14 +7,12 @@ var mobx = require('mobx');
 var faker = require('faker');
 var consola = require('consola');
 var Subscriber = require('rxcollection-subscriber');
-var money = require('money');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var faker__default = /*#__PURE__*/_interopDefaultLegacy(faker);
 var consola__default = /*#__PURE__*/_interopDefaultLegacy(consola);
 var Subscriber__default = /*#__PURE__*/_interopDefaultLegacy(Subscriber);
-var money__default = /*#__PURE__*/_interopDefaultLegacy(money);
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -2249,8 +2247,11 @@ function () {
       return tax.form.plural;
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
 
-    this.supportedLangs = supportedLangs;
-    this.$ = money__default['default']().noConflict();
+    this.supportedLangs = supportedLangs; // this.displayCurrency = observable.box('RON')
+    // this.rates = observable({})
+    // const base = computed(this.displayCurrency)
+    // const disposer = caca.observe(({ base, rates }) => this.$ = new Cashify({ base, rates }))
+    // this.$ = new Cashify({ base, rates })
   }
 
   Object.defineProperty(Lodger.prototype, "i18n", {
