@@ -1383,6 +1383,7 @@ function () {
 
     this.fields = {};
     this.$active = false;
+    console.log(data);
 
     var _a = data || {
       name: 'untitled',
