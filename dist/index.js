@@ -1389,6 +1389,7 @@ function () {
       fields: {}
     },
         fields = _a.fields,
+        fieldsets = _a.fieldsets,
         name = _a.name;
 
     this.name = name;
@@ -1402,6 +1403,10 @@ function () {
         });
         _this.fields[key] = new Field(fields[key]);
       });
+    }
+
+    if (fieldsets) {
+      this.fieldsets = fieldsets;
     }
 
     if (opts) {

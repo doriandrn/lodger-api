@@ -60,6 +60,7 @@ implements FormAPI<I> {
   // readonly captureTimestamp : boolean = false
   readonly schema : Schema<string, I>
   readonly fields : FormFields<I> = {}
+  readonly fieldsets ?: string[]
 
   $active: boolean = false
 
@@ -76,7 +77,7 @@ implements FormAPI<I> {
     data ?: LodgerFormCreator<I>,
     protected opts ?: FormOptions
   ) {
-    const { fields, name } = data || {
+    const { fields, fieldsets, name } = data || {
       name: 'untitled',
       fields: {}
     }
@@ -91,6 +92,10 @@ implements FormAPI<I> {
         Object.assign(fields[key], { key })
         this.fields[ key ] = new Field( fields[ key ] )
       })
+    }
+
+    if (fieldsets) {
+      this.fieldsets = fieldsets
     }
 
     if (opts) {
