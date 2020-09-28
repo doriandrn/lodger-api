@@ -1678,7 +1678,7 @@ function () {
     }
 
     return __awaiter(this, void 0, void 0, function () {
-      var name, fields, methods, statics, timestamps, form, schema, collectionCreator, collection, e_1;
+      var name, fields, fieldsets, methods, statics, timestamps, form, schema, collectionCreator, collection, e_1;
       return __generator(this, function (_a) {
         switch (_a.label) {
           case 0:
@@ -1688,11 +1688,12 @@ function () {
           case 1:
             _a.trys.push([1, 3,, 4]);
 
-            name = data.name, fields = data.fields, methods = data.methods, statics = data.statics;
+            name = data.name, fields = data.fields, fieldsets = data.fieldsets, methods = data.methods, statics = data.statics;
             timestamps = options.timestamps;
             form = new Form({
               name: name,
-              fields: fields
+              fields: fields,
+              fieldsets: fieldsets
             }, {
               captureTimestamp: timestamps
             });

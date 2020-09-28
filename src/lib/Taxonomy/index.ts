@@ -107,10 +107,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       throw new TaxonomyError(Errors.noDB)
 
     try {
-      const { name, fields, methods, statics } = data
+      const { name, fields, fieldsets, methods, statics } = data
       const { timestamps } = options
 
-      const form = new Form({ name, fields }, {
+      const form = new Form({ name, fields, fieldsets }, {
         captureTimestamp: timestamps
       })
 
