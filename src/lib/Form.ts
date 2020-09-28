@@ -77,7 +77,6 @@ implements FormAPI<I> {
     data ?: LodgerFormCreator<I>,
     protected opts ?: FormOptions
   ) {
-    console.log(data)
     const { fields, fieldsets, name } = data || {
       name: 'untitled',
       fields: {}
