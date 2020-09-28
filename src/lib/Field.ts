@@ -126,6 +126,7 @@ export class Field implements FieldAPI {
 
   readonly _type ?: FieldTypes
   readonly _index ?: boolean // should be indexed to search for
+  key : string = 'index'
 
   /**
    * Creates an instance of Field.
@@ -202,8 +203,14 @@ export class Field implements FieldAPI {
     })
   }
 
-  @computed get label (): string {
-    return (o: Object = {[this.key]: 'unnamed'}) => o[this.key] || 'undefined label'
+  @computed get label (): () => string {
+    return (o: {[i: string]: string} = {[this.key]: 'unnamed'}) => {
+      try {
+        return o[this.key]
+      } catch (e) {
+        return 'undefined label'
+      }
+    }
   }
 
 

@@ -1158,6 +1158,8 @@ function () {
       return _this.default || undefined;
     };
 
+    this.key = 'index';
+
     if (!data) {
       // throw new FieldError('Field could not be created. No data supplied.')
       return;
@@ -1228,7 +1230,11 @@ function () {
           o = (_a = {}, _a[_this.key] = 'unnamed', _a);
         }
 
-        return o[_this.key] || 'undefined label';
+        try {
+          return o[_this.key];
+        } catch (e) {
+          return 'undefined label';
+        }
       };
     },
     enumerable: false,
