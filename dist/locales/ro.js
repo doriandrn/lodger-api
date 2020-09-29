@@ -32,8 +32,17 @@ export default {
         registru: 'Registru'
       },
       fields: {
+        nr: 'Nr.',
         suprafata: 'Suprafață',
-        locatari: 'Locatari'
+        locatari: 'Locatari',
+        balanta: 'Balanță',
+        proprietar: 'Proprietar',
+        camere: 'Camere',
+        etaj: 'Etaj',
+        scara: 'Scara',
+        contoare: 'Contoare',
+        incasari: 'Încasări',
+        cheltuieli: 'Cheltuieli'
       }
     },
     asociatii: {

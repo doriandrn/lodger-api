@@ -3374,8 +3374,17 @@ var en = {
         "registru": "register"
       },
       "fields": {
-        "suprafata": "area",
-        "locatari": "Tenants"
+        "nr": "No.",
+        "suprafata": "Size",
+        "locatari": "Tenants",
+        "balanta": "balance",
+        "proprietar": "Owner",
+        "camere": "Rooms",
+        "etaj": "Floor",
+        "scara": "scale",
+        "contoare": "Counters",
+        "incasari": "Proceeds",
+        "cheltuieli": "expenses"
       }
     },
     "asociatii": {
@@ -3418,7 +3427,7 @@ var en = {
         "title": "Let's get acquainted!"
       },
       "fields": {
-        "name": "Name completely",
+        "name": "full Name",
         "avatar": "Avatar",
         "contact": "contact details",
         "tel": "phone number",
@@ -3431,13 +3440,13 @@ var en = {
   },
   "welcome": {
     "title": "Welcome!",
-    "intro": "Thank you for choosing to Lodger try!"
+    "intro": "Thanks You are choosing to try Lodger!"
   },
   "errors": {
     "index": {
       "missingDB": "database unspecified invalid",
       "invalidPluginDefinition": "",
-      "couldNotWriteFile": "Plugin file %% not writable"
+      "couldNotWriteFile": "Plugin file %% is not writable"
     }
   }
 };
@@ -3471,11 +3480,20 @@ var es = {
       "fieldsets": {
         "descriere": "Descripción",
         "localizare": "Localización",
-        "registru": "es"
+        "registru": "Registro"
       },
       "fields": {
-        "suprafata": "área",
-        "locatari": "inquilinos"
+        "nr": "N",
+        "suprafata": "Tamaño",
+        "locatari": "",
+        "balanta": "",
+        "proprietar": "saldo inquilinos propietario",
+        "camere": "Salas",
+        "etaj": "Planta",
+        "scara": "",
+        "contoare": "Contadores escala",
+        "incasari": "",
+        "cheltuieli": "Las ganancias los gastos"
       }
     },
     "asociatii": {
@@ -3484,28 +3502,28 @@ var es = {
       "fields": {}
     },
     "blocuri": {
-      "name": "construcción",
+      "name": "Construcción",
       "plural": "Edificios"
     },
     "cheltuieli": {
-      "name": "gasto",
-      "plural": "gastos"
+      "name": "",
+      "plural": "gasto de los gastos"
     },
     "contoare": {
-      "name": "contador",
-      "plural": "Contadores"
+      "name": "",
+      "plural": "contador de los contadores de facturación"
     },
     "facturi": {
-      "name": "facturación",
-      "plural": "Facturas"
+      "name": "",
+      "plural": ""
     },
     "furnizori": {
-      "name": "Proveedor",
-      "plural": "Proveedores"
+      "name": "Facturas de Proveedores Proveedores",
+      "plural": ""
     },
     "incasari": {
-      "name": "efectivo",
-      "plural": "ingresos"
+      "name": "Las ganancias en efectivo",
+      "plural": ""
     },
     "servicii": {
       "name": "Servicio",
@@ -3518,9 +3536,9 @@ var es = {
         "title": "Obtener Vamos conoce!"
       },
       "fields": {
-        "name": "Nombre",
-        "avatar": "",
-        "contact": "completamente Avatar datos de contacto",
+        "name": "Nombre completo",
+        "avatar": "Avatar",
+        "contact": "datos de contacto",
         "tel": "teléfono",
         "email": "e-mail",
         "social": "Social Media",
@@ -3531,13 +3549,13 @@ var es = {
   },
   "welcome": {
     "title": "Cambiar el idioma Bienvenido!",
-    "intro": "Gracias por elegir a Lodger intento!"
+    "intro": "Gracias usted está eligiendo para tratar Lodger!"
   },
   "errors": {
     "index": {
       "missingDB": "base de datos no válido no especificado",
       "invalidPluginDefinition": "",
-      "couldNotWriteFile": "archivo plugin %% no se puede escribir"
+      "couldNotWriteFile": "%% archivo plugin no se puede escribir"
     }
   }
 };
@@ -3571,11 +3589,20 @@ var fr = {
       "fieldsets": {
         "descriere": "Description",
         "localizare": "Emplacement",
-        "registru": "inscrivez-vous"
+        "registru": "Inscrivez-vous"
       },
       "fields": {
-        "suprafata": "zone",
-        "locatari": "Les locataires"
+        "nr": "",
+        "suprafata": "Non Taille",
+        "locatari": "locataires",
+        "balanta": "solde",
+        "proprietar": "Propriétaire",
+        "camere": "",
+        "etaj": "Chambres",
+        "scara": "étage",
+        "contoare": "Compteurs échelle",
+        "incasari": "produits",
+        "cheltuieli": "frais"
       }
     },
     "asociatii": {
@@ -3584,27 +3611,27 @@ var fr = {
       "fields": {}
     },
     "blocuri": {
-      "name": "bâtiment",
-      "plural": "bâtiments"
+      "name": "",
+      "plural": "Bâtiment Bâtiments"
     },
     "cheltuieli": {
       "name": "frais",
       "plural": "frais"
     },
     "contoare": {
-      "name": "compteur",
-      "plural": "compteurs"
+      "name": "",
+      "plural": "compteur Compteurs"
     },
     "facturi": {
       "name": "facturation",
-      "plural": "Factures"
+      "plural": ""
     },
     "furnizori": {
-      "name": "fournisseur",
+      "name": "Les factures fournisseur",
       "plural": "Fournisseurs"
     },
     "incasari": {
-      "name": "espèces",
+      "name": "liquidités",
       "plural": "Produit"
     },
     "servicii": {
@@ -3618,7 +3645,7 @@ var fr = {
         "title": "GET Let connaissance!"
       },
       "fields": {
-        "name": "Nom complètement",
+        "name": "Nom complet",
         "avatar": "Avatar",
         "contact": "coordonnées",
         "tel": "numéro de téléphone",
@@ -3631,13 +3658,13 @@ var fr = {
   },
   "welcome": {
     "title": "Bienvenue!",
-    "intro": "Merci d'avoir choisi d'essayer Lodger!"
+    "intro": "Merci vous choisissez d'essayer Lodger!"
   },
   "errors": {
     "index": {
       "missingDB": "base de données non valide non spécifiée",
       "invalidPluginDefinition": "",
-      "couldNotWriteFile": "fichier Plugin %% pas accessible en écriture"
+      "couldNotWriteFile": "fichier Plugin %% n'est pas accessible en écriture"
     }
   }
 };
@@ -3681,8 +3708,17 @@ var ro = {
         registru: 'Registru'
       },
       fields: {
+        nr: 'Nr.',
         suprafata: 'Suprafață',
-        locatari: 'Locatari'
+        locatari: 'Locatari',
+        balanta: 'Balanță',
+        proprietar: 'Proprietar',
+        camere: 'Camere',
+        etaj: 'Etaj',
+        scara: 'Scara',
+        contoare: 'Contoare',
+        incasari: 'Încasări',
+        cheltuieli: 'Cheltuieli'
       }
     },
     asociatii: {
