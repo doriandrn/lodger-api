@@ -42,7 +42,9 @@ export default {
         scara: 'Scara',
         contoare: 'Contoare',
         incasari: 'Încasări',
-        cheltuieli: 'Cheltuieli'
+        cheltuieli: 'Cheltuieli',
+        blocId: 'Clădire / Bloc',
+        asociatieId: 'Asociație'
       }
     },
     asociatii: {

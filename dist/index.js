@@ -2631,6 +2631,7 @@ var fields = {
   },
   blocId: {
     required: true,
+    fieldset: 1,
     // default: g => g['etaj/selectat'].bloc,
     value: function (g) {
       return g[selectedApGetter].bloc;
@@ -2638,6 +2639,7 @@ var fields = {
   },
   asociatieId: {
     required: true,
+    fieldset: 1,
     // default: g => g['asociatie/activeDoc']._id,
     value: function (g) {
       return g['asociatie/activeDoc']._id;
@@ -3384,7 +3386,9 @@ var en = {
         "scara": "scale",
         "contoare": "Counters",
         "incasari": "Proceeds",
-        "cheltuieli": "expenses"
+        "cheltuieli": "expenses",
+        "blocId": "Building / Block",
+        "asociatieId": "Association"
       }
     },
     "asociatii": {
@@ -3406,7 +3410,7 @@ var en = {
     },
     "facturi": {
       "name": "Billing",
-      "plural": "Invoices"
+      "plural": "invoices"
     },
     "furnizori": {
       "name": "Supplier",
@@ -3440,7 +3444,7 @@ var en = {
   },
   "welcome": {
     "title": "Welcome!",
-    "intro": "Thanks You are choosing to try Lodger!"
+    "intro": "Thank you for choosing to Lodger try!"
   },
   "errors": {
     "index": {
@@ -3480,29 +3484,31 @@ var es = {
       "fieldsets": {
         "descriere": "Descripción",
         "localizare": "Localización",
-        "registru": "Registro"
+        "registru": ""
       },
       "fields": {
-        "nr": "N",
+        "nr": "Nº registro",
         "suprafata": "Tamaño",
         "locatari": "",
         "balanta": "",
         "proprietar": "saldo inquilinos propietario",
-        "camere": "Salas",
-        "etaj": "Planta",
-        "scara": "",
-        "contoare": "Contadores escala",
-        "incasari": "",
-        "cheltuieli": "Las ganancias los gastos"
+        "camere": "Habitaciones",
+        "etaj": "Piso",
+        "scara": "escala",
+        "contoare": "",
+        "incasari": "Contadores Réditos",
+        "cheltuieli": "",
+        "blocId": "gastos de Bloque de construcción",
+        "asociatieId": "Asociación / Asociación"
       }
     },
     "asociatii": {
-      "name": "Asociación",
-      "plural": "Asociaciones",
+      "name": "",
+      "plural": "",
       "fields": {}
     },
     "blocuri": {
-      "name": "Construcción",
+      "name": "Asociaciones de construcción",
       "plural": "Edificios"
     },
     "cheltuieli": {
@@ -3518,12 +3524,12 @@ var es = {
       "plural": ""
     },
     "furnizori": {
-      "name": "Facturas de Proveedores Proveedores",
-      "plural": ""
+      "name": "facturas proveedor",
+      "plural": "Proveedores"
     },
     "incasari": {
-      "name": "Las ganancias en efectivo",
-      "plural": ""
+      "name": "efectivo",
+      "plural": "ingresos"
     },
     "servicii": {
       "name": "Servicio",
@@ -3531,9 +3537,9 @@ var es = {
     },
     "utilizatori": {
       "name": "Nombre de usuario",
-      "plural": "Los usuarios",
+      "plural": "",
       "new": {
-        "title": "Obtener Vamos conoce!"
+        "title": "Los usuarios Vamos a conocer!"
       },
       "fields": {
         "name": "Nombre completo",
@@ -3549,7 +3555,7 @@ var es = {
   },
   "welcome": {
     "title": "Cambiar el idioma Bienvenido!",
-    "intro": "Gracias usted está eligiendo para tratar Lodger!"
+    "intro": "Gracias por elegir a Lodger intento!"
   },
   "errors": {
     "index": {
@@ -3589,20 +3595,22 @@ var fr = {
       "fieldsets": {
         "descriere": "Description",
         "localizare": "Emplacement",
-        "registru": "Inscrivez-vous"
+        "registru": ""
       },
       "fields": {
-        "nr": "",
-        "suprafata": "Non Taille",
-        "locatari": "locataires",
+        "nr": "inscrire No.",
+        "suprafata": "Taille",
+        "locatari": "Locataires",
         "balanta": "solde",
-        "proprietar": "Propriétaire",
-        "camere": "",
-        "etaj": "Chambres",
-        "scara": "étage",
-        "contoare": "Compteurs échelle",
-        "incasari": "produits",
-        "cheltuieli": "frais"
+        "proprietar": "propriétaire",
+        "camere": "Chambres",
+        "etaj": "",
+        "scara": "étage échelle",
+        "contoare": "Compteurs",
+        "incasari": "Produit",
+        "cheltuieli": "frais",
+        "blocId": "construction / Bloc",
+        "asociatieId": "Association"
       }
     },
     "asociatii": {
@@ -3624,14 +3632,14 @@ var fr = {
     },
     "facturi": {
       "name": "facturation",
-      "plural": ""
+      "plural": "factures fournisseurs"
     },
     "furnizori": {
-      "name": "Les factures fournisseur",
-      "plural": "Fournisseurs"
+      "name": "",
+      "plural": ""
     },
     "incasari": {
-      "name": "liquidités",
+      "name": "Fournisseurs de trésorerie",
       "plural": "Produit"
     },
     "servicii": {
@@ -3642,7 +3650,7 @@ var fr = {
       "name": "Nom d'utilisateur",
       "plural": "Les utilisateurs",
       "new": {
-        "title": "GET Let connaissance!"
+        "title": "Faisons connaissance!"
       },
       "fields": {
         "name": "Nom complet",
@@ -3658,7 +3666,7 @@ var fr = {
   },
   "welcome": {
     "title": "Bienvenue!",
-    "intro": "Merci vous choisissez d'essayer Lodger!"
+    "intro": "Merci d'avoir choisi d'essayer Lodger!"
   },
   "errors": {
     "index": {
@@ -3718,7 +3726,9 @@ var ro = {
         scara: 'Scara',
         contoare: 'Contoare',
         incasari: 'Încasări',
-        cheltuieli: 'Cheltuieli'
+        cheltuieli: 'Cheltuieli',
+        blocId: 'Clădire / Bloc',
+        asociatieId: 'Asociație'
       }
     },
     asociatii: {

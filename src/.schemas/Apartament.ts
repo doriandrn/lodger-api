@@ -100,11 +100,13 @@ const fields: FieldsCreator<Apartament> = {
   },
   blocId: {
     required: true,
+    fieldset: 1,
     // default: g => g['etaj/selectat'].bloc,
     value: g => g[selectedApGetter].bloc
   },
   asociatieId: {
     required: true,
+    fieldset: 1,
     // default: g => g['asociatie/activeDoc']._id,
     value: g => g['asociatie/activeDoc']._id
   },
