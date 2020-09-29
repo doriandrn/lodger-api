@@ -25,7 +25,16 @@ export default {
   taxonomies: {
     apartamente: {
       name: 'Apartament',
-      plural: 'Apartamente'
+      plural: 'Apartamente',
+      fieldsets: {
+        descriere: 'Descriere',
+        localizare: 'Localizare',
+        registru: 'Registru'
+      },
+      fields: {
+        suprafata: 'Suprafață',
+        locatari: 'Locatari'
+      }
     },
     asociatii: {
       name: 'Asociație',

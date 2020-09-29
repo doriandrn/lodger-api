@@ -3367,7 +3367,16 @@ var en = {
   "taxonomies": {
     "apartamente": {
       "name": "Apartment",
-      "plural": "Apartments"
+      "plural": "Apartments",
+      "fieldsets": {
+        "descriere": "Description",
+        "localizare": "Location",
+        "registru": "register"
+      },
+      "fields": {
+        "suprafata": "area",
+        "locatari": "Tenants"
+      }
     },
     "asociatii": {
       "name": "Association",
@@ -3409,10 +3418,10 @@ var en = {
         "title": "Let's get acquainted!"
       },
       "fields": {
-        "name": "full Name",
+        "name": "Name completely",
         "avatar": "Avatar",
         "contact": "contact details",
-        "tel": "number telephone",
+        "tel": "phone number",
         "email": "e-mail",
         "social": "Social Media",
         "preferinte": "Preferences",
@@ -3428,7 +3437,7 @@ var en = {
     "index": {
       "missingDB": "database unspecified invalid",
       "invalidPluginDefinition": "",
-      "couldNotWriteFile": "Plugin file %% is not writable"
+      "couldNotWriteFile": "Plugin file %% not writable"
     }
   }
 };
@@ -3457,69 +3466,78 @@ var es = {
   },
   "taxonomies": {
     "apartamente": {
-      "name": "Apartamento",
-      "plural": "Apartments"
+      "name": "Piso",
+      "plural": "Apartamentos",
+      "fieldsets": {
+        "descriere": "Descripción",
+        "localizare": "Localización",
+        "registru": "es"
+      },
+      "fields": {
+        "suprafata": "área",
+        "locatari": "inquilinos"
+      }
     },
     "asociatii": {
-      "name": "",
-      "plural": "Asociación Asociaciones",
+      "name": "Asociación",
+      "plural": "Asociaciones",
       "fields": {}
     },
     "blocuri": {
       "name": "construcción",
-      "plural": ""
+      "plural": "Edificios"
     },
     "cheltuieli": {
-      "name": "Edificios de gastos",
-      "plural": ""
+      "name": "gasto",
+      "plural": "gastos"
     },
     "contoare": {
-      "name": "gastos de contador",
-      "plural": ""
+      "name": "contador",
+      "plural": "Contadores"
     },
     "facturi": {
-      "name": "Contadores de facturación",
+      "name": "facturación",
       "plural": "Facturas"
     },
     "furnizori": {
-      "name": "Proveedor Proveedores",
-      "plural": "efectivo"
+      "name": "Proveedor",
+      "plural": "Proveedores"
     },
     "incasari": {
-      "name": "ingresos",
-      "plural": "Servicio"
+      "name": "efectivo",
+      "plural": "ingresos"
     },
     "servicii": {
-      "name": "Servicios",
-      "plural": "Nombre de usuario"
+      "name": "Servicio",
+      "plural": "Servicios"
     },
     "utilizatori": {
-      "name": "",
-      "plural": "Los usuarios Vamos a conocer!",
+      "name": "Nombre de usuario",
+      "plural": "Los usuarios",
       "new": {
-        "title": "Nombre completo"
+        "title": "Obtener Vamos conoce!"
       },
       "fields": {
-        "name": "",
-        "avatar": "Avatar",
-        "contact": "número datos de contacto teléfono",
-        "tel": "e-mail",
-        "email": "Preferencias",
+        "name": "Nombre",
+        "avatar": "",
+        "contact": "completamente Avatar datos de contacto",
+        "tel": "teléfono",
+        "email": "e-mail",
         "social": "Social Media",
-        "preferinte": "",
-        "langSwitch": "Cambiar el idioma Bienvenido!"
+        "preferinte": "Preferencias",
+        "langSwitch": ""
       }
     }
   },
   "welcome": {
-    "title": "Gracias por elegir a Lodger intento!",
-    "intro": "base de datos no válido no especificado"
+    "title": "Cambiar el idioma Bienvenido!",
+    "intro": "Gracias por elegir a Lodger intento!"
   },
   "errors": {
     "index": {
-      "missingDB": "",
-      "invalidPluginDefinition": "%% archivo plugin no se puede escribir",
-      "couldNotWriteFile": "Fișierul %% nu poate fi scris"
+      "missingDB": "base de datos no válido no especificado",
+      "invalidPluginDefinition": "",
+      "couldNotWriteFile": "archivo plugin %% no se puede escribir"
     }
   }
 };
@@ -3549,36 +3567,45 @@ var fr = {
   "taxonomies": {
     "apartamente": {
       "name": "Appartement",
-      "plural": "Appartements"
+      "plural": "Apartments",
+      "fieldsets": {
+        "descriere": "Description",
+        "localizare": "Emplacement",
+        "registru": "inscrivez-vous"
+      },
+      "fields": {
+        "suprafata": "zone",
+        "locatari": "Les locataires"
+      }
     },
     "asociatii": {
       "name": "Association",
-      "plural": "Associations",
+      "plural": "associations",
       "fields": {}
     },
     "blocuri": {
-      "name": "",
-      "plural": "bâtiment"
+      "name": "bâtiment",
+      "plural": "bâtiments"
     },
     "cheltuieli": {
-      "name": "bâtiments frais",
+      "name": "frais",
       "plural": "frais"
     },
     "contoare": {
-      "name": "",
-      "plural": "compteurs compteur"
+      "name": "compteur",
+      "plural": "compteurs"
     },
     "facturi": {
       "name": "facturation",
       "plural": "Factures"
     },
     "furnizori": {
-      "name": "Fournisseur",
+      "name": "fournisseur",
       "plural": "Fournisseurs"
     },
     "incasari": {
-      "name": "",
-      "plural": "produits de trésorerie"
+      "name": "espèces",
+      "plural": "Produit"
     },
     "servicii": {
       "name": "",
@@ -3588,13 +3615,13 @@ var fr = {
       "name": "Nom d'utilisateur",
       "plural": "Les utilisateurs",
       "new": {
-        "title": "Faisons connaissance!"
+        "title": "GET Let connaissance!"
       },
       "fields": {
-        "name": "Nom complet",
+        "name": "Nom complètement",
         "avatar": "Avatar",
         "contact": "coordonnées",
-        "tel": "numéro téléphone",
+        "tel": "numéro de téléphone",
         "email": "e-mail",
         "social": "social Media",
         "preferinte": "Préférences",
@@ -3610,7 +3637,7 @@ var fr = {
     "index": {
       "missingDB": "base de données non valide non spécifiée",
       "invalidPluginDefinition": "",
-      "couldNotWriteFile": "fichier Plugin %% n'est pas accessible en écriture"
+      "couldNotWriteFile": "fichier Plugin %% pas accessible en écriture"
     }
   }
 };
@@ -3647,7 +3674,16 @@ var ro = {
   taxonomies: {
     apartamente: {
       name: 'Apartament',
-      plural: 'Apartamente'
+      plural: 'Apartamente',
+      fieldsets: {
+        descriere: 'Descriere',
+        localizare: 'Localizare',
+        registru: 'Registru'
+      },
+      fields: {
+        suprafata: 'Suprafață',
+        locatari: 'Locatari'
+      }
     },
     asociatii: {
       name: 'Asociație',
