@@ -7,6 +7,7 @@ import config from './lodger.config'
 import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
 
 import { supportedLangs } from '~/lib/maintainable/langs'
+import currencies from '~/lib/maintainable/currencies'
 
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
@@ -100,7 +101,9 @@ let plugins: LodgerPlugin[] = []
 // let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
 
 let locales
+
 const locale = observable.box('ro')
+const displayCurrency = observable.box('RON')
 
 /**
  *
@@ -165,14 +168,7 @@ class Lodger implements LodgerAPI {
 
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
-    // this.displayCurrency = observable.box('RON')
-    // this.rates = observable({})
-
-    // const base = computed(this.displayCurrency)
-
-    // const disposer = caca.observe(({ base, rates }) => this.$ = new Cashify({ base, rates }))
-
-    // this.$ = new Cashify({ base, rates })
+    this.currencies = currencies
   }
 
   static get locale () {
@@ -188,6 +184,17 @@ class Lodger implements LodgerAPI {
       throw new LodgerError('Language not supported')
 
     locale.set(langCode)
+  }
+
+  static get displayCurrency () {
+    return displayCurrency.get()
+  }
+
+  static set displayCurrency (code) {
+    if (currencies.indexOf(code) < 0)
+      throw new LodgerError('Invalid currency')
+
+    displayCurrency.set(code)
   }
 
 

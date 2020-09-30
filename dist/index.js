@@ -876,6 +876,28 @@ const allLangs = [{
 const supported = allLangs.filter(lang => lang.supported).map(lang => lang.code);
 const supportedLangs = allLangs.filter(lang => supported.indexOf(lang.code) > -1); // module.exports = { supportedLangs }
 
+/**
+ * Monede
+ *
+ * @enum {number}
+ * @todo add all
+ */
+var Currency;
+
+(function (Currency) {
+  Currency[Currency["BTC"] = 0] = "BTC";
+  Currency[Currency["RON"] = 1] = "RON";
+  Currency[Currency["EUR"] = 2] = "EUR";
+  Currency[Currency["USD"] = 3] = "USD";
+  Currency[Currency["CAD"] = 4] = "CAD";
+  Currency[Currency["DASH"] = 5] = "DASH";
+  Currency[Currency["XRP"] = 6] = "XRP";
+})(Currency || (Currency = {}));
+
+var currencies = Object.keys(Currency).filter(function (tax) {
+  return typeof Currency[tax] === 'number';
+});
+
 // import fx from 'fx'
 /**
  * Error logger
@@ -1059,26 +1081,6 @@ Object.defineProperties(String.prototype, {
 var S = {
   String: String
 };
-
-/**
- * Monede
- *
- * @enum {number}
- * @todo add all
- */
-var Currency;
-
-(function (Currency) {
-  Currency[Currency["BTC"] = 0] = "BTC";
-  Currency[Currency["RON"] = 1] = "RON";
-  Currency[Currency["EUR"] = 2] = "EUR";
-  Currency[Currency["USD"] = 3] = "USD";
-  Currency[Currency["TRX"] = 4] = "TRX";
-})(Currency || (Currency = {}));
-
-var currencies = Object.keys(Currency).filter(function (tax) {
-  return typeof Currency[tax] === 'number';
-});
 
 var holder = {};
 Object.defineProperties(holder, {
@@ -2195,6 +2197,7 @@ var plugins = []; // let navigator = (typeof(window) !== undefined && window.nav
 
 var locales$1;
 var locale = mobx.observable.box('ro');
+var displayCurrency = mobx.observable.box('RON');
 /**
  *
  * @class The main API
@@ -2259,11 +2262,8 @@ function () {
       return tax.form.plural;
     }); // this.taxonomies = taxonomies.map(tax => tax.form.plural)
 
-    this.supportedLangs = supportedLangs; // this.displayCurrency = observable.box('RON')
-    // this.rates = observable({})
-    // const base = computed(this.displayCurrency)
-    // const disposer = caca.observe(({ base, rates }) => this.$ = new Cashify({ base, rates }))
-    // this.$ = new Cashify({ base, rates })
+    this.supportedLangs = supportedLangs;
+    this.currencies = currencies;
   }
 
   Object.defineProperty(Lodger.prototype, "i18n", {
@@ -2283,6 +2283,17 @@ function () {
         return lang.code;
       }).indexOf(langCode) < 0) throw new LodgerError('Language not supported');
       locale.set(langCode);
+    },
+    enumerable: false,
+    configurable: true
+  });
+  Object.defineProperty(Lodger, "displayCurrency", {
+    get: function () {
+      return displayCurrency.get();
+    },
+    set: function (code) {
+      if (currencies.indexOf(code) < 0) throw new LodgerError('Invalid currency');
+      displayCurrency.set(code);
     },
     enumerable: false,
     configurable: true
@@ -3200,7 +3211,7 @@ var fields$9 = {
     index: true
   }
 };
-var predefinite = ['apa', 'electricitate', 'gaze', 'termoficare', 'internet', 'evacuare-gunoi-menajer'];
+var predefinite = ['apa', 'el', 'gaze', 'termo', 'net', 'gunoi'];
 var hooks = {
   onFirstTimeSubscribe: function (_a) {
     var put = _a.put;
@@ -3394,41 +3405,92 @@ var en = {
     "asociatii": {
       "name": "Association",
       "plural": "Associations",
-      "fields": {}
+      "fields": {
+        "name": "Name",
+        "organizatie": "Organization",
+        "balanta": "balance",
+        "utilizatori": "Users",
+        "preferinte": "Preferences"
+      }
     },
     "blocuri": {
       "name": "Building",
-      "plural": "Buildings"
+      "plural": "Buildings",
+      "fields": {
+        "name": "ID",
+        "scari": "stairs",
+        "adresa": "Address",
+        "asociatieId": "Company"
+      }
     },
     "cheltuieli": {
       "name": "expense",
-      "plural": "expenses"
+      "plural": "expenses",
+      "fields": {
+        "catre": "to",
+        "suma": "amount",
+        "facturi": "Invoices",
+        "dataScadenta": "maturity",
+        "distribuire": "distribution",
+        "apartamenteEligibile": "Apartments Eligible",
+        "asociatieId": "Association"
+      }
     },
     "contoare": {
       "name": "counter",
-      "plural": "Counters"
+      "plural": "Counters",
+      "fields": {
+        "tip": "Type / Name",
+        "serviciuId": "Service"
+      }
     },
     "facturi": {
       "name": "Billing",
-      "plural": "invoices"
+      "plural": "Invoices",
+      "fields": {
+        "suma": "amount",
+        "nrFactura": "No.",
+        "dataScadenta": "maturity",
+        "furnizorId": "provider",
+        "asociatieId": "Company"
+      }
     },
     "furnizori": {
       "name": "Supplier",
-      "plural": "Suppliers"
+      "plural": "Suppliers",
+      "fields": {
+        "name": "Name",
+        "organizatie": "Organization"
+      }
     },
     "incasari": {
       "name": "Cash",
-      "plural": "Proceeds"
+      "plural": "Proceeds",
+      "fields": {
+        "suma": "amount",
+        "nrChitanta": "No."
+      }
     },
     "servicii": {
       "name": "Service",
-      "plural": "Services"
+      "plural": "Services",
+      "predefinite": {
+        "apa": "Water",
+        "el": "Electricity",
+        "gaze": "Gas",
+        "termo": "Heating",
+        "net": "Internet",
+        "gunoi": "Exhaust garbage"
+      },
+      "fields": {
+        "denumire": "Name"
+      }
     },
     "utilizatori": {
       "name": "Username",
       "plural": "Users",
       "new": {
-        "title": "Let's get acquainted!"
+        "title": "Let's get acquainted !"
       },
       "fields": {
         "name": "full Name",
@@ -3436,7 +3498,7 @@ var en = {
         "contact": "contact details",
         "tel": "phone number",
         "email": "e-mail",
-        "social": "Social Media",
+        "social": "social l Media",
         "preferinte": "Preferences",
         "langSwitch": "Change language"
       }
@@ -3448,7 +3510,7 @@ var en = {
   },
   "errors": {
     "index": {
-      "missingDB": "database unspecified invalid",
+      "missingDB": "Database unspecified invalid",
       "invalidPluginDefinition": "",
       "couldNotWriteFile": "Plugin file %% is not writable"
     }
@@ -3484,10 +3546,10 @@ var es = {
       "fieldsets": {
         "descriere": "Descripción",
         "localizare": "Localización",
-        "registru": ""
+        "registru": "Registro"
       },
       "fields": {
-        "nr": "Nº registro",
+        "nr": "N",
         "suprafata": "Tamaño",
         "locatari": "",
         "balanta": "",
@@ -3504,42 +3566,93 @@ var es = {
     },
     "asociatii": {
       "name": "",
-      "plural": "",
-      "fields": {}
+      "plural": "Asociaciones",
+      "fields": {
+        "name": "Nombre",
+        "organizatie": "Organización",
+        "balanta": "",
+        "utilizatori": "Usuarios de equilibrio",
+        "preferinte": "Preferencias"
+      }
     },
     "blocuri": {
-      "name": "Asociaciones de construcción",
-      "plural": "Edificios"
+      "name": "Construcción",
+      "plural": "Edificios",
+      "fields": {
+        "name": "Identificación",
+        "scari": "escaleras",
+        "adresa": "Dirección",
+        "asociatieId": "empresa"
+      }
     },
     "cheltuieli": {
       "name": "",
-      "plural": "gasto de los gastos"
+      "plural": "gasto de los gastos",
+      "fields": {
+        "catre": "a",
+        "suma": "cantidad",
+        "facturi": "Facturas",
+        "dataScadenta": "madurez",
+        "distribuire": "",
+        "apartamenteEligibile": "Apartamentos distribución elegible",
+        "asociatieId": "Asociación"
+      }
     },
     "contoare": {
       "name": "",
-      "plural": "contador de los contadores de facturación"
+      "plural": "contador contadores",
+      "fields": {
+        "tip": "Tipo / Nombre",
+        "serviciuId": "Servicio de facturación"
+      }
     },
     "facturi": {
       "name": "",
-      "plural": ""
+      "plural": "Facturas",
+      "fields": {
+        "suma": "cantidad",
+        "nrFactura": "",
+        "dataScadenta": "Nº de vencimiento",
+        "furnizorId": "proveedor de la empresa",
+        "asociatieId": ""
+      }
     },
     "furnizori": {
-      "name": "facturas proveedor",
-      "plural": "Proveedores"
+      "name": "",
+      "plural": "Proveedores proveedor",
+      "fields": {
+        "name": "Nombre",
+        "organizatie": "Organización"
+      }
     },
     "incasari": {
       "name": "efectivo",
-      "plural": "ingresos"
+      "plural": "ingresos",
+      "fields": {
+        "suma": "cantidad",
+        "nrChitanta": ""
+      }
     },
     "servicii": {
-      "name": "Servicio",
-      "plural": "Servicios"
+      "name": "Nº Servicio",
+      "plural": "Servicios",
+      "predefinite": {
+        "apa": "agua",
+        "el": "Electricidad",
+        "gaze": "Gas",
+        "termo": "Calefacción",
+        "net": "Internet",
+        "gunoi": "basura de escape"
+      },
+      "fields": {
+        "denumire": "Nombre"
+      }
     },
     "utilizatori": {
       "name": "Nombre de usuario",
       "plural": "",
       "new": {
-        "title": "Los usuarios Vamos a conocer!"
+        "title": "Los usuarios de Let pasos para familiarizarse"
       },
       "fields": {
         "name": "Nombre completo",
@@ -3547,7 +3660,7 @@ var es = {
         "contact": "datos de contacto",
         "tel": "teléfono",
         "email": "e-mail",
-        "social": "Social Media",
+        "social": "sociales l Medios",
         "preferinte": "Preferencias",
         "langSwitch": ""
       }
@@ -3559,7 +3672,7 @@ var es = {
   },
   "errors": {
     "index": {
-      "missingDB": "base de datos no válido no especificado",
+      "missingDB": "Base de datos no válido no especificado",
       "invalidPluginDefinition": "",
       "couldNotWriteFile": "%% archivo plugin no se puede escribir"
     }
@@ -3595,12 +3708,12 @@ var fr = {
       "fieldsets": {
         "descriere": "Description",
         "localizare": "Emplacement",
-        "registru": ""
+        "registru": "Inscrivez-vous"
       },
       "fields": {
-        "nr": "inscrire No.",
-        "suprafata": "Taille",
-        "locatari": "Locataires",
+        "nr": "",
+        "suprafata": "Non Taille",
+        "locatari": "locataires",
         "balanta": "solde",
         "proprietar": "propriétaire",
         "camere": "Chambres",
@@ -3616,41 +3729,92 @@ var fr = {
     "asociatii": {
       "name": "Association",
       "plural": "associations",
-      "fields": {}
+      "fields": {
+        "name": "Nom",
+        "organizatie": "Organisation",
+        "balanta": "",
+        "utilizatori": "solde utilisateurs",
+        "preferinte": "Préférences"
+      }
     },
     "blocuri": {
       "name": "",
-      "plural": "Bâtiment Bâtiments"
+      "plural": "SCHÉMA Bâtiments",
+      "fields": {
+        "name": "ID",
+        "scari": "escalier",
+        "adresa": "Adresse",
+        "asociatieId": ""
+      }
     },
     "cheltuieli": {
-      "name": "frais",
-      "plural": "frais"
+      "name": "",
+      "plural": "frais Société",
+      "fields": {
+        "catre": "frais de montant",
+        "suma": "",
+        "facturi": "",
+        "dataScadenta": "Les factures échéance",
+        "distribuire": "distribution",
+        "apartamenteEligibile": "Appartements admissibles",
+        "asociatieId": "Association"
+      }
     },
     "contoare": {
       "name": "",
-      "plural": "compteur Compteurs"
+      "plural": "compteur",
+      "fields": {
+        "tip": "Compteurs type / Nom",
+        "serviciuId": "service"
+      }
     },
     "facturi": {
       "name": "facturation",
-      "plural": "factures fournisseurs"
+      "plural": "Les factures",
+      "fields": {
+        "suma": "montant",
+        "nrFactura": "Non",
+        "dataScadenta": "échéance",
+        "furnizorId": "fournisseur",
+        "asociatieId": "Société"
+      }
     },
     "furnizori": {
-      "name": "",
-      "plural": ""
+      "name": "fournisseur",
+      "plural": "Fournisseurs",
+      "fields": {
+        "name": "Nom",
+        "organizatie": "Organisation"
+      }
     },
     "incasari": {
-      "name": "Fournisseurs de trésorerie",
-      "plural": "Produit"
+      "name": "espèces",
+      "plural": "Produit",
+      "fields": {
+        "suma": "montant",
+        "nrChitanta": "Non"
+      }
     },
     "servicii": {
       "name": "",
-      "plural": "services"
+      "plural": "services",
+      "predefinite": {
+        "apa": "eau",
+        "el": "Electricité",
+        "gaze": "gaz",
+        "termo": "chauffage",
+        "net": "Internet",
+        "gunoi": "ordures"
+      },
+      "fields": {
+        "denumire": "Nom"
+      }
     },
     "utilizatori": {
-      "name": "Nom d'utilisateur",
+      "name": "Exhaust Nom d'utilisateur",
       "plural": "Les utilisateurs",
       "new": {
-        "title": "Faisons connaissance!"
+        "title": "Faisons connaissance !"
       },
       "fields": {
         "name": "Nom complet",
@@ -3658,8 +3822,8 @@ var fr = {
         "contact": "coordonnées",
         "tel": "numéro de téléphone",
         "email": "e-mail",
-        "social": "social Media",
-        "preferinte": "Préférences",
+        "social": "sociale l",
+        "preferinte": "Médias Préférences",
         "langSwitch": "Changer de langue"
       }
     }
@@ -3670,7 +3834,7 @@ var fr = {
   },
   "errors": {
     "index": {
-      "missingDB": "base de données non valide non spécifiée",
+      "missingDB": "Base de données non valide non spécifiée",
       "invalidPluginDefinition": "",
       "couldNotWriteFile": "fichier Plugin %% n'est pas accessible en écriture"
     }
@@ -3682,6 +3846,10 @@ var fr$1 = /*#__PURE__*/Object.freeze({
     'default': fr
 });
 
+const asociatieId = 'Asociație';
+const dataScadenta = 'Scadentă la';
+const organizatie = 'Organizație';
+const furnizorId = 'Furnizor';
 var ro = {
   next: 'Continuă',
   back: 'Înapoi',
@@ -3728,41 +3896,92 @@ var ro = {
         incasari: 'Încasări',
         cheltuieli: 'Cheltuieli',
         blocId: 'Clădire / Bloc',
-        asociatieId: 'Asociație'
+        asociatieId
       }
     },
     asociatii: {
       name: 'Asociație',
       plural: 'Asociații',
-      fields: {}
+      fields: {
+        name: 'Denumire',
+        organizatie,
+        balanta: 'Balanță',
+        utilizatori: 'Utilizatori',
+        preferinte: 'Preferințe'
+      }
     },
     blocuri: {
       name: 'Clădire',
-      plural: 'Clădiri'
+      plural: 'Clădiri',
+      fields: {
+        name: 'Identificator',
+        scari: 'Scări',
+        adresa: 'Adresă',
+        asociatieId
+      }
     },
     cheltuieli: {
       name: 'Cheltuială',
-      plural: 'Cheltuieli'
+      plural: 'Cheltuieli',
+      fields: {
+        catre: 'Către',
+        suma: 'Suma',
+        facturi: 'Facturi',
+        dataScadenta,
+        distribuire: 'Distribuire',
+        apartamenteEligibile: 'Apartamente Eligibile',
+        asociatieId
+      }
     },
     contoare: {
       name: 'Contor',
-      plural: 'Contoare'
+      plural: 'Contoare',
+      fields: {
+        tip: 'Tip / Denumire',
+        serviciuId: 'Serviciu'
+      }
     },
     facturi: {
       name: 'Factură',
-      plural: 'Facturi'
+      plural: 'Facturi',
+      fields: {
+        suma: 'Suma',
+        nrFactura: 'Nr.',
+        dataScadenta,
+        furnizorId,
+        asociatieId
+      }
     },
     furnizori: {
       name: 'Furnizor',
-      plural: 'Furnizori'
+      plural: 'Furnizori',
+      fields: {
+        name: 'Nume',
+        organizatie
+      }
     },
     incasari: {
       name: 'Încasare',
-      plural: 'Încasări'
+      plural: 'Încasări',
+      fields: {
+        suma: 'Suma',
+        nrChitanta: 'Nr.'
+      }
     },
     servicii: {
       name: 'Serviciu',
-      plural: 'Servicii'
+      plural: 'Servicii',
+      predefinite: {
+        apa: 'Apă',
+        el: 'Electricitate',
+        gaze: 'Gaze naturale',
+        termo: 'Termoficare',
+        net: 'Internet',
+        gunoi: 'Evacuare gunoi menajer'
+      },
+      fields: {
+        denumire: 'Denumire'
+      }
     },
     utilizatori: {
       name: 'Utilizator',

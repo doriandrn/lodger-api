@@ -5,7 +5,7 @@
  * @todo add all
  */
 export enum Currency {
-  BTC, RON, EUR, USD, TRX
+  BTC, RON, EUR, USD, CAD, DASH, XRP
 }
 
 export default Object

@@ -1,3 +1,8 @@
+const asociatieId = 'Asociație'
+const dataScadenta = 'Scadentă la'
+const organizatie = 'Organizație'
+const furnizorId = 'Furnizor'
+
 export default {
   next: 'Continuă',
   back: 'Înapoi',
@@ -44,44 +49,94 @@ export default {
         incasari: 'Încasări',
         cheltuieli: 'Cheltuieli',
         blocId: 'Clădire / Bloc',
-        asociatieId: 'Asociație'
+        asociatieId
       }
     },
     asociatii: {
       name: 'Asociație',
       plural: 'Asociații',
       fields: {
-
+        name: 'Denumire',
+        organizatie,
+        balanta: 'Balanță',
+        utilizatori: 'Utilizatori',
+        preferinte: 'Preferințe'
       }
     },
     blocuri: {
       name: 'Clădire',
       plural: 'Clădiri',
+      fields: {
+        name: 'Identificator',
+        scari: 'Scări',
+        adresa: 'Adresă',
+        asociatieId
+      }
     },
     cheltuieli: {
       name: 'Cheltuială',
-      plural: 'Cheltuieli'
+      plural: 'Cheltuieli',
+      fields: {
+        catre: 'Către',
+        suma: 'Suma',
+        facturi: 'Facturi',
+        dataScadenta,
+        distribuire: 'Distribuire',
+        apartamenteEligibile: 'Apartamente Eligibile',
+        asociatieId
+      }
     },
     contoare: {
       name: 'Contor',
-      plural: 'Contoare'
+      plural: 'Contoare',
+      fields: {
+        tip: 'Tip / Denumire',
+        serviciuId: 'Serviciu'
+      }
     },
     facturi: {
       name: 'Factură',
-      plural: 'Facturi'
+      plural: 'Facturi',
+      fields: {
+        suma: 'Suma',
+        nrFactura: 'Nr.',
+        dataScadenta,
+        furnizorId,
+        asociatieId
+      }
     },
     furnizori: {
       name: 'Furnizor',
-      plural: 'Furnizori'
+      plural: 'Furnizori',
+      fields: {
+        name: 'Nume',
+        organizatie
+      }
     },
     incasari: {
       name: 'Încasare',
-      plural: 'Încasări'
+      plural: 'Încasări',
+      fields: {
+        suma: 'Suma',
+        nrChitanta: 'Nr.'
+      }
     },
 
     servicii: {
       name: 'Serviciu',
-      plural: 'Servicii'
+      plural: 'Servicii',
+      predefinite:
+      {
+        apa: 'Apă',
+        el: 'Electricitate',
+        gaze: 'Gaze naturale',
+        termo: 'Termoficare',
+        net: 'Internet',
+        gunoi: 'Evacuare gunoi menajer'
+      },
+      fields: {
+        denumire: 'Denumire'
+      }
     },
     utilizatori: {
       name: 'Utilizator',

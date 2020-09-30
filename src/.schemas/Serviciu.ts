@@ -37,11 +37,11 @@ const fields: FieldsCreator<Serviciu> = {
 const predefinite =
   [
     'apa',
-    'electricitate',
+    'el',
     'gaze',
-    'termoficare',
-    'internet',
-    'evacuare-gunoi-menajer'
+    'termo',
+    'net',
+    'gunoi'
   ]
 
 const hooks = {
