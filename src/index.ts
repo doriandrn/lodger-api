@@ -7,7 +7,6 @@ import config from './lodger.config'
 import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
 
 import { supportedLangs } from '~/lib/maintainable/langs'
-import currencies from '~/lib/maintainable/currencies'
 
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'

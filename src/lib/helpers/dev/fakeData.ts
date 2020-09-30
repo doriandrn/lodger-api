@@ -1,8 +1,7 @@
 import faker from 'faker'
-import currencies from '../../maintainable/currencies'
+import currencies from '../../../../dist/currencies.json'
 
 const holder = {}
-
 
 Object.defineProperties(holder, {
   $: {

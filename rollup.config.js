@@ -10,6 +10,8 @@ import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
 import copy from 'rollup-plugin-copy'
+import json from '@rollup/plugin-json'
+
 import { terser } from "rollup-plugin-terser"
 
 const extensions = [ 'js', 'jsx', `ts`, 'tsx' ];
@@ -50,10 +52,14 @@ export default {
         switch (id) {
           case 'ratesAtCompileTime':
             let rates = {}
+
             await axios.get('https://api.coingate.com/v2/rates/merchant').then(({ data }) => {
               rates = data
             })
-            console.log(rates)
+
+            console.log(`Updated ${Object.keys(rates).length} currency rates`)
+            fs.writeFileSync(path.join(__dirname, 'dist/ratesAtCompileTime.json'), JSON.stringify(rates))
+            fs.writeFileSync(path.join(__dirname, 'dist/currencies.json'), JSON.stringify(Object.keys(rates)))
             return `export default ${ JSON.stringify(rates) }`;
 
           case 'dynamic-targets':
@@ -102,6 +108,8 @@ export default {
       lib: ["es5", "es6", "dom"],
       target: "es5"
     }),
+
+    json(),
 
     globals(),
 
