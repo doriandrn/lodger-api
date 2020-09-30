@@ -204,7 +204,7 @@ class Lodger implements LodgerAPI {
   }
 
   @computed get rates () {
-    const { displayCurrency, rates } = Lodger
+    const { displayCurrency, rates: { rates } } = Lodger
     return rates[displayCurrency]
   }
 
