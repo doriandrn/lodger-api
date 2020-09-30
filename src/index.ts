@@ -204,7 +204,7 @@ class Lodger implements LodgerAPI {
   }
 
   @computed get rates () {
-    return Lodger.rates[this.displayCurrency]
+    return Lodger.rates[Lodger.displayCurrency]
   }
 
   static set rates (rates: Object) {
