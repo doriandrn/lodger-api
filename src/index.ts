@@ -170,7 +170,6 @@ class Lodger implements LodgerAPI {
     Lodger.rates = ratesAtCompileTime
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
-    this.currencies = Object.keys(ratesAtCompileTime)
   }
 
   /** Locales */
@@ -190,12 +189,16 @@ class Lodger implements LodgerAPI {
   }
 
   /** Currencies */
+  static get currencies () {
+    return Object.keys(ratesAtCompileTime)
+  }
+
   static get displayCurrency () {
     return displayCurrency.get()
   }
 
   static set displayCurrency (index: number) {
-    displayCurrency.set(currencies[index])
+    displayCurrency.set(Lodger.currencies[index])
   }
 
   static get rates () {
