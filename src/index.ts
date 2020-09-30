@@ -171,6 +171,7 @@ class Lodger implements LodgerAPI {
     this.currencies = currencies
   }
 
+  /** Locales */
   static get locale () {
     return locale.get()
   }
@@ -186,11 +187,13 @@ class Lodger implements LodgerAPI {
     locale.set(langCode)
   }
 
+  /** Currencies */
   static get displayCurrency () {
     return displayCurrency.get()
   }
 
-  static set displayCurrency (code) {
+  static set displayCurrency (code: string) {
+    console.log(currencies, code, currencies.indexOf(code))
     if (currencies.indexOf(code) < 0)
       throw new LodgerError('Invalid currency')
 

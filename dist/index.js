@@ -2274,6 +2274,7 @@ function () {
     configurable: true
   });
   Object.defineProperty(Lodger, "locale", {
+    /** Locales */
     get: function () {
       return locale.get();
     },
@@ -2288,10 +2289,12 @@ function () {
     configurable: true
   });
   Object.defineProperty(Lodger, "displayCurrency", {
+    /** Currencies */
     get: function () {
       return displayCurrency.get();
     },
     set: function (code) {
+      console.log(currencies, code, currencies.indexOf(code));
       if (currencies.indexOf(code) < 0) throw new LodgerError('Invalid currency');
       displayCurrency.set(code);
     },
