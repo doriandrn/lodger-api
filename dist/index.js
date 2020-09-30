@@ -2293,10 +2293,8 @@ function () {
     get: function () {
       return displayCurrency.get();
     },
-    set: function (code) {
-      console.log(currencies, code, currencies.indexOf(code));
-      if (currencies.indexOf(code) < 0) throw new LodgerError('Invalid currency');
-      displayCurrency.set(code);
+    set: function (index) {
+      displayCurrency.set(currencies[index]);
     },
     enumerable: false,
     configurable: true

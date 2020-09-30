@@ -192,12 +192,8 @@ class Lodger implements LodgerAPI {
     return displayCurrency.get()
   }
 
-  static set displayCurrency (code: string) {
-    console.log(currencies, code, currencies.indexOf(code))
-    if (currencies.indexOf(code) < 0)
-      throw new LodgerError('Invalid currency')
-
-    displayCurrency.set(code)
+  static set displayCurrency (index: number) {
+    displayCurrency.set(currencies[index])
   }
 
 
