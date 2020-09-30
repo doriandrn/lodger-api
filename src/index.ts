@@ -16,6 +16,8 @@ import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
 import loadLocales from 'helper/loadLocales'
 
+import ratesAtCompileTime from 'ratesAtCompileTime'
+
 import { observable, computed } from 'mobx'
 import { Cashify } from 'cashify'
 
@@ -104,6 +106,7 @@ let locales
 
 const locale = observable.box('ro')
 const displayCurrency = observable.box('RON')
+const currencyRates = observable.box({})
 
 /**
  *
@@ -165,7 +168,7 @@ class Lodger implements LodgerAPI {
       return tax.form.plural
     })
 
-
+    console.log('r', ratesAtCompileTime)
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
     this.currencies = currencies
@@ -194,6 +197,21 @@ class Lodger implements LodgerAPI {
 
   static set displayCurrency (index: number) {
     displayCurrency.set(currencies[index])
+  }
+
+  static get rates () {
+    return currencyRates.get()
+  }
+
+  @computed get rates () {
+    return Lodger.rates[this.displayCurrency]
+  }
+
+  static set rates (rates: Object) {
+    currencyRates.set({
+      rates,
+      timestamp: parseInt(Date.now() / 1000)
+    })
   }
 
 

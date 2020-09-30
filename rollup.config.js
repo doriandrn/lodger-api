@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import axios from 'axios'
 
 // plugins
 import commonjs from 'rollup-plugin-commonjs'
@@ -37,50 +38,61 @@ export default {
       // this is necessary to tell rollup that it should not try to resolve "dynamic-targets"
       // via other means
       resolveId(id) {
-        return ['dynamic-targets', 'locales'].indexOf(id) > -1 ? id : null
+        return ['dynamic-targets', 'locales', 'ratesAtCompileTime'].indexOf(id) > -1 ? id : null
       },
 
       // create a module that exports an object containing file names as keys and
       // functions that import those files as values
-      load(id) {
+      async load(id) {
         let objectEntries = []
         let dirs
-        if (id === 'dynamic-targets') {
-          dirs = ['src/.schemas']
 
-          dirs.map(dir => {
-            const targetDir = path.join(__dirname, dir);
-            let files = fs.readdirSync(targetDir);
+        switch (id) {
+          case 'ratesAtCompileTime':
+            let rates = {}
+            await axios.get('https://api.coingate.com/v2/rates/merchant').then(({ data }) => {
+              rates = data
+            })
+            console.log(rates)
+            return `export default ${ JSON.stringify(rates) }`;
 
-            if (files.indexOf('.DS_Store') > -1)
-              files.splice(0, 1)
+          case 'dynamic-targets':
+            dirs = ['src/.schemas']
 
-            if (!files.length) return
-            objectEntries.push(...files
-              .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`));
-              // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
-          })
+            dirs.map(dir => {
+              const targetDir = path.join(__dirname, dir);
+              let files = fs.readdirSync(targetDir);
 
-          if (objectEntries) return `export default {\n${objectEntries.join(',\n')}\n};`;
-        }
+              if (files.indexOf('.DS_Store') > -1)
+                files.splice(0, 1)
 
-        if (id === 'locales') {
-          dirs = ['src/lib/locales']
+              if (!files.length) return
+              objectEntries.push(...files
+                .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`));
+                // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
+            })
 
-          dirs.map(dir => {
-            const targetDir = path.join(__dirname, dir);
-            let files = fs.readdirSync(targetDir);
+            if (objectEntries)
+              return `export default {\n${objectEntries.join(',\n')}\n};`;
 
-            if (files.indexOf('.DS_Store') > -1)
-              files.splice(0, 1)
+          case 'locales':
+            dirs = ['src/lib/locales']
 
-            if (!files.length) return
-            objectEntries.push(...files
-              .map(file => `  '${file.split('.')[0]}': () => import('${path.join(targetDir, file)}')`));
-              // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
-          })
+            dirs.map(dir => {
+              const targetDir = path.join(__dirname, dir);
+              let files = fs.readdirSync(targetDir);
 
-          if (objectEntries) return `export default {\n${objectEntries.join(',\n')}\n};`;
+              if (files.indexOf('.DS_Store') > -1)
+                files.splice(0, 1)
+
+              if (!files.length) return
+              objectEntries.push(...files
+                .map(file => `  '${file.split('.')[0]}': () => import('${path.join(targetDir, file)}')`));
+                // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
+            })
+
+            if (objectEntries)
+              return `export default {\n${objectEntries.join(',\n')}\n};`;
         }
 
         return null;
