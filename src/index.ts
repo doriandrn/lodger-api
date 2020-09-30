@@ -106,7 +106,7 @@ let locales
 
 const locale = observable.box('ro')
 const displayCurrency = observable.box('RON')
-const currencyRates = observable.box({})
+const currencyRates = observable({ rates: undefined, timestamp: 0})
 
 /**
  *
