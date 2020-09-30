@@ -168,10 +168,10 @@ class Lodger implements LodgerAPI {
       return tax.form.plural
     })
 
-    console.log('r', ratesAtCompileTime)
+    Lodger.rates = ratesAtCompileTime
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
-    this.currencies = currencies
+    this.currencies = Object.keys(ratesAtCompileTime)
   }
 
   /** Locales */
@@ -204,7 +204,8 @@ class Lodger implements LodgerAPI {
   }
 
   @computed get rates () {
-    return Lodger.rates[Lodger.displayCurrency]
+    const { displayCurrency, rates } = Lodger
+    return rates[displayCurrency]
   }
 
   static set rates (rates: Object) {
