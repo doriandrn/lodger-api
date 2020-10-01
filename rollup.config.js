@@ -57,7 +57,7 @@ export default {
               rates = data
             })
 
-            console.log(`Updated ${Object.keys(rates).length} currency rates`)
+            console.log(`Updated ${Object.keys(rates).length} currency rates`, rates.RON)
             fs.writeFileSync(path.join(__dirname, 'dist/ratesAtCompileTime.json'), JSON.stringify(rates))
             if (rates.RON) fs.writeFileSync(path.join(__dirname, 'dist/currencies.json'), JSON.stringify(Object.keys(rates.RON)))
             return `export default ${ JSON.stringify(rates) }`;
