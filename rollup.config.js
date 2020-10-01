@@ -53,11 +53,11 @@ export default {
           case 'ratesAtCompileTime':
             let rates = {}
 
-            await axios.get('https://api.coingate.com/v2/rates/merchant').then(({ data }) => {
-              rates = data
+            await axios.get('https://api.coingate.com/v2/rates/trader').then(({ data }) => {
+              rates = data.buy
             })
 
-            console.log(`Updated ${Object.keys(rates).length} currency rates`, rates)
+            console.log(`Updated ${Object.keys(rates).length} currency rates`)
             fs.writeFileSync(path.join(__dirname, 'dist/ratesAtCompileTime.json'), JSON.stringify(rates))
             if (rates.RON) fs.writeFileSync(path.join(__dirname, 'dist/currencies.json'), JSON.stringify(Object.keys(rates.RON)))
             return `export default ${ JSON.stringify(rates) }`;
