@@ -190,7 +190,7 @@ class Lodger implements LodgerAPI {
 
   /** Currencies */
   static get currencies () {
-    return Object.keys(ratesAtCompileTime)
+    return Object.keys(ratesAtCompileTime[Lodger.displayCurrency])
   }
 
   static get displayCurrency () {

@@ -59,7 +59,7 @@ export default {
 
             console.log(`Updated ${Object.keys(rates).length} currency rates`)
             fs.writeFileSync(path.join(__dirname, 'dist/ratesAtCompileTime.json'), JSON.stringify(rates))
-            fs.writeFileSync(path.join(__dirname, 'dist/currencies.json'), JSON.stringify(Object.keys(rates)))
+            if (rates.RON) fs.writeFileSync(path.join(__dirname, 'dist/currencies.json'), JSON.stringify(Object.keys(rates.RON)))
             return `export default ${ JSON.stringify(rates) }`;
 
           case 'dynamic-targets':
