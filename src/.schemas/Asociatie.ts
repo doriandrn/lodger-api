@@ -81,11 +81,11 @@ const fields: FieldsCreator<Asociatie> = {
     required: true,
     value: ({ activeDoc }) => activeDoc.utilizatori
   },
-  // servicii: {
-  //   type: 'array',
-  //   ref: 'serviciu',
-  //   value: ({ activeDoc }) => activeDoc.servicii
-  // },
+  servicii: {
+    type: 'array',
+    ref: 'serviciu',
+    value: ({ activeDoc }) => activeDoc.servicii
+  },
   // furnizori: {
   //   type: 'array',
   //   ref: 'furnizor',
