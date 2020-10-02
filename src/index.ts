@@ -104,7 +104,8 @@ let plugins: LodgerPlugin[] = []
 let locales
 
 const locale = observable.box('ro')
-const displayCurrency = observable.box('RON')
+const currencies = Object.keys(ratesAtCompileTime)
+const displayCurrency = observable.box(currencies[0])
 const currencyRates = observable.box({ rates: undefined, timestamp: 0}, { deep: false })
 
 /**
@@ -162,7 +163,6 @@ class Lodger implements LodgerAPI {
 
       if (children && children.length > 0)
         tax.children = children
-
 
       return tax.form.plural
     })

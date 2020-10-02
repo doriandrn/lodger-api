@@ -77,7 +77,7 @@ implements FormAPI<I> {
     data ?: LodgerFormCreator<I>,
     protected opts ?: FormOptions
   ) {
-    const { fields, fieldsets, name } = data || {
+    const { fields, fieldsets, name, hooks } = data || {
       name: 'untitled',
       fields: {}
     }
@@ -96,6 +96,10 @@ implements FormAPI<I> {
 
     if (fieldsets) {
       this.fieldsets = fieldsets
+    }
+
+    if (hooks) {
+      this.taxHooks = hooks
     }
 
     if (opts) {

@@ -18,8 +18,8 @@ interface LodgerSchema extends RxJsonSchema {
 
 type LodgerSchemaOptions = {}
 
-const datamodelDir = ['dev', 'test']
-  .indexOf(env) > -1 ? '.schemas' : '.'
+// const datamodelDir = ['dev', 'test']
+//   .indexOf(env) > -1 ? '.schemas' : '.'
 
 type SchemaProperties<Interface> = {
   [k in keyof Interface] ?: RxJsonSchemaTopLevel

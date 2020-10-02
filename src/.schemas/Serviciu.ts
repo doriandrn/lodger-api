@@ -45,7 +45,8 @@ const predefinite =
   ]
 
 const hooks = {
-  onFirstTimeSubscribe: ({ put }) => {
+  // serviciile predifinite pe empty
+  empty: ({ put }) => {
     predefinite.map(async service => { await put(service) })
   }
 }

@@ -1,6 +1,7 @@
 import Taxonomy, { TaxonomyCreator } from './'
 import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
+import LodgerError from '~/lib/Error'
 // import { LodgerFormCreator } from '../Form'
 
 /**
@@ -65,12 +66,25 @@ implements SubscribableTaxonomy<T> {
    * @returns {Promise<Subscriber<T>>} the unwatcher for subscriber
    * @memberof Taxonomy
    */
-  subscribe (
+  async subscribe (
     subscriberName : string = 'main',
     options
   ): void {
-    if (this.subscribers[subscriberName]) return
-    this.subscribers[subscriberName] = new Subscriber(this.collection, options)
+    const { hooks, subscribers } = this
+    if (subscribers[subscriberName])
+      throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
+
+    const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
+
+    if (hooks) {
+      // Object.keys(hooks).map(hook => hooks[hook].bind(this))
+
+      // run onEmpty hook
+      await sub.updates
+      if (!sub.ids.length) {
+        hooks['empty'](this)
+      }
+    }
   }
 
   /**
@@ -104,6 +118,10 @@ implements SubscribableTaxonomy<T> {
   }
 
   get subscriberParentIds () {
-    
+
+  }
+
+  get hooks () {
+    return this.form.taxHooks
   }
 }
