@@ -128,11 +128,11 @@ export default {
       predefinite:
       {
         apa: 'Apă',
-        el: 'Electricitate',
+        electricitate: 'Electricitate',
         gaze: 'Gaze naturale',
-        termo: 'Termoficare',
-        net: 'Internet',
-        gunoi: 'Evacuare gunoi menajer'
+        termoficare: 'Termoficare',
+        internet: 'Internet',
+        'evacuare-gunoi-menajer': 'Evacuare gunoi menajer'
       },
       fields: {
         denumire: 'Denumire'

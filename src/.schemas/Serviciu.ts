@@ -37,17 +37,17 @@ const fields: FieldsCreator<Serviciu> = {
 const predefinite =
   [
     'apa',
-    'el',
+    'electricitate',
     'gaze',
-    'termo',
-    'net',
-    'gunoi'
+    'termoficare',
+    'internet',
+    'evacuare-gunoi-menajer'
   ]
 
 const hooks = {
   // serviciile predifinite pe empty
   empty () {
-    predefinite.map(async service => { await this.put({denumire: service}) })
+    predefinite.map(async service => { await this.put({ denumire: service }) })
   }
 }
 
