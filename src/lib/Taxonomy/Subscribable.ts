@@ -72,7 +72,8 @@ implements SubscribableTaxonomy<T> {
   ): void {
     const { hooks, subscribers } = this
     if (subscribers[subscriberName])
-      throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
+      return
+      // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
 
