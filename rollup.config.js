@@ -143,7 +143,7 @@ export default {
       ]
     }),
 
-    builtins(),
+    // builtins(),
 
     // terser()
   ],
