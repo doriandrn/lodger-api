@@ -77,13 +77,13 @@ implements SubscribableTaxonomy<T> {
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
 
     if (hooks) {
-      Object.keys(hooks).map(hook => hooks[hook].bind(this))
+      // Object.keys(hooks).map(hook => hooks[hook].bind(this))
 
       // run onEmpty hook
       if (hooks.empty) {
         await sub.updates
         if (!sub.ids.length) {
-          hooks['empty'](this)
+          hooks['empty'].call(this)
         }
       }
 
