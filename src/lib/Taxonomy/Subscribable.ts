@@ -80,10 +80,13 @@ implements SubscribableTaxonomy<T> {
       // Object.keys(hooks).map(hook => hooks[hook].bind(this))
 
       // run onEmpty hook
-      await sub.updates
-      if (!sub.ids.length) {
-        hooks['empty'](this)
+      if (hooks.empty) {
+        await sub.updates
+        if (!sub.ids.length) {
+          hooks['empty'](this)
+        }
       }
+
     }
   }
 
