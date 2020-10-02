@@ -82,9 +82,8 @@ implements SubscribableTaxonomy<T> {
       // run onEmpty hook
       if (hooks.empty) {
         await sub.updates
-        if (!sub.ids.length) {
-          hooks['empty'].call(this)
-        }
+        if (!sub.ids.length)
+          hooks.empty.call(this)
       }
 
     }

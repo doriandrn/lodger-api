@@ -46,7 +46,7 @@ const predefinite =
 
 const hooks = {
   // serviciile predifinite pe empty
-  empty: () => {
+  empty () {
     predefinite.map(async service => { await this.put({denumire: service}) })
   }
 }
