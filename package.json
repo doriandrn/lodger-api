@@ -76,6 +76,6 @@
     "rxjs": "^6.6.3"
   },
   "peerDependencies": {
-    "mobx": "^6.0.0"
+    "mobx": "^5.9.4"
   }
 }
