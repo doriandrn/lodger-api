@@ -123,6 +123,17 @@ export default {
       }
     },
 
+    scari: {
+      name: 'Scară',
+      plural: 'Scări',
+      fields: {
+        lift: 'Ascensor',
+        mansarda: 'Mansardă',
+        name: 'Nr. / Denumire',
+        etaje: 'Etaje'
+      }
+    },
+
     servicii: {
       name: 'Serviciu',
       plural: 'Servicii',
