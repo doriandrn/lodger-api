@@ -60,7 +60,8 @@ export default {
         organizatie,
         balanta: 'Balanță',
         utilizatori: 'Utilizatori',
-        preferinte: 'Preferințe'
+        preferinte: 'Preferințe',
+        servicii: 'Servicii oferite'
       }
     },
     blocuri: {
