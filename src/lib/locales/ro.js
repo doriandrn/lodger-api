@@ -8,6 +8,9 @@ export default {
   back: 'Înapoi',
   backTo: 'Înapoi la',
   search: 'Caută',
+  add: 'Adaugă',
+  trash: 'Șterge',
+  edit: 'Modifică',
   nav: {
     statistici: 'Statistici',
     liste: 'Liste de plată',

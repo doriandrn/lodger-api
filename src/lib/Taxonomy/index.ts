@@ -125,6 +125,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
 
       const collection = await db.collection(collectionCreator)
 
+      collection.postInsert((data, doc) => { this.totals += 1; this.last = doc._id }, false)
+      collection.postRemove(() => { this.totals -= 1 }, false)
+
       return new this(form, collection, options)
     } catch (e) {
       throw new TaxonomyError(e)
@@ -172,7 +175,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     try {
       await this.collection.findOne(id).remove()
       if (this.last === id) this.last = undefined
-      this.totals -= 1
     } catch (e) {
       notify({
         type: 'error',
@@ -215,8 +217,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       const _doc = await this.collection[method](doc)
       const id = _doc._id
 
-      this.last = id
-      this.totals += 1
+      // this.last = id
 
       notify({
         type: 'success',
