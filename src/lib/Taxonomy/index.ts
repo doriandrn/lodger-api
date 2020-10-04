@@ -125,9 +125,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
 
       const collection = await db.collection(collectionCreator)
 
-      collection.postInsert((data, doc) => { this.totals += 1; this.last = doc._id }, false)
-      collection.postRemove(() => { this.totals -= 1 }, false)
-
       return new this(form, collection, options)
     } catch (e) {
       throw new TaxonomyError(e)
@@ -146,6 +143,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     collection: RxCollection<T>,
     readonly options ?: LodgerTaxonomyCreatorOptions,
   ) {
+    collection.postInsert((data, doc) => { this.totals += 1; this.last = doc._id }, false)
+    collection.postRemove(() => { this.totals -= 1 }, false)
+
     // kinda hide the property for snapshots
     Object.defineProperty(this, 'collection', {
       enumerable: false,
