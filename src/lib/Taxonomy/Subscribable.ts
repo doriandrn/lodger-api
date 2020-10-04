@@ -121,7 +121,7 @@ implements SubscribableTaxonomy<T> {
     Object.keys(subscribers).forEach(s => { this.unsubscribe(s) })
   }
 
-  @computed refsIds (subName: string) {
+  refsIds (subName: string) {
     const sub = this.subscribers[subName]
     if (!sub)
       throw new LodgerError('Invalid subscriber requested for refsIds')
