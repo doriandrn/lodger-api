@@ -2,6 +2,7 @@ import Taxonomy, { TaxonomyCreator } from './'
 import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
 import LodgerError from '~/lib/Error'
+import { computed } from 'mobx'
 // import { LodgerFormCreator } from '../Form'
 
 /**
@@ -120,8 +121,30 @@ implements SubscribableTaxonomy<T> {
     Object.keys(subscribers).forEach(s => { this.unsubscribe(s) })
   }
 
-  get subscriberParentIds () {
+  @computed refsIds (subName: string) {
+    const sub = this.subscribers[subName]
+    if (!sub)
+      throw new LodgerError('Invalid subscriber requested for refsIds')
 
+    const { parents } = sub
+    if (!parents) return
+
+    const x = {}
+
+    parents.map(tax => {
+      const $tax = this.taxes[tax] || this.taxes[tax.plural]
+      if (!$tax) return
+      const { form: { plural }, subscribers } = $tax
+      const taxSub = subscribers[subName]
+
+      if (taxSub) {
+        const { selectedId } = taxSub
+        if (selectedId)
+          x[plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
+      }
+    })
+
+    return x
   }
 
   get hooks () {
