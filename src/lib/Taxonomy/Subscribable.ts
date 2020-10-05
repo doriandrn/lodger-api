@@ -96,11 +96,11 @@ implements SubscribableTaxonomy<T> {
             // const { selectedId } = taxSub
             // console.log('')
             if (!taxSub._refsIds) {
-              taxSub._refsIds = observable.box({})
+              taxSub._refsIds = observable.box({}, { deep: true })
               taxSub.refsIds = computed(() => taxSub._refsIds)
             }
-            console.log(name, id, taxSub.refsIds)
             taxSub._refsIds[`${name}Id`] = id
+            console.log(name, id, taxSub.refsIds)
             // if (selectedId) {
             //   taxSub._refsIds[plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
             // }
