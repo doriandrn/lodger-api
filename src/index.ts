@@ -169,7 +169,7 @@ class Lodger implements LodgerAPI {
       return tax.form.plural
     })
 
-    taxonomies.map(t => {
+    this.taxonomies.map(t => {
       if (this[t]) return t
       Object.defineProperty(this[t], '$lodger', {
         value: this,
