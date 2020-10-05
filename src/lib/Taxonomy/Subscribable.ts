@@ -133,6 +133,7 @@ implements SubscribableTaxonomy<T> {
 
     parents.map(tax => {
       const $tax = this.taxes[tax] || this.taxes[tax.plural]
+      console.log($tax)
       if (!$tax) return
       const { form: { plural }, subscribers } = $tax
       const taxSub = subscribers[subName]

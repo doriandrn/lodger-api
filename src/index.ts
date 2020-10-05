@@ -129,7 +129,6 @@ class Lodger implements LodgerAPI {
   ) {
     // Assign taxonomies to this
     this.taxonomies = taxonomies.map(tax => {
-      tax.taxes = this.taxonomies
       Object.defineProperty(Lodger.prototype, tax.form.plural, {
         value: tax,
         writable: false
@@ -166,6 +165,10 @@ class Lodger implements LodgerAPI {
         tax.children = children
 
       return tax.form.plural
+    })
+
+    taxonomies.map(t => {
+      t.taxes = this.taxonomies
     })
 
     Lodger.rates = ratesAtCompileTime
