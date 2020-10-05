@@ -96,7 +96,7 @@ implements SubscribableTaxonomy<T> {
             const { selectedId } = taxSub
             if (!taxSub._refsIds) {
               taxSub._refsIds = observable.box({})
-              taxSub.refsIds = taxSub._refsIds.get()
+              taxSub.refsIds = computed(() => taxSub._refsIds.get())
             }
             if (selectedId) {
               taxSub._refsIds[plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
