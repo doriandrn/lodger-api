@@ -165,7 +165,7 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         tax.children = children
 
-      if (!t.taxes) t.taxes = taxonomies
+      if (!tax.taxes) tax.taxes = taxonomies
       return tax.form.plural
     })
 
