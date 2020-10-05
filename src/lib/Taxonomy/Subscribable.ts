@@ -83,8 +83,8 @@ implements SubscribableTaxonomy<T> {
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
 
-    reaction(() => sub.selectedId, () => {
-      const { parents, children } = this
+    reaction(() => sub.selectedId, (id) => {
+      const { parents, children, collection: { name } } = this
       if (children && children.length) {
         children.map(tax => {
           const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
@@ -93,14 +93,17 @@ implements SubscribableTaxonomy<T> {
           const taxSub = subscribers[subscriberName]
 
           if (taxSub) {
-            const { selectedId } = taxSub
+            // const { selectedId } = taxSub
+            // console.log('')
             if (!taxSub._refsIds) {
               taxSub._refsIds = observable.box({})
               taxSub.refsIds = computed(() => taxSub._refsIds.get())
             }
-            if (selectedId) {
-              taxSub._refsIds[plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
-            }
+            console.log(name, id, taxSub.refsIds)
+            taxSub._refsIds[`${name}Id`] = id
+            // if (selectedId) {
+            //   taxSub._refsIds[plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
+            // }
           }
         })
       }
