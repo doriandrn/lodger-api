@@ -156,6 +156,7 @@ class Lodger implements LodgerAPI {
         if (childrenKeys.length) {
           children.push(t.form.plural)
         }
+
       })
 
       if (parents && parents.length > 0)
@@ -164,12 +165,13 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         tax.children = children
 
+      if (!t.taxes) t.taxes = taxonomies
       return tax.form.plural
     })
 
-    taxonomies.map(t => {
-      t.taxes = this.taxonomies
-    })
+    // taxonomies.map(t => {
+    //   t.taxes = this.taxonomies
+    // })
 
     Lodger.rates = ratesAtCompileTime
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
