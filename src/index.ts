@@ -171,7 +171,7 @@ class Lodger implements LodgerAPI {
 
     this.taxonomies.map(t => {
       if (this[t]) return t
-      Object.defineProperty(this[t], '$lodger', {
+      Object.defineProperty(this[t].prototype, '$lodger', {
         value: this,
         writable: false
       })
