@@ -83,7 +83,7 @@ implements SubscribableTaxonomy<T> {
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
 
-    reaction(sub.selectedId, () => {
+    reaction(() => sub.selectedId, () => {
       const { parents, children } = this
       if (children && children.length) {
         children.map(tax => {
