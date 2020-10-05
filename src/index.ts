@@ -165,13 +165,17 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         tax.children = children
 
-      if (!tax.taxes) tax.taxes = taxonomies
+      // if (!tax.taxes) tax.taxes = taxonomies
       return tax.form.plural
     })
 
-    // taxonomies.map(t => {
-    //   t.taxes = this.taxonomies
-    // })
+    taxonomies.map(t => {
+      if (this[t]) return t
+      Object.defineProperty(this[t], '$lodger', {
+        value: this,
+        writable: false
+      })
+    })
 
     Lodger.rates = ratesAtCompileTime
     // this.taxonomies = taxonomies.map(tax => tax.form.plural)
