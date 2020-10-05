@@ -96,7 +96,7 @@ implements SubscribableTaxonomy<T> {
             // const { selectedId } = taxSub
             // console.log('')
             if (!taxSub.refsIds) {
-              taxSub.refsIds = observable({}, { deep: true })
+              taxSub.refsIds = observable({})
               // taxSub.refsIds = computed(() => taxSub._refsIds.get())
             }
             taxSub.refsIds[`${name}Id`] = id
