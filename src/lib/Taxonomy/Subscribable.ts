@@ -121,7 +121,7 @@ implements SubscribableTaxonomy<T> {
     Object.keys(subscribers).forEach(s => { this.unsubscribe(s) })
   }
 
-  referencesIds (subName: string) {
+  @computed referencesIds (subName: string) {
     const sub = this.subscribers[subName]
     if (!sub)
       throw new LodgerError('Invalid subscriber requested for refsIds')
@@ -133,7 +133,6 @@ implements SubscribableTaxonomy<T> {
 
     parents.map(tax => {
       const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-      console.log($tax)
       if (!$tax) return
       const { form: { plural }, subscribers } = $tax
       const taxSub = subscribers[subName]
