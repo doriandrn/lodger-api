@@ -126,7 +126,7 @@ implements SubscribableTaxonomy<T> {
     if (!sub)
       throw new LodgerError('Invalid subscriber requested for refsIds')
 
-    const { parents } = sub
+    const { parents } = this
     if (!parents) return
 
     const x = {}
