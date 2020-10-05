@@ -2,7 +2,7 @@ import Taxonomy, { TaxonomyCreator } from './'
 import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
 import LodgerError from '~/lib/Error'
-import { computed } from 'mobx'
+import { computed, reaction, observable } from 'mobx'
 // import { LodgerFormCreator } from '../Form'
 
 /**
@@ -27,6 +27,7 @@ export default class STaxonomy<T extends Taxonomie, I>
 extends Taxonomy<T, I>
 implements SubscribableTaxonomy<T> {
   readonly subscribers: SubscriberList<T> = {}
+  @observable _refsIds: {[k in Taxonomii]: string} = {}
 
   constructor () {
     super(...arguments)
@@ -44,6 +45,10 @@ implements SubscribableTaxonomy<T> {
    */
   get data () {
     return this.subscribers
+  }
+
+  @computed get refsIds () {
+    return this._refsIds
   }
 
   /**
@@ -77,6 +82,25 @@ implements SubscribableTaxonomy<T> {
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
+
+    reaction(sub.selectedId, () => {
+      const { parents, children } = this
+      if (children && children.length) {
+        children.map(tax => {
+          const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
+          if (!$tax) return
+          const { form: { plural }, subscribers } = $tax
+          const taxSub = subscribers[subscriberName]
+
+          if (taxSub) {
+            const { selectedId } = taxSub
+            if (selectedId) {
+              taxSub._refsIds[subscriberName][plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
+            }
+          }
+        })
+      }
+    })
 
     if (hooks) {
       // Object.keys(hooks).map(hook => hooks[hook].bind(this))
@@ -121,31 +145,32 @@ implements SubscribableTaxonomy<T> {
     Object.keys(subscribers).forEach(s => { this.unsubscribe(s) })
   }
 
-  @computed referencesIds (subName: string) {
-    const sub = this.subscribers[subName]
-    if (!sub)
-      throw new LodgerError('Invalid subscriber requested for refsIds')
+  // referencesIds (subName: string) {
+  //   const sub = this.subscribers[subName]
+  //   if (!sub)
+  //     throw new LodgerError('Invalid subscriber requested for refsIds')
 
-    const { parents } = this
-    if (!parents) return
+  //   const { parents } = this
+  //   if (!parents) return
 
-    const x = {}
+  //   // const x = {}
 
-    parents.map(tax => {
-      const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-      if (!$tax) return
-      const { form: { plural }, subscribers } = $tax
-      const taxSub = subscribers[subName]
+  //   parents.map(tax => {
+  //     const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
+  //     if (!$tax) return
 
-      if (taxSub) {
-        const { selectedId } = taxSub
-        if (selectedId)
-          x[plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
-      }
-    })
+  //     const { form: { plural }, subscribers } = $tax
+  //     const taxSub = subscribers[subName]
 
-    return x
-  }
+  //     if (taxSub) {
+  //       const { selectedId } = taxSub
+  //       if (selectedId)
+  //         this.refsIds[subName][plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
+  //     }
+  //   })
+
+  //   // return x
+  // }
 
   get hooks () {
     return this.form.taxHooks

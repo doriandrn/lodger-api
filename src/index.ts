@@ -165,13 +165,10 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         tax.children = children
 
-      // if (!tax.taxes) tax.taxes = taxonomies
       return tax.form.plural
     })
 
     this.taxonomies.map(t => {
-      // console.log(t, this[t])
-      // if (this[t]) return t
       if (this[t]) {
         Object.defineProperty(this[t], '$lodger', {
           value: this,
@@ -181,7 +178,6 @@ class Lodger implements LodgerAPI {
     })
 
     Lodger.rates = ratesAtCompileTime
-    // this.taxonomies = taxonomies.map(tax => tax.form.plural)
     this.supportedLangs = supportedLangs
   }
 
@@ -334,9 +330,7 @@ class Lodger implements LodgerAPI {
   }
 
   async search (input: string, taxonomy ?: Taxonomy) {
-    if (taxonomy) {
-
-    }
+    if (taxonomy) {}
 
     return results
   }
