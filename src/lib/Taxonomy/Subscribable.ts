@@ -122,6 +122,12 @@ implements SubscribableTaxonomy<T> {
       }
     })
 
+    reaction(() => sub.activeId, async (id) => {
+      if (!id) return
+      const activeDoc = await this.collection.findOne(id).exec()
+      this.$lodger.modal.activeDoc = activeDoc
+    })
+
     if (hooks) {
       // Object.keys(hooks).map(hook => hooks[hook].bind(this))
 
