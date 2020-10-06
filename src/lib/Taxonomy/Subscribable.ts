@@ -3,6 +3,7 @@ import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
 import LodgerError from '~/lib/Error'
 import { computed, reaction, observable } from 'mobx'
+import { table } from 'console'
 // import { LodgerFormCreator } from '../Form'
 
 /**
@@ -125,8 +126,8 @@ implements SubscribableTaxonomy<T> {
     reaction(() => sub.activeId, async (id) => {
       if (!id) return
       const activeDoc = await this.collection.findOne(id).exec()
-      console.log('ad', activeDoc)
       this.$lodger.modal.activeDoc = activeDoc
+      Object.assign(this.$lodger.modal, { sub })
     })
 
     if (hooks) {
