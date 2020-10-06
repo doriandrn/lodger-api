@@ -112,15 +112,15 @@ implements SubscribableTaxonomy<T> {
             if (sOrP && op && val) {
               taxSub.criteria.filter = { [sOrP]: { [op]: val } }
             } else if (taxSub.criteria.filter[sOrP]) {
-              delete taxSub.criteria.filter[sOrP]
+              taxSub.criteria.filter = { [sOrP]: { [op]: null } }
+              // delete taxSub.criteria.filter[sOrP]
             }
 
             if ($tax.children) $tax.children.forEach(t => {
               const tsub = this.$lodger[t].subscribers[subscriberName]
               if (tsub && tsub.selectedId) {
-                console.log('tsub', tsub.selectedId, t)
                 tsub.select(tsub.selectedId)
-                console.log('tsub2', tsub.selectedId, t)
+                tsub.criteria.filter = { [sOrP]: { [op]: null } }
               }
             })
           }
