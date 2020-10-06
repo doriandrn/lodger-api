@@ -145,9 +145,9 @@ class Lodger implements LodgerAPI {
       const children = []
 
       taxonomies.forEach(t => {
-        const { name, plural } = t.form
+        const { name, plural, schema: { required } } = t.form
         const parentsKeys = [`${name}Id`, plural]
-          .filter(key => tax.form.fieldsIds.indexOf(key) > -1 && tax.form.fields[key].required)[0]
+          .filter(key => tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
         const childrenKeys = t.form.fieldsIds.filter(key => [`${tax.form.name}Id`, tax.form.plural].indexOf(key) > -1)
 
         if (parentsKeys) {
