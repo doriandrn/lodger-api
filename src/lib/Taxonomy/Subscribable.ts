@@ -117,7 +117,11 @@ implements SubscribableTaxonomy<T> {
 
             if ($tax.children) $tax.children.forEach(t => {
               const tsub = this.$lodger[t].subscribers[subscriberName]
-              if (tsub && tsub.selectedId) tsub.select(tsub.selectedId)
+              if (tsub && tsub.selectedId) {
+                console.log('tsub', tsub.selectedId, t)
+                tsub.select(tsub.selectedId)
+                console.log('tsub2', tsub.selectedId, t)
+              }
             })
           }
         })
