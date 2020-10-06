@@ -94,18 +94,19 @@ implements SubscribableTaxonomy<T> {
           const taxSub = subscribers[subscriberName]
 
           if (taxSub) {
-            if (!taxSub.refsIds) {
-              taxSub.refsIds = observable({})
-            }
-
-            taxSub.refsIds[`${name}Id`] = id
 
             let sOrP, op, val
             if ($tax.parents && $tax.parents.length) {
+              if (!taxSub.refsIds) {
+                taxSub.refsIds = observable({})
+              }
+
               const isSingular = $tax.parents.indexOf(name) > -1
               sOrP = isSingular ? `${name}Id` : this.form.plural
               op = isSingular ? '$eq' : '$in'
               val = isSingular ? id : [id]
+
+              taxSub.refsIds[sOrP] = val
             }
 
             if (sOrP && op && val) {
