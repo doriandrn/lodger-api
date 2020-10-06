@@ -93,12 +93,11 @@ implements SubscribableTaxonomy<T> {
           const taxSub = subscribers[subscriberName]
 
           if (taxSub) {
-            // const { selectedId } = taxSub
-            // console.log('')
             if (!taxSub.refsIds) {
               taxSub.refsIds = observable({})
-              // taxSub.refsIds = computed(() => taxSub._refsIds.get())
             }
+
+            taxSub.refsIds[`${name}Id`] = id
 
             let sOrP, op, val
             if ($tax.parents && $tax.parents.length) {
@@ -108,13 +107,11 @@ implements SubscribableTaxonomy<T> {
               val = isSingular ? id : [id]
             }
 
-            console.log(op, val)
-
-            taxSub.refsIds[`${name}Id`] = id
-
-            // if (selectedId) {
-            //   taxSub._refsIds[plural === tax ? plural : `${tax}Id`] = plural === tax ? [ selectedId ] : selectedId
-            // }
+            if (sOrP && op && val) {
+              sub.criteria.filter = { [sOrP]: { [op]: val } }
+            } else if (sub.criteria.filter[sOrP]) {
+              delete sub.criteria.filter[sOrP]
+            }
           }
         })
       }
