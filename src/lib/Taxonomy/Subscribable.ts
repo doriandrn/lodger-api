@@ -125,6 +125,7 @@ implements SubscribableTaxonomy<T> {
     reaction(() => sub.activeId, async (id) => {
       if (!id) return
       const activeDoc = await this.collection.findOne(id).exec()
+      console.log('ad', activeDoc)
       this.$lodger.modal.activeDoc = activeDoc
     })
 
