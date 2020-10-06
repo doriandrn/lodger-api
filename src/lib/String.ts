@@ -64,9 +64,11 @@ const plurals = {
   contor: 'contoare',
   cheltuiala: 'cheltuieli',
   factura: 'facturi',
+  furnizor: 'furnizori',
   incasare: 'incasari',
   serviciu: 'servicii',
-  tranzactie: 'tranzactii'
+  tranzactie: 'tranzactii',
+  utilizator: 'utilizatori'
 }
 
 /**
