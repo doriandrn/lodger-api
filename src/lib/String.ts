@@ -86,7 +86,7 @@ Object.defineProperties(String.prototype, {
    */
   plural: {
     get () {
-      return plurals[this]
+      return plurals[this] || 'undefined'
     }
   },
 
