@@ -120,7 +120,7 @@ implements SubscribableTaxonomy<T> {
               const tsub = this.$lodger[t].subscribers[subscriberName]
               if (tsub && tsub.selectedId) {
                 tsub.select(tsub.selectedId)
-                tsub.criteria.filter = { [sOrP]: { [op]: null } }
+                tsub.criteria.filter = {}
               }
             })
           }
