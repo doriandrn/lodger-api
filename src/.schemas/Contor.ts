@@ -9,8 +9,8 @@ declare global {
 
 const fields: FieldsCreator<Contor> = {
   tip: {
-  },
-
+    preview: 0
+  }
 }
 
 export {
