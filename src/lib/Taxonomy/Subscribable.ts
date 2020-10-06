@@ -116,6 +116,8 @@ implements SubscribableTaxonomy<T> {
               // delete taxSub.criteria.filter[sOrP]
             }
 
+            if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
+
             if ($tax.children) $tax.children.forEach(t => {
               const tsub = this.$lodger[t].subscribers[subscriberName]
               if (tsub && tsub.selectedId) {
