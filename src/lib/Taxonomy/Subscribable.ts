@@ -113,7 +113,7 @@ implements SubscribableTaxonomy<T> {
               taxSub.criteria.filter = { [sOrP]: { [op]: val } }
             } else if (taxSub.criteria.filter[sOrP]) {
               taxSub.criteria.filter = { [sOrP]: { [op]: null } }
-              // delete taxSub.criteria.filter[sOrP]
+              delete taxSub.criteria.filter[sOrP]
             }
 
             if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
@@ -122,9 +122,6 @@ implements SubscribableTaxonomy<T> {
               const tsub = this.$lodger[t].subscribers[subscriberName]
               if (tsub && tsub.selectedId) {
                 tsub.select(tsub.selectedId)
-                // if (taxSub.criteria.filter[sOrP])
-                //   taxSub.criteria.filter = { [sOrP]: { [op]: null } }
-                //   // tsub.criteria.filter = {}
               }
             })
           }
