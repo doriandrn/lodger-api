@@ -95,10 +95,12 @@ implements SubscribableTaxonomy<T> {
         console.log(tax, $tax, allTaxes)
         if (!$tax) return
         console.log('1')
-        if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
-          allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
+        if (allTaxes && allTaxes.length) {
+          if (allTaxes.indexOf(tax.plural) > -1) allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
           console.log('alltaxes afteer removing', tax.plural, allTaxes)
-        } else return
+        } else {
+          return
+        }
         console.log('2')
         const { subscribers, parents, children, collection: { name } } = $tax
         const taxSub = subscribers[subscriberName]
