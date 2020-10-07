@@ -83,10 +83,11 @@ implements SubscribableTaxonomy<T> {
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
+    let allTaxes
 
     const doForTaxes = (taxes: Taxonomie[], id : string) => {
       if (!taxes || !taxes.length) return
-      const allTaxes = [ ...this.$lodger.taxonomies ]
+      if (!allTaxes) allTaxes = [ ...this.$lodger.taxonomies ]
 
       console.log('workin out', taxes, id)
 
@@ -134,6 +135,8 @@ implements SubscribableTaxonomy<T> {
 
         return true
       })
+
+      allTaxes = null
     }
 
     reaction(() => sub.selectedId, (id) => {
