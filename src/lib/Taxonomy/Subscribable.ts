@@ -86,7 +86,7 @@ implements SubscribableTaxonomy<T> {
 
     const doForTaxes = (taxes: Taxonomie[], id : string) => {
       if (!taxes || !taxes.length) return
-      const allTaxes = this.$lodger.taxonomies
+      const allTaxes = [ ...this.$lodger.taxonomies ]
 
       console.log('workin out', taxes, id)
 
