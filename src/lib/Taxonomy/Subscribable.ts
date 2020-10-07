@@ -96,7 +96,7 @@ implements SubscribableTaxonomy<T> {
         if (!$tax) return
 
         if (allTaxes && allTaxes.length && (allTaxes.indexOf(tax) > -1 || allTaxes.indexOf(tax.plural) > -1)) {
-          allTaxes.splice(allTaxes.indexOf(tax) || allTaxes.indexOf(tax.plural), 1)
+          allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
         } else return
 
         const { subscribers, parents, children, collection: { name } } = $tax
