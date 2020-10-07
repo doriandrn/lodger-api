@@ -86,12 +86,17 @@ implements SubscribableTaxonomy<T> {
 
     const doForTaxes = (taxes: Taxonomie[], id : string) => {
       if (!taxes || !taxes.length) return
+      const allTaxes = this.$lodger.taxonomies
 
       console.log('workin out', taxes, id)
 
       taxes.forEach(tax => {
         const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
         if (!$tax) return
+
+        if (allTaxes.indexOf(tax) > -1 || allTaxes.indexOf(tax.plural) > -1) {
+          allTaxes.splice(allTaxes.indexOf(tax) || allTaxes.indexOf(tax.plural), 1)
+        } else return
 
         const { subscribers, parents, children, collection: { name } } = $tax
         const taxSub = subscribers[subscriberName]
