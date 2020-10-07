@@ -84,49 +84,55 @@ implements SubscribableTaxonomy<T> {
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
 
-    reaction(() => sub.selectedId, (id) => {
-      const { parents, children, collection: { name } } = this
-      if (children && children.length) {
-        children.map(tax => {
-          const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-          if (!$tax) return
-          const { form: { plural }, subscribers } = $tax
-          const taxSub = subscribers[subscriberName]
+    const doForTaxes = (taxes: Taxonomie[], id : string) => {
+      if (!taxes || !taxes.length) return
 
-          if (taxSub) {
+      console.log('workin out', taxes, id)
 
-            let sOrP, op, val
-            if ($tax.parents && $tax.parents.length) {
-              if (!taxSub.refsIds) {
-                taxSub.refsIds = observable({})
-              }
+      taxes.forEach(tax => {
+        const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
+        if (!$tax) return
 
-              const isSingular = $tax.parents.indexOf(name) > -1
-              sOrP = isSingular ? `${name}Id` : this.form.plural
-              op = isSingular ? '$eq' : '$in'
-              val = isSingular ? id : [id]
+        const { subscribers, parents, children, collection: { name } } = $tax
+        const taxSub = subscribers[subscriberName]
 
-              taxSub.refsIds[sOrP] = val
-            }
+        if (!taxSub) {
+          console.error('invalid sub requested', tax)
+          return
+        }
 
-            if (sOrP && op && val) {
-              taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-            } else if (taxSub.criteria.filter[sOrP]) {
-              taxSub.criteria.filter = { [sOrP]: { [op]: null } }
-              delete taxSub.criteria.filter[sOrP]
-            }
+        let sOrP, op, val
 
-            if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
-
-            if ($tax.children) $tax.children.forEach(t => {
-              const tsub = this.$lodger[t].subscribers[subscriberName]
-              if (tsub && tsub.selectedId) {
-                tsub.select(tsub.selectedId)
-              }
-            })
+        if (parents && parents.length) {
+          if (!taxSub.refsIds) {
+            taxSub.refsIds = observable({})
           }
-        })
-      }
+
+          const isSingular = parents.indexOf(name) > -1
+          sOrP = isSingular ? `${name}Id` : this.form.plural
+          op = isSingular ? '$eq' : '$in'
+          val = isSingular ? id : [id]
+
+          taxSub.refsIds[sOrP] = val
+        }
+
+        if (sOrP && op && val) {
+          taxSub.criteria.filter = { [sOrP]: { [op]: val } }
+        } else if (taxSub.criteria.filter[sOrP]) {
+          delete taxSub.criteria.filter[sOrP]
+        }
+
+        if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
+
+        if (children && children.length)
+          doForTaxes(children, id)
+
+        return true
+      })
+    }
+
+    reaction(() => sub.selectedId, (id) => {
+      doForTaxes(this.children, id)
     })
 
     reaction(() => sub.activeId, async (id) => {
