@@ -93,13 +93,14 @@ implements SubscribableTaxonomy<T> {
 
       taxes.forEach(tax => {
         const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
+        console.log(tax, $tax)
         if (!$tax) return
-
+        console.log('1')
         if (allTaxes && allTaxes.length && (allTaxes.indexOf(tax) > -1 || allTaxes.indexOf(tax.plural) > -1)) {
           allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
           console.log('alltaxes afteer removing', tax.plural, allTaxes)
         } else return
-
+        console.log('2')
         const { subscribers, parents, children, collection: { name } } = $tax
         const taxSub = subscribers[subscriberName]
 
@@ -107,12 +108,14 @@ implements SubscribableTaxonomy<T> {
           console.error('invalid sub requested', tax)
           return
         }
+        console.log('3')
 
         let sOrP, op, val
 
         if (parents && parents.length) {
           if (!taxSub.refsIds) {
             taxSub.refsIds = observable({})
+            console.log(4)
           }
 
           const isSingular = parents.indexOf(name) > -1
