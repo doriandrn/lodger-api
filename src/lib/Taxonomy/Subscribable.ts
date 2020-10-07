@@ -89,11 +89,10 @@ implements SubscribableTaxonomy<T> {
       if (!taxes || !taxes.length) return
       if (!allTaxes) allTaxes = [ ...this.$lodger.taxonomies ]
 
-      console.log('workin out', taxes, id)
 
       taxes.forEach(tax => {
         const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-        console.log(tax, $tax)
+        console.log(tax, $tax, allTaxes)
         if (!$tax) return
         console.log('1')
         if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
@@ -140,7 +139,7 @@ implements SubscribableTaxonomy<T> {
         return true
       })
 
-      allTaxes = undefined
+      // allTaxes = undefined
     }
 
     reaction(() => sub.selectedId, (id) => {
