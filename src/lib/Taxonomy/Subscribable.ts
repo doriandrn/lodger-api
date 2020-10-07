@@ -136,7 +136,7 @@ implements SubscribableTaxonomy<T> {
         return true
       })
 
-      allTaxes = null
+      allTaxes = undefined
     }
 
     reaction(() => sub.selectedId, (id) => {
