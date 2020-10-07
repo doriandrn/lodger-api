@@ -1996,7 +1996,7 @@ function (_super) {
 
                 if (allTaxes && allTaxes.length && (allTaxes.indexOf(tax) > -1 || allTaxes.indexOf(tax.plural) > -1)) {
                   allTaxes.splice(allTaxes.indexOf(tax.plural), 1);
-                  console.log('alltaxes afteer removing', tax.plural);
+                  console.log('alltaxes afteer removing', tax.plural, allTaxes);
                 } else return;
 
                 var subscribers = $tax.subscribers,
