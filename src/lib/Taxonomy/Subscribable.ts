@@ -95,7 +95,7 @@ implements SubscribableTaxonomy<T> {
         const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
         if (!$tax) return
 
-        if (allTaxes.indexOf(tax) > -1 || allTaxes.indexOf(tax.plural) > -1) {
+        if (allTaxes.length && (allTaxes.indexOf(tax) > -1 || allTaxes.indexOf(tax.plural) > -1)) {
           allTaxes.splice(allTaxes.indexOf(tax) || allTaxes.indexOf(tax.plural), 1)
         } else return
 
