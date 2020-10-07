@@ -131,7 +131,7 @@ implements SubscribableTaxonomy<T> {
         if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
 
         if (children && children.length)
-          doForTaxes(children, id)
+          doForTaxes(children, taxSub.selectedId)
 
         return true
       })
