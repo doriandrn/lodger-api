@@ -83,6 +83,11 @@ implements SubscribableTaxonomy<T> {
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
+
+    if (this.parents && this.parents.length) {
+      sub.refsIds = observable({})
+    }
+
     let allTaxes : Taxonomie[] = []
 
     const doForTaxes = (taxes: Taxonomie[], id : string, name: string) => {
@@ -109,11 +114,7 @@ implements SubscribableTaxonomy<T> {
 
         let sOrP, op, val
 
-        if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
-          if (!taxSub.refsIds) {
-            taxSub.refsIds = observable({})
-          }
-
+        if (taxSub.refsIds && parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
           const isSingular = parents.indexOf(name) > -1
           sOrP = isSingular ? `${name}Id` : this.form.plural
           op = isSingular ? '$eq' : '$in'
