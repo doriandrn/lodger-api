@@ -83,21 +83,19 @@ implements SubscribableTaxonomy<T> {
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
-    let allTaxes
+    let allTaxes : Taxonomie[] = []
 
     const doForTaxes = (taxes: Taxonomie[], id : string) => {
       if (!taxes || !taxes.length) return
-      if (!allTaxes) allTaxes = [ ...this.$lodger.taxonomies ]
-
+      if (!allTaxes.length) allTaxes = [ ...this.$lodger.taxonomies ]
 
       taxes.forEach(tax => {
         const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-        console.log(tax, $tax, allTaxes)
         if (!$tax) return
         console.log('1')
-        if (allTaxes && allTaxes.length) {
-          if (allTaxes.indexOf(tax.plural) > -1) allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
-          console.log('alltaxes afteer removing', tax.plural, allTaxes)
+        if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
+          allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
+          console.log('alltaxes afteer removing', tax, tax.plural, allTaxes)
         } else {
           return
         }
