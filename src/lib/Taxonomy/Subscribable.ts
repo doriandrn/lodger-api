@@ -130,25 +130,25 @@ implements SubscribableTaxonomy<T> {
           if (taxSub.selectedId)
             taxSub.select(taxSub.selectedId)
 
-          await taxSub.updates
 
-          if (children && children.length)
+            if (children && children.length)
             doForTaxes(children, taxSub.selectedId, tax)
 
-          if (sOrP && op && val) {
-            taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-          } else {
-            if (taxSub.criteria.filter) {
-              try {
-                delete taxSub.criteria.filter[sOrP]
-              } catch (e) { console.error('could not delete filter', sOrP, 'on', tax, e) }
+            if (sOrP && op && val) {
+              taxSub.criteria.filter = { [sOrP]: { [op]: val } }
+            } else {
+              if (taxSub.criteria.filter) {
+                try {
+                  delete taxSub.criteria.filter[sOrP]
+                } catch (e) { console.error('could not delete filter', sOrP, 'on', tax, e) }
 
-              if (Object.keys(taxSub.criteria.filter).length === 0) {
-                taxSub.criteria.filter = null
+                if (Object.keys(taxSub.criteria.filter).length === 0) {
+                  taxSub.criteria.filter = null
+                }
               }
             }
-          }
 
+          await taxSub.updates
           return true
       }))
     }
