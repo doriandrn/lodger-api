@@ -117,7 +117,7 @@ implements SubscribableTaxonomy<T> {
             console.log(4)
           }
 
-          const isSingular = parents.indexOf(name) > -1
+          const isSingular = parents.indexOf(name.plural) < 0
           sOrP = isSingular ? `${name}Id` : this.form.plural
           op = isSingular ? '$eq' : '$in'
           val = isSingular ? id : [id]
