@@ -114,13 +114,16 @@ implements SubscribableTaxonomy<T> {
 
         let sOrP, op, val
 
-        if (taxSub.refsIds && parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
-          const isSingular = parents.indexOf(name) > -1
-          sOrP = isSingular ? `${name}Id` : this.form.plural
-          op = isSingular ? '$eq' : '$in'
-          val = isSingular ? id : [id]
+        if (taxSub.refsIds) {
+          if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
+            const isSingular = parents.indexOf(name) > -1
+            sOrP = isSingular ? `${name}Id` : this.form.plural
 
-          taxSub.refsIds[sOrP] = val
+            op = isSingular ? '$eq' : '$in'
+            val = isSingular ? id : [id]
+
+            taxSub.refsIds[sOrP] = val
+          }
         }
 
         if (taxSub.criteria.filter) {
@@ -138,11 +141,10 @@ implements SubscribableTaxonomy<T> {
 
         return true
       })
-
-      // allTaxes = undefined
     }
 
     reaction(() => sub.selectedId, (id) => {
+      allTaxes = []
       doForTaxes(this.children, id, this.collection.name)
     })
 
