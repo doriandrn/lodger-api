@@ -126,12 +126,10 @@ implements SubscribableTaxonomy<T> {
           }
         }
 
-        if (taxSub.criteria.filter) {
-          if (sOrP && op && val) {
-            taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-          } else if (taxSub.criteria.filter[sOrP]) {
-            delete taxSub.criteria.filter[sOrP]
-          }
+        if (sOrP && op && val) {
+          taxSub.criteria.filter = { [sOrP]: { [op]: val } }
+        } else if (taxSub.criteria.filter[sOrP]) {
+          delete taxSub.criteria.filter[sOrP]
         }
 
         if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
