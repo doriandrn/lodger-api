@@ -126,6 +126,11 @@ implements SubscribableTaxonomy<T> {
           }
         }
 
+        if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
+
+        if (children && children.length)
+          doForTaxes(children, taxSub.selectedId, tax)
+
         if (sOrP && op && val) {
           taxSub.criteria.filter = { [sOrP]: { [op]: val } }
         } else {
@@ -133,11 +138,6 @@ implements SubscribableTaxonomy<T> {
             delete taxSub.criteria.filter[sOrP]
           } catch (e) { console.error('could not delete filter', sOrP, 'on', tax, e) }
         }
-
-        if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
-
-        if (children && children.length)
-          doForTaxes(children, taxSub.selectedId, tax)
 
         return true
       })
