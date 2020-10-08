@@ -128,7 +128,7 @@ implements SubscribableTaxonomy<T> {
 
         if (sOrP && op && val) {
           taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-        } else if (taxSub.criteria && taxSub.criteria.filter[sOrP]) {
+        } else {
           try {
             delete taxSub.criteria.filter[sOrP]
           } catch (e) { console.error('could not delete filter', sOrP, 'on', tax, e) }
