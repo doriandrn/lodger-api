@@ -109,7 +109,7 @@ implements SubscribableTaxonomy<T> {
 
         let sOrP, op, val
 
-        if (parents && parents.length) {
+        if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
           if (!taxSub.refsIds) {
             taxSub.refsIds = observable({})
           }
