@@ -85,39 +85,36 @@ implements SubscribableTaxonomy<T> {
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
     let allTaxes : Taxonomie[] = []
 
-    const doForTaxes = (taxes: Taxonomie[], id : string) => {
+    const doForTaxes = (taxes: Taxonomie[], id : string, name: string) => {
       if (!taxes || !taxes.length) return
       if (!allTaxes.length) allTaxes = [ ...this.$lodger.taxonomies ]
 
       taxes.forEach(tax => {
         const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
         if (!$tax) return
-        console.log('1')
+
         if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
           allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
-          console.log('alltaxes afteer removing', tax, tax.plural, allTaxes)
         } else {
           return
         }
-        console.log('2')
-        const { subscribers, parents, children, collection: { name } } = $tax
+
+        const { subscribers, parents, children } = $tax
         const taxSub = subscribers[subscriberName]
 
         if (!taxSub) {
           console.error('invalid sub requested', tax)
           return
         }
-        console.log('3')
 
         let sOrP, op, val
 
         if (parents && parents.length) {
           if (!taxSub.refsIds) {
             taxSub.refsIds = observable({})
-            console.log(4)
           }
 
-          const isSingular = parents.indexOf(name.plural) < 0
+          const isSingular = parents.indexOf(name) > -1
           sOrP = isSingular ? `${name}Id` : this.form.plural
           op = isSingular ? '$eq' : '$in'
           val = isSingular ? id : [id]
@@ -134,7 +131,7 @@ implements SubscribableTaxonomy<T> {
         if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
 
         if (children && children.length)
-          doForTaxes(children, taxSub.selectedId)
+          doForTaxes(children, taxSub.selectedId, tax)
 
         return true
       })
@@ -143,7 +140,7 @@ implements SubscribableTaxonomy<T> {
     }
 
     reaction(() => sub.selectedId, (id) => {
-      doForTaxes(this.children, id)
+      doForTaxes(this.children, id, this.collection.name)
     })
 
     reaction(() => sub.activeId, async (id) => {
