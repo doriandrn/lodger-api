@@ -84,7 +84,7 @@ implements SubscribableTaxonomy<T> {
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
 
-    if (this.parents && this.parents.length) {
+    if (this.parents && this.parents.length && !sub.refsIds) {
       sub.refsIds = observable({})
     }
 
