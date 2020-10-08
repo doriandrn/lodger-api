@@ -90,68 +90,72 @@ implements SubscribableTaxonomy<T> {
 
     let allTaxes : Taxonomie[] = []
 
-    const doForTaxes = (taxes: Taxonomie[], id : string, name: string) => {
+    const doForTaxes = async (taxes: Taxonomie[], id : string, name: string) => {
       if (!taxes || !taxes.length) return
       if (!allTaxes.length) allTaxes = [ ...this.$lodger.taxonomies ]
 
-      taxes.forEach(tax => {
-        const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-        if (!$tax) return
+      await Promise.all(
+        taxes.map(async (tax: string) => {
+          const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
+          if (!$tax) return
 
-        if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
-          allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
-        } else {
-          return
-        }
-
-        const { subscribers, parents, children } = $tax
-        const taxSub = subscribers[subscriberName]
-
-        if (!taxSub) {
-          console.error('invalid sub requested', tax)
-          return
-        }
-
-        let sOrP, op, val
-
-        if (taxSub.refsIds) {
-          if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
-            const isSingular = parents.indexOf(name) > -1
-            sOrP = isSingular ? `${name}Id` : this.form.plural
-
-            op = isSingular ? '$eq' : '$in'
-            val = isSingular ? id : [id]
-
-            taxSub.refsIds[sOrP] = val
+          if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
+            allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
+          } else {
+            return
           }
-        }
 
-        if (taxSub.selectedId) taxSub.select(taxSub.selectedId)
+          const { subscribers, parents, children } = $tax
+          const taxSub = subscribers[subscriberName]
 
-        if (children && children.length)
-          doForTaxes(children, taxSub.selectedId, tax)
+          if (!taxSub) {
+            console.error('invalid sub requested', tax)
+            return
+          }
 
-        if (sOrP && op && val) {
-          taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-        } else {
-          if (taxSub.criteria.filter) {
-            try {
-              delete taxSub.criteria.filter[sOrP]
-            } catch (e) { console.error('could not delete filter', sOrP, 'on', tax, e) }
+          let sOrP, op, val
 
-            if (Object.keys(taxSub.criteria.filter).length === 0) {
-              taxSub.criteria.filter = null
+          if (taxSub.refsIds) {
+            if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
+              const isSingular = parents.indexOf(name) > -1
+              sOrP = isSingular ? `${name}Id` : this.form.plural
+
+              op = isSingular ? '$eq' : '$in'
+              val = isSingular ? id : [id]
+
+              taxSub.refsIds[sOrP] = val
             }
           }
-        }
 
-        return true
-      })
+          if (taxSub.selectedId)
+            taxSub.select(taxSub.selectedId)
+
+          await taxSub.updates
+
+          if (children && children.length)
+            doForTaxes(children, taxSub.selectedId, tax)
+
+          if (sOrP && op && val) {
+            taxSub.criteria.filter = { [sOrP]: { [op]: val } }
+          } else {
+            if (taxSub.criteria.filter) {
+              try {
+                delete taxSub.criteria.filter[sOrP]
+              } catch (e) { console.error('could not delete filter', sOrP, 'on', tax, e) }
+
+              if (Object.keys(taxSub.criteria.filter).length === 0) {
+                taxSub.criteria.filter = null
+              }
+            }
+          }
+
+          return true
+      }))
     }
 
-    reaction(() => sub.selectedId, (id) => {
+    reaction(() => sub.selectedId, async (id) => {
       allTaxes = []
-      doForTaxes(this.children, id, this.collection.name)
+      await doForTaxes(this.children, id, this.collection.name)
     })
 
     reaction(() => sub.activeId, async (id) => {
