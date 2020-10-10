@@ -20,6 +20,8 @@ import ratesAtCompileTime from 'ratesAtCompileTime'
 import { observable, computed } from 'mobx'
 import { Cashify } from 'cashify'
 
+addRxPlugin(require('rxdb-search'))
+
 switch (process.env) {
   default:
     addRxPlugin(require('pouchdb-adapter-memory'))
