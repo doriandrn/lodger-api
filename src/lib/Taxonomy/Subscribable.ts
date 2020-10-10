@@ -127,15 +127,6 @@ implements SubscribableTaxonomy<T> {
             }
           }
 
-          // if (children && children.length)
-          //   await doForTaxes(children, taxSub.selectedId, tax)
-
-          if (taxSub.selectedId)
-            taxSub.select(taxSub.selectedId)
-          else
-            if (children && children.length)
-              await doForTaxes(children, taxSub.selectedId, tax)
-
           if (sOrP && op && val) {
             taxSub.criteria.filter = { [sOrP]: { [op]: val } }
           } else {
@@ -151,6 +142,15 @@ implements SubscribableTaxonomy<T> {
           }
 
           await taxSub.updates
+
+          if (children && children.length)
+            await doForTaxes(children, taxSub.selectedId, tax)
+
+          await taxSub.updates
+
+          // deselect selected items of children
+          if (taxSub.selectedId)
+            taxSub.select(taxSub.selectedId)
           return true
       }))
     }
