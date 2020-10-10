@@ -127,8 +127,8 @@ implements SubscribableTaxonomy<T> {
             }
           }
 
-          if (children && children.length)
-            await doForTaxes(children, taxSub.selectedId, tax)
+          // if (children && children.length)
+          //   await doForTaxes(children, taxSub.selectedId, tax)
 
           if (taxSub.selectedId)
             taxSub.select(taxSub.selectedId)
