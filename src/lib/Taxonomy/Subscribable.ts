@@ -132,6 +132,9 @@ implements SubscribableTaxonomy<T> {
 
           if (taxSub.selectedId)
             taxSub.select(taxSub.selectedId)
+          else
+            if (children && children.length)
+              await doForTaxes(children, taxSub.selectedId, tax)
 
           if (sOrP && op && val) {
             taxSub.criteria.filter = { [sOrP]: { [op]: val } }
