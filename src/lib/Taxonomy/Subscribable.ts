@@ -141,7 +141,7 @@ implements SubscribableTaxonomy<T> {
             }
           }
 
-          await taxSub.updates
+          // await taxSub.updates
 
           if (children && children.length)
             await doForTaxes(children, taxSub.selectedId, tax)
@@ -151,6 +151,9 @@ implements SubscribableTaxonomy<T> {
           // deselect selected items of children
           if (taxSub.selectedId)
             taxSub.select(taxSub.selectedId)
+
+          await taxSub.updates
+
           return true
       }))
     }
