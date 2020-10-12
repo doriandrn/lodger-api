@@ -119,7 +119,7 @@ implements SubscribableTaxonomy<T> {
 
           let sOrP, op, val
 
-          await taxSub.updates
+          // await taxSub.updates
 
           // deselect selected items of children
           console.log('deselcting from', taxSub.selectedId)
