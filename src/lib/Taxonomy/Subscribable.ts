@@ -99,14 +99,15 @@ implements SubscribableTaxonomy<T> {
           const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
           if (!$tax) return
 
-          console.info('doin', tax)
 
           if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
             allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
           } else {
             console.error(tax, 'has been handled.')
-            return
+            return true
           }
+
+          console.info('doin', tax)
 
           const { subscribers, parents, children } = $tax
           const taxSub = subscribers[subscriberName]
@@ -117,6 +118,13 @@ implements SubscribableTaxonomy<T> {
           }
 
           let sOrP, op, val
+
+          await taxSub.updates
+
+          // deselect selected items of children
+          console.log('deselcting from', taxSub.selectedId)
+          if (taxSub.selectedId)
+            taxSub.select(taxSub.selectedId)
 
           if (taxSub.refsIds) {
             if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
@@ -150,24 +158,15 @@ implements SubscribableTaxonomy<T> {
             }
           }
 
-          // await taxSub.updates
+          await taxSub.updates
 
           console.log('goin recursive')
           if (children && children.length)
             await doForTaxes(children, taxSub.selectedId, tax)
-
-          await taxSub.updates
-
-          // deselect selected items of children
-          console.log('deselcting from', taxSub.selectedId)
-          if (taxSub.selectedId)
-            taxSub.select(taxSub.selectedId)
-
-          await taxSub.updates
-
-          console.log('all good, movin on')
-
-          return true
+          else {
+            console.log('all good, movin on')
+            return true
+          }
       }))
     }
 
