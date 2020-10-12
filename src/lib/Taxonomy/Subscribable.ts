@@ -142,7 +142,7 @@ implements SubscribableTaxonomy<T> {
 
           if (sOrP && op && val) {
             taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-            console.log('updated filter', taxSub.criteria.filter)
+            console.log('updated filter', Object.keys(taxSub.criteria.filter))
           } else {
             if (taxSub.criteria.filter) {
               try {
