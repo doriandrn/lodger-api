@@ -141,6 +141,7 @@ implements SubscribableTaxonomy<T> {
           }
 
           if (sOrP && op && val) {
+            await taxSub.updates
             taxSub.criteria.filter = { [sOrP]: { [op]: val } }
             console.log('updated filter', Object.keys(taxSub.criteria.filter))
           } else {
@@ -158,8 +159,6 @@ implements SubscribableTaxonomy<T> {
               }
             }
           }
-
-          // await taxSub.updates
 
           console.log('=>')
           if (children && children.length)
