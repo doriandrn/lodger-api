@@ -94,85 +94,80 @@ implements SubscribableTaxonomy<T> {
       if (!taxes || !taxes.length) return
       if (!allTaxes.length) allTaxes = [ ...this.$lodger.taxonomies ]
 
-      await Promise.all(
-        taxes.map(async (tax: string) => {
-          const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-          if (!$tax) return
+      taxes.map((tax: Taxonomie) => {
+        const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
+        if (!$tax) return true
 
+        if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
+          allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
+        } else {
+          console.error(tax, 'has been handled.')
+          return true
+        }
 
-          if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
-            allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
-          } else {
-            console.error(tax, 'has been handled.')
-            return true
+        console.info('DOIN', tax)
+
+        const { subscribers, parents, children } = $tax
+        const taxSub = subscribers[subscriberName]
+
+        if (!taxSub) {
+          console.error('invalid sub requested', tax)
+          return
+        }
+
+        let sOrP, op, val
+
+        // deselect selected items of children
+        if (taxSub.selectedId) {
+          console.log('deselcting from', tax, taxSub.selectedId)
+          taxSub.select(taxSub.selectedId)
+        }
+
+        if (taxSub.refsIds) {
+          if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
+            const isSingular = parents.indexOf(name) > -1
+            sOrP = isSingular ? `${name}Id` : this.form.plural
+
+            op = isSingular ? '$eq' : '$in'
+            val = isSingular ? id : [id]
+
+            taxSub.refsIds[sOrP] = val
+            console.log('changed refsIds')
           }
+        }
 
-          console.info('doin', tax)
+        if (sOrP && op && val) {
+          taxSub.criteria.filter = { [sOrP]: { [op]: val } }
+          console.log('updated filter', Object.keys(taxSub.criteria.filter))
+        } else {
+          if (taxSub.criteria.filter) {
+            try {
+              delete taxSub.criteria.filter[sOrP]
+              console.log('deleted filter', sOrP)
+            } catch (e) {
+              console.error('could not delete filter', sOrP, 'on', tax, e)
+            }
 
-          const { subscribers, parents, children } = $tax
-          const taxSub = subscribers[subscriberName]
-
-          if (!taxSub) {
-            console.error('invalid sub requested', tax)
-            return
-          }
-
-          let sOrP, op, val
-
-          // await taxSub.updates
-
-          // deselect selected items of children
-          if (taxSub.selectedId) {
-            console.log('deselcting from', taxSub.selectedId)
-            taxSub.select(taxSub.selectedId)
-          }
-
-          if (taxSub.refsIds) {
-            if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
-              const isSingular = parents.indexOf(name) > -1
-              sOrP = isSingular ? `${name}Id` : this.form.plural
-
-              op = isSingular ? '$eq' : '$in'
-              val = isSingular ? id : [id]
-
-              taxSub.refsIds[sOrP] = val
-              console.log('changed refsIds')
+            if (Object.keys(taxSub.criteria.filter).length === 0) {
+              console.log('completely removed filters')
+              taxSub.criteria.filter = null
             }
           }
+        }
 
-          if (sOrP && op && val) {
-            await taxSub.updates
-            taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-            console.log('updated filter', Object.keys(taxSub.criteria.filter))
-          } else {
-            if (taxSub.criteria.filter) {
-              try {
-                delete taxSub.criteria.filter[sOrP]
-                console.log('deleted filter', sOrP)
-              } catch (e) {
-                console.error('could not delete filter', sOrP, 'on', tax, e)
-              }
-
-              if (Object.keys(taxSub.criteria.filter).length === 0) {
-                console.log('completely removed filters')
-                taxSub.criteria.filter = null
-              }
-            }
-          }
-
-          console.log('=>')
-          if (children && children.length)
-            await doForTaxes(children, taxSub.selectedId, tax)
-          else {
-            console.log('all good, movin on')
-            return true
-          }
-      }))
+        console.log('=>')
+        if (children && children.length)
+          doForTaxes(children, taxSub.selectedId, tax)
+        else {
+          console.log('all good, movin on')
+          return true
+        }
+      })
     }
 
-    reaction(() => sub.selectedId, async (id) => {
+    reaction(() => sub.selectedId, (id) => {
       allTaxes = []
-      await doForTaxes(this.children, id, this.collection.name)
+      doForTaxes(this.children, id, this.collection.name)
     })
 
     reaction(() => sub.activeId, async (id) => {
