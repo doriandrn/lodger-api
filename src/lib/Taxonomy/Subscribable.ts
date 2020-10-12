@@ -99,9 +99,12 @@ implements SubscribableTaxonomy<T> {
           const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
           if (!$tax) return
 
+          console.info('doin', tax)
+
           if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
             allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
           } else {
+            console.error(tax, 'has been handled.')
             return
           }
 
@@ -124,18 +127,24 @@ implements SubscribableTaxonomy<T> {
               val = isSingular ? id : [id]
 
               taxSub.refsIds[sOrP] = val
+              console.log('changed refsIds')
             }
           }
 
           if (sOrP && op && val) {
             taxSub.criteria.filter = { [sOrP]: { [op]: val } }
+            console.log('updated filter', taxSub.criteria.filter)
           } else {
             if (taxSub.criteria.filter) {
               try {
                 delete taxSub.criteria.filter[sOrP]
-              } catch (e) { console.error('could not delete filter', sOrP, 'on', tax, e) }
+                console.log('deleted filter', sOrP)
+              } catch (e) {
+                console.error('could not delete filter', sOrP, 'on', tax, e)
+              }
 
               if (Object.keys(taxSub.criteria.filter).length === 0) {
+                console.log('completely removed filters')
                 taxSub.criteria.filter = null
               }
             }
@@ -143,16 +152,20 @@ implements SubscribableTaxonomy<T> {
 
           // await taxSub.updates
 
+          console.log('goin recursive')
           if (children && children.length)
             await doForTaxes(children, taxSub.selectedId, tax)
 
           await taxSub.updates
 
           // deselect selected items of children
+          console.log('deselcting from', taxSub.selectedId)
           if (taxSub.selectedId)
             taxSub.select(taxSub.selectedId)
 
           await taxSub.updates
+
+          console.log('all good, movin on')
 
           return true
       }))
