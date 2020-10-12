@@ -158,7 +158,7 @@ implements SubscribableTaxonomy<T> {
             }
           }
 
-          await taxSub.updates
+          // await taxSub.updates
 
           console.log('goin recursive')
           if (children && children.length)
