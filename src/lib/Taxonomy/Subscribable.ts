@@ -122,9 +122,10 @@ implements SubscribableTaxonomy<T> {
           // await taxSub.updates
 
           // deselect selected items of children
-          console.log('deselcting from', taxSub.selectedId)
-          if (taxSub.selectedId)
+          if (taxSub.selectedId) {
+            console.log('deselcting from', taxSub.selectedId)
             taxSub.select(taxSub.selectedId)
+          }
 
           if (taxSub.refsIds) {
             if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
@@ -160,7 +161,7 @@ implements SubscribableTaxonomy<T> {
 
           // await taxSub.updates
 
-          console.log('goin recursive')
+          console.log('=>')
           if (children && children.length)
             await doForTaxes(children, taxSub.selectedId, tax)
           else {
