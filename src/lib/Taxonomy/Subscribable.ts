@@ -136,13 +136,13 @@ implements SubscribableTaxonomy<T> {
           }
         }
 
-        console.log('=>')
-        if (children && children.length)
-          doForTaxes(children, taxSub.selectedId, tax)
-        else {
-          console.log('all good, movin on')
-          return true
-        }
+        // console.log('=>')
+        // if (children && children.length)
+        //   doForTaxes(children, taxSub.selectedId, tax)
+        // else {
+        //   console.log('all good, movin on')
+        //   return true
+        // }
 
         if (sOrP && op && val) {
           taxSub.criteria.filter = { [sOrP]: { [op]: val } }
