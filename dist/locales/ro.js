@@ -7,7 +7,11 @@ export default {
   next: 'Continuă',
   back: 'Înapoi',
   backTo: 'Înapoi la',
-  search: 'Caută',
+  search: {
+    do: 'Caută',
+    noResults: 'Niciun rezultat',
+    suggestions: 'Sugestii'
+  },
   add: 'Adaugă',
   trash: 'Șterge',
   edit: 'Modifică',

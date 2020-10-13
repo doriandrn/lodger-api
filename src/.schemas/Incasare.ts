@@ -3,16 +3,23 @@ import { FieldsCreator } from '../lib/Field'
 
 declare global {
   interface Incasare extends LodgerDocument {
-    suma: Money,
+    denumire: string
+    suma: Money
     nrChitanta: number
 
     apartamentId: string
     blocId: string
     asociatieId: string
+
+    proiect: string
+    plata: Plata
   }
 }
 
 const fields: FieldsCreator<Incasare> = {
+  denumire: {
+    preview: 0
+  },
   suma: {
     type: '$',
     preview: 1,
@@ -25,6 +32,10 @@ const fields: FieldsCreator<Incasare> = {
     preview: 0,
     index: true,
     value: ({ activeDoc }) => (activeDoc.nrUltimaChitanta || 0) + 1
+  },
+  proiect: {
+    preview: 3,
+    index: true
   },
 
   //aka DE LA
@@ -47,6 +58,22 @@ const fields: FieldsCreator<Incasare> = {
     required: true,
     index: true,
     value: (g) => g['asociatie/selected'].id
+  },
+
+  plata: {
+    type: 'object',
+    default: () => ({
+      metoda: 'fiat:banca',
+      // metoda: 'crypto:nano',
+      valoare: {
+        suma: 101.23,
+        moneda: 'RON'
+      },
+      achitata: {
+        status: false,
+        la: 0
+      }
+    })
   }
 }
 
