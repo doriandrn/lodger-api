@@ -2,6 +2,7 @@ const asociatieId = 'Asociație'
 const dataScadenta = 'Scadentă la'
 const organizatie = 'Organizație'
 const furnizorId = 'Furnizor'
+const prefs = 'Preferințe'
 
 export default {
   next: 'Continuă',
@@ -19,7 +20,7 @@ export default {
     statistici: 'Statistici',
     liste: 'Liste de plată',
     istoric: 'Istoric',
-    comunitate: 'Comunitate',
+
     docs: 'Documentație',
     support: 'Asistență tehnică'
   },
@@ -67,7 +68,7 @@ export default {
         organizatie,
         balanta: 'Balanță',
         utilizatori: 'Utilizatori',
-        preferinte: 'Preferințe',
+        preferinte: prefs,
         servicii: 'Servicii oferite'
       }
     },
@@ -170,7 +171,7 @@ export default {
         tel: 'Număr de telefon',
         email: 'Adresă e-mail',
         social: 'Social Media',
-        preferinte: 'Preferințe',
+        preferinte: prefs,
         langSwitch: 'Schimbă limba'
       }
     }
@@ -178,6 +179,15 @@ export default {
   welcome: {
     title: 'Bun venit!',
     intro: 'Îți mulțumim că ai ales să încerci Lodger!'
+  },
+  footer: {
+    links: {
+      help: 'Ajutor',
+      feedback: 'Feedback',
+      thanks: 'Mulțumiri',
+      comunitate: 'Comunitate',
+      update: 'Actualizează'
+    }
   },
   errors: {
     index: {

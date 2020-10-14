@@ -14,12 +14,21 @@ type Social = {
   username: string
 }
 
+enum Roluri {
+  dev,
+  admin,
+  moderator,
+  vizitator,
+  locatar,
+  proprietar
+}
+
 declare global {
   interface Utilizator {
     _id: string
     name: string
     avatar: string
-    rol: keyof ['dev' | 'admin' | 'presedinte' | 'locator']
+    rol: keyof Roluri
     contact?: DateContact
     preferinte: PreferinteUtilizator
   }
@@ -49,6 +58,11 @@ const fields: FieldsCreator<Utilizator> = {
     default: {
       locale: () => 'ro-RO'
     }
+  },
+  rol: {
+    type: 'number',
+    min: 0,
+    max: 6
   }
 }
 
