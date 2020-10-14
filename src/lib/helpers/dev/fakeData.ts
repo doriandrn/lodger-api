@@ -15,8 +15,7 @@ Object.defineProperties(holder, {
   },
   number: {
     get () {
-      const { min, max } = this
-      return Number(faker.random.number({ min, max }))
+      return Number(faker.random.number({ min: 0, max: 300 }))
     }
   },
   fullName: {
