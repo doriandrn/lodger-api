@@ -1,10 +1,7 @@
 import Taxonomy, { TaxonomyCreator } from './'
 import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
-import LodgerError from '~/lib/Error'
 import { computed, reaction, observable } from 'mobx'
-import { table } from 'console'
-// import { LodgerFormCreator } from '../Form'
 
 /**
  *
@@ -101,11 +98,11 @@ implements SubscribableTaxonomy<T> {
         if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
           allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
         } else {
-          console.error(tax, 'has been handled.')
+          // console.error(tax, 'has been handled.')
           return true
         }
 
-        console.info('DOIN', tax)
+        // console.info('DOIN', tax)
 
         const { subscribers, parents, children } = $tax
         const taxSub = subscribers[subscriberName]
@@ -119,7 +116,7 @@ implements SubscribableTaxonomy<T> {
 
         // deselect selected items of children
         if (taxSub.selectedId) {
-          console.log('deselcting from', tax, taxSub.selectedId)
+          // console.log('deselcting from', tax, taxSub.selectedId)
           taxSub.select(taxSub.selectedId)
         }
 
@@ -132,32 +129,24 @@ implements SubscribableTaxonomy<T> {
             val = isSingular ? id : [id]
 
             taxSub.refsIds[sOrP] = val
-            console.log('changed refsIds')
+            // console.log('changed refsIds')
           }
         }
 
-        // console.log('=>')
-        // if (children && children.length)
-        //   doForTaxes(children, taxSub.selectedId, tax)
-        // else {
-        //   console.log('all good, movin on')
-        //   return true
-        // }
-
         if (sOrP && op && val) {
           taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-          console.log('updated filter', Object.keys(taxSub.criteria.filter))
+          // console.log('updated filter', Object.keys(taxSub.criteria.filter))
         } else {
           if (taxSub.criteria.filter) {
             try {
               delete taxSub.criteria.filter[sOrP]
-              console.log('deleted filter', sOrP)
+              // console.log('deleted filter', sOrP)
             } catch (e) {
               console.error('could not delete filter', sOrP, 'on', tax, e)
             }
 
             if (Object.keys(taxSub.criteria.filter).length === 0) {
-              console.log('completely removed filters')
+              // console.log('completely removed filters')
               taxSub.criteria.filter = null
             }
           }
@@ -167,10 +156,11 @@ implements SubscribableTaxonomy<T> {
     }
 
     reaction(() => sub.selectedId, (id) => {
-      allTaxes = []
+      allTaxes = [] // has to be reset every time !
       doForTaxes(this.children, id, this.collection.name)
     })
 
+    // Trigger the modal on activeId change
     reaction(() => sub.activeId, async (id) => {
       if (!id) return
       const activeDoc = await this.collection.findOne(id).exec()
