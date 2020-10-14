@@ -16,6 +16,7 @@ export default {
   add: 'Adaugă',
   trash: 'Șterge',
   edit: 'Modifică',
+  roluri: ['Administrator', 'Moderator', 'Vizitator', 'Locatar', 'Proprietar'],
   nav: {
     statistici: 'Statistici',
     liste: 'Liste de plată',

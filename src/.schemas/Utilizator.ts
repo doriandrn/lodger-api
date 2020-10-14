@@ -15,7 +15,6 @@ type Social = {
 }
 
 enum Roluri {
-  dev,
   admin,
   moderator,
   vizitator,
