@@ -18,7 +18,7 @@ export enum strings {
  * @enum {number}
  */
 export enum numbers {
-  date, dateTime, number
+  date, dateTime, number, rol
 }
 
 /**
