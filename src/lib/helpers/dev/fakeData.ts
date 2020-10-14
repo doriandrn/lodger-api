@@ -14,7 +14,10 @@ Object.defineProperties(holder, {
     get () { return faker.lorem.words(3) }
   },
   number: {
-    get () { return Number(faker.random.number({ min: 20, max: 300 })) }
+    get () {
+      const { min, max } = this
+      return Number(faker.random.number({ min, max }))
+    }
   },
   fullName: {
     get: () => `${ faker.name.firstName() } ${ faker.name.lastName() }`

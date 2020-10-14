@@ -199,7 +199,7 @@ export class Field implements FieldAPI {
       this.value = value.bind({ storage })
 
     Object.defineProperty(this, 'fakeValue', {
-      get () { return fakeData[type || 'string'] }
+      get () { return fakeData[type || 'string'].call(this) }
     })
   }
 
