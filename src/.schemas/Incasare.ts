@@ -3,7 +3,7 @@ import { FieldsCreator } from '../lib/Field'
 
 declare global {
   interface Incasare extends LodgerDocument {
-    denumire: string
+
     suma: Money
     nrChitanta: number
 
@@ -11,15 +11,12 @@ declare global {
     blocId: string
     asociatieId: string
 
-    proiect: string
     plata: Plata
   }
 }
 
 const fields: FieldsCreator<Incasare> = {
-  denumire: {
-    preview: 0
-  },
+
   suma: {
     type: '$',
     preview: 1,
@@ -33,10 +30,7 @@ const fields: FieldsCreator<Incasare> = {
     index: true,
     value: ({ activeDoc }) => (activeDoc.nrUltimaChitanta || 0) + 1
   },
-  proiect: {
-    preview: 3,
-    index: true
-  },
+
 
   //aka DE LA
   apartamentId: {

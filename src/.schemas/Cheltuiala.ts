@@ -10,11 +10,13 @@ declare global {
   }
 
   interface Cheltuiala {
+    denumire: string,
     catre: Furnizor,
     suma: Money,
     facturi: Factura[],
     dataScadenta: Date,
     distribuire: Distribuire
+    proiect: string
 
     readonly apartamenteEligibile: []
     readonly asociatieId: string
@@ -26,6 +28,13 @@ const fields: FieldsCreator<Cheltuiala> = {
     ref: 'asociatii',
     required: true,
     index: true,
+  },
+  denumire: {
+    preview: 0
+  },
+  proiect: {
+    preview: 3,
+    index: true
   },
   dataScadenta: {
     type: 'dateTime',
