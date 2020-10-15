@@ -29,7 +29,7 @@ declare global {
     avatar: string
     rol: keyof Roluri
     contact?: DateContact
-    preferinte: PreferinteUtilizator
+    preferinte?: PreferinteUtilizator
   }
 }
 
@@ -52,12 +52,12 @@ const fields: FieldsCreator<Utilizator> = {
     type: 'contactFields',
     value: ({ activeDoc }) => activeDoc.contact
   },
-  preferinte: {
-    type: 'object',
-    default: {
-      locale: () => 'ro-RO'
-    }
-  },
+  // preferinte: {
+  //   type: 'object',
+  //   default: {
+  //     locale: () => 'ro-RO'
+  //   }
+  // },
   rol: {
     type: 'number',
     min: 0,

@@ -172,7 +172,8 @@ export default {
         tel: 'Număr de telefon',
         email: 'Adresă e-mail',
         social: 'Social Media',
-        preferinte: prefs,
+        rol: 'Rol',
+        // preferinte: prefs,
         langSwitch: 'Schimbă limba'
       }
     }
