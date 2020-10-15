@@ -59,7 +59,7 @@ const fields: FieldsCreator<Utilizator> = {
     }
   },
   rol: {
-    type: 'rol',
+    type: 'number',
     min: 0,
     max: 6
   }
