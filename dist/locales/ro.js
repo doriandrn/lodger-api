@@ -16,6 +16,9 @@ export default {
   add: 'Adaugă',
   trash: 'Șterge',
   edit: 'Modifică',
+  registered: 'Înregistrat',
+  updated: 'Actualizat',
+  lastUpdate: 'Ultima actualizare',
   roluri: ['Administrator', 'Moderator', 'Vizitator', 'Locatar', 'Proprietar'],
   nav: {
     statistici: 'Statistici',
