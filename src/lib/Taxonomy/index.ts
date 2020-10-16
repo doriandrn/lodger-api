@@ -142,7 +142,23 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
     collection: RxCollection<T>,
     readonly options ?: LodgerTaxonomyCreatorOptions,
   ) {
-    collection.postInsert((data, doc) => { this.totals += 1; this.last = doc._id }, false)
+    if (options && options.timestamps) {
+      collection.preSave((data) => {
+        data.createdAt = new Date().getTime()
+      }, false)
+    }
+    collection.postInsert((data, doc) => {
+      this.totals += 1;
+      this.last = doc._id
+
+      const method = doc._id ?
+        'upsert' :
+        'insert'
+
+
+      data[method === 'insert' ? 'createdAt': 'updatedAt'] = new Date().getTime()
+
+    }, false)
     collection.postRemove(() => { this.totals -= 1 }, false)
 
     // kinda hide the property for snapshots
@@ -204,10 +220,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       'insert'
 
     const { name, options } = this
-
-    if (options && options.timestamps) {
-      Object.assign(doc, { [method === 'insert' ? 'createdAt': 'updatedAt']: new Date().getTime() })
-    }
 
     /**
      * do the insert / upsert and following actions
