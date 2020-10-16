@@ -144,19 +144,14 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   ) {
     if (options && options.timestamps) {
       collection.preSave((data) => {
-        data.createdAt = new Date().getTime()
+        data.updatedAt = new Date().getTime()
       }, false)
     }
     collection.postInsert((data, doc) => {
       this.totals += 1;
       this.last = doc._id
 
-      const method = doc._id ?
-        'upsert' :
-        'insert'
-
-
-      data[method === 'insert' ? 'createdAt': 'updatedAt'] = new Date().getTime()
+      data.createdAt = new Date().getTime()
 
     }, false)
     collection.postRemove(() => { this.totals -= 1 }, false)
