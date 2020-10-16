@@ -310,8 +310,12 @@ class Lodger implements LodgerAPI {
 
     locales = await loadLocales(supportedLangs.map(l => l.code))
 
+    const taxOpts = {
+      timestamps: true
+    }
+
     const taxesSchemas = await loadSchemas(taxonomies)
-    const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema)))
+    const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema, taxOpts)))
 
     return new Lodger(
       Taxonomies,

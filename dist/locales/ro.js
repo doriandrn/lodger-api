@@ -16,7 +16,7 @@ export default {
   add: 'Adaugă',
   trash: 'Șterge',
   edit: 'Modifică',
-  registered: 'Înregistrat',
+  registered: 'Înregistrat(ă)',
   updated: 'Actualizat',
   lastUpdate: 'Ultima actualizare',
   roluri: ['Administrator', 'Moderator', 'Vizitator', 'Locatar', 'Proprietar'],

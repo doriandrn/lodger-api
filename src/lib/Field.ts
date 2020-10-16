@@ -127,6 +127,8 @@ export class Field implements FieldAPI {
   readonly _type ?: FieldTypes
   readonly _index ?: boolean // should be indexed to search for
   key : string = 'index'
+  focus ?: boolean
+  fieldset ?: number
 
   /**
    * Creates an instance of Field.
@@ -144,6 +146,7 @@ export class Field implements FieldAPI {
 
     const {
       ref,
+      focus,
       index,
       indexRef,
       type,
@@ -161,6 +164,7 @@ export class Field implements FieldAPI {
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
     this.oninput = oninput
+    this.focus = focus
 
     if (key) this.key = key
     if (index !== undefined) this._index = true

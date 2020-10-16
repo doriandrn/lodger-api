@@ -43,6 +43,7 @@ const fields: FieldsCreator<Utilizator> = {
     required: true,
     primary: true,
     preview: 1,
+    focus: true,
     oninput: {
       transform: 'capitalize:all'
     },
