@@ -21,7 +21,7 @@ Object.defineProperties(holder, {
   fullName: {
     get: () => `${ faker.name.firstName() } ${ faker.name.lastName() }`
   },
-  dateTime: {
+  dateTime$: {
     get () { return Date.now() + faker.random.number({ min: 9000000, max: 100000000 }) }
   },
   buildingName: {
