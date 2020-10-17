@@ -2328,7 +2328,7 @@ function load$1(langs) {
   });
 }
 
-var ratesAtCompileTime = {"BTC":{"USD":"11353.18","BTC":"1","EUR":"9650.21","GBP":"8772.92","PLN":"43644.15","CZK":"261627.06","SEK":"96017.13","NOK":"106685.7","DKK":"73859.33","CHF":"10324.42","ZAR":"192034.26","AUD":"16002.86","JPY":"1185396.67","NZD":"17145.92","TRY":"87288.3","BRL":"64011.42","CAD":"14771.87","CNY":"73859.33","HKD":"87288.3","HUF":"3556190.0","INR":"827733.88","RUB":"872883.0","ILS":"38406.85","MYR":"45722.44","MXN":"237666.16","SGD":"15240.81","RON":"45722.44","IDR":"96017130.0","PHP":"548669.31","ARS":"872883.0","THB":"350427.48","NGN":"4364415.0","PKR":"1846483.27","AED":"41746.58","UAH":"318993.79","BGN":"18826.89","HRK":"73859.33","RSD":"1129613.29","LTC":"239.521","ETH":"30.8642","BCH":"45.2913","XRP":"47014.57","CLP":"8728830.0","NANO":"14044.94","TRX":"440529.0","DAI":"11260.2","USDT":"11341.36","AVA":"20751.19"},"LTC":{"USD":"47.37","BTC":"0.004175","EUR":"40.27","GBP":"36.61","PLN":"182.11","CZK":"1091.7","SEK":"400.65","NOK":"445.17","DKK":"308.19","CHF":"43.08","ZAR":"801.31","AUD":"66.78","JPY":"4946.33","NZD":"71.55","TRY":"364.23","BRL":"267.1","CAD":"61.64","CNY":"308.19","HKD":"364.23","HUF":"14839.0","INR":"3453.91","RUB":"3642.3","ILS":"160.26","MYR":"190.79","MXN":"991.72","SGD":"63.6","RON":"190.79","IDR":"400653.0","PHP":"2289.45","ARS":"3642.3","THB":"1462.24","NGN":"18211.5","PKR":"7704.87","AED":"174.2","UAH":"1331.07","BGN":"78.56","HRK":"308.19","RSD":"4713.56","LTC":"1","ETH":"0.12895","BCH":"0.189091","XRP":"196.2858","CLP":"36423.0","NANO":"58.6376","TRX":"1839.21","DAI":"47.0113","USDT":"47.38","AVA":"86.6362"},"ETH":{"USD":"367.26","BTC":"0.0324","EUR":"312.17","GBP":"283.79","PLN":"1411.83","CZK":"8463.29","SEK":"3106.03","NOK":"3451.14","DKK":"2389.25","CHF":"333.98","ZAR":"6212.05","AUD":"517.67","JPY":"38346.0","NZD":"554.65","TRY":"2823.66","BRL":"2070.68","CAD":"477.85","CNY":"2389.25","HKD":"2823.66","HUF":"115038.0","INR":"26776.09","RUB":"28236.6","ILS":"1242.41","MYR":"1479.06","MXN":"7688.18","SGD":"493.02","RON":"1479.06","IDR":"3106026.0","PHP":"17748.72","ARS":"28236.6","THB":"11335.86","NGN":"141183.0","PKR":"59731.27","AED":"1350.45","UAH":"10319.02","BGN":"609.02","HRK":"2389.25","RSD":"36541.48","LTC":"7.754944","ETH":"1","BCH":"1.467438","XRP":"1523.27","CLP":"282366.0","NANO":"454.1326","TRX":"14273.13","DAI":"364.8305","USDT":"367.46","AVA":"672.3387"},"BCH":{"USD":"250.52","BTC":"0.0220793","EUR":"212.94","GBP":"193.58","PLN":"963.04","CZK":"5773.02","SEK":"2118.7","NOK":"2354.11","DKK":"1629.77","CHF":"227.82","ZAR":"4237.4","AUD":"353.12","JPY":"26156.78","NZD":"378.34","TRY":"1926.09","BRL":"1412.47","CAD":"325.95","CNY":"1629.77","HKD":"1926.09","HUF":"78470.33","INR":"18264.65","RUB":"19260.9","ILS":"847.48","MYR":"1008.9","MXN":"5244.3","SGD":"336.3","RON":"1008.9","IDR":"2118699.0","PHP":"12106.85","ARS":"19260.9","THB":"7732.48","NGN":"96304.5","PKR":"40744.21","AED":"921.17","UAH":"7038.87","BGN":"415.43","HRK":"1629.77","RSD":"24925.87","LTC":"5.288455","ETH":"0.68146","BCH":"1","XRP":"1038.05","CLP":"192609.0","NANO":"310.1025","TRX":"9726.56","DAI":"248.6173","USDT":"250.4384","AVA":"458.1718"},"XRP":{"USD":"0.2418","BTC":"0.00002127","EUR":"0.2056","GBP":"0.1869","PLN":"0.9297","CZK":"5.5729","SEK":"2.0452","NOK":"2.2725","DKK":"1.5733","CHF":"0.2199","ZAR":"4.0905","AUD":"0.3409","JPY":"25.2499","NZD":"0.3652","TRY":"1.8593","BRL":"1.3635","CAD":"0.3147","CNY":"1.5733","HKD":"1.8593","HUF":"75.7497","INR":"17.6314","RUB":"18.5931","ILS":"0.8181","MYR":"0.9739","MXN":"5.0625","SGD":"0.3246","RON":"0.9739","IDR":"2045.241","PHP":"11.6871","ARS":"18.5931","THB":"7.4644","NGN":"92.9655","PKR":"39.3316","AED":"0.8892","UAH":"6.7948","BGN":"0.401","HRK":"1.5733","RSD":"24.0617","LTC":"0.00509461","ETH":"0.00065648","BCH":"0.00096335","XRP":"1","CLP":"185.931","NANO":"0.298736","TRX":"9.370044","DAI":"0.239504","USDT":"0.24154","AVA":"0.441378"},"TEL":{"USD":"0.000227","BTC":"0.00000002","EUR":"0.000194","GBP":"0.000176","PLN":"0.000882","CZK":"0.005291","SEK":"0.002013","NOK":"0.002132","DKK":"0.001443","CHF":"0.000208","ZAR":"0.00376","AUD":"0.000321","JPY":"0.024","NZD":"0.000344","TRY":"0.001803","BRL":"0.001284","CAD":"0.0003","CNY":"0.001522","HKD":"0.001761","HUF":"0.0707","INR":"0.0167","RUB":"0.0177","ILS":"0.000768","MYR":"0.000943","MXN":"0.004804","SGD":"0.000309","RON":"0.000946","IDR":"3.36","PHP":"0.0111","ARS":"0.0176","THB":"0.007092","NGN":"0.0866","PKR":"0.037","AED":"0.000835","UAH":"0.006444","BGN":"0.000379","HRK":"0.00147","RSD":"0.0228","LTC":"0.00000479","ETH":"0.00000062","BCH":"0.00000091","XRP":"0.00094029","CLP":"0.1803","NANO":"0.0002809","TRX":"0.00881057","DAI":"0.0002252","USDT":"0.00022685","AVA":"0.00041502"},"NANO":{"USD":"0.8083","BTC":"0.0000712","EUR":"0.6905","GBP":"0.6264","PLN":"3.14","CZK":"18.84","SEK":"7.17","NOK":"7.59","DKK":"5.14","CHF":"0.7402","ZAR":"13.39","AUD":"1.14","JPY":"85.29","NZD":"1.22","TRY":"6.42","BRL":"4.57","CAD":"1.07","CNY":"5.42","HKD":"6.27","HUF":"251.62","INR":"59.41","RUB":"62.94","ILS":"2.73","MYR":"3.36","MXN":"17.1","SGD":"1.1","RON":"3.37","IDR":"11944.01","PHP":"39.39","ARS":"62.69","THB":"25.25","NGN":"308.22","PKR":"131.66","AED":"2.97","UAH":"22.94","BGN":"1.35","HRK":"5.23","RSD":"81.18","LTC":"0.01705389","ETH":"0.00219753","BCH":"0.00322474","XRP":"3.347438","CLP":"641.92","NANO":"1","TRX":"31.3656","DAI":"0.801726","USDT":"0.8075","AVA":"1.477485"},"TRX":{"USD":"0.0258","BTC":"0.00000227","EUR":"0.0219","GBP":"0.0199","PLN":"0.0992","CZK":"0.5947","SEK":"0.2183","NOK":"0.2425","DKK":"0.1679","CHF":"0.0235","ZAR":"0.4365","AUD":"0.0364","JPY":"2.6945","NZD":"0.039","TRY":"0.1984","BRL":"0.1455","CAD":"0.0336","CNY":"0.1679","HKD":"0.1984","HUF":"8.0835","INR":"1.8815","RUB":"1.9841","ILS":"0.0873","MYR":"0.1039","MXN":"0.5402","SGD":"0.0346","RON":"0.1039","IDR":"218.2554","PHP":"1.2472","ARS":"1.9841","THB":"0.7966","NGN":"9.9207","PKR":"4.1972","AED":"0.0949","UAH":"0.7251","BGN":"0.0428","HRK":"0.1679","RSD":"2.5677","LTC":"0.00054371","ETH":"0.00007006","BCH":"0.00010281","XRP":"0.106723","CLP":"19.8414","NANO":"0.03188202","TRX":"1","DAI":"0.02556065","USDT":"0.02574788","AVA":"0.04710521"},"DAI":{"USD":"1.0088","BTC":"0.00008881","EUR":"0.8575","GBP":"0.7795","PLN":"3.878","CZK":"23.2469","SEK":"8.5316","NOK":"9.4796","DKK":"6.5628","CHF":"0.9174","ZAR":"17.0632","AUD":"1.4219","JPY":"105.3287","NZD":"1.5235","TRY":"7.756","BRL":"5.6877","CAD":"1.3126","CNY":"6.5628","HKD":"7.756","HUF":"315.986","INR":"73.5485","RUB":"77.5602","ILS":"3.4126","MYR":"4.0627","MXN":"21.1179","SGD":"1.3542","RON":"4.0627","IDR":"8531.622","PHP":"48.7521","ARS":"77.5602","THB":"31.1373","NGN":"387.801","PKR":"164.0697","AED":"3.7094","UAH":"28.3443","BGN":"1.6729","HRK":"6.5628","RSD":"100.372","LTC":"0.02127147","ETH":"0.002741","BCH":"0.00402225","XRP":"4.175288","CLP":"775.602","NANO":"1.247309","TRX":"39.1226","DAI":"1","USDT":"1.00784","AVA":"1.84288"},"BTT":{"USD":"0.000333","BTC":"0.00000003","EUR":"0.000283","GBP":"0.000257","PLN":"0.00128","CZK":"0.007675","SEK":"0.002817","NOK":"0.003129","DKK":"0.002167","CHF":"0.000303","ZAR":"0.005633","AUD":"0.000469","JPY":"0.034772","NZD":"0.000503","TRY":"0.002561","BRL":"0.001878","CAD":"0.000433","CNY":"0.002167","HKD":"0.002561","HUF":"0.104317","INR":"0.024281","RUB":"0.025605","ILS":"0.001127","MYR":"0.001341","MXN":"0.006972","SGD":"0.000447","RON":"0.001341","IDR":"2.81655","PHP":"0.016095","ARS":"0.025605","THB":"0.010279","NGN":"0.128025","PKR":"0.054164","AED":"0.001225","UAH":"0.009357","BGN":"0.000552","HRK":"0.002167","RSD":"0.033136","LTC":"0.00000719","ETH":"0.00000093","BCH":"0.00000136","XRP":"0.00141044","CLP":"0.25605","NANO":"0.00042135","TRX":"0.01321586","DAI":"0.00033781","USDT":"0.00034024","AVA":"0.00062254"},"AVA":{"USD":"0.5471","BTC":"0.00004819","EUR":"0.4674","GBP":"0.424","PLN":"2.13","CZK":"12.75","SEK":"4.85","NOK":"5.14","DKK":"3.48","CHF":"0.501","ZAR":"9.06","AUD":"0.7732","JPY":"57.72","NZD":"0.8288","TRY":"4.34","BRL":"3.09","CAD":"0.7223","CNY":"3.67","HKD":"4.24","HUF":"170.3","INR":"40.21","RUB":"42.6","ILS":"1.85","MYR":"2.27","MXN":"11.58","SGD":"0.7438","RON":"2.28","IDR":"8084.01","PHP":"26.66","ARS":"42.43","THB":"17.09","NGN":"208.61","PKR":"89.11","AED":"2.01","UAH":"15.53","BGN":"0.9127","HRK":"3.54","RSD":"54.95","LTC":"0.01154251","ETH":"0.00148735","BCH":"0.00218259","XRP":"2.265632","CLP":"434.47","NANO":"0.676826","TRX":"21.2291","DAI":"0.542629","USDT":"0.54654","AVA":"1"},"CAD":{"USD":"0.76","EUR":"0.65","GBP":"0.59","PLN":"2.94","CZK":"17.65","SEK":"6.72","NOK":"7.11","DKK":"4.81","CHF":"0.69","ZAR":"12.54","AUD":"1.07","JPY":"79.91","NZD":"1.15","TRY":"6.01","BRL":"4.28","CAD":"1.0","CNY":"5.08","HKD":"5.87","HUF":"235.76","INR":"55.67","RUB":"58.98","ILS":"2.56","MYR":"3.14","MXN":"16.03","SGD":"1.03","RON":"3.15","IDR":"11191.47","PHP":"36.91","ARS":"58.74","THB":"23.66","NGN":"288.8","PKR":"123.37","AED":"2.78","UAH":"21.5","BGN":"1.26","HRK":"4.9","RSD":"76.07","CLP":"601.48"},"EUR":{"USD":"1.17","EUR":"1.0","GBP":"0.91","PLN":"4.55","CZK":"27.28","SEK":"10.38","NOK":"10.99","DKK":"7.44","CHF":"1.07","ZAR":"19.38","AUD":"1.65","JPY":"123.51","NZD":"1.77","TRY":"9.3","BRL":"6.62","CAD":"1.55","CNY":"7.85","HKD":"9.08","HUF":"364.37","INR":"86.04","RUB":"91.15","ILS":"3.96","MYR":"4.86","MXN":"24.77","SGD":"1.59","RON":"4.88","IDR":"17296.43","PHP":"57.04","ARS":"90.79","THB":"36.56","NGN":"446.34","PKR":"190.66","AED":"4.3","UAH":"33.22","BGN":"1.95","HRK":"7.58","RSD":"117.56","CLP":"929.58"},"GBP":{"USD":"1.29","EUR":"1.1","GBP":"1.0","PLN":"5.01","CZK":"30.07","SEK":"11.44","NOK":"12.11","DKK":"8.2","CHF":"1.18","ZAR":"21.37","AUD":"1.82","JPY":"136.16","NZD":"1.95","TRY":"10.25","BRL":"7.29","CAD":"1.7","CNY":"8.65","HKD":"10.01","HUF":"401.7","INR":"94.85","RUB":"100.48","ILS":"4.36","MYR":"5.36","MXN":"27.3","SGD":"1.75","RON":"5.37","IDR":"19068.16","PHP":"62.88","ARS":"100.08","THB":"40.31","NGN":"492.06","PKR":"210.19","AED":"4.74","UAH":"36.63","BGN":"2.15","HRK":"8.36","RSD":"129.6","CLP":"1024.8"},"USD":{"USD":"1.0","EUR":"0.85","GBP":"0.77","PLN":"3.88","CZK":"23.29","SEK":"8.86","NOK":"9.38","DKK":"6.35","CHF":"0.91","ZAR":"16.55","AUD":"1.41","JPY":"105.42","NZD":"1.51","TRY":"7.93","BRL":"5.65","CAD":"1.32","CNY":"6.7","HKD":"7.75","HUF":"311.03","INR":"73.44","RUB":"77.8","ILS":"3.38","MYR":"4.15","MXN":"21.14","SGD":"1.36","RON":"4.16","IDR":"14764.35","PHP":"48.69","ARS":"77.5","THB":"31.21","NGN":"381.0","PKR":"162.75","AED":"3.67","UAH":"28.36","BGN":"1.67","HRK":"6.47","RSD":"100.35","CLP":"793.5"}};
+var ratesAtCompileTime = {"BTC":{"USD":"11350.77","BTC":"1","EUR":"9648.16","GBP":"8771.05","PLN":"43634.88","CZK":"261571.49","SEK":"95996.74","NOK":"106663.04","DKK":"73843.64","CHF":"10322.23","ZAR":"191993.47","AUD":"15999.46","JPY":"1185144.89","NZD":"17142.27","TRY":"87269.76","BRL":"63997.82","CAD":"14768.73","CNY":"73843.64","HKD":"87269.76","HUF":"3555434.67","INR":"827558.07","RUB":"872697.6","ILS":"38398.69","MYR":"45712.73","MXN":"237615.68","SGD":"15237.58","RON":"45712.73","IDR":"95996736.0","PHP":"548552.78","ARS":"872697.6","THB":"350353.05","NGN":"4363488.0","PKR":"1846091.08","AED":"41737.71","UAH":"318926.03","BGN":"18822.89","HRK":"73843.64","RSD":"1129373.36","LTC":"239.5783","ETH":"30.8553","BCH":"45.3844","XRP":"46926.33","CLP":"8726976.0","NANO":"14104.37","TRX":"438596.0","DAI":"11260.2","USDT":"11350.48","AVA":"20673.97"},"LTC":{"USD":"47.39","BTC":"0.004174","EUR":"40.28","GBP":"36.62","PLN":"182.16","CZK":"1091.97","SEK":"400.75","NOK":"445.28","DKK":"308.27","CHF":"43.09","ZAR":"801.5","AUD":"66.79","JPY":"4947.56","NZD":"71.56","TRY":"364.32","BRL":"267.17","CAD":"61.65","CNY":"308.27","HKD":"364.32","HUF":"14842.67","INR":"3454.76","RUB":"3643.2","ILS":"160.3","MYR":"190.83","MXN":"991.96","SGD":"63.61","RON":"190.83","IDR":"400752.0","PHP":"2290.01","ARS":"3643.2","THB":"1462.6","NGN":"18216.0","PKR":"7706.77","AED":"174.24","UAH":"1331.4","BGN":"78.58","HRK":"308.27","RSD":"4714.73","LTC":"1","ETH":"0.12883","BCH":"0.189435","XRP":"195.8705","CLP":"36432.0","NANO":"58.8717","TRX":"1830.7","DAI":"47.0001","USDT":"47.43","AVA":"86.2932"},"ETH":{"USD":"367.94","BTC":"0.03240931","EUR":"312.75","GBP":"284.32","PLN":"1414.44","CZK":"8478.93","SEK":"3111.77","NOK":"3457.52","DKK":"2393.67","CHF":"334.6","ZAR":"6223.54","AUD":"518.63","JPY":"38416.89","NZD":"555.67","TRY":"2828.88","BRL":"2074.51","CAD":"478.73","CNY":"2393.67","HKD":"2828.88","HUF":"115250.67","INR":"26825.59","RUB":"28288.8","ILS":"1244.71","MYR":"1481.79","MXN":"7702.4","SGD":"493.93","RON":"1481.79","IDR":"3111768.0","PHP":"17781.53","ARS":"28288.8","THB":"11356.82","NGN":"141444.0","PKR":"59841.69","AED":"1352.94","UAH":"10338.1","BGN":"610.15","HRK":"2393.67","RSD":"36609.04","LTC":"7.762167","ETH":"1","BCH":"1.470878","XRP":"1520.85","CLP":"282888.0","NANO":"456.4126","TRX":"14214.61","DAI":"364.9353","USDT":"368.02","AVA":"670.0292"},"BCH":{"USD":"250.25","BTC":"0.02203399","EUR":"212.71","GBP":"193.37","PLN":"962.01","CZK":"5766.82","SEK":"2116.42","NOK":"2351.58","DKK":"1628.02","CHF":"227.57","ZAR":"4232.84","AUD":"352.74","JPY":"26128.67","NZD":"377.93","TRY":"1924.02","BRL":"1410.95","CAD":"325.6","CNY":"1628.02","HKD":"1924.02","HUF":"78386.0","INR":"18245.02","RUB":"19240.2","ILS":"846.57","MYR":"1007.82","MXN":"5238.67","SGD":"335.94","RON":"1007.82","IDR":"2116422.0","PHP":"12093.84","ARS":"19240.2","THB":"7724.17","NGN":"96201.0","PKR":"40700.42","AED":"920.18","UAH":"7031.3","BGN":"414.98","HRK":"1628.02","RSD":"24899.08","LTC":"5.278867","ETH":"0.679866","BCH":"1","XRP":"1033.97","CLP":"192402.0","NANO":"310.7756","TRX":"9664.03","DAI":"248.1071","USDT":"249.9756","AVA":"455.5301"},"XRP":{"USD":"0.2416","BTC":"0.00002131","EUR":"0.2054","GBP":"0.1867","PLN":"0.9288","CZK":"5.5675","SEK":"2.0433","NOK":"2.2703","DKK":"1.5717","CHF":"0.2197","ZAR":"4.0865","AUD":"0.3405","JPY":"25.2254","NZD":"0.3649","TRY":"1.8575","BRL":"1.3622","CAD":"0.3143","CNY":"1.5717","HKD":"1.8575","HUF":"75.6763","INR":"17.6143","RUB":"18.5751","ILS":"0.8173","MYR":"0.973","MXN":"5.0576","SGD":"0.3243","RON":"0.973","IDR":"2043.261","PHP":"11.6758","ARS":"18.5751","THB":"7.4572","NGN":"92.8755","PKR":"39.2935","AED":"0.8884","UAH":"6.7882","BGN":"0.4006","HRK":"1.5717","RSD":"24.0384","LTC":"0.00510541","ETH":"0.00065753","BCH":"0.00096714","XRP":"1","CLP":"185.751","NANO":"0.300564","TRX":"9.346491","DAI":"0.239955","USDT":"0.24162","AVA":"0.440562"},"TEL":{"USD":"0.000227","BTC":"0.00000002","EUR":"0.000194","GBP":"0.000176","PLN":"0.000882","CZK":"0.00529","SEK":"0.002013","NOK":"0.002131","DKK":"0.001443","CHF":"0.000208","ZAR":"0.003761","AUD":"0.000321","JPY":"0.024","NZD":"0.000344","TRY":"0.001804","BRL":"0.001284","CAD":"0.0003","CNY":"0.001523","HKD":"0.001762","HUF":"0.0707","INR":"0.0167","RUB":"0.0177","ILS":"0.000768","MYR":"0.000943","MXN":"0.004806","SGD":"0.000309","RON":"0.000946","IDR":"3.36","PHP":"0.0111","ARS":"0.0176","THB":"0.007095","NGN":"0.0866","PKR":"0.037","AED":"0.000835","UAH":"0.006447","BGN":"0.000379","HRK":"0.001471","RSD":"0.0228","LTC":"0.00000479","ETH":"0.00000062","BCH":"0.00000091","XRP":"0.00093853","CLP":"0.1804","NANO":"0.00028209","TRX":"0.00877193","DAI":"0.0002252","USDT":"0.0002269","AVA":"0.00041348"},"NANO":{"USD":"0.8049","BTC":"0.0000709","EUR":"0.6874","GBP":"0.6236","PLN":"3.13","CZK":"18.75","SEK":"7.14","NOK":"7.55","DKK":"5.12","CHF":"0.7373","ZAR":"13.33","AUD":"1.14","JPY":"84.96","NZD":"1.22","TRY":"6.39","BRL":"4.55","CAD":"1.06","CNY":"5.4","HKD":"6.25","HUF":"250.65","INR":"59.19","RUB":"62.7","ILS":"2.72","MYR":"3.34","MXN":"17.04","SGD":"1.09","RON":"3.35","IDR":"11898.34","PHP":"39.24","ARS":"62.45","THB":"25.15","NGN":"307.04","PKR":"131.16","AED":"2.96","UAH":"22.85","BGN":"1.34","HRK":"5.21","RSD":"80.87","LTC":"0.0169861","ETH":"0.00218764","BCH":"0.00321776","XRP":"3.327076","CLP":"639.47","NANO":"1","TRX":"31.0965","DAI":"0.798348","USDT":"0.8022","AVA":"1.465785"},"TRX":{"USD":"0.0259","BTC":"0.00000228","EUR":"0.022","GBP":"0.02","PLN":"0.0994","CZK":"0.5959","SEK":"0.2187","NOK":"0.243","DKK":"0.1682","CHF":"0.0235","ZAR":"0.4374","AUD":"0.0364","JPY":"2.6998","NZD":"0.0391","TRY":"0.1988","BRL":"0.1458","CAD":"0.0336","CNY":"0.1682","HKD":"0.1988","HUF":"8.0993","INR":"1.8852","RUB":"1.988","ILS":"0.0875","MYR":"0.1041","MXN":"0.5413","SGD":"0.0347","RON":"0.1041","IDR":"218.6811","PHP":"1.2496","ARS":"1.988","THB":"0.7981","NGN":"9.94","PKR":"4.2054","AED":"0.0951","UAH":"0.7265","BGN":"0.0429","HRK":"0.1682","RSD":"2.5727","LTC":"0.00054624","ETH":"0.00007035","BCH":"0.00010348","XRP":"0.106992","CLP":"19.8801","NANO":"0.03215797","TRX":"1","DAI":"0.02567326","USDT":"0.0258666","AVA":"0.04713665"},"DAI":{"USD":"1.0091","BTC":"0.00008881","EUR":"0.8577","GBP":"0.7797","PLN":"3.879","CZK":"23.2531","SEK":"8.5339","NOK":"9.4821","DKK":"6.5645","CHF":"0.9176","ZAR":"17.0678","AUD":"1.4223","JPY":"105.3568","NZD":"1.5239","TRY":"7.7581","BRL":"5.6893","CAD":"1.3129","CNY":"6.5645","HKD":"7.7581","HUF":"316.0703","INR":"73.5681","RUB":"77.5809","ILS":"3.4136","MYR":"4.0638","MXN":"21.1235","SGD":"1.3546","RON":"4.0638","IDR":"8533.899","PHP":"48.7651","ARS":"77.5809","THB":"31.1456","NGN":"387.9045","PKR":"164.1134","AED":"3.7104","UAH":"28.3518","BGN":"1.6733","HRK":"6.5645","RSD":"100.3988","LTC":"0.02127656","ETH":"0.00274021","BCH":"0.00403052","XRP":"4.16745","CLP":"775.809","NANO":"1.252586","TRX":"38.951","DAI":"1","USDT":"1.00872","AVA":"1.836022"},"BTT":{"USD":"0.000335","BTC":"0.00000003","EUR":"0.000285","GBP":"0.000259","PLN":"0.001288","CZK":"0.007723","SEK":"0.002834","NOK":"0.003149","DKK":"0.00218","CHF":"0.000305","ZAR":"0.005669","AUD":"0.000472","JPY":"0.034992","NZD":"0.000506","TRY":"0.002577","BRL":"0.00189","CAD":"0.000436","CNY":"0.00218","HKD":"0.002577","HUF":"0.104977","INR":"0.024434","RUB":"0.025767","ILS":"0.001134","MYR":"0.00135","MXN":"0.007016","SGD":"0.00045","RON":"0.00135","IDR":"2.83437","PHP":"0.016196","ARS":"0.025767","THB":"0.010344","NGN":"0.128835","PKR":"0.054507","AED":"0.001232","UAH":"0.009417","BGN":"0.000556","HRK":"0.00218","RSD":"0.033346","LTC":"0.00000719","ETH":"0.00000093","BCH":"0.00000136","XRP":"0.00140779","CLP":"0.25767","NANO":"0.00042313","TRX":"0.01315789","DAI":"0.00033781","USDT":"0.00034051","AVA":"0.00062022"},"AVA":{"USD":"0.5491","BTC":"0.00004837","EUR":"0.469","GBP":"0.4254","PLN":"2.13","CZK":"12.79","SEK":"4.87","NOK":"5.15","DKK":"3.49","CHF":"0.503","ZAR":"9.1","AUD":"0.7764","JPY":"57.96","NZD":"0.8322","TRY":"4.36","BRL":"3.11","CAD":"0.7253","CNY":"3.68","HKD":"4.26","HUF":"171.0","INR":"40.38","RUB":"42.78","ILS":"1.86","MYR":"2.28","MXN":"11.62","SGD":"0.7468","RON":"2.29","IDR":"8117.39","PHP":"26.77","ARS":"42.61","THB":"17.16","NGN":"209.47","PKR":"89.48","AED":"2.02","UAH":"15.59","BGN":"0.9165","HRK":"3.56","RSD":"55.17","LTC":"0.0115884","ETH":"0.00149247","BCH":"0.00219524","XRP":"2.269826","CLP":"436.26","NANO":"0.682228","TRX":"21.2149","DAI":"0.544656","USDT":"0.549023","AVA":"1"},"CAD":{"USD":"0.76","EUR":"0.65","GBP":"0.59","PLN":"2.94","CZK":"17.65","SEK":"6.72","NOK":"7.11","DKK":"4.81","CHF":"0.69","ZAR":"12.54","AUD":"1.07","JPY":"79.91","NZD":"1.15","TRY":"6.01","BRL":"4.28","CAD":"1.0","CNY":"5.08","HKD":"5.87","HUF":"235.76","INR":"55.67","RUB":"58.98","ILS":"2.56","MYR":"3.14","MXN":"16.03","SGD":"1.03","RON":"3.15","IDR":"11191.47","PHP":"36.91","ARS":"58.74","THB":"23.66","NGN":"288.8","PKR":"123.37","AED":"2.78","UAH":"21.5","BGN":"1.26","HRK":"4.9","RSD":"76.07","CLP":"601.48"},"EUR":{"USD":"1.17","EUR":"1.0","GBP":"0.91","PLN":"4.55","CZK":"27.28","SEK":"10.38","NOK":"10.99","DKK":"7.44","CHF":"1.07","ZAR":"19.38","AUD":"1.65","JPY":"123.51","NZD":"1.77","TRY":"9.3","BRL":"6.62","CAD":"1.55","CNY":"7.85","HKD":"9.08","HUF":"364.37","INR":"86.04","RUB":"91.15","ILS":"3.96","MYR":"4.86","MXN":"24.77","SGD":"1.59","RON":"4.88","IDR":"17296.43","PHP":"57.04","ARS":"90.79","THB":"36.56","NGN":"446.34","PKR":"190.66","AED":"4.3","UAH":"33.22","BGN":"1.95","HRK":"7.58","RSD":"117.56","CLP":"929.58"},"GBP":{"USD":"1.29","EUR":"1.1","GBP":"1.0","PLN":"5.01","CZK":"30.07","SEK":"11.44","NOK":"12.11","DKK":"8.2","CHF":"1.18","ZAR":"21.37","AUD":"1.82","JPY":"136.16","NZD":"1.95","TRY":"10.25","BRL":"7.29","CAD":"1.7","CNY":"8.65","HKD":"10.01","HUF":"401.7","INR":"94.85","RUB":"100.48","ILS":"4.36","MYR":"5.36","MXN":"27.3","SGD":"1.75","RON":"5.37","IDR":"19068.16","PHP":"62.88","ARS":"100.08","THB":"40.31","NGN":"492.06","PKR":"210.19","AED":"4.74","UAH":"36.63","BGN":"2.15","HRK":"8.36","RSD":"129.6","CLP":"1024.8"},"USD":{"USD":"1.0","EUR":"0.85","GBP":"0.77","PLN":"3.88","CZK":"23.29","SEK":"8.86","NOK":"9.38","DKK":"6.35","CHF":"0.91","ZAR":"16.55","AUD":"1.41","JPY":"105.42","NZD":"1.51","TRY":"7.93","BRL":"5.65","CAD":"1.32","CNY":"6.7","HKD":"7.75","HUF":"311.03","INR":"73.44","RUB":"77.8","ILS":"3.38","MYR":"4.15","MXN":"21.14","SGD":"1.36","RON":"4.16","IDR":"14764.35","PHP":"48.69","ARS":"77.5","THB":"31.21","NGN":"381.0","PKR":"162.75","AED":"3.67","UAH":"28.36","BGN":"1.67","HRK":"6.47","RSD":"100.35","CLP":"793.5"}};
 
 // import yaml from 'json2yaml'
 rxdb.addRxPlugin(require('rxdb-search'));
@@ -3651,21 +3651,28 @@ var en = {
   "next": "Continue",
   "back": "Back",
   "backTo": "Back to",
-  "search": "Search",
+  "search": {
+    "do": "Search",
+    "noResults": "No results",
+    "suggestions": "Related"
+  },
   "add": "Add",
   "trash": "Delete",
   "edit": "Edit",
+  "registered": "registered ()",
+  "updated": "Updated",
+  "lastUpdate": "Updated",
+  "roluri": ["Administrator", "Moderator", "Guest", "Tenant", "Owner"],
   "nav": {
     "statistici": "Statistics",
     "liste": "Lists Payment",
-    "istoric": "history",
-    "comunitate": "Community",
+    "istoric": "History",
     "docs": "Documentation",
-    "support": "Technical assistance"
+    "support": "technical assistance"
   },
   "disclaimers": {
-    "money": "The exchange rate is only for informational purposes",
-    "beta": "The application is in beta and may have side effects"
+    "money": "the exchange rate is only for informational purposes",
+    "beta": "the application is in beta and may have side effects"
   },
   "taxonomies": {
     "apartamente": {
@@ -3718,10 +3725,10 @@ var en = {
       "name": "expense",
       "plural": "expenses",
       "fields": {
-        "catre": "to",
+        "catre": "To",
         "suma": "amount",
         "facturi": "Invoices",
-        "dataScadenta": "maturity",
+        "dataScadenta": "due to",
         "distribuire": "distribution",
         "apartamenteEligibile": "Apartments Eligible",
         "asociatieId": "Association"
@@ -3759,7 +3766,7 @@ var en = {
       "plural": "Proceeds",
       "fields": {
         "suma": "amount",
-        "nrChitanta": "No."
+        "nrChitanta": "nr."
       }
     },
     "scari": {
@@ -3800,7 +3807,7 @@ var en = {
         "tel": "Phone number",
         "email": "Address e-mail",
         "social": "Social Media",
-        "preferinte": "Preferences",
+        "rol": "Role",
         "langSwitch": "Change language"
       }
     }
@@ -3809,11 +3816,20 @@ var en = {
     "title": "Welcome!",
     "intro": "Thank you for choosing to Lodger try!"
   },
+  "footer": {
+    "links": {
+      "help": "Help",
+      "feedback": "Feedback",
+      "thanks": "Thanks",
+      "comunitate": "Community",
+      "update": "update"
+    }
+  },
   "errors": {
     "index": {
-      "missingDB": "database unspecified invalid",
-      "invalidPluginDefinition": "",
-      "couldNotWriteFile": "Plugin file %% is not writable"
+      "missingDB": "database  unspecified",
+      "invalidPluginDefinition": "Plugin invalid",
+      "couldNotWriteFile": "%% file can not be written"
     }
   }
 };
@@ -3825,82 +3841,89 @@ var en$1 = /*#__PURE__*/Object.freeze({
 
 var es = {
   "next": "Continuar",
-  "back": "Volver",
-  "backTo": "Volver a",
-  "search": "Buscar",
-  "add": "Agregar",
-  "trash": "Eliminar",
-  "edit": "Editar",
+  "back": "",
+  "backTo": "Volver Volver a la búsqueda",
+  "search": {
+    "do": "",
+    "noResults": "",
+    "suggestions": "No hay resultados relacionados"
+  },
+  "add": "",
+  "trash": "Agregar Eliminar",
+  "edit": "",
+  "registered": "Editar registrada ()",
+  "updated": "Actualizado",
+  "lastUpdate": "Actualización de administrador",
+  "roluri": ["", "", "", "Evaluación de visitantes Moderador inquilino", "Propietario"],
   "nav": {
     "statistici": "Estadísticas",
-    "liste": "Listas de Pago",
-    "istoric": "historia",
-    "comunitate": "Comunidad",
+    "liste": "Lista Pago",
+    "istoric": "Historia",
     "docs": "Documentación",
-    "support": "Asistencia técnica"
+    "support": "asistencia técnica"
   },
   "disclaimers": {
-    "money": "El tipo de cambio es sólo para fines informativos",
-    "beta": "La aplicación está en fase beta y puede tener efectos secundarios"
+    "money": "el tipo de cambio es sólo para fines informativos",
+    "beta": "la aplicación está en fase beta y pueden tener efectos secundarios"
   },
   "taxonomies": {
     "apartamente": {
-      "name": "Apartamento",
+      "name": "Piso",
       "plural": "Apartamentos",
       "fieldsets": {
         "descriere": "Descripción",
         "localizare": "Ubicación",
-        "registru": "Registro"
+        "registru": "es"
       },
       "fields": {
         "nr": "N",
         "suprafata": "Tamaño",
-        "locatari": "",
-        "balanta": "saldo inquilinos",
+        "locatari": "los inquilinos",
+        "balanta": "saldo",
         "proprietar": "propietario",
-        "camere": "Salas",
-        "etaj": "Planta",
-        "scara": "",
-        "contoare": "Contadores escala",
-        "incasari": "",
-        "cheltuieli": "Las ganancias los gastos",
+        "camere": "Habitaciones",
+        "etaj": "Piso",
+        "scara": "escala",
+        "contoare": "Contadores",
+        "incasari": "Las ganancias",
+        "cheltuieli": "gastos",
         "blocId": "Bloque de construcción",
-        "asociatieId": ""
+        "asociatieId": "Asociación / Asociación"
       }
     },
     "asociatii": {
-      "name": "Asociación",
+      "name": "",
       "plural": "Asociaciones",
       "fields": {
         "name": "Nombre",
-        "organizatie": "Organización /",
-        "balanta": "Nivel",
-        "utilizatori": "",
-        "preferinte": "Usuarios preferencias",
-        "servicii": ""
+        "organizatie": "Organización",
+        "balanta": "",
+        "utilizatori": "Los usuarios de equilibrio",
+        "preferinte": "Preferencias",
+        "servicii": "Servicios"
       }
     },
     "blocuri": {
-      "name": "Servicios de construcción de edificios",
-      "plural": "",
+      "name": "Construcción",
+      "plural": "Edificios",
       "fields": {
-        "name": "ID",
-        "scari": "escaleras",
+        "name": "",
+        "scari": "Identificación escaleras",
         "adresa": "Dirección",
-        "asociatieId": "Empresa"
+        "asociatieId": "empresa"
       }
     },
     "cheltuieli": {
-      "name": "",
-      "plural": "gastos de gastos",
+      "name": "gasto",
+      "plural": "",
       "fields": {
-        "catre": "",
-        "suma": "a",
+        "catre": "Para los gastos",
+        "suma": "cantidad",
         "facturi": "Facturas",
-        "dataScadenta": "cantidad madurez",
+        "dataScadenta": "debido a la distribución",
         "distribuire": "",
-        "apartamenteEligibile": "Apartamentos distribución elegible",
-        "asociatieId": "Asociación"
+        "apartamenteEligibile": "",
+        "asociatieId": "Apartamentos elegible Asociación"
       }
     },
     "contoare": {
@@ -3935,12 +3958,12 @@ var es = {
       "plural": "ingresos",
       "fields": {
         "suma": "cantidad",
-        "nrChitanta": ""
+        "nrChitanta": "nr."
       }
     },
     "scari": {
-      "name": "Nº escala escaleras",
-      "plural": "",
+      "name": "",
+      "plural": "escala escaleras",
       "fields": {
         "lift": "ascensor",
         "mansarda": "",
@@ -3975,8 +3998,8 @@ var es = {
         "contact": "Contacto",
         "tel": "Teléfono",
         "email": "Dirección e-mail",
-        "social": "Social Media",
-        "preferinte": "Preferencias",
+        "social": "medios de Comunicación Social",
+        "rol": "Función",
         "langSwitch": ""
       }
     }
@@ -3985,11 +4008,20 @@ var es = {
     "title": "Cambiar el idioma Bienvenido!",
     "intro": "Gracias por elegir a Lodger intento!"
   },
+  "footer": {
+    "links": {
+      "help": "Ayuda",
+      "feedback": "Feedback",
+      "thanks": "Gracias",
+      "comunitate": "Comunidad",
+      "update": ""
+    }
+  },
   "errors": {
     "index": {
-      "missingDB": "base de datos no válido no especificado",
+      "missingDB": "actualización de la base de datos no válidos Plugin no especificado",
       "invalidPluginDefinition": "",
-      "couldNotWriteFile": "%% archivo plugin no se puede escribir"
+      "couldNotWriteFile": "%% archivo no puede ser escrito"
     }
   }
 };
@@ -4003,21 +4035,28 @@ var fr = {
   "next": "Continuer",
   "back": "Retour",
   "backTo": "Retour",
-  "search": "Rechercher",
-  "add": "",
-  "trash": "Supprimer",
+  "search": {
+    "do": "Recherche",
+    "noResults": "Aucun résultat",
+    "suggestions": ""
+  },
+  "add": "Ajouter",
+  "trash": "connexes Supprimer",
   "edit": "Modifier",
+  "registered": "enregistré ()",
+  "updated": "Mise à jour",
+  "lastUpdate": "Mise à jour",
+  "roluri": ["Administrateur", "Modérateur", "Invité", "locataire", "Propriétaire"],
   "nav": {
     "statistici": "Statistiques",
-    "liste": "Listes Paiement",
-    "istoric": "Historique",
-    "comunitate": "Communauté",
+    "liste": "listes",
+    "istoric": "Paiement Histoire",
     "docs": "Documentation",
-    "support": "Assistance technique"
+    "support": "assistance technique"
   },
   "disclaimers": {
-    "money": "Le taux de change est uniquement à des fins d'information",
-    "beta": "L'application est en version bêta et peut avoir des effets secondaires"
+    "money": "le taux de change est uniquement à des fins d'information",
+    "beta": "l'application est en version bêta et peuvent avoir des effets secondaires"
   },
   "taxonomies": {
     "apartamente": {
@@ -4026,18 +4065,18 @@ var fr = {
       "fieldsets": {
         "descriere": "description",
         "localizare": "Emplacement",
-        "registru": "Inscrivez-vous"
+        "registru": "s'inscrire"
       },
       "fields": {
         "nr": "Non",
         "suprafata": "Taille",
-        "locatari": "Les locataires",
+        "locatari": "les locataires",
         "balanta": "solde",
         "proprietar": "Propriétaire",
-        "camere": "",
-        "etaj": "Chambres",
-        "scara": "étage",
-        "contoare": "Compteurs échelle",
+        "camere": "Chambres",
+        "etaj": "étage",
+        "scara": "échelle",
+        "contoare": "Compteurs",
         "incasari": "produits",
         "cheltuieli": "frais",
         "blocId": "construction / Bloc",
@@ -4052,18 +4091,18 @@ var fr = {
         "organizatie": "Organisation",
         "balanta": "",
         "utilizatori": "solde utilisateurs",
-        "preferinte": "préférences",
+        "preferinte": "Préférences",
         "servicii": "services"
       }
     },
     "blocuri": {
       "name": "",
-      "plural": "bâtiments bâtiment",
+      "plural": "Bâtiment Bâtiments",
       "fields": {
         "name": "ID",
-        "scari": "escaliers",
+        "scari": "",
         "adresa": "Adresse",
-        "asociatieId": "Société"
+        "asociatieId": "escaliers Société"
       }
     },
     "cheltuieli": {
@@ -4072,11 +4111,11 @@ var fr = {
       "fields": {
         "catre": "",
         "suma": "",
-        "facturi": "à montant des factures",
-        "dataScadenta": "échéance",
-        "distribuire": "distribution",
-        "apartamenteEligibile": "Appartements Association admissible",
-        "asociatieId": ""
+        "facturi": "Pour montant des factures",
+        "dataScadenta": "en raison de la distribution",
+        "distribuire": "",
+        "apartamenteEligibile": "Appartements admissibles",
+        "asociatieId": "Association"
       }
     },
     "contoare": {
@@ -4107,16 +4146,16 @@ var fr = {
       }
     },
     "incasari": {
-      "name": "espèces",
+      "name": "Liquidités",
       "plural": "Produit",
       "fields": {
         "suma": "montant",
-        "nrChitanta": "Non"
+        "nrChitanta": "nr."
       }
     },
     "scari": {
       "name": "",
-      "plural": "échelle des escaliers",
+      "plural": "échelle escalier",
       "fields": {
         "lift": "ascenseur",
         "mansarda": "Grenier",
@@ -4151,8 +4190,8 @@ var fr = {
         "contact": "Coordonnées",
         "tel": "Numéro de téléphone",
         "email": "Adresse e-mail",
-        "social": "médias sociaux",
-        "preferinte": "Préférences",
+        "social": "social Media",
+        "rol": "Rôle",
         "langSwitch": "Changer de langue"
       }
     }
@@ -4161,11 +4200,20 @@ var fr = {
     "title": "Bienvenue!",
     "intro": "Merci d'avoir choisi d'essayer Lodger!"
   },
+  "footer": {
+    "links": {
+      "help": "Aide",
+      "feedback": "Commentaires",
+      "thanks": "Merci",
+      "comunitate": "Communauté",
+      "update": "Mise à jour"
+    }
+  },
   "errors": {
     "index": {
-      "missingDB": "base de données non valide non spécifiée",
-      "invalidPluginDefinition": "",
-      "couldNotWriteFile": "fichier Plugin %% n'est pas accessible en écriture"
+      "missingDB": "base de données e non spécifiée",
+      "invalidPluginDefinition": "Plugin invalid",
+      "couldNotWriteFile": "%% fichier ne peut pas être écrit"
     }
   }
 };
