@@ -165,6 +165,7 @@ export default {
     utilizatori: {
       name: 'Utilizator',
       plural: 'Utilizatori',
+      switch: 'Schimbă utilizatorul',
       new: {
         title: 'Hai să facem cunoștință!'
       },

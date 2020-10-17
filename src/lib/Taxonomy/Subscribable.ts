@@ -87,7 +87,7 @@ implements SubscribableTaxonomy<T> {
 
     let allTaxes : Taxonomie[] = []
 
-    const doForTaxes = async (taxes: Taxonomie[], id : string, name: string) => {
+    const updateTaxes = async (taxes: Taxonomie[], id : string, name: string) => {
       if (!taxes || !taxes.length) return
       if (!allTaxes.length) allTaxes = [ ...this.$lodger.taxonomies ]
 
@@ -108,7 +108,7 @@ implements SubscribableTaxonomy<T> {
         const taxSub = subscribers[subscriberName]
 
         if (!taxSub) {
-          console.error('invalid sub requested', tax)
+          console.error('Invalid subscriber requested', subscriberName, tax)
           return
         }
 
@@ -157,7 +157,7 @@ implements SubscribableTaxonomy<T> {
 
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
-      doForTaxes(this.children, id, this.collection.name)
+      updateTaxes(this.children, id, this.collection.name)
     })
 
     // Trigger the modal on activeId change
