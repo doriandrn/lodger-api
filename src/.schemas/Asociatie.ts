@@ -59,11 +59,11 @@ const fields: FieldsCreator<Asociatie> = {
     v: 'max:32|min:3',
     oninput: { transform: 'capitalize' }
   },
-  organizatie: {
-    type: 'object',
-    value: ({ activeDoc }) => activeDoc.organizatie
-    // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
-  },
+  // organizatie: {
+  //   type: 'object',
+  //   value: ({ activeDoc }) => activeDoc.organizatie
+  //   // v: 'ro=cif|en=ssn', //TODO: stringu e doar de demo -> implement cif validation
+  // },
 
   balanta: {
     type: 'number',
@@ -91,10 +91,10 @@ const fields: FieldsCreator<Asociatie> = {
   //   ref: 'furnizor',
   //   value: ({ activeDoc }) => activeDoc.furnizori
   // },
-  preferinte: {
-    value: ({ activeDoc }) => activeDoc.preferinte,
-    type: 'object'
-  }
+  // preferinte: {
+  //   value: ({ activeDoc }) => activeDoc.preferinte,
+  //   type: 'object'
+  // }
 }
 
 
