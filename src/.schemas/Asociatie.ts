@@ -66,7 +66,8 @@ const fields: FieldsCreator<Asociatie> = {
   // },
 
   balanta: {
-    type: 'number',
+    type: '$',
+    required: true,
     preview: 1,
     value: ({ activeDoc }) => activeDoc.balanta,
   },
