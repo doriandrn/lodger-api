@@ -32,13 +32,16 @@ export default {
     money: 'Cursul valutar este doar pentru scop informațional',
     beta: 'Aplicația este în versiunea beta și poate prezenta reacții adverse'
   },
-  // forms: {
-  //   langSwitch: {
-  //     fields: {
-  //       selector: 'Schimbă limba'
-  //     }
-  //   }
-  // },
+  forms: {
+    preferences: {
+      title: prefs,
+      fieldsets: ['Afișaj'],
+      fields: {
+        currency: 'Monedă',
+        lang: 'Limbă'
+      }
+    }
+  },
   taxonomies: {
     apartamente: {
       name: 'Apartament',
