@@ -305,8 +305,9 @@ class Lodger implements LodgerAPI {
    * @returns {Lodger}
    *
    */
-  static async build (options: BuildOptions = { ... config.build }) {
-    Taxonomy.db = await createRxDatabase(options.db)
+  static async build (options ?: BuildOptions) {
+    const opts = Object.assign({}, { ... config.build }, { ... options })
+    Taxonomy.db = await createRxDatabase(opts.db)
 
     locales = await loadLocales(supportedLangs.map(l => l.code))
 
