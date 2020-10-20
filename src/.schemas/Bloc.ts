@@ -28,6 +28,7 @@ const fields: FieldsCreator<Bloc> = {
     required: true,
     preview: 0,
     index: true,
+    search: true,
     v: 'min:1|max:20',
     focus: true,
     value: ({ activeDoc }) => activeDoc.name
@@ -45,6 +46,7 @@ const fields: FieldsCreator<Bloc> = {
   },
   adresa: {
     type: 'textarea',
+    search: true,
     value: ({ activeDoc }) => activeDoc.adresa
   },
   asociatieId: {

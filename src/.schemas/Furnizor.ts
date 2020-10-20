@@ -13,7 +13,8 @@ export const fields: FieldsCreator<Furnizor> = {
   name: {
     required: true,
     preview: 0,
-    index: true
+    index: true,
+    search: true
   },
   servicii: {
     type: 'servicii',

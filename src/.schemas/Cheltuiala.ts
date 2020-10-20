@@ -30,7 +30,8 @@ const fields: FieldsCreator<Cheltuiala> = {
     index: true,
   },
   denumire: {
-    preview: 0
+    preview: 0,
+    search: true
   },
   proiect: {
     preview: 3,

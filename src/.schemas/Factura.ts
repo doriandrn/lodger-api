@@ -30,6 +30,7 @@ const fields: FieldsCreator<Factura>  = {
   },
   nrFactura: {
     type: 'number',
+    search: true,
     default: 1,
     index: true,
     value: g => Number(g.nrUltimaChitanta || 0) + 1

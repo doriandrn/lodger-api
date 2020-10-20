@@ -1,4 +1,4 @@
-import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase } from 'rxdb'
+import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase, _collectionNamePrimary } from 'rxdb'
 import { observable, computed } from 'mobx'
 
 import LodgerConfig from 'lodger.config'
@@ -155,6 +155,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
 
     }, false)
     collection.postRemove(() => { this.totals -= 1 }, false)
+    collection.searchFields = form.fieldsIds.filter(fieldId => form.fields[fieldId].search)
 
     // kinda hide the property for snapshots
     Object.defineProperty(this, 'collection', {

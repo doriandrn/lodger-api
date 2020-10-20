@@ -54,6 +54,7 @@ const fields: FieldsCreator<Asociatie> = {
     required: true,
     focus: true,
     index: true,
+    search: true,
     preview: 0,
     value: ({ activeDoc }) => activeDoc.name,
     v: 'max:32|min:3',

@@ -44,6 +44,7 @@ const fields: FieldsCreator<Utilizator> = {
     primary: true,
     preview: 1,
     focus: true,
+    search: true,
     oninput: {
       transform: 'capitalize:all'
     },

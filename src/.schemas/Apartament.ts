@@ -38,6 +38,7 @@ const selectedApGetter = 'apartament/activeDoc'
 const fields: FieldsCreator<Apartament> = {
   nr: {
     type: 'number',
+    search: true,
     default: g => {
       //TODO: numerotare pentru hoteluri, 101 et 1, 201 et 2
       // const { apartamente } = g['bloc/activeDoc']

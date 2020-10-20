@@ -24,7 +24,8 @@ const fields: FieldsCreator<Serviciu> = {
     required: true,
     preview: 0,
     primary: true,
-    index: true
+    index: true,
+    search: true
   },
 
   // contoare: {

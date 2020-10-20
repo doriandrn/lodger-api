@@ -26,6 +26,7 @@ const fields: FieldsCreator<Incasare> = {
   nrChitanta: {
     type: 'number',
     default: 1,
+    search: true,
     preview: 0,
     index: true,
     value: ({ activeDoc }) => (activeDoc.nrUltimaChitanta || 0) + 1

@@ -9,7 +9,8 @@ declare global {
 
 const fields: FieldsCreator<Contor> = {
   tip: {
-    preview: 0
+    preview: 0,
+    search: true
   }
 }
 

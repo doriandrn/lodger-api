@@ -76,6 +76,7 @@ declare global {
       [method: string]: string
     }
     focus ?: boolean // if this should be the first option to focus on
+    search ?: boolean // if searchable
   }
 }
 
