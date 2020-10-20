@@ -155,7 +155,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
 
     }, false)
     collection.postRemove(() => { this.totals -= 1 }, false)
-    collection.searchFields = [ ...form.fieldsIds.filter(fieldId => form.fields[fieldId].search) ]
+    form.fieldsIds
+      .filter(fieldId => form.fields[fieldId].search)
+      .forEach(fieldId => collection.searchFields.push(fieldId))
+    // collection.searchFields = [ ... ]
 
     // kinda hide the property for snapshots
     Object.defineProperty(this, 'collection', {
