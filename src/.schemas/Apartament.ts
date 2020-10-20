@@ -59,6 +59,7 @@ const fields: FieldsCreator<Apartament> = {
   },
   proprietar: {
     type: 'fullName',
+    search: true,
     placeholder: 'Ion Barbu',
     oninput: {
       transform: 'capitalize'
