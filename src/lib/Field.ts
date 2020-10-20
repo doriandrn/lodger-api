@@ -129,6 +129,7 @@ export class Field implements FieldAPI {
   readonly _index ?: boolean // should be indexed to search for
   key : string = 'index'
   focus ?: boolean
+  search ?: boolean
   fieldset ?: number
 
   /**
@@ -158,7 +159,8 @@ export class Field implements FieldAPI {
       preview,
       oninput,
       key,
-      fieldset
+      fieldset,
+      search
     } = data
 
     this.preview = preview
@@ -168,6 +170,7 @@ export class Field implements FieldAPI {
     this.focus = focus
 
     if (key) this.key = key
+    if (search) this.search = search
     if (index !== undefined) this._index = true
     if (fieldset !== undefined) this.fieldset = fieldset
 
