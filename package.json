@@ -36,7 +36,7 @@
     "@rollup/plugin-multi-entry": "^4.0.0",
     "@types/debug": "^4.1.5",
     "@types/faker": "^5.1.2",
-    "@types/jest": "^26.0.14",
+    "@types/jest": "^26.0.15",
     "@types/node": "^14.11.11",
     "awesome-typescript-loader": "^5.2.1",
     "axios": "^0.20.0",
@@ -73,7 +73,7 @@
     "cashify": "^2.4.4",
     "pouchdb-adapter-leveldb": "^7.2.2",
     "rxdb": "^9.6.0",
-    "rxdb-search": "^1.0.8",
+    "rxdb-search": "^1.0.9",
     "rxjs": "^6.6.3"
   },
   "peerDependencies": {
