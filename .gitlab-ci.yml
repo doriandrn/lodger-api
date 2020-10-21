@@ -1,0 +1,17 @@
+image: node:latest
+
+stages:
+  - build
+  - test
+  - deploy
+  - release
+
+build:
+  stage: build
+  script:
+    - yarn install
+    - yarn build
+
+  artifacts:
+    paths:
+      - public
