@@ -1,5 +1,5 @@
 {
-  "name": "@doriandrn/lodger",
+  "name": "lodger",
   "version": "0.0.4",
   "type": "module",
   "description": "Offline-first API for HOAs",
@@ -79,5 +79,8 @@
   },
   "peerDependencies": {
     "mobx": "^5.9.4"
+  },
+  "publishConfig": {
+    "@doriandrn:registry":"https://gitlab.com/api/v4/projects/13127131/packages/npm/"
   }
 }
