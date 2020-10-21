@@ -12,10 +12,6 @@ build:
     - yarn install
     - yarn build:locales && yarn build:js
 
-  artifacts:
-    paths:
-      - Lodger-019a13212fa4.json
-
 deploy:
   stage: deploy
   script:
