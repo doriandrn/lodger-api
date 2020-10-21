@@ -1,0 +1,12 @@
+.cache/
+.vscode/
+src/
+docs/
+*.json
+*.code-workspace
+locales.js
+rollup.config.js
+yarn-error.log
+.babelrc
+.gitlab-ci.yml
+jest.config.js

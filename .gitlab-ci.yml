@@ -12,6 +12,7 @@ build:
     - yarn install
     - yarn build:locales && yarn build:js
 
-  artifacts:
-    paths:
-      - public
+deploy:
+  stage: deploy
+  script:
+    - npm publish
