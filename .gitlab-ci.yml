@@ -10,7 +10,7 @@ build:
   stage: build
   script:
     - yarn install
-    - yarn build
+    - yarn build:locales && yarn build:js
 
   artifacts:
     paths:
