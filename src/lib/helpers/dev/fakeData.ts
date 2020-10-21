@@ -1,5 +1,5 @@
 import faker from 'faker'
-import currencies from '../../../../dist/currencies.json'
+import currencies from '@/dist/currencies.json'
 
 const holder = {}
 
