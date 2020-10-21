@@ -11,7 +11,7 @@
     "test": "jest index",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "build:locales": "export GOOGLE_APPLICATION_CREDENTIALS=\"/Users/dorian/Wallet/Lodger-019a13212fa4.json\" && node --experimental-modules locales.js",
+    "build:locales": "export GOOGLE_APPLICATION_CREDENTIALS=\"./Lodger-019a13212fa4.json\" && node --experimental-modules locales.js",
     "build:types": "tsc --emitDeclarationOnly -p tsconfig.json",
     "build:docs": "jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > dist/docs/index.md",
     "build:js": "rollup -c",
