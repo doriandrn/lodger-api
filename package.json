@@ -1,10 +1,10 @@
 {
-  "name": "lodger",
+  "name": "@doriandrn/lodger",
   "version": "0.0.4",
   "type": "module",
   "description": "Offline-first API for HOAs",
   "main": "dist/index.js",
-  "repository": "https://github.com/doriandrn/lodger-api.git",
+  "repository": "https://gitlab.com/doriandrn/lodger-api.git",
   "author": "Dorian Tudorache <dorian.snaz@gmail.com>",
   "license": "MIT",
   "scripts": {
