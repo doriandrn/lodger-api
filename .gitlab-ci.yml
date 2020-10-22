@@ -21,4 +21,4 @@ deploy:
   script:
     # - echo "//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${NPM_TOKEN}">.npmrc
     # - echo "//<npm-registry>:8080/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-    - npm publish
+    - npm publish --access=public
