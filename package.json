@@ -1,5 +1,5 @@
 {
-  "name": "lodger",
+  "name": "@doriandrn/lodger",
   "version": "0.0.5",
   "type": "module",
   "description": "Offline-first API for HOAs",
