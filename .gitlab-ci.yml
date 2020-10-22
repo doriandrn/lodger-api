@@ -19,7 +19,4 @@ build:
 deploy:
   stage: deploy
   script:
-    - echo "//gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${NPM_TOKEN}">.npmrc
-    - npm adduser
-    - npm login
     - npm publish
