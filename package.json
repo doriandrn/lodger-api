@@ -14,7 +14,7 @@
     "magic": "yarn build:locales:local && yarn build:js && git status && git commit -am 'test' && git push",
     "update:currencies": "node --experimental-modules src/lib/maintainable/currencies.js",
     "build:locales": "node --experimental-modules src/lib/maintainable/locales.js",
-    "build:locales:local": "export GOOGLE_APPLICATION_CREDENTIALS=\"./Lodger-019a13212fa4.json\" && yarn build:locales",
+    "build:locales:local": "export GOOGLE_APPLICATION_CREDENTIALS=\"./keys/Lodger-019a13212fa4.json\" && yarn build:locales",
     "build:types": "tsc --emitDeclarationOnly -p tsconfig.json",
     "build:docs": "jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > dist/docs/index.md",
     "build:js": "rollup -c",
