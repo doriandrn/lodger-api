@@ -38,7 +38,8 @@ export default {
       fieldsets: ['Afișaj'],
       fields: {
         currency: 'Monedă',
-        lang: 'Limbă'
+        lang: 'Limbă',
+        shortKeys: 'Taste rapide'
       }
     }
   },
