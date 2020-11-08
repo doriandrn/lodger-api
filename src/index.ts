@@ -210,7 +210,7 @@ class Lodger implements LodgerAPI {
   }
 
   static set displayCurrency (index: number) {
-    displayCurrency.set(Lodger.currencies[index])
+    displayCurrency.set(index)
   }
 
   static get rates () {
