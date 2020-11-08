@@ -27,6 +27,7 @@ module.exports = {
     'lodger-build/(.*)$': '<rootDir>/src/lib/build/$1',// just "build" is not ok
     'forms/(.*)$': '<rootDir>/src/forms/$1',
     'helper/(.*)$': '<rootDir>/src/lib/helpers/$1',
+    'static/(.*)$': '<rootDir>/src/lib/static/$1',
     'fixtures/(.*)$': '<rootDir>/src/__fixtures__/$1',
     'lodger.config': '<rootDir>/src/lodger.config',
     'dynamic-targets': '<rootDir>/src/lib/helpers/dev/jest-dynamic-targets',

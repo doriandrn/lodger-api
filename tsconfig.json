@@ -23,6 +23,7 @@
       "~/lib/*": [ "lib/*" ],
       "defs/*": [ "lib/defs/*" ],
       "helper/*": [ "lib/helpers/*" ],
+      "static/*": [ "static/*" ],
       "@/*": [ "../*" ],
       "fixtures/*": [ "__fixtures__/*" ],
       "tests/*": [ "__tests__/*"]

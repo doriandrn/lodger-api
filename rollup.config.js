@@ -1,21 +1,20 @@
 import path from 'path';
 import fs from 'fs';
-import axios from 'axios'
 
 // plugins
 import commonjs from 'rollup-plugin-commonjs'
 import nodeResolve from 'rollup-plugin-node-resolve'
-import builtins from 'rollup-plugin-node-builtins'
+// import builtins from 'rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
-import copy from 'rollup-plugin-copy'
+// import copy from 'rollup-plugin-copy'
 import json from '@rollup/plugin-json'
 
 import { terser } from "rollup-plugin-terser"
 
-const extensions = [ 'js', 'jsx', `ts`, 'tsx' ];
-const input = ['src/index.ts'] //, 'src/.schemas/Asociatie.ts'
+const extensions = [ 'js', 'jsx', 'ts', 'tsx', 'json' ];
+const input = [ 'src/index.ts' ]
 
 export default {
   input,
@@ -33,14 +32,13 @@ export default {
   ],
 
   plugins: [
-
-    // VIRTUAL MODULE
-    // for dynamic schema loading
+    // VIRTUAL MODULES
+    // for dynamic schema loading & locales
     {
       // this is necessary to tell rollup that it should not try to resolve "dynamic-targets"
       // via other means
       resolveId(id) {
-        return ['dynamic-targets', 'locales', 'ratesAtCompileTime'].indexOf(id) > -1 ? id : null
+        return ['dynamic-targets', 'locales'].indexOf(id) > -1 ? id : null
       },
 
       // create a module that exports an object containing file names as keys and
@@ -50,19 +48,6 @@ export default {
         let dirs
 
         switch (id) {
-          case 'ratesAtCompileTime':
-            let rates = {}
-
-            // DACA NU MEEERGE BSU ASTA, ALTERNATIVA SUPER: NOMICS.COM !!!!
-            await axios.get('https://api.coingate.com/v2/rates/merchant').then(({ data }) => {
-              rates = data
-            })
-
-            console.log(`Updated ${Object.keys(rates).length} currency rates`)
-            fs.writeFileSync(path.join(__dirname, 'dist/ratesAtCompileTime.json'), JSON.stringify(rates))
-            // if (rates.RON) fs.writeFileSync(path.join(__dirname, 'dist/currencies.json'), JSON.stringify(Object.keys(rates.RON)))
-            return `export default ${ JSON.stringify(rates) }`;
-
           case 'dynamic-targets':
             dirs = ['src/.schemas']
 
@@ -126,7 +111,7 @@ export default {
       // namedExports: {
       //   'src/lib/maintainable/langs.js': ['supportedLangs']
       // },
-      include: ['node_modules/**/*', 'src/.schemas/*', 'src/lib/*', 'src/lib/maintainable/*'],
+      include: ['node_modules/**/*', 'src/.schemas/*', 'src/lib/*', 'src/lib/maintainable/*', 'src/static/*'],
       ignore: ["conditional-runtime-dependency"]
     }),
 
@@ -137,11 +122,11 @@ export default {
       include: ['src/**/*', 'src/.schemas/*'],
       exclude: 'node_modules/**'
     }),
-    copy({
-      targets: [
-        { src: 'src/lib/locales/**/*', dest: 'dist/locales' }
-      ]
-    }),
+    // copy({
+    //   targets: [
+    //     { src: 'src/lib/locales/**/*', dest: 'dist/locales' }
+    //   ]
+    // }),
 
     // builtins(),
 

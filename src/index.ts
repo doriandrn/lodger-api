@@ -1,12 +1,5 @@
-
-
-// import yaml from 'json2yaml'
-
-// import { env } from '~/lib/defs/env'
 import config from './lodger.config'
 import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
-
-import { supportedLangs } from '~/lib/maintainable/langs'
 
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
@@ -15,22 +8,23 @@ import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
 import loadLocales from 'helper/loadLocales'
 
-import ratesAtCompileTime from 'ratesAtCompileTime'
+import rates from '~/lib/static/data/currencies/rates.json'
+import currencyList from '~/lib/static/data/currencies/list.json'
+
+import { supportedLangs } from '~/lib/maintainable/langs'
 
 import { observable, computed } from 'mobx'
-import { Cashify } from 'cashify'
 
-addRxPlugin(require('rxdb-search'))
+// import { Cashify } from 'cashify'
+// import yaml from 'json2yaml'
 
-switch (process.env) {
-  default:
-    addRxPlugin(require('pouchdb-adapter-memory'))
-    break
+const { env: { NODE_ENV }, browser } = process
 
-  case 'production':
-    addRxPlugin(require('pouchdb-adapter-leveldb'))
-    break
-}
+const dbPlugin = NODE_ENV === 'development' ?
+  'memory' :
+    browser ?
+      'idb' :
+      'leveldb'
 
 /**
  * Taxonomies
@@ -106,7 +100,7 @@ let plugins: LodgerPlugin[] = []
 let locales
 
 const locale = observable.box('ro')
-const currencies = Object.keys(ratesAtCompileTime)
+const currencies = Object.keys(rates.data)
 const displayCurrency = observable.box(currencies[0])
 const currencyRates = observable.box({ rates: undefined, timestamp: 0}, { deep: false })
 
@@ -182,7 +176,7 @@ class Lodger implements LodgerAPI {
       }
     })
 
-    Lodger.rates = ratesAtCompileTime
+    Lodger.rates = rates.data
     this.supportedLangs = supportedLangs
   }
 
@@ -204,7 +198,11 @@ class Lodger implements LodgerAPI {
 
   /** Currencies */
   static get currencies () {
-    return Object.keys(ratesAtCompileTime[Lodger.displayCurrency])
+    return Object.keys(rates[Lodger.displayCurrency])
+  }
+
+  static get currencyList () {
+    return currencyList
   }
 
   static get displayCurrency () {
@@ -226,8 +224,8 @@ class Lodger implements LodgerAPI {
 
   static set rates (rates: Object) {
     currencyRates.set({
-      rates,
-      timestamp: parseInt(Date.now() / 1000)
+      rates: rates.data,
+      timestamp: rates.timestamp || parseInt(Date.now() / 1000)
     })
   }
 
@@ -307,8 +305,11 @@ class Lodger implements LodgerAPI {
    */
   static async build (options ?: BuildOptions) {
     const opts = Object.assign({}, { ... config.build }, { ... options })
-    Taxonomy.db = await createRxDatabase(opts.db)
 
+    addRxPlugin(require('rxdb-search'))
+    addRxPlugin(require(`pouchdb-adapter-${dbPlugin}`))
+
+    Taxonomy.db = await createRxDatabase(opts.db)
     locales = await loadLocales(supportedLangs.map(l => l.code))
 
     const taxOpts = {
