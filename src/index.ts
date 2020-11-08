@@ -176,7 +176,7 @@ class Lodger implements LodgerAPI {
       }
     })
 
-    Lodger.rates = rates.data
+    Lodger.rates = rates
     this.supportedLangs = supportedLangs
   }
 
