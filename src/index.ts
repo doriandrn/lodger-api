@@ -307,7 +307,8 @@ class Lodger implements LodgerAPI {
     const opts = Object.assign({}, { ... config.build }, { ... options })
 
     addRxPlugin(require('rxdb-search'))
-    addRxPlugin(require(`pouchdb-adapter-${dbPlugin}`))
+    // addRxPlugin(require('pouchdb-adapter-' + dbPlugin))
+    addRxPlugin(require('pouchdb-adapter-memory'))
 
     Taxonomy.db = await createRxDatabase(opts.db)
     locales = await loadLocales(supportedLangs.map(l => l.code))
