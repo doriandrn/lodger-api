@@ -36,6 +36,11 @@ export default {
     preferences: {
       title: prefs,
       fieldsets: ['Afișaj'],
+      currencies: {
+        fiat: 'Monede tradiționale',
+        cryptocurrency: 'Monede digitale',
+        populars: 'Alegeri populare'
+      },
       fields: {
         currency: 'Monedă',
         lang: 'Limbă',

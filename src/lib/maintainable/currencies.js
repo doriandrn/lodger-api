@@ -62,15 +62,15 @@ const ids = [ ...preferredCryptos, ...list.fiat.map(c => c.id) ]
 fs.writeFileSync(`${ currenciesPath }/ids.json`, JSON.stringify(ids))
 fs.writeFileSync(`${ currenciesPath }/list.json`, JSON.stringify(list))
 
-const symNames = {}
-endpoints.forEach(e => {
-  Object.keys(list[e]).forEach(id => {
-    const d = list[e][id]
-    const { name, symbol } = d
-    symNames[symbol] = name
-  })
-})
-fs.writeFileSync(`${ currenciesPath }/symbols-names.json`, JSON.stringify(symNames))
+// const symNames = {}
+// endpoints.forEach(e => {
+//   Object.keys(list[e]).forEach(id => {
+//     const d = list[e][id]
+//     const { name, symbol } = d
+//     symNames[symbol] = name
+//   })
+// })
+// fs.writeFileSync(`${ currenciesPath }/symbols-names.json`, JSON.stringify(symNames))
 
 axios.get(quotesUrl, {
   headers,

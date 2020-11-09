@@ -122,11 +122,11 @@ export default {
       include: ['src/**/*', 'src/.schemas/*'],
       exclude: 'node_modules/**'
     }),
-    copy({
-      targets: [
-        { src: 'src/lib/static/data/currencies/symbols-names.json', dest: 'dist/currencies' }
-      ]
-    }),
+    // copy({
+    //   targets: [
+    //     { src: 'src/lib/static/data/currencies/symbols-names.json', dest: 'dist/currencies' }
+    //   ]
+    // }),
 
     // builtins(),
 
