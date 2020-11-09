@@ -84,5 +84,6 @@
   },
   "publishConfig": {
     "npm:registry": "https://gitlab.com/api/v4/projects/13127131/packages/npm/"
-  }
+  },
+  "files": ["dist"]
 }
