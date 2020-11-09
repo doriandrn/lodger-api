@@ -10,3 +10,4 @@ yarn-error.log
 .babelrc
 .gitlab-ci.yml
 jest.config.js
+keys/
