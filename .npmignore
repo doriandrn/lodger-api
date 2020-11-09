@@ -11,3 +11,4 @@ yarn-error.log
 .gitlab-ci.yml
 jest.config.js
 keys/
+dist/types/
