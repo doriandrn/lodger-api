@@ -124,7 +124,7 @@ export default {
     }),
     copy({
       targets: [
-        { src: 'src/lib/static/data/currencies/symbols-names.json', dest: 'dist/currencies/symbols-names.json' }
+        { src: 'src/lib/static/data/currencies/symbols-names.json', dest: 'dist/currencies' }
       ]
     }),
 

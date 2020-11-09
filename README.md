@@ -1,9 +1,6 @@
 # Lodger API
 
-Lodger is an attempt at building a Home-owners Association tool desveloped for Romania (for now).
-It's offline-first and has a really intuitive UI & UX.
-
-[API experimental, reactiv, offline-first pentru administrarea asociațiilor de locatari.]
+Lodger - An attempt at building a Home-owners Association tool developed for Romania (for now).
 
 Stack: RxDB, mobx (rxcollection-subscriber)
 
