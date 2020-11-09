@@ -8,7 +8,7 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
-// import copy from 'rollup-plugin-copy'
+import copy from 'rollup-plugin-copy'
 import json from '@rollup/plugin-json'
 
 import { terser } from "rollup-plugin-terser"
@@ -122,11 +122,11 @@ export default {
       include: ['src/**/*', 'src/.schemas/*'],
       exclude: 'node_modules/**'
     }),
-    // copy({
-    //   targets: [
-    //     { src: 'src/lib/locales/**/*', dest: 'dist/locales' }
-    //   ]
-    // }),
+    copy({
+      targets: [
+        { src: 'src/lib/static/data/currencies/symbols-names.json', dest: 'dist/currencies/symbols-names.json' }
+      ]
+    }),
 
     // builtins(),
 
