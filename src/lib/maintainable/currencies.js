@@ -18,7 +18,7 @@ const quotesUrl = `${ url }/cryptocurrency/quotes/latest`
 
 let list = {}
 
-const preferredCryptos = [ 1, 2 ]
+const preferredCryptos = [ 1, 2, 52, 109, 131, 328, 512, 873, 1027, 1274, 1437, 1567, 1759 ]
 
 function processData (data) {
   if (data.status) {
@@ -45,10 +45,12 @@ try {
       axios.get(`${url}/${ep}/map`, { headers })
         .then(({ data }) => {
           data = processData(data)
-          data.data = data.data.map(d => {
-            const { id, name, symbol, sign } = d
-            return { id, name, symbol, sign }
-          })
+          data.data = data.data
+            .filter(d => d.name) // keep coins tha have a name
+            .map(d => {
+              const { id, name, symbol, sign } = d
+              return { id, name, symbol, sign }
+            })
           list[ep] = data
           fs.writeFileSync(`${currenciesListPath}/${ep}.json`, JSON.stringify(data))
          })
