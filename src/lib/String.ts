@@ -7,7 +7,7 @@ import { Currency } from './maintainable/currencies'
  * @enum {number}
  */
 export enum strings {
-  $, buildingName, fullName,
+  buildingName, fullName,
   search, select, serviceName,
   string, textarea, userAvatar
 }
@@ -37,7 +37,7 @@ export enum arrays {
  * @enum {number}
  */
 export enum objects {
-  contactFields, object, organizatie
+  contactFields, object, organizatie, $
 }
 
 

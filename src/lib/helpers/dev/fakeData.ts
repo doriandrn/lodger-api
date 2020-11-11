@@ -5,7 +5,7 @@ const holder = {}
 
 Object.defineProperties(holder, {
   $: {
-    get () { return `${faker.random.arrayElement(currencies)} ${faker.finance.amount(100, 10000, 4)}` }
+    get () { return { moneda: `${faker.random.arrayElement(currencies)}`, value: `${faker.finance.amount(100, 10000, 4)}` } }
   },
   id: {
     get () { return '...' }
