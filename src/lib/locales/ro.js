@@ -17,20 +17,27 @@ export default {
   trash: 'Șterge',
   edit: 'Modifică',
   registered: 'Înregistrat(ă)',
+
+  update: 'Actualizează',
   updated: 'Actualizat',
   lastUpdate: 'Ultima actualizare',
+
+  changeCurrency: 'Schimbă moneda',
+
   roluri: ['Administrator', 'Moderator', 'Vizitator', 'Locatar', 'Proprietar'],
   nav: {
     statistici: 'Statistici',
     liste: 'Liste de plată',
-    istoric: 'Istoric',
-
-    docs: 'Documentație',
-    support: 'Asistență tehnică'
   },
   disclaimers: {
     money: 'Cursul valutar este doar pentru scop informațional',
     beta: 'Aplicația este în versiunea beta și poate prezenta reacții adverse'
+  },
+  sort: {
+    placeholder: 'Aranjează',
+    asc: 'Ascendent',
+    desc: 'Descendent',
+    by: 'după'
   },
   forms: {
     preferences: {
@@ -202,6 +209,10 @@ export default {
       thanks: 'Mulțumiri',
       comunitate: 'Comunitate',
       update: 'Actualizează'
+    },
+    ajutor: {
+      docs: 'Documentație',
+      support: 'Asistență tehnică'
     }
   },
   errors: {

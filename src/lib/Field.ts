@@ -10,6 +10,7 @@ import S from './String'
 import fakeData from 'helper/dev/fakeData'
 
 import { observable, computed } from 'mobx'
+import { hasInterceptors } from "mobx/lib/internal";
 
 const { String } = S
 
@@ -111,7 +112,7 @@ export class Field implements FieldAPI {
   // readonly label : string = translate(_id, 'fields')
 
   readonly ref ?: ReferenceTaxonomy
-  readonly items ?: { type: 'string' }
+  readonly items ?: { type: 'string' | 'object' | 'array', properties: { [k: string]: any} }
   readonly multipleOf ?: number // multiplier if number
   readonly v ?: string // validation string
 
@@ -131,6 +132,7 @@ export class Field implements FieldAPI {
   focus ?: boolean
   search ?: boolean
   fieldset ?: number
+  final ?: boolean
 
   /**
    * Creates an instance of Field.
@@ -209,6 +211,22 @@ export class Field implements FieldAPI {
     Object.defineProperty(this, 'fakeValue', {
       get () { return fakeData[type || 'string'] }
     })
+
+    if (this._type === '$') {
+      this.final = true
+
+      this.items = {
+        type: 'object',
+        properties: {
+          value: {
+            type: 'number'
+          },
+          moneda: {
+            type: 'number'
+          }
+        }
+      }
+    }
   }
 
   @computed get label (): () => string {
@@ -232,6 +250,7 @@ export class Field implements FieldAPI {
     Object.keys(this).forEach(prop => {
       if (this[prop] === undefined) return
       if (excludes.indexOf(prop) > -1) return
+
       schema[prop] = this[prop]
     })
     return schema

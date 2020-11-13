@@ -198,7 +198,7 @@ class Lodger implements LodgerAPI {
 
   /** Currencies */
   static get currencies () {
-    return Object.keys(rates.data)
+    return Object.keys(rates.data).map(id => Number(id))
   }
 
   static get currencyList () {
@@ -219,7 +219,8 @@ class Lodger implements LodgerAPI {
 
   @computed get rates () {
     const { displayCurrency, rates: { rates } } = Lodger
-    return rates[displayCurrency]
+    // return rates[displayCurrency]
+    return rates
   }
 
   static set rates (rates: Object) {
