@@ -1,5 +1,9 @@
-import config from './lodger.config'
 import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
+import axios from 'axios'
+import { observable, computed } from 'mobx'
+// import yaml from 'json2yaml'
+
+import config from './lodger.config'
 
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
@@ -8,23 +12,12 @@ import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
 import loadLocales from 'helper/loadLocales'
 
-import rates from '~/lib/static/data/currencies/rates.json'
-import currencyList from '~/lib/static/data/currencies/list.json'
+import rates from 'rates'
+import currencyList from 'currency-list'
+import langs from 'langs'
 
-import { supportedLangs } from '~/lib/maintainable/langs'
-
-import { observable, computed } from 'mobx'
-
-// import { Cashify } from 'cashify'
-// import yaml from 'json2yaml'
 
 const { env: { NODE_ENV }, browser } = process
-
-const dbPlugin = NODE_ENV === 'development' ?
-  'memory' :
-    browser ?
-      'idb' :
-      'leveldb'
 
 /**
  * Taxonomies
@@ -102,7 +95,7 @@ let locales
 const locale = observable.box('ro')
 const currencies = Object.keys(rates.data)
 const displayCurrency = observable.box(currencies[0])
-const currencyRates = observable.box({ rates: undefined, timestamp: 0}, { deep: false })
+const currencyRates = observable.box({ rates: undefined, timestamp: 0 }, { deep: false })
 
 /**
  *
@@ -177,7 +170,7 @@ class Lodger implements LodgerAPI {
     })
 
     Lodger.rates = rates
-    this.supportedLangs = supportedLangs
+    this.supportedLangs = langs
   }
 
   /** Locales */
@@ -190,7 +183,7 @@ class Lodger implements LodgerAPI {
       language.split('-')[0] :
       language
 
-    if (supportedLangs.map(lang => lang.code).indexOf(langCode) < 0)
+    if (langs.map(lang => lang.code).indexOf(langCode) < 0)
       throw new LodgerError('Language not supported')
 
     locale.set(langCode)
@@ -228,6 +221,22 @@ class Lodger implements LodgerAPI {
       rates: rates.data,
       timestamp: rates.timestamp || parseInt(Date.now() / 1000)
     })
+  }
+
+  updateRates () {
+    const { timestamp } = Lodger.rates
+    console.log(timestamp, Date.now(), Date.now() - timestamp)
+
+    axios
+      .get('https://doriandrn.github.io/currencies-rates/rates.json')
+      .then(data => {
+        currencyRates.set({
+          rates: data.data,
+          timestamp: data.timestamp
+        })
+      }).catch(e => {
+        console.error('could not fetch rates')
+      })
   }
 
 
@@ -287,7 +296,7 @@ class Lodger implements LodgerAPI {
     subscriberName : string = 'main',
   ) {
     Object.keys(taxonomii).forEach(taxonomie => {
-      this.taxonomies[taxonomie].subscribe(subscriberName, criteriuCerut)
+      this.taxonomies[taxonomie].subscribe(subscriberName, { ... criteriuCerut })
     })
   }
 
@@ -306,13 +315,20 @@ class Lodger implements LodgerAPI {
    */
   static async build (options ?: BuildOptions) {
     const opts = Object.assign({}, { ... config.build }, { ... options })
-
     addRxPlugin(require('rxdb-search'))
-    // addRxPlugin(require('pouchdb-adapter-' + dbPlugin))
-    addRxPlugin(require('pouchdb-adapter-memory'))
+
+    if (NODE_ENV === 'development') {
+      addRxPlugin(require('pouchdb-adapter-memory'))
+    } else {
+      if (browser) {
+        addRxPlugin(require('pouchdb-adapter-idb'))
+      } else {
+        addRxPlugin(require('pouchdb-adapter-leveldb'))
+      }
+    }
 
     Taxonomy.db = await createRxDatabase(opts.db)
-    locales = await loadLocales(supportedLangs.map(l => l.code))
+    locales = await loadLocales(langs.map(l => l.code))
 
     const taxOpts = {
       timestamps: true

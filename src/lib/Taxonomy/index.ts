@@ -151,8 +151,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
       this.totals += 1;
       this.last = doc._id
 
-      data.createdAt = new Date().getTime()
-
+      doc.atomicUpdate((d) => {
+        d.createdAt = new Date().getTime()
+        d.updatedAt = data.createdAt
+        return d
+      })
     }, false)
     collection.postRemove(() => { this.totals -= 1 }, false)
     form.fieldsIds
@@ -176,6 +179,32 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    */
   get name () {
     return this.collection.name
+  }
+
+  @computed get sortOptions () {
+    const { $lodger, form: { fields, schema: { indexes } }, name } = this
+    const { i18n } = $lodger
+
+    return Object.assign({},
+      ...indexes.map(n => {
+        const parsedN = n.replace('.[].', '_')
+        const simplifiedN = parsedN.split('_')[0]
+        const _18n = i18n.taxonomies[name.plural].fields[simplifiedN] ||
+          i18n.sort.fields[simplifiedN] ||
+          parsedN
+
+        const field = fields[simplifiedN]
+        const { type } = field
+
+        const showOrds = type === 'string' ? ['AZ', 'ZA'] : type === 'number' ? ['09', '90'] : ['asc', 'desc']
+        return {
+          [ _18n ]: {
+            [`${ parsedN }-asc`] : showOrds[0],
+            [`${ parsedN }-desc`] :  showOrds[1]
+          }
+        }
+      })
+    )
   }
 
   /**

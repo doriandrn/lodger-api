@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import axios from 'axios'
 
 // plugins
 import commonjs from 'rollup-plugin-commonjs'
@@ -10,25 +11,30 @@ import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
 import copy from 'rollup-plugin-copy'
 import json from '@rollup/plugin-json'
-
 import { terser } from "rollup-plugin-terser"
 
 const extensions = [ 'js', 'jsx', 'ts', 'tsx', 'json' ];
 const input = [ 'src/index.ts' ]
+const additionalReposURL = 'https://doriandrn.github.io'
+const repos = {
+  currencies: 'currencies-rates',
+  locales: 'lodger-i18n'
+}
 
 export default {
   input,
   inlineDynamicImports: true,
 
   external: [
+    'axios',
+    'consola',
+    'faker',
     'pouchdb-adapter-memory',
     'pouchdb-adapter-idb',
     'pouchdb-adapter-http',
+    'rxcollection-subscriber',
     'rxdb',
-    'mobx',
-    'consola',
-    'faker',
-    'rxcollection-subscriber'
+    'mobx'
   ],
 
   plugins: [
@@ -38,7 +44,13 @@ export default {
       // this is necessary to tell rollup that it should not try to resolve "dynamic-targets"
       // via other means
       resolveId(id) {
-        return ['dynamic-targets', 'locales'].indexOf(id) > -1 ? id : null
+        return [
+          'dynamic-targets',
+          'locales',
+          'rates',
+          'langs',
+          'currency-list'
+        ].indexOf(id) > -1 ? id : null
       },
 
       // create a module that exports an object containing file names as keys and
@@ -61,30 +73,58 @@ export default {
               if (!files.length) return
               objectEntries.push(...files
                 .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`));
-                // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
             })
 
             if (objectEntries)
               return `export default {\n${objectEntries.join(',\n')}\n};`;
+
+          case 'rates':
+          case 'langs':
+          case 'currency-list':
+            try {
+              const { data } = await axios
+                .get(`${ additionalReposURL }/${ repos[ id === 'langs' ? 'locales' : 'currencies' ] }/${ id === 'currency-list' ? 'ids' : id }.json`)
+
+              return `export default ${ JSON.stringify(data) }`
+            } catch (e) {
+              console.error(e)
+              break
+            }
 
           case 'locales':
-            dirs = ['src/lib/locales']
+            const o = {}
+            try {
+              const { data } = await axios.get(`${ additionalReposURL }/${ repos.locales }/langs.json`)
 
-            dirs.map(dir => {
-              const targetDir = path.join(__dirname, dir);
-              let files = fs.readdirSync(targetDir);
+              data.forEach(async lang => {
+                const { code } = lang
+                try {
+                  const { data } = await axios.get(`${ additionalReposURL }/${ repos.locales }/${ code }.json`)
+                  o[code] = data
+                } catch (e) {
+                  console.error(e)
+                }
+              })
+            } catch (e) {
+              console.error(e)
+            }
+            return `export default ${ JSON.stringify(o) }`
+            // dirs = ['src/lib/locales']
 
-              if (files.indexOf('.DS_Store') > -1)
-                files.splice(0, 1)
+            // dirs.map(dir => {
+            //   const targetDir = path.join(__dirname, dir);
+            //   let files = fs.readdirSync(targetDir);
 
-              if (!files.length) return
-              objectEntries.push(...files
-                .map(file => `  '${file.split('.')[0]}': () => import('${path.join(targetDir, file)}')`));
-                // .map(file => `  '${file}': import('${path.join(targetDir, file)}') `);
-            })
+            //   if (files.indexOf('.DS_Store') > -1)
+            //     files.splice(0, 1)
 
-            if (objectEntries)
-              return `export default {\n${objectEntries.join(',\n')}\n};`;
+            //   if (!files.length) return
+            //   objectEntries.push(...files
+            //     .map(file => `  '${file.split('.')[0]}': () => import('${path.join(targetDir, file)}')`));
+            // })
+
+            // if (objectEntries)
+            //   return `export default {\n${objectEntries.join(',\n')}\n};`;
         }
 
         return null;

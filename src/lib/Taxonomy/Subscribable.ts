@@ -80,6 +80,7 @@ implements SubscribableTaxonomy<T> {
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
+    const { mainSubName } = this.$lodger
 
     if (this.parents && this.parents.length && !sub.refsIds) {
       sub.refsIds = observable({})
@@ -105,7 +106,8 @@ implements SubscribableTaxonomy<T> {
         // console.info('DOIN', tax)
 
         const { subscribers, parents, children } = $tax
-        const taxSub = subscribers[subscriberName]
+        const taxSub = subscribers[subscriberName] ||
+          subscribers[mainSubName]
 
         if (!taxSub) {
           console.error('Invalid subscriber requested', subscriberName, tax)

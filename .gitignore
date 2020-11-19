@@ -10,9 +10,10 @@ log.txt
 yarn.lock
 yarn-error.log
 
-#dist/
+dist
+.cache
+docs
 
 #personal
 *.code-workspace
-Lodger-019a13212fa4.json
-keys
+.vscode
