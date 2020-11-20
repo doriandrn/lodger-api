@@ -15,7 +15,7 @@
     "build:docs": "jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > dist/docs/index.md",
     "build:js": "rollup -c",
     "build:js:babel": "babel -f src/index.ts",
-    "build": "yarn build:js & yarn build:docs & yarn build:types"
+    "build": "yarn build:js & yarn build:docs"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
