@@ -1,8 +1,10 @@
 # Lodger API
 
-Lodger - An attempt at building a Home-owners Association tool developed for Romania (for now).
+![Build & Publish](https://github.com/doriandrn/lodger-api/workflows/Build%20&%20Publish/badge.svg)
 
-Stack: RxDB, mobx (rxcollection-subscriber)
+Lodger is a Home-owners Association tool - developed for Romania (for now).
+
+Stack: RxDB, mobx, rxcollection-subscriber
 
 ## DISCALIMER
 
