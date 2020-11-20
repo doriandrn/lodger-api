@@ -1,6 +1,6 @@
 {
   "name": "lodger",
-  "version": "0.0.33",
+  "version": "0.0.38",
   "type": "module",
   "description": "Offline-first API for HOAs",
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
     "build:docs": "jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > dist/docs/index.md",
     "build:js": "rollup -c",
     "build:js:babel": "babel -f src/index.ts",
-    "build": "yarn build:types & yarn build:locales && yarn build:js & yarn:build:docs"
+    "build": "yarn build:js & yarn:build:docs & yarn build:types"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
@@ -68,6 +68,7 @@
     "typescript": "^4.0.5"
   },
   "dependencies": {
+    "pouchdb-adapter-idb": "^7.2.2",
     "pouchdb-adapter-leveldb": "^7.2.2",
     "rxdb": "^9.9.0",
     "rxdb-search": "^1.0.10",

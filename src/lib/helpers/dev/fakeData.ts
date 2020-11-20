@@ -1,5 +1,5 @@
 import faker from 'faker'
-import currencies from '@/src/lib/static/data/currencies/ids.json'
+import currencies from 'currencies-ids'
 
 const holder = {}
 

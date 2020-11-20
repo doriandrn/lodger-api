@@ -8,14 +8,16 @@ import config from './lodger.config'
 import LodgerError from '~/lib/Error'
 import Taxonomy from '~/lib/Taxonomy/Subscribable'
 
-import notify from 'helper/notify'
 import loadSchemas from 'helper/loadSchemas'
-import loadLocales from 'helper/loadLocales'
+import notify from 'helper/notify'
 
-import rates from 'rates'
+// Currencies
 import currencyList from 'currency-list'
-import langs from 'langs'
+import rates from 'rates'
 
+// Languages and localization
+import langs from 'langs'
+import locales from 'locales'
 
 const { env: { NODE_ENV }, browser } = process
 
@@ -88,9 +90,6 @@ interface LodgerAPI {
 }
 
 let plugins: LodgerPlugin[] = []
-// let navigator = (typeof(window) !== undefined && window.navigator ? window.navigator : { language: 'ro-RO' })
-
-let locales
 
 const locale = observable.box('ro')
 const currencies = Object.keys(rates.data)
@@ -195,7 +194,8 @@ class Lodger implements LodgerAPI {
   }
 
   static get currencyList () {
-    return currencyList
+    const { fiat, cryptocurrency } = currencyList
+    return { fiat: fiat.data, cryptocurrency: cryptocurrency.data }
   }
 
   static get displayCurrency () {
@@ -328,7 +328,6 @@ class Lodger implements LodgerAPI {
     }
 
     Taxonomy.db = await createRxDatabase(opts.db)
-    locales = await loadLocales(langs.map(l => l.code))
 
     const taxOpts = {
       timestamps: true

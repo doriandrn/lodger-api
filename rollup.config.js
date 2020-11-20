@@ -49,7 +49,8 @@ export default {
           'locales',
           'rates',
           'langs',
-          'currency-list'
+          'currency-list',
+          'currencies-ids'
         ].indexOf(id) > -1 ? id : null
       },
 
@@ -81,10 +82,15 @@ export default {
           case 'rates':
           case 'langs':
           case 'currency-list':
-            try {
-              const { data } = await axios
-                .get(`${ additionalReposURL }/${ repos[ id === 'langs' ? 'locales' : 'currencies' ] }/${ id === 'currency-list' ? 'ids' : id }.json`)
+          case 'currencies-ids':
+            let item = id
+            const repo = repos[ id === 'langs' ? 'locales' : 'currencies' ]
+            item = id === 'currency-list' ? 'list' : item
+            item = id === 'currencies-ids' ? 'ids' : item
+            const getFrom = `${ additionalReposURL }/${ repo }/${ item }.json`
 
+            try {
+              const { data } = await axios.get(getFrom)
               return `export default ${ JSON.stringify(data) }`
             } catch (e) {
               console.error(e)
@@ -96,7 +102,7 @@ export default {
             try {
               const { data } = await axios.get(`${ additionalReposURL }/${ repos.locales }/langs.json`)
 
-              data.forEach(async lang => {
+              await Promise.all(data.map(async lang => {
                 const { code } = lang
                 try {
                   const { data } = await axios.get(`${ additionalReposURL }/${ repos.locales }/${ code }.json`)
@@ -104,7 +110,7 @@ export default {
                 } catch (e) {
                   console.error(e)
                 }
-              })
+              }))
             } catch (e) {
               console.error(e)
             }
