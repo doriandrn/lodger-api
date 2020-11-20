@@ -245,7 +245,7 @@ class Lodger implements LodgerAPI {
    *
    * @static
    * @param {string} key
-   * @returns
+   * @returns {string}
    * @memberof Lodger
    */
   @computed get translate () {
