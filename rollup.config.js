@@ -180,7 +180,7 @@ export default {
   ],
 
   output: {
-    file: 'index.cjs',
+    file: 'dist/index.cjs',
     format: 'cjs'
   }
 };
