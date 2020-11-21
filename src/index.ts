@@ -194,8 +194,7 @@ class Lodger implements LodgerAPI {
   }
 
   static get currencyList () {
-    const { fiat, cryptocurrency } = currencyList
-    return { fiat: fiat.data, cryptocurrency: cryptocurrency.data }
+    return currencyList
   }
 
   static get displayCurrency () {
