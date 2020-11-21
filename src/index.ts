@@ -21,6 +21,19 @@ import locales from 'locales'
 
 const { env: { NODE_ENV }, browser } = process
 
+addRxPlugin(require('rxdb-search'))
+
+if (NODE_ENV === 'development') {
+  addRxPlugin(require('pouchdb-adapter-memory'))
+} else {
+  addRxPlugin(require('pouchdb-adapter-idb'))
+  // if (browser) {
+  //   addRxPlugin(require('pouchdb-adapter-idb'))
+  // } else {
+  //   addRxPlugin(require('pouchdb-adapter-leveldb'))
+  // }
+}
+
 /**
  * Taxonomies
  *
@@ -314,18 +327,6 @@ class Lodger implements LodgerAPI {
    */
   static async build (options ?: BuildOptions) {
     const opts = Object.assign({}, { ... config.build }, { ... options })
-    addRxPlugin(require('rxdb-search'))
-
-    if (NODE_ENV === 'development') {
-      addRxPlugin(require('pouchdb-adapter-memory'))
-    } else {
-      addRxPlugin(require('pouchdb-adapter-idb'))
-      // if (browser) {
-      //   addRxPlugin(require('pouchdb-adapter-idb'))
-      // } else {
-      //   addRxPlugin(require('pouchdb-adapter-leveldb'))
-      // }
-    }
 
     Taxonomy.db = await createRxDatabase(opts.db)
 
