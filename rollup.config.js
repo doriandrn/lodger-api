@@ -181,6 +181,7 @@ export default {
 
   output: {
     dir: 'dist',
+    file: 'index.cjs',
     format: 'cjs'
   }
 };
