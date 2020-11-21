@@ -25,9 +25,7 @@ const build = {
     name: 'Lodger/$',
     adapter: NODE_ENV === 'development' ?
       'memory' :
-        browser ?
-          'idb' :
-          'leveldb',
+      'idb',
     password: 'l0dg3rp4$$',
     ignoreDuplicate: Boolean(NODE_ENV === 'test')
   }

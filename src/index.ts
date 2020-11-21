@@ -319,11 +319,12 @@ class Lodger implements LodgerAPI {
     if (NODE_ENV === 'development') {
       addRxPlugin(require('pouchdb-adapter-memory'))
     } else {
-      if (browser) {
-        addRxPlugin(require('pouchdb-adapter-idb'))
-      } else {
-        addRxPlugin(require('pouchdb-adapter-leveldb'))
-      }
+      addRxPlugin(require('pouchdb-adapter-idb'))
+      // if (browser) {
+      //   addRxPlugin(require('pouchdb-adapter-idb'))
+      // } else {
+      //   addRxPlugin(require('pouchdb-adapter-leveldb'))
+      // }
     }
 
     Taxonomy.db = await createRxDatabase(opts.db)
