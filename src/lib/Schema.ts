@@ -1,6 +1,5 @@
 import { RxJsonSchema, RxJsonSchemaTopLevel } from "rxdb"
 import SchemaError from './Error'
-import { env } from './defs/env'
 
 enum Errors {
   missingProps = 'Missing properties on schema %%',

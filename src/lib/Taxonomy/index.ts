@@ -1,12 +1,10 @@
-import { RxDocument, RxCollection, RxCollectionCreator, RxDatabase, _collectionNamePrimary } from 'rxdb'
+import { RxDocument, RxCollection, RxDatabase, _collectionNamePrimary } from 'rxdb'
 import { observable, computed } from 'mobx'
 
 import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
-
-import { env } from '../defs/env'
 
 export type TaxonomyCreator<I> = LodgerFormCreator<I>
 
@@ -260,7 +258,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
 
       notify({
         type: 'success',
-        text: `[${method}] ${name}!${['dev', 'test'].indexOf(env) > -1 ? `(${id})` : ''}`
+        text: `[${method}] ${name}!${['dev', 'test'].indexOf(process.env.NODE_ENV) > -1 ? `(${id})` : ''}`
       })
 
       return _doc
