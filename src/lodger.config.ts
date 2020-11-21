@@ -29,7 +29,7 @@ const build = {
           'idb' :
           'leveldb',
     password: 'l0dg3rp4$$',
-    ignoreDuplicate: Boolean(env === 'test')
+    ignoreDuplicate: Boolean(NODE_ENV === 'test')
   }
 }
 
