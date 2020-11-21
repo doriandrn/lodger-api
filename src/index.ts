@@ -24,16 +24,16 @@ const { env: { NODE_ENV } } = process
 addRxPlugin(require('rxdb-search'))
 addRxPlugin(require('pouchdb-adapter-idb'))
 
-if (NODE_ENV === 'development') {
-  addRxPlugin(require('pouchdb-adapter-memory'))
-} else {
+// if (NODE_ENV === 'development') {
+addRxPlugin(require('pouchdb-adapter-memory'))
+// } else {
   // addRxPlugin(require('pouchdb-adapter-idb'))
   // if (browser) {
   //   addRxPlugin(require('pouchdb-adapter-idb'))
   // } else {
   //   addRxPlugin(require('pouchdb-adapter-leveldb'))
   // }
-}
+// }
 
 /**
  * Taxonomies

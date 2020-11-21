@@ -1,5 +1,5 @@
 const version = require('../package.json').version
-const { env: { NODE_ENV }, browser } = process
+const { env: { NODE_ENV } } = process
 import { RxDatabaseCreator } from 'rxdb';
 
 type LodgerConfig = {
@@ -23,9 +23,10 @@ type LodgerConfig = {
 const build = {
   db: {
     name: 'Lodger/$',
-    adapter: NODE_ENV === 'development' ?
-      'memory' :
-      'idb',
+    adapter: 'memory',
+    // adapter: NODE_ENV === 'development' ?
+    //   'memory' :
+    //   'idb',
     password: 'l0dg3rp4$$',
     ignoreDuplicate: Boolean(NODE_ENV === 'test')
   }
