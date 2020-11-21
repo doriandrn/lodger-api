@@ -1,9 +1,9 @@
 {
   "name": "lodger",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "type": "module",
   "description": "Offline-first API for HOAs",
-  "main": "index.cjs",
+  "main": "dist/index.cjs",
   "repository": "https://gitlab.com/doriandrn/lodger-api.git",
   "author": "Dorian Tudorache <dorian.snaz@gmail.com>",
   "license": "MIT",
