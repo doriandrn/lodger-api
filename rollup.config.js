@@ -34,7 +34,8 @@ export default {
     'pouchdb-adapter-http',
     'rxcollection-subscriber',
     'rxdb',
-    'mobx'
+    'mobx',
+    'deepmerge'
   ],
 
   plugins: [

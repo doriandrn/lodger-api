@@ -1,6 +1,6 @@
 {
   "name": "lodger",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "type": "module",
   "description": "Offline-first API for HOAs",
   "main": "dist/index.cjs",
@@ -68,6 +68,7 @@
     "typescript": "^4.1.2"
   },
   "dependencies": {
+    "deepmerge": "^4.2.2",
     "pouchdb-adapter-idb": "^7.2.2",
     "pouchdb-adapter-leveldb": "^7.2.2",
     "rxdb": "^9.9.0",
