@@ -245,8 +245,10 @@ class Lodger implements LodgerAPI {
       }
     })
 
-    if (restoreState)
+    if (restoreState) {
       this.state = restoreState
+      console.info('Starting  with state', restoreState)
+    }
   }
 
   /** SHORTCUTS */
