@@ -147,7 +147,8 @@ class Lodger implements LodgerAPI {
     appPreferences: {
       display: {
         theme: 0,
-        locale: 'en'
+        locale: 'en',
+        currency: 1
       }
     },
     modal: {
