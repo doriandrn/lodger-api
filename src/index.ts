@@ -102,7 +102,7 @@ type State = {
     display : {
       locale : string,
       currency ?: number,
-      theme : number,
+      theme ?: number,
       sysColorsOrInverted ?: boolean // altternaive 2 dark mode
     },
     plugins ?: {
@@ -264,7 +264,7 @@ class Lodger implements LodgerAPI {
     if (langs.map((lang: Lang) => lang.code).indexOf(langCode) < 0)
       throw new LodgerError('Language not supported')
 
-    this.state.appPreferences.display.locale = langCode
+    this.state = { appPreferences: { display: { locale: langCode } }
   }
 
   /** Currencies */
@@ -281,7 +281,7 @@ class Lodger implements LodgerAPI {
   }
 
   set displayCurrency (index: number) {
-    this.state.appPreferences.display.currency = index
+    this.appState.appPreferences.display.currency = index
   }
 
   get rates () {
