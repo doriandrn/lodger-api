@@ -151,7 +151,16 @@ class Lodger implements LodgerAPI {
       }
     },
     modal: {
-      activeDoc: null
+      activeDoc: null,
+      close: function () {
+        console.log('modalThis', this)
+        if (!this.closeable)
+          return
+
+        this.activeDoc = null
+        // if (this.sub)
+        //   this.sub.edit()
+      }
     },
     rates: {
       rates: rates.data,
@@ -234,18 +243,6 @@ class Lodger implements LodgerAPI {
         })
       }
     })
-
-    this.modal = {
-      close: function () {
-        console.log('modalThis', this)
-        if (!this.closeable)
-          return
-
-        this.activeDoc = null
-        // if (this.sub)
-        //   this.sub.edit()
-      }
-    }
 
     if (restoreState)
       this.state = restoreState
