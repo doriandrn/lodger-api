@@ -112,7 +112,7 @@ type State = {
   subscribers ?: {
     [k: string]: object
   },
-  rates ?: {
+  rates : {
     rates: undefined,
     timestamp: number
   },
@@ -152,6 +152,10 @@ class Lodger implements LodgerAPI {
     },
     modal: {
       activeDoc: null
+    },
+    rates: {
+      rates: rates.data,
+      timestamp: rates.timestamp
     }
   }
 
@@ -231,7 +235,6 @@ class Lodger implements LodgerAPI {
       }
     })
 
-    this.rates = rates
     this.modal = {
       close: function () {
         console.log('modalThis', this)
@@ -282,11 +285,11 @@ class Lodger implements LodgerAPI {
   }
 
   get rates () {
-    return this.state.rates?.rates
+    return this.state.rates?.rates || {}
   }
 
   set rates (rates: Object) {
-    this.state.rates = rates
+    this.state = { rates }
   }
 
   get modal () {
@@ -298,7 +301,7 @@ class Lodger implements LodgerAPI {
   }
 
   updateRates () {
-    const { timestamp } = Lodger.rates
+    const { timestamp } = this.rates
     console.log(timestamp, Date.now(), Date.now() - timestamp)
 
     axios
