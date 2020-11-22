@@ -128,6 +128,32 @@ type State = {
 let plugins: LodgerPlugin[] = []
 // const currencies = Object.keys(rates.data)
 
+const defaultState = {
+  appPreferences: {
+    display: {
+      theme: 0,
+      locale: 'en',
+      currency: 1
+    }
+  },
+  modal: {
+    activeDoc: null,
+    closeable: true,
+    close: function () {
+      if (!this.closeable)
+        return
+
+      this.activeDoc = null
+      // if (this.sub)
+      //   this.sub.edit()
+    }
+  },
+  rates: {
+    rates: rates.data,
+    timestamp: rates.timestamp
+  }
+}
+
 /**
  *
  * @class The main API
@@ -139,30 +165,9 @@ class Lodger implements LodgerAPI {
     return locales ? locales[this.locale] : {}
   }
 
-  @observable appState: State = {
-    appPreferences: {
-      display: {
-        theme: 0,
-        locale: 'en',
-        currency: 1
-      }
-    },
-    modal: {
-      activeDoc: null,
-      close: function () {
-        if (!this.closeable)
-          return
-
-        this.activeDoc = null
-        // if (this.sub)
-        //   this.sub.edit()
-      }
-    },
-    rates: {
-      rates: rates.data,
-      timestamp: rates.timestamp
-    }
-  }
+  @observable appState: State = this.restoreState ?
+    merge(defaultState, this.restoreState) :
+    defaultState
 
   @computed get state () {
     return this.appState
@@ -185,13 +190,8 @@ class Lodger implements LodgerAPI {
   constructor (
     taxonomies: TaxesList = taxonomies,
     protected plugins: LodgerPlugin[] = [],
-    protected restoreState ?: State
+    protected restoreState ?: Partial<State>
   ) {
-    if (restoreState) {
-      this.state = { ...restoreState }
-      // merge(this.appState, restoreState)
-      console.info('Starting  with state', restoreState)
-    }
 
     // Assign taxonomies to this
     this.taxonomies = taxonomies.map(tax => {
@@ -245,8 +245,6 @@ class Lodger implements LodgerAPI {
         })
       }
     })
-
-
   }
 
   /** SHORTCUTS */
