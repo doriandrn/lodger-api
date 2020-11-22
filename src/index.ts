@@ -232,6 +232,17 @@ class Lodger implements LodgerAPI {
     })
 
     this.rates = rates
+    this.modal = {
+      close: function () {
+        console.log('modalThis', this)
+        if (!this.closeable)
+          return
+
+        this.activeDoc = null
+        // if (this.sub)
+        //   this.sub.edit()
+      }
+    }
 
     if (restoreState)
       this.state = restoreState
