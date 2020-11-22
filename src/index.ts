@@ -126,11 +126,7 @@ type State = {
 }
 
 let plugins: LodgerPlugin[] = []
-
-// const locale = observable.box('ro')
 // const currencies = Object.keys(rates.data)
-// const displayCurrency = observable.box(currencies[0])
-// const currencyRates = observable.box({ rates: undefined, timestamp: 0 }, { deep: false })
 
 /**
  *
@@ -154,7 +150,6 @@ class Lodger implements LodgerAPI {
     modal: {
       activeDoc: null,
       close: function () {
-        console.log('modalThis', this)
         if (!this.closeable)
           return
 
@@ -246,7 +241,7 @@ class Lodger implements LodgerAPI {
     })
 
     if (restoreState) {
-      this.state = restoreState
+      merge(this.appState, restoreState)
       console.info('Starting  with state', restoreState)
     }
   }
