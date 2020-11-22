@@ -297,7 +297,7 @@ class Lodger implements LodgerAPI {
   }
 
   set modal (data) {
-    this.state = { modal: data }
+    merge(this.appState.modal, data)
   }
 
   updateRates () {
