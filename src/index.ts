@@ -278,6 +278,14 @@ class Lodger implements LodgerAPI {
     this.state.rates = rates
   }
 
+  get modal () {
+    return this.state.modal
+  }
+
+  set modal (data) {
+    this.state.modal = data
+  }
+
   updateRates () {
     const { timestamp } = Lodger.rates
     console.log(timestamp, Date.now(), Date.now() - timestamp)
