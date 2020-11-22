@@ -264,7 +264,7 @@ class Lodger implements LodgerAPI {
     if (langs.map((lang: Lang) => lang.code).indexOf(langCode) < 0)
       throw new LodgerError('Language not supported')
 
-    this.state = { appPreferences: { display: { locale: langCode } }
+    this.state = { appPreferences: { display: { locale: langCode } } }
   }
 
   /** Currencies */
@@ -297,7 +297,7 @@ class Lodger implements LodgerAPI {
   }
 
   set modal (data) {
-    this.state.modal = data
+    this.state = { modal: data }
   }
 
   updateRates () {
