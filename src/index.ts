@@ -187,6 +187,12 @@ class Lodger implements LodgerAPI {
     protected plugins: LodgerPlugin[] = [],
     protected restoreState ?: State
   ) {
+    if (restoreState) {
+      this.state = { ...restoreState }
+      // merge(this.appState, restoreState)
+      console.info('Starting  with state', restoreState)
+    }
+
     // Assign taxonomies to this
     this.taxonomies = taxonomies.map(tax => {
       Object.defineProperty(Lodger.prototype, tax.form.plural, {
@@ -240,10 +246,7 @@ class Lodger implements LodgerAPI {
       }
     })
 
-    if (restoreState) {
-      merge(this.appState, restoreState)
-      console.info('Starting  with state', restoreState)
-    }
+
   }
 
   /** SHORTCUTS */
