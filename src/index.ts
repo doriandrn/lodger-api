@@ -102,8 +102,9 @@ type State = {
     display : {
       locale : string,
       currency : number,
+      hotkeys: boolean,
       theme ?: number,
-      sysColorsOrInverted ?: boolean // altternaive 2 dark mode
+      prefersSysTheme ?: boolean // altternaive 2 dark mode
     },
     plugins ?: {
       active: []
@@ -133,7 +134,8 @@ const defaultState = {
     display: {
       theme: 0,
       locale: 'en',
-      currency: 1
+      currency: 1,
+      hotkeys: true
     }
   },
   modal: {
