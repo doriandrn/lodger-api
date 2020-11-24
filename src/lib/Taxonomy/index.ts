@@ -138,7 +138,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   set collection (collection: RxCollection) {
-    const { timestamps } = options
+    const { timestamps } = this.options
 
     if (timestamps) {
       collection.preSave((data) => {

@@ -188,7 +188,7 @@ class Lodger implements LodgerAPI {
    *
    */
   static async init (options ?: BuildOptions) {
-    const opts = merge({ ... config.build }, options )
+    const opts = merge({ ... config.build }, options || {} )
     const { state } = opts
 
     const collectionsCreator = {}
