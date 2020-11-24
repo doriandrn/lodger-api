@@ -199,12 +199,11 @@ class Lodger implements LodgerAPI {
         collectionsCreator[tax.plural] = tax._collectionCreator
         return tax
       }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
-
-    const taxes = Taxonomies
+    console.info('Taxes', Taxonomies)
 
     await Lodger.setupRxDB(opts.db, collectionsCreator)
     taxonomies.forEach(taxName => {
-      taxes[taxName].collection = Lodger.db[taxName]
+      Taxonomies[taxName].collection = Lodger.db[taxName]
     })
 
     return new Lodger(
@@ -224,6 +223,7 @@ class Lodger implements LodgerAPI {
     protected restoreState ?: Partial<State>
   ) {
     this.bindRelationships($taxonomies)
+    this.taxonomies = taxonomies
 
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)
@@ -240,7 +240,7 @@ class Lodger implements LodgerAPI {
   * @memberof Lodger
   */
   bindRelationships ($taxonomies: TaxesList) {
-    taxonomies.map((tax: Taxonomie) => {
+    this.taxonomies.map((tax: Taxonomie) => {
       const $tax = $taxonomies(tax)
 
       const parents = []

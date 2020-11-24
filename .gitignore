@@ -13,6 +13,7 @@ yarn-error.log
 dist
 .cache
 docs
+.build
 
 #personal
 *.code-workspace
