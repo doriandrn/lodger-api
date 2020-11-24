@@ -195,57 +195,60 @@ class Lodger implements LodgerAPI {
     protected restoreState ?: Partial<State>
   ) {
 
-    // Assign taxonomies to this
-    this.taxonomies = taxonomies.map(tax => {
-      Object.defineProperty(Lodger.prototype, tax.form.plural, {
+    // Assign taxonomies array to `this`
+    this.taxonomies = taxonomies.forEach((tax: Taxonomy<any, any>) => {
+      // Bind shortcuts for every tax to `this` for easy access
+      Object.defineProperty(Lodger.prototype, tax.plural, {
         value: tax,
         writable: false
       })
 
-      /**
-       * Assign taxonomy relations
-       * children / parents
-       * parents are required for a taxonomy to be added
-       * children are just relations
-       *
-       */
-      const parents = []
-      const children = []
-      const { schema: { required }} = tax.form
+      // /**
+      //  * Assign taxonomy relations
+      //  * children / parents
+      //  * parents are required for a taxonomy to be added
+      //  * children are just relations
+      //  *
+      //  */
+      // const parents = []
+      // const children = []
+      // const { schema: { required }} = tax.form
 
-      taxonomies.forEach(t => {
-        const { name, plural } = t.form
-        const parentsKeys = [`${name}Id`, plural]
-          .filter(key => tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
+      // taxonomies.forEach(t => {
+      //   const { name, plural } = t.form
+      //   const parentsKeys = [`${name}Id`, plural]
+      //     .filter(key => tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
 
-        const childrenKeys = t.form.fieldsIds.filter(key => [`${tax.form.name}Id`, tax.form.plural].indexOf(key) > -1)
+      //   const childrenKeys = t.form.fieldsIds.filter(key => [`${tax.form.name}Id`, tax.form.plural].indexOf(key) > -1)
 
-        if (parentsKeys) {
-          parents.push(parentsKeys.replace('Id', ''))
-        }
+      //   if (parentsKeys) {
+      //     parents.push(parentsKeys.replace('Id', ''))
+      //   }
 
-        if (childrenKeys.length) {
-          children.push(t.form.plural)
-        }
+      //   if (childrenKeys.length) {
+      //     children.push(t.form.plural)
+      //   }
 
-      })
+      // })
 
-      if (parents && parents.length > 0)
-        tax.parents = parents
+      // if (parents && parents.length > 0)
+      //   tax.parents = parents
 
-      if (children && children.length > 0)
-        tax.children = children
+      // if (children && children.length > 0)
+      //   tax.children = children
 
-      return tax.form.plural
+      // return tax.form.plural
     })
 
+
     this.taxonomies.map(t => {
-      if (this[t]) {
-        Object.defineProperty(this[t], '$lodger', {
-          value: this,
-          writable: false
-        })
-      }
+      if (!this[t])
+        return
+
+      Object.defineProperty(this[t], '$lodger', {
+        value: this,
+        writable: false
+      })
     })
   }
 

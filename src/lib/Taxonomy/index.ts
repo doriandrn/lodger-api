@@ -23,7 +23,7 @@ enum Errors {
   * @interface LodgerTaxonomy
   */
 interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
-  readonly collection: RxCollection
+  readonly collection : RxCollection
   readonly last ?: string
 
   put (doc: LodgerDocument & Partial<Interface>): Promise<RxDocument<N>> | void
@@ -41,7 +41,7 @@ let db: RxDatabase
  * @param {Taxonomie} name - name of the form
  * @param {Form} form - the constructed form item
  */
-export default class Taxonomy<T extends Taxonomie, Interface = {}>
+export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: number }>
   implements LodgerTaxonomy<T, Interface> {
 
   @observable lastItems: string[] = []
@@ -81,6 +81,16 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   static async destroy () {
     if (!db) return
     await db.destroy()
+  }
+
+  /**
+   *
+   *
+   * @readonly
+   * @memberof Taxonomy
+   */
+  get name () {
+    return this.collection.name
   }
 
   get plural () {
@@ -132,12 +142,12 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
    * Creates an instance of Taxonomy.
    *
    * @param {Form<T, Interface>} form
-   * @param {RxCollection<T>} collection
+   * @param {RxCollection<Interface>} collection
    * @memberof Taxonomy
    */
   constructor (
     protected form: Form<Interface>,
-    collection: RxCollection<T>,
+    collection: RxCollection<Interface>,
     readonly options ?: LodgerTaxonomyCreatorOptions,
   ) {
     if (options && options.timestamps) {
@@ -170,13 +180,27 @@ export default class Taxonomy<T extends Taxonomie, Interface = {}>
   }
 
   /**
-   *
+   * Relationship between taxonomies
    *
    * @readonly
    * @memberof Taxonomy
    */
-  get name () {
-    return this.collection.name
+  get refs () {
+    const { $lodger, form: { fields, fieldsIds } } = this
+    if (!$lodger)
+      return {}
+
+    return fieldsIds
+      .filter(id => fields[id].ref)
+      .map(id => ({ [id]: fields[id].ref }))
+  }
+
+  get parents () {
+    return Object.keys(this.refs).filter(k => this.refs[k] !== k)
+  }
+
+  get children () {
+    return Object.keys(this.refs).filter(k => this.refs[k] === k)
   }
 
   @computed get sortOptions () {

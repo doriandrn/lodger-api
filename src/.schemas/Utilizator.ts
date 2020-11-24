@@ -32,7 +32,6 @@ declare global {
     preferinte?: PreferinteUtilizator
   }
 }
-
 const fields: FieldsCreator<Utilizator> = {
   avatar: {
     type: 'userAvatar',
@@ -78,38 +77,16 @@ const methods = {
   }
 }
 
-const hooks = {
-  onFirstTimeSubscribe: async ({ put, dispatch }) => {
-    await put({
-      name: 'Administrator',
-      rol: 'admin'
-    })
-  }
-}
-
-const settings = {
-  locale: {
-    type: 'langSelect'
-  },
-  online: {
-    campuri: [
-      {
-        id: 'parola',
-        required: false,
-        encrypted: true
-      },
-      {
-        id: 'social',
-        required: false,
-        encrypted: true
-      }
-    ]
-  }
-}
+// const hooks = {
+//   onFirstTimeSubscribe: async ({ put, dispatch }) => {
+//     await put({
+//       name: 'Administrator',
+//       rol: 'admin'
+//     })
+//   }
+// }
 
 export {
   fields,
-  hooks,
-  methods,
-  settings
+  methods
 }
