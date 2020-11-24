@@ -199,7 +199,7 @@ class Lodger implements LodgerAPI {
         collectionsCreator[tax.plural] = tax._collectionCreator
         return tax
       }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
-    console.info('Taxes', Taxonomies)
+    console.info('Taxes', Taxonomies, taxonomies)
 
     const db = await Lodger.setupRxDB(opts.db, collectionsCreator)
     console.log('db', db)
