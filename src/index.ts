@@ -1,4 +1,4 @@
-import { addRxPlugin, createRxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
+import { addRxPlugin, createRxDatabase, RxDatabase, RxDatabaseCreator, RxDocument } from 'rxdb'
 import axios from 'axios'
 import { observable, computed } from 'mobx'
 import merge from 'deepmerge'
@@ -171,55 +171,89 @@ class Lodger implements LodgerAPI {
     merge(defaultState, this.restoreState) :
     defaultState
 
-  @computed get state () {
-    return this.appState
-  }
-
-  set state (s) {
-    merge(this.appState, s)
-  }
-
-  get supportedLangs () {
-    return langs
-  }
-
   taxonomies: Taxonomie[]
+  static db ?: RxDatabase
+
+  /**
+   * Main Init function
+   *
+   * Steps: (order matters)
+   * 1. Hook up the taxonomies
+   * 2. Lodger Forms based on taxonomies
+   * 3. DB
+   * 4. Store
+   *
+   * @param {object} options
+   * @returns {Lodger}
+   *
+   */
+  static async init (options ?: BuildOptions) {
+    const opts = merge({ ... config.build }, options )
+    const { state } = opts
+
+    const collectionsCreator = {}
+    const taxesSchemas = await loadSchemas(taxonomies)
+    const Taxonomies = taxesSchemas
+      .map(schema => {
+        const tax = new Taxonomy(schema, { timestamps: true })
+        collectionsCreator[tax.plural] = tax._collectionCreator
+        return tax
+      }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
+
+    const taxes = Taxonomies
+
+    await Lodger.setupRxDB(opts.db, collectionsCreator)
+    taxonomies.forEach(taxName => {
+      taxes[taxName].collection = Lodger.db[taxName]
+    })
+
+    return new Lodger(
+      Taxonomies,
+      plugins,
+      state
+    )
+  }
 
   /**
    * Creates an instance of Lodger.
    * @memberof Lodger
    */
   constructor (
-    taxonomies: TaxesList = taxonomies,
+    $taxonomies: TaxesList,
     protected plugins: LodgerPlugin[] = [],
     protected restoreState ?: Partial<State>
   ) {
+    this.bindRelationships($taxonomies)
 
-    // Assign taxonomies array to `this`
-    this.taxonomies = taxonomies.map((tax: Taxonomy<any, any>) => {
-      // Bind shortcuts for every tax to `this` for easy access
-      Object.defineProperty(Lodger.prototype, tax.plural, {
-        value: tax,
-        writable: false
-      })
+    // Bind shortcuts for every tax to `this` for easy access
+    Object.assign(this, $taxonomies)
+  }
 
-      /**
-       * Assign taxonomy relations
-       * children / parents
-       * parents are required for a taxonomy to be added
-       * children are just relations
-       *
-       */
+ /**
+  * Assigns taxonomy relations
+  * children / parents
+  * parents are required for a taxonomy to be added
+  * children are just relations
+  *
+  * @returns void
+  * @param {*} $taxonomies
+  * @memberof Lodger
+  */
+  bindRelationships ($taxonomies: TaxesList) {
+    taxonomies.map((tax: Taxonomie) => {
+      const $tax = $taxonomies(tax)
+
       const parents = []
       const children = []
-      const { schema: { required }} = tax.form
+      const { schema: { required }} = $tax.form
 
       taxonomies.forEach(t => {
-        const { name, plural } = t.form
+        const $t = $taxonomies[t]
+        const { name, plural } = $t.form
         const parentsKeys = [`${name}Id`, plural]
-          .filter(key => tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
+          .filter(key => $tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
 
-        const childrenKeys = t.form.fieldsIds.filter(key => [`${tax.form.name}Id`, tax.form.plural].indexOf(key) > -1)
+        const childrenKeys = $t.form.fieldsIds.filter(key => [`${$tax.form.name}Id`, $tax.form.plural].indexOf(key) > -1)
 
         if (parentsKeys) {
           parents.push(parentsKeys.replace('Id', ''))
@@ -228,78 +262,26 @@ class Lodger implements LodgerAPI {
         if (childrenKeys.length) {
           children.push(t.form.plural)
         }
-
       })
 
       if (parents && parents.length > 0)
-        tax.parents = parents
+        $tax.parents = parents
 
       if (children && children.length > 0)
-        tax.children = children
+        $tax.children = children
 
-      return tax.form.plural
-    })
+      if (!this[tax])
+        return tax
 
-
-    this.taxonomies.map(t => {
-      if (!this[t])
-        return
-
-      Object.defineProperty(this[t], '$lodger', {
+      Object.defineProperty(this[tax], '$lodger', {
         value: this,
         writable: false
       })
+
+      return tax
     })
   }
 
-  /** SHORTCUTS */
-  get locale () {
-    return this.state.appPreferences?.display.locale
-  }
-
-  set locale (language) {
-    const langCode = language.indexOf('-') > -1 ?
-      language.split('-')[0] :
-      language
-
-    if (langs.map((lang: Lang) => lang.code).indexOf(langCode) < 0)
-      throw new LodgerError('Language not supported')
-
-    this.state.appPreferences.display.locale = langCode
-  }
-
-  /** Currencies */
-  static get currencies () {
-    return Object.keys(rates.data).map(id => Number(id))
-  }
-
-  static get currencyList () {
-    return currencyList
-  }
-
-  get displayCurrency () {
-    return this.state.appPreferences.display.currency
-  }
-
-  set displayCurrency (index: number) {
-    this.appState.appPreferences.display.currency = index
-  }
-
-  get rates () {
-    return this.state.rates?.rates || {}
-  }
-
-  set rates (rates: Object) {
-    this.state = { rates }
-  }
-
-  get modal () {
-    return this.state.modal
-  }
-
-  set modal (data) {
-    merge(this.appState.modal, data)
-  }
 
   /**
    * Updates currency rates
@@ -316,19 +298,6 @@ class Lodger implements LodgerAPI {
       .catch(e => { console.error('could not fetch rates', e) })
   }
 
-
-  /**
-   * Gets the translation for a specific item.
-   *
-   * @static
-   * @param {string} key
-   * @returns {string}
-   * @memberof Lodger
-   */
-  @computed get translate () {
-    const { i18n } = this
-    return (key: string) => key.split('.').reduce((o,i)=>o[i], i18n)
-  }
 
   /**
    * @alias Taxonomy.put
@@ -378,22 +347,12 @@ class Lodger implements LodgerAPI {
   }
 
   /**
-   * Main Init function
    *
-   * Steps: (order matters)
-   * 1. Hook up the taxonomies
-   * 2. Lodger Forms based on taxonomies
-   * 3. DB
-   * 4. Store
    *
-   * @param {object} options
-   * @returns {Lodger}
-   *
+   * @static
+   * @memberof Lodger
    */
-  static async init (options ?: BuildOptions) {
-    const opts = merge({ ... config.build }, options )
-    const { state } = opts
-
+  static async setupRxDB (dbOpts: RxDatabaseCreator, collections) {
     addRxPlugin(require('rxdb-search'))
 
     if (NODE_ENV === 'development') {
@@ -406,20 +365,8 @@ class Lodger implements LodgerAPI {
       }
     }
 
-    Taxonomy.db = await createRxDatabase(opts.db)
-
-    const taxOpts = {
-      timestamps: true
-    }
-
-    const taxesSchemas = await loadSchemas(taxonomies)
-    const Taxonomies = await Promise.all(taxesSchemas.map(async schema => await Taxonomy.init(schema, taxOpts)))
-
-    return new Lodger(
-      Taxonomies,
-      plugins,
-      state
-    )
+    Lodger.db = await createRxDatabase(dbOpts)
+    await Lodger.db.addCollections(collections)
   }
 
   /**
@@ -433,15 +380,15 @@ class Lodger implements LodgerAPI {
     if (!plugin || typeof plugin !== 'object') {
       throw new LodgerError(Errors.invalidPluginDefinition)
     }
-    const { name } = plugin
+    // const { name } = plugin
     plugins.push(plugin)
   }
 
-  async search (input: string, taxonomy ?: Taxonomy) {
-    if (taxonomy) {}
+  // async search (input: string, taxonomy ?: Taxonomy) {
+  //   if (taxonomy) {}
 
-    return results
-  }
+  //   return results
+  // }
 
   /**
    * Destroys the Lodger instance
@@ -463,7 +410,10 @@ class Lodger implements LodgerAPI {
    *
    */
   async export (path?: string, cryptedData?: boolean, filename?: string) {
-    const json = await this.db.dump()
+    if (!Lodger.db)
+      throw new LodgerError('No database to export')
+
+    const json = await Lodger.db.dump()
     const extension = 'ldb'
     if (!path) path = `${require('os').homeDir}/downloads/`
 
@@ -482,6 +432,81 @@ class Lodger implements LodgerAPI {
    */
   async import () {
 
+  }
+
+  /**
+   * Gets the translation for a specific item.
+   *
+   * @static
+   * @param {string} key
+   * @returns {string}
+   * @memberof Lodger
+   */
+  @computed get translate () {
+    const { i18n } = this
+    return (key: string) => key.split('.').reduce((o,i)=>o[i], i18n)
+  }
+
+  @computed get state () {
+    return this.appState
+  }
+
+  set state (s) {
+    merge(this.appState, s)
+  }
+
+  get supportedLangs () {
+    return langs
+  }
+
+
+  /** SHORTCUTS */
+  get locale () {
+    return this.state.appPreferences?.display.locale
+  }
+
+  set locale (language) {
+    const langCode = language.indexOf('-') > -1 ?
+      language.split('-')[0] :
+      language
+
+    if (langs.map((lang: Lang) => lang.code).indexOf(langCode) < 0)
+      throw new LodgerError('Language not supported')
+
+    this.state.appPreferences.display.locale = langCode
+  }
+
+  /** Currencies */
+  static get currencies () {
+    return Object.keys(rates.data).map(id => Number(id))
+  }
+
+  static get currencyList () {
+    return currencyList
+  }
+
+  get displayCurrency () {
+    return this.state.appPreferences.display.currency
+  }
+
+  set displayCurrency (index: number) {
+    this.appState.appPreferences.display.currency = index
+  }
+
+  get rates () {
+    return this.state.rates?.rates || {}
+  }
+
+  set rates (rates: Object) {
+    this.state = { rates }
+  }
+
+  get modal () {
+    return this.state.modal
+  }
+
+  set modal (data) {
+    merge(this.appState.modal, data)
   }
 }
 

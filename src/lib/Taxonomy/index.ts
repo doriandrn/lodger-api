@@ -46,6 +46,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
   @observable lastItems: string[] = []
   @observable totals: number = 0
+  form : Form<Interface>
+  $collection ?: RxCollection
 
   /**
    * Last added item's id
@@ -97,60 +99,48 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     return this.form.plural
   }
 
-  /**
-   * Init function that builds up the form and collection
-   *
-   * @static
-   * @param {TaxonomyCreator<Taxonomie>} data
-   * @param {LodgerTaxonomyCreatorOptions} [options={}]
-   * @returns {Taxonomy}
-   * @memberof Taxonomy
-   */
-  static async init (
-    data: TaxonomyCreator<Taxonomie>,
-    options: LodgerTaxonomyCreatorOptions = {}
-  ) {
-    if (!db)
-      throw new TaxonomyError(Errors.noDB)
+  // /**
+  //  * Init function that builds up the form and collection
+  //  *
+  //  * @static
+  //  * @param {TaxonomyCreator<Taxonomie>} data
+  //  * @param {LodgerTaxonomyCreatorOptions} [options={}]
+  //  * @returns {Taxonomy}
+  //  * @memberof Taxonomy
+  //  */
+  // static async init (
+  //   data: TaxonomyCreator<Taxonomie>,
+  //   options: LodgerTaxonomyCreatorOptions = {}
+  // ) {
+  //   if (!db)
+  //     throw new TaxonomyError(Errors.noDB)
 
-    try {
-      const { name, fields, fieldsets, methods, statics, hooks } = data
-      const { timestamps } = options
+  //   try {
 
-      const form = new Form({ name, fields, fieldsets, hooks }, {
-        captureTimestamp: timestamps
-      })
 
-      const { schema } = form
 
-      const collectionCreator = {
-        name,
-        schema,
-        methods,
-        statics
-      }
 
-      const collection = await db.collection(collectionCreator)
+  //     return new this(form, collection, options)
+  //   } catch (e) {
+  //     throw new TaxonomyError(e)
+  //   }
+  // }
+  get _collectionCreator () {
+    const { name, methods, statics, } = this._schema
+    const { schema } = this.form
 
-      return new this(form, collection, options)
-    } catch (e) {
-      throw new TaxonomyError(e)
+    return {
+      name,
+      schema,
+      methods,
+      statics
     }
   }
 
-  /**
-   * Creates an instance of Taxonomy.
-   *
-   * @param {Form<T, Interface>} form
-   * @param {RxCollection<Interface>} collection
-   * @memberof Taxonomy
-   */
-  constructor (
-    protected form: Form<Interface>,
-    collection: RxCollection<Interface>,
-    readonly options ?: LodgerTaxonomyCreatorOptions,
-  ) {
-    if (options && options.timestamps) {
+  set collection (collection: RxCollection) {
+    const { timestamps } = options
+
+    if (timestamps) {
       collection.preSave((data) => {
         data.updatedAt = new Date().getTime()
       }, false)
@@ -166,16 +156,34 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       })
     }, false)
     collection.postRemove(() => { this.totals -= 1 }, false)
-    form.fieldsIds
-      .filter(fieldId => form.fields[fieldId].search)
-      .forEach(fieldId => collection.searchFields.push(fieldId))
-    // collection.searchFields = [ ... ]
 
-    // kinda hide the property for snapshots
-    Object.defineProperty(this, 'collection', {
-      enumerable: false,
-      writable: false,
-      value: collection
+    this.form.fieldsIds
+      .filter(fieldId => this.form.fields[fieldId].search)
+      .forEach(fieldId => collection.searchFields.push(fieldId))
+
+    this.$collection = collection
+  }
+
+  get collection {
+    return this.$collection
+  }
+
+  /**
+   * Creates an instance of Taxonomy.
+   *
+   * @param {Form<T, Interface>} form
+   * @param {RxCollection<Interface>} collection
+   * @memberof Taxonomy
+   */
+  constructor (
+    private _schema: LodgerSchema,
+    readonly options ?: LodgerTaxonomyCreatorOptions,
+  ) {
+    const { name, fields, fieldsets, hooks } = _schema
+    const { timestamps } = options
+
+    this.form = new Form({ name, fields, fieldsets, hooks }, {
+      captureTimestamp: timestamps
     })
   }
 
@@ -185,17 +193,17 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
    * @readonly
    * @memberof Taxonomy
    */
-  get refs () {
-    const { $lodger, form: { fields, fieldsIds } } = this
-    if (!$lodger)
-      return {}
+  // get refs () {
+  //   const { $lodger, form: { fields, fieldsIds } } = this
+  //   if (!$lodger)
+  //     return {}
 
-    return fieldsIds
-      .filter(id => fields[id].ref)
-      .map(id => ({
-        [id]: fields[id].ref
-      }))
-  }
+  //   return fieldsIds
+  //     .filter(id => fields[id].ref)
+  //     .map(id => ({
+  //       [id]: fields[id].ref
+  //     }))
+  // }
 
   @computed get sortOptions () {
     const { $lodger, form: { fields, schema: { indexes } }, name } = this
