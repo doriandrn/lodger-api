@@ -192,15 +192,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
     return fieldsIds
       .filter(id => fields[id].ref)
-      .map(id => ({ [id]: fields[id].ref }))
-  }
-
-  get parents () {
-    return this.refs.filter(k => this.refs[k] !== k).map((k, v) => k)
-  }
-
-  get children () {
-    return this.refs.filter(k => this.refs[k] === k).map((k, v) => k)
+      .map(id => ({
+        [id]: fields[id].ref
+      }))
   }
 
   @computed get sortOptions () {

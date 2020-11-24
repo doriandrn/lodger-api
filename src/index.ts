@@ -203,39 +203,39 @@ class Lodger implements LodgerAPI {
         writable: false
       })
 
-      // /**
-      //  * Assign taxonomy relations
-      //  * children / parents
-      //  * parents are required for a taxonomy to be added
-      //  * children are just relations
-      //  *
-      //  */
-      // const parents = []
-      // const children = []
-      // const { schema: { required }} = tax.form
+      /**
+       * Assign taxonomy relations
+       * children / parents
+       * parents are required for a taxonomy to be added
+       * children are just relations
+       *
+       */
+      const parents = []
+      const children = []
+      const { schema: { required }} = tax.form
 
-      // taxonomies.forEach(t => {
-      //   const { name, plural } = t.form
-      //   const parentsKeys = [`${name}Id`, plural]
-      //     .filter(key => tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
+      taxonomies.forEach(t => {
+        const { name, plural } = t.form
+        const parentsKeys = [`${name}Id`, plural]
+          .filter(key => tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
 
-      //   const childrenKeys = t.form.fieldsIds.filter(key => [`${tax.form.name}Id`, tax.form.plural].indexOf(key) > -1)
+        const childrenKeys = t.form.fieldsIds.filter(key => [`${tax.form.name}Id`, tax.form.plural].indexOf(key) > -1)
 
-      //   if (parentsKeys) {
-      //     parents.push(parentsKeys.replace('Id', ''))
-      //   }
+        if (parentsKeys) {
+          parents.push(parentsKeys.replace('Id', ''))
+        }
 
-      //   if (childrenKeys.length) {
-      //     children.push(t.form.plural)
-      //   }
+        if (childrenKeys.length) {
+          children.push(t.form.plural)
+        }
 
-      // })
+      })
 
-      // if (parents && parents.length > 0)
-      //   tax.parents = parents
+      if (parents && parents.length > 0)
+        tax.parents = parents
 
-      // if (children && children.length > 0)
-      //   tax.children = children
+      if (children && children.length > 0)
+        tax.children = children
 
       return tax.form.plural
     })
@@ -301,6 +301,11 @@ class Lodger implements LodgerAPI {
     merge(this.appState.modal, data)
   }
 
+  /**
+   * Updates currency rates
+   *
+   * @memberof Lodger
+   */
   updateRates () {
     const { timestamp } = this.rates
     console.log(timestamp, Date.now(), Date.now() - timestamp)
