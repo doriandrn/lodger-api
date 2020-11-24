@@ -193,17 +193,19 @@ class Lodger implements LodgerAPI {
 
     const collectionsCreator = {}
     const taxesSchemas = await loadSchemas(taxonomies)
+
     const Taxonomies = taxesSchemas
       .map(schema => {
         const tax = new Taxonomy(schema, { timestamps: true })
         collectionsCreator[tax.plural] = tax._collectionCreator
         return tax
       }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
-    console.info('Taxes', Taxonomies, taxonomies)
 
-    const db = await Lodger.setupRxDB(opts.db, collectionsCreator)
-    console.log('db', db)
-    taxonomies.forEach(taxName => {
+    await Lodger.setupRxDB(opts.db, collectionsCreator)
+    console.log('db', Lodger.db)
+
+    // Assign collections to taxonomies
+    Object.keys(Taxonomies).forEach(taxName => {
       console.log('taxname', taxName, Taxonomies[taxName])
       Taxonomies[taxName].collection = Lodger.db[taxName]
     })
