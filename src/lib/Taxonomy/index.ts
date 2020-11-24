@@ -196,11 +196,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   get parents () {
-    return Object.keys(this.refs).filter(k => this.refs[k] !== k)
+    return this.refs.filter(k => this.refs[k] !== k).map((k, v) => k)
   }
 
   get children () {
-    return Object.keys(this.refs).filter(k => this.refs[k] === k)
+    return this.refs.filter(k => this.refs[k] === k).map((k, v) => k)
   }
 
   @computed get sortOptions () {
