@@ -1,6 +1,6 @@
 {
   "name": "lodger",
-  "version": "0.0.64",
+  "version": "0.0.65",
   "type": "module",
   "description": "Offline-first API for HOAs",
   "main": "dist/index.cjs",
@@ -18,8 +18,8 @@
     "build": "yarn build:js && yarn build:docs"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.7",
-    "@babel/core": "^7.12.7",
+    "@babel/cli": "^7.12.8",
+    "@babel/core": "^7.12.8",
     "@babel/plugin-external-helpers": "^7.12.1",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-proposal-decorators": "^7.12.1",
@@ -71,7 +71,7 @@
     "deepmerge": "^4.2.2",
     "pouchdb-adapter-idb": "^7.2.2",
     "pouchdb-adapter-leveldb": "^7.2.2",
-    "rxdb": "^9.9.0",
+    "rxdb": "^9.10.1",
     "rxdb-search": "^1.0.10",
     "rxjs": "^6.6.3"
   },

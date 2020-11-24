@@ -196,7 +196,7 @@ class Lodger implements LodgerAPI {
   ) {
 
     // Assign taxonomies array to `this`
-    this.taxonomies = taxonomies.forEach((tax: Taxonomy<any, any>) => {
+    this.taxonomies = taxonomies.map((tax: Taxonomy<any, any>) => {
       // Bind shortcuts for every tax to `this` for easy access
       Object.defineProperty(Lodger.prototype, tax.plural, {
         value: tax,
@@ -237,7 +237,7 @@ class Lodger implements LodgerAPI {
       // if (children && children.length > 0)
       //   tax.children = children
 
-      // return tax.form.plural
+      return tax.form.plural
     })
 
 
