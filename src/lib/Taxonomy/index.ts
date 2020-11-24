@@ -164,7 +164,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     this.$collection = collection
   }
 
-  get collection {
+  get collection () {
     return this.$collection
   }
 
