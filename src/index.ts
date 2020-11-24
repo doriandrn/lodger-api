@@ -201,8 +201,10 @@ class Lodger implements LodgerAPI {
       }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
     console.info('Taxes', Taxonomies)
 
-    await Lodger.setupRxDB(opts.db, collectionsCreator)
+    const db = await Lodger.setupRxDB(opts.db, collectionsCreator)
+    console.log('db', db)
     taxonomies.forEach(taxName => {
+      console.log('taxname', taxName, Taxonomies[taxName])
       Taxonomies[taxName].collection = Lodger.db[taxName]
     })
 
