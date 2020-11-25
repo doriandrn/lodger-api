@@ -2,6 +2,7 @@ import Taxonomy, { TaxonomyCreator } from './'
 import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
 import { computed, reaction, observable } from 'mobx'
+import merge from 'deepmerge'
 
 /**
  *
@@ -79,7 +80,8 @@ implements SubscribableTaxonomy<T> {
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
-    const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
+    const subState = this.$lodger.state.subscribers[this.plural] || {}
+    const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
       sub.refsIds = observable({})
@@ -170,6 +172,10 @@ implements SubscribableTaxonomy<T> {
       const activeDoc = await this.collection.findOne(id).exec()
       this.$lodger.modal.activeDoc = activeDoc
       Object.assign(this.$lodger.modal, { sub })
+    })
+
+    reaction(() => sub.criteria, (n, o) => {
+      Object.assign(this.$lodger.state.subscribers, { [ this.plural ]: n })
     })
 
     if (hooks) {
