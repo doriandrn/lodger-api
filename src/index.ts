@@ -139,6 +139,7 @@ const defaultState = {
       hotkeys: true
     }
   },
+  subscribers: {},
   modal: {
     activeDoc: null,
     closeable: true,
