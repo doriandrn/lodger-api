@@ -245,7 +245,7 @@ class Lodger implements LodgerAPI {
   */
   bindRelationships ($taxonomies: TaxesList) {
     this.taxonomies.map((tax: Taxonomie) => {
-      const $tax = $taxonomies(tax)
+      const $tax = $taxonomies[tax]
 
       const parents = []
       const children = []
