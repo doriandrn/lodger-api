@@ -130,6 +130,7 @@ let plugins: LodgerPlugin[] = []
 // const currencies = Object.keys(rates.data)
 
 const defaultState = {
+  activeUserId: undefined,
   appPreferences: {
     display: {
       theme: 0,
@@ -141,13 +142,14 @@ const defaultState = {
   modal: {
     activeDoc: null,
     closeable: true,
+    sub: undefined,
     close: function () {
       if (!this.closeable)
         return
 
       this.activeDoc = null
-      // if (this.sub)
-      //   this.sub.edit()
+      if (this.sub)
+        this.sub.edit()
     }
   },
   rates: {
@@ -202,11 +204,9 @@ class Lodger implements LodgerAPI {
       }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
 
     await Lodger.setupRxDB(opts.db, collectionsCreator)
-    console.log('db', Lodger.db)
 
     // Assign collections to taxonomies
     Object.keys(Taxonomies).forEach(taxName => {
-      console.log('taxname', taxName, Taxonomies[taxName])
       Taxonomies[taxName].collection = Lodger.db[taxName]
     })
 

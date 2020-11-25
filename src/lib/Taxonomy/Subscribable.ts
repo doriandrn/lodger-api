@@ -159,6 +159,9 @@ implements SubscribableTaxonomy<T> {
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
+      if (this.name === 'utilizator' && this.$lodger) {
+        this.$lodger.state.activeUserId = id
+      }
     })
 
     // Trigger the modal on activeId change
