@@ -171,7 +171,7 @@ class Lodger implements LodgerAPI {
     merge(defaultState, this.restoreState) :
     defaultState
 
-  taxonomies: Taxonomie[]
+  taxonomies: Taxonomie[] = Object.keys($taxonomies)
   static db ?: RxDatabase
 
   /**
@@ -222,12 +222,12 @@ class Lodger implements LodgerAPI {
    * @memberof Lodger
    */
   constructor (
-    $taxonomies: TaxesList,
+    readonly $taxonomies: TaxesList,
     protected plugins: LodgerPlugin[] = [],
     protected restoreState ?: Partial<State>
   ) {
     this.bindRelationships($taxonomies)
-    this.taxonomies = taxonomies
+    this.taxonomies = Object.keys($taxonomies)
 
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)

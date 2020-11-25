@@ -177,7 +177,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
    */
   constructor (
     private _schema: LodgerSchema,
-    readonly options ?: LodgerTaxonomyCreatorOptions,
+    readonly options : LodgerTaxonomyCreatorOptions = { timestamps: true },
   ) {
     const { name, fields, fieldsets, hooks } = _schema
     const { timestamps } = options
