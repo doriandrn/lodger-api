@@ -251,7 +251,7 @@ class Lodger implements LodgerAPI {
       const children = []
       const { schema: { required }} = $tax.form
 
-      taxonomies.forEach(t => {
+      this.taxonomies.forEach(t => {
         const $t = $taxonomies[t]
         const { name, plural } = $t.form
         const parentsKeys = [`${name}Id`, plural]
