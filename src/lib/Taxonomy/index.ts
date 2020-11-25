@@ -86,45 +86,19 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   /**
-   *
+   * Taxonomy name, singular
    *
    * @readonly
    * @memberof Taxonomy
    */
   get name () {
-    return this.collection.name
+    return this.form.schema.name
   }
 
   get plural () {
     return this.form.plural
   }
 
-  // /**
-  //  * Init function that builds up the form and collection
-  //  *
-  //  * @static
-  //  * @param {TaxonomyCreator<Taxonomie>} data
-  //  * @param {LodgerTaxonomyCreatorOptions} [options={}]
-  //  * @returns {Taxonomy}
-  //  * @memberof Taxonomy
-  //  */
-  // static async init (
-  //   data: TaxonomyCreator<Taxonomie>,
-  //   options: LodgerTaxonomyCreatorOptions = {}
-  // ) {
-  //   if (!db)
-  //     throw new TaxonomyError(Errors.noDB)
-
-  //   try {
-
-
-
-
-  //     return new this(form, collection, options)
-  //   } catch (e) {
-  //     throw new TaxonomyError(e)
-  //   }
-  // }
   get _collectionCreator () {
     const { name, methods, statics, } = this._schema
     const { schema } = this.form

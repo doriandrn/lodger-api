@@ -80,7 +80,6 @@ implements SubscribableTaxonomy<T> {
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options)
-    const { mainSubName } = this.$lodger
 
     if (this.parents && this.parents.length && !sub.refsIds) {
       sub.refsIds = observable({})
@@ -159,7 +158,7 @@ implements SubscribableTaxonomy<T> {
 
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
-      updateTaxes(this.children, id, this.collection.name)
+      updateTaxes(this.children, id, this.name)
     })
 
     // Trigger the modal on activeId change
