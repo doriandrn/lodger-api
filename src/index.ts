@@ -274,9 +274,6 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         $tax.children = children
 
-      if (!this[tax])
-        return tax
-
       Object.defineProperty($taxonomies[tax], '$lodger', {
         value: this,
         writable: false
