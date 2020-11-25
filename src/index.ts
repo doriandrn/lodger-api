@@ -264,7 +264,7 @@ class Lodger implements LodgerAPI {
         }
 
         if (childrenKeys.length) {
-          children.push(t.form.plural)
+          children.push($t.form.plural)
         }
       })
 
