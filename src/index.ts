@@ -277,7 +277,7 @@ class Lodger implements LodgerAPI {
       if (!this[tax])
         return tax
 
-      Object.defineProperty(this[tax], '$lodger', {
+      Object.defineProperty($taxonomies[tax], '$lodger', {
         value: this,
         writable: false
       })
