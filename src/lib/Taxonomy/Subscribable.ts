@@ -92,7 +92,7 @@ implements SubscribableTaxonomy<T> {
 
     const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
 
-    const subState = state.subscribers[descriptor] || {}
+    const subState = state.subs[descriptor] || {}
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
