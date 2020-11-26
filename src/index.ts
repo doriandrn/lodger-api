@@ -19,6 +19,7 @@ import rates from 'rates'
 // Languages and localization
 import langs from 'langs'
 import locales from 'locales'
+import { Subscriber } from 'rxjs'
 
 const { env: { NODE_ENV }, browser } = process
 
@@ -110,7 +111,7 @@ type State = {
       active: []
     }
   },
-  subscribers ?: {
+  subs ?: {
     [k: string]: object
   },
   rates : {
@@ -122,6 +123,7 @@ type State = {
     closeable ?: boolean,
     firstTime ?: boolean,
 
+    sub ?: { edit: void }
     close ?: Function
   }
 }
@@ -139,7 +141,7 @@ const defaultState = {
       hotkeys: true
     }
   },
-  subscribers: {},
+  subs: {},
   modal: {
     activeDoc: null,
     closeable: true,

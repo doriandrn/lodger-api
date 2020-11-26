@@ -75,11 +75,22 @@ implements SubscribableTaxonomy<T> {
     subscriberName : string = 'main',
     options
   ): void {
-    const { hooks, subscribers, plural, $lodger: { state, modal } } = this
+    const {
+      hooks,
+      subscribers,
+      plural,
+      $lodger: {
+        state,
+        modal,
+        taxonomies
+      }
+    } = this
+
     if (subscribers[subscriberName])
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
-    const descriptor = `${subscriberName}-${plural}`
+
+    const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
 
     const subState = state.subscribers[descriptor] || {}
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
@@ -159,16 +170,12 @@ implements SubscribableTaxonomy<T> {
       })
     }
 
-    if (!state.subscribers[descriptor]) {
-      Object.assign(state.subscribers, { [ descriptor ]: {} })
-    }
 
-    const statefulSub = state.subscribers[ descriptor ]
 
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
-      Object.assign(statefulSub, { select: id })
+      Object.assign(subState, { select: id })
       // if (this.name === 'utilizator' && this.$lodger) {
       //   state.activeUserId = id
       // }
@@ -180,13 +187,13 @@ implements SubscribableTaxonomy<T> {
       const activeDoc = await this.collection.findOne(id).exec()
       modal.activeDoc = activeDoc
       Object.assign(modal, { sub })
-      Object.assign(statefulSub, { activeId: id })
+      Object.assign(subState, { activeId: id })
     })
 
     reaction(() => sub.criteria, (n, o) => {
       const { criteria } = n
       console.log('crit', criteria)
-      Object.assign(statefulSub, { criteria })
+      Object.assign(subState, { criteria })
     })
 
     if (hooks) {
