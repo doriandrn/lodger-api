@@ -27,6 +27,7 @@ export default {
 
   external: [
     'axios',
+    'cashify',
     'consola',
     'faker',
     'pouchdb-adapter-memory',

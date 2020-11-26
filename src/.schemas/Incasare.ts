@@ -78,30 +78,27 @@ const fields: FieldsCreator<Incasare> = {
 }
 
 const hooks = {
-  postInsert: async (doc, data) => {
-    const {
-      asociatieId,
-      apartamentId,
-      plata: {
-        suma: {
-          value,
-          moneda
-        }
-      }
-    } = data
+  postInsert: (doc, data) => {
+    // const {
+    //   asociatieId,
+    //   apartamentId,
+    //   plata: {
+    //     suma: {
+    //       value,
+    //       moneda
+    //     }
+    //   }
+    // } = data
 
     const rels = ['asociatie', 'apartament']
-    rels.forEach(rel => {
+    rels.map(async rel => {
       await this[rel.plural].collection.findOne(data[`${rel}Id`])
     })
 
-    const asoc = await this.asociatii.collection.findOne(asociatieId)
-    const ap = await this.apartamente.collection.findOne(apartamentId)
+    // if (!asoc || !ap)
+    //   throw new Error('Something went wrong')
 
-    if (!asoc || !ap)
-      throw new Error('Something went wrong')
-
-    console.log('incasex', data, asoc, ap, this)
+    console.log('incasex', data, rels, this)
   }
 }
 
