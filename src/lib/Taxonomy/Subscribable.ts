@@ -193,8 +193,7 @@ implements SubscribableTaxonomy<T> {
     })
 
     reaction(() => ({ ...sub.criteria }), criteria => {
-      const { sort, filter, limit, index } = criteria
-      Object.assign(subState, { criteria: { sort: { ...sort }, filter: { ...filter }, limit, index } })
+      Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
     })
 
     if (hooks) {
