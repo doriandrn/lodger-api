@@ -75,13 +75,13 @@ implements SubscribableTaxonomy<T> {
     subscriberName : string = 'main',
     options
   ): void {
-    const { hooks, subscribers, plural } = this
+    const { hooks, subscribers, plural, $lodger: { state, modal } } = this
     if (subscribers[subscriberName])
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
     const descriptor = `${subscriberName}-${plural}`
 
-    const subState = this.$lodger.state.subscribers[descriptor] || {}
+    const subState = state.subscribers[descriptor] || {}
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
@@ -159,25 +159,34 @@ implements SubscribableTaxonomy<T> {
       })
     }
 
+    if (!state.subscribers[descriptor]) {
+      Object.assign(state.subscribers, { [ descriptor ]: {} })
+    }
+
+    const statefulSub = state.subscribers[ descriptor ]
+
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
-      if (this.name === 'utilizator' && this.$lodger) {
-        this.$lodger.state.activeUserId = id
-      }
+      Object.assign(statefulSub, { select: id })
+      // if (this.name === 'utilizator' && this.$lodger) {
+      //   state.activeUserId = id
+      // }
     })
 
     // Trigger the modal on activeId change
     reaction(() => sub.activeId, async (id) => {
       if (!id) return
       const activeDoc = await this.collection.findOne(id).exec()
-      this.$lodger.modal.activeDoc = activeDoc
-      Object.assign(this.$lodger.modal, { sub })
+      modal.activeDoc = activeDoc
+      Object.assign(modal, { sub })
+      Object.assign(statefulSub, { activeId: id })
     })
 
     reaction(() => sub.criteria, (n, o) => {
       const { criteria } = n
-      Object.assign(this.$lodger.state.subscribers, { [ descriptor ]: { criteria } })
+      console.log('crit', criteria)
+      Object.assign(statefulSub, { criteria })
     })
 
     if (hooks) {
