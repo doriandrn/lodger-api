@@ -192,9 +192,7 @@ implements SubscribableTaxonomy<T> {
       Object.assign(subState, { activeId: id })
     })
 
-    reaction(() => ({ ...sub.criteria }), (n, o) => {
-      const { criteria } = n
-      console.log('crit', criteria)
+    reaction(() => ({ ...sub.criteria }), criteria => {
       Object.assign(subState, { criteria })
     })
 

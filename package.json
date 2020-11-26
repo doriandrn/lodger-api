@@ -1,6 +1,6 @@
 {
   "name": "lodger",
-  "version": "0.0.91",
+  "version": "0.0.92",
   "type": "module",
   "description": "Offline-first API for HOAs",
   "main": "dist/index.cjs",
