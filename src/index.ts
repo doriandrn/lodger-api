@@ -353,7 +353,7 @@ class Lodger implements LodgerAPI {
    * @returns {object} converted
    * @memberof Lodger
    */
-  @computed convert (
+  convert (
     suma: number,
     to: number,
     from: number = this.displayCurrency,
