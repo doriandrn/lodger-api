@@ -183,9 +183,10 @@ class Lodger implements LodgerAPI {
     const { subs } = this.state
 
     return Object.keys(subs)
-      .filter(k => k.indexOf(this.mainSubName) === 0 || k.indexOf('single') === 0)
+      .filter(k => (k.indexOf(this.mainSubName) === 0 || k.indexOf('single') === 0) && subs[k].activeId || subs[k].selectedId)
       .map((subDescriptor : string) => {
-        const id = subs[subDescriptor].activeId
+        const { activeId, selectedId } = subs[subDescriptor]
+        const id = activeId || selectedId
         const tax = this.taxonomies[Number(subDescriptor.split('-')[1])]
         return {
           id, tax, status: true
