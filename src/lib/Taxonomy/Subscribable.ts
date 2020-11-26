@@ -75,12 +75,13 @@ implements SubscribableTaxonomy<T> {
     subscriberName : string = 'main',
     options
   ): void {
-    const { hooks, subscribers } = this
+    const { hooks, subscribers, plural } = this
     if (subscribers[subscriberName])
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
+    const descriptor = `${subscriberName}-${plural}`
 
-    const subState = this.$lodger.state.subscribers[this.plural] || {}
+    const subState = this.$lodger.state.subscribers[descriptor] || {}
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
@@ -175,7 +176,7 @@ implements SubscribableTaxonomy<T> {
     })
 
     reaction(() => sub.criteria, (n, o) => {
-      Object.assign(this.$lodger.state.subscribers, { [ this.plural ]: n })
+      Object.assign(this.$lodger.state.subscribers, { [ descriptor ]: { criteria } })
     })
 
     if (hooks) {
