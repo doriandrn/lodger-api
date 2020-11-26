@@ -19,7 +19,6 @@ import rates from 'rates'
 // Languages and localization
 import langs from 'langs'
 import locales from 'locales'
-import { Subscriber } from 'rxjs'
 
 const { env: { NODE_ENV }, browser } = process
 
@@ -97,8 +96,14 @@ interface LodgerAPI {
   destroy (): Promise<void>
 }
 
+type Breadcrumb = {
+  tax: Taxonomie,
+  id: string,
+  status: boolean
+}
+
 type State = {
-  activeUserId ?: string
+  // activeUserId ?: string
   appPreferences : {
     display : {
       locale : string,
@@ -118,6 +123,7 @@ type State = {
     rates: undefined,
     timestamp: number
   },
+  // breadcrumbs: Breadcrumb[],
   modal: {
     activeDoc ?: RxDocument | null,
     closeable ?: boolean,
@@ -132,7 +138,7 @@ let plugins: LodgerPlugin[] = []
 // const currencies = Object.keys(rates.data)
 
 const defaultState = {
-  activeUserId: undefined,
+  // activeUserId: undefined,
   appPreferences: {
     display: {
       theme: 0,
@@ -142,6 +148,7 @@ const defaultState = {
     }
   },
   subs: {},
+  // breadcrumbs: [],
   modal: {
     activeDoc: null,
     closeable: true,
@@ -170,6 +177,33 @@ const defaultState = {
 class Lodger implements LodgerAPI {
   @computed get i18n () {
     return locales ? locales[this.locale] : {}
+  }
+
+  @computed get crumbs () {
+    const { subs } = this.state
+
+    return Object.keys(subs)
+      .filter(k => k.indexOf(this.mainSubName) === 0 || k.indexOf('single') === 0)
+      .map((subDescriptor : string) => {
+        const id = subs[subDescriptor].activeId
+        const tax = this.taxonomies[Number(subDescriptor.split('-')[1])]
+        return {
+          id, tax, status: true
+        } as Breadcrumb
+      })
+  }
+
+  get mainSubName () {
+    return 'prince'
+  }
+
+  @computed get activeUserId () {
+    const { mainSubName } = this
+    const subState = this.state.subs[`${mainSubName}-0`]
+
+    return subState && subState.activeId ?
+      subState.activeId :
+      undefined
   }
 
   @observable appState: State = this.restoreState ?
