@@ -91,10 +91,8 @@ implements SubscribableTaxonomy<T> {
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
     const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
-
     const subState = state.subs[descriptor] ||
       Object.assign(state.subs, { [descriptor]: {} }) && state.subs[descriptor]
-
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
@@ -132,10 +130,8 @@ implements SubscribableTaxonomy<T> {
         let sOrP, op, val
 
         // deselect selected items of children
-        if (taxSub.selectedId) {
-          // console.log('deselcting from', tax, taxSub.selectedId)
+        if (taxSub.selectedId)
           taxSub.select(taxSub.selectedId)
-        }
 
         if (taxSub.refsIds) {
           if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
@@ -146,24 +142,20 @@ implements SubscribableTaxonomy<T> {
             val = isSingular ? id : [id]
 
             taxSub.refsIds[sOrP] = val
-            // console.log('changed refsIds')
           }
         }
 
         if (sOrP && op && val) {
           taxSub.criteria.filter = { [sOrP]: { [op]: val } }
-          // console.log('updated filter', Object.keys(taxSub.criteria.filter))
         } else {
           if (taxSub.criteria.filter) {
             try {
               delete taxSub.criteria.filter[sOrP]
-              // console.log('deleted filter', sOrP)
             } catch (e) {
               console.error('could not delete filter', sOrP, 'on', tax, e)
             }
 
             if (Object.keys(taxSub.criteria.filter).length === 0) {
-              // console.log('completely removed filters')
               taxSub.criteria.filter = null
             }
           }
@@ -172,15 +164,10 @@ implements SubscribableTaxonomy<T> {
       })
     }
 
-
-
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
       Object.assign(subState, { selectedId: id })
-      // if (this.name === 'utilizator' && this.$lodger) {
-      //   state.activeUserId = id
-      // }
     })
 
     // Trigger the modal on activeId change
