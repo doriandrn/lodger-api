@@ -92,7 +92,8 @@ implements SubscribableTaxonomy<T> {
 
     const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
 
-    const subState = state.subs[descriptor] || {}
+    const subState = state.subs[descriptor] ||
+      Object.assign(state.subs, { [descriptor]: undefined })
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
@@ -190,7 +191,7 @@ implements SubscribableTaxonomy<T> {
       Object.assign(subState, { activeId: id })
     })
 
-    reaction(() => sub.criteria, (n, o) => {
+    reaction(() => ({ ...sub.criteria }), (n, o) => {
       const { criteria } = n
       console.log('crit', criteria)
       Object.assign(subState, { criteria })
