@@ -350,7 +350,7 @@ class Lodger implements LodgerAPI {
    * @param {number} [from=this.displayCurrency]
    * @param {Rates} [rates=this.rates]
    * @param {number} [base=2781]
-   * @returns
+   * @returns {object} converted
    * @memberof Lodger
    */
   @computed convert (
