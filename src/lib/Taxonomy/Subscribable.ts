@@ -93,7 +93,8 @@ implements SubscribableTaxonomy<T> {
     const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
 
     const subState = state.subs[descriptor] ||
-      Object.assign(state.subs, { [descriptor]: undefined })
+      Object.assign(state.subs, { [descriptor]: undefined }) && state.subs[descriptor]
+
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
@@ -176,7 +177,7 @@ implements SubscribableTaxonomy<T> {
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
-      Object.assign(subState, { select: id })
+      Object.assign(subState, { selectedId: id })
       // if (this.name === 'utilizator' && this.$lodger) {
       //   state.activeUserId = id
       // }
