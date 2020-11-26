@@ -112,13 +112,18 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   set collection (collection: RxCollection) {
-    const { timestamps } = this.options
+    const { hooks, options: { timestamps }, $collection } = this
+
+    if ($collection)
+      throw new Error('Collection already set for this taxonomy')
 
     if (timestamps) {
       collection.preSave((data) => {
         data.updatedAt = new Date().getTime()
       }, false)
     }
+
+    // Global hooks
     collection.postInsert((data, doc) => {
       this.totals += 1;
       this.last = doc._id
@@ -130,6 +135,16 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       })
     }, false)
     collection.postRemove(() => { this.totals -= 1 }, false)
+
+    if (hooks) {
+      Object.keys(hooks).forEach(hook => {
+        if (['empty'].indexOf(hook) > -1)
+          return
+
+        hooks[hook].bind(this.$lodger)
+        collection[hook](() => hooks[hook])
+      })
+    }
 
     this.form.fieldsIds
       .filter(fieldId => this.form.fields[fieldId].search)

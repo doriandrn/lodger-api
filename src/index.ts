@@ -2,6 +2,7 @@ import { addRxPlugin, createRxDatabase, RxDatabase, RxDatabaseCreator, RxDocumen
 import axios from 'axios'
 import { observable, computed } from 'mobx'
 import merge from 'deepmerge'
+import { convert } from 'cashify'
 // import yaml from 'json2yaml'
 
 import config from './lodger.config'
@@ -19,6 +20,7 @@ import rates from 'rates'
 // Languages and localization
 import langs from 'langs'
 import locales from 'locales'
+import { Rates } from 'cashify/dist/lib/options'
 
 const { env: { NODE_ENV }, browser } = process
 
@@ -103,7 +105,7 @@ type Breadcrumb = {
 }
 
 type State = {
-  // activeUserId ?: string
+  hasUpdate: boolean,
   appPreferences : {
     display : {
       locale : string,
@@ -120,7 +122,9 @@ type State = {
     [k: string]: object
   },
   rates : {
-    rates: undefined,
+    rates: {
+      [k: number]: number
+    },
     timestamp: number
   },
   // breadcrumbs: Breadcrumb[],
@@ -129,7 +133,7 @@ type State = {
     closeable ?: boolean,
     firstTime ?: boolean,
 
-    sub ?: { edit: void }
+    sub ?: { edit: () => void }
     close ?: Function
   }
 }
@@ -137,8 +141,8 @@ type State = {
 let plugins: LodgerPlugin[] = []
 // const currencies = Object.keys(rates.data)
 
-const defaultState = {
-  // activeUserId: undefined,
+const defaultState: State = {
+  hasUpdate: false,
   appPreferences: {
     display: {
       theme: 0,
@@ -148,7 +152,6 @@ const defaultState = {
     }
   },
   subs: {},
-  // breadcrumbs: [],
   modal: {
     activeDoc: null,
     closeable: true,
@@ -328,8 +331,10 @@ class Lodger implements LodgerAPI {
    * @memberof Lodger
    */
   updateRates () {
-    const { timestamp } = this.rates
-    console.log(timestamp, Date.now(), Date.now() - timestamp)
+    const { timestamp } = this.state.rates
+    const conv = new Date(timestamp).getTime()
+    const diff = Date.now() - conv
+    console.log(conv, 'diff:', diff)
 
     axios
       .get('https://doriandrn.github.io/currencies-rates/rates.json')
@@ -337,6 +342,26 @@ class Lodger implements LodgerAPI {
       .catch(e => { console.error('could not fetch rates', e) })
   }
 
+  /**
+   * Converts diff currencies amounts
+   *
+   * @param {number} suma
+   * @param {number} to
+   * @param {number} [from=this.displayCurrency]
+   * @param {Rates} [rates=this.rates]
+   * @param {number} [base=2781]
+   * @returns
+   * @memberof Lodger
+   */
+  @computed convert (
+    suma: number,
+    to: number,
+    from: number = this.displayCurrency,
+    rates: Rates<any> = this.rates,
+    base: number = 2781
+  ) {
+    return convert(suma, { from, to, base, rates })
+  }
 
   /**
    * @alias Taxonomy.put
@@ -354,7 +379,7 @@ class Lodger implements LodgerAPI {
     let userId
 
     try {
-      userId = this.state.activeUserId
+      userId = this.activeUserId
       console.log('iu', userId)
     } catch (e) {
       console.warn('no user selected')

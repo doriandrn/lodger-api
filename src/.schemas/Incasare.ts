@@ -16,7 +16,6 @@ declare global {
 }
 
 const fields: FieldsCreator<Incasare> = {
-
   suma: {
     type: '$',
     preview: 1,
@@ -31,7 +30,6 @@ const fields: FieldsCreator<Incasare> = {
     index: true,
     value: ({ activeDoc }) => (activeDoc.nrUltimaChitanta || 0) + 1
   },
-
 
   //aka DE LA
   apartamentId: {
@@ -60,18 +58,54 @@ const fields: FieldsCreator<Incasare> = {
     default: () => ({
       metoda: 'fiat:banca',
       // metoda: 'crypto:nano',
-      valoare: {
-        suma: 101.23,
+      suma: {
+        value: 101.23,
         moneda: 'RON'
+      },
+      balantaAnterioara: {
+        moneda: '',
+        value: 0
       },
       achitata: {
         status: false,
         la: 0
+      },
+      curs: {
+        rata: 0
       }
     })
   }
 }
 
+const hooks = {
+  postInsert: async (doc, data) => {
+    const {
+      asociatieId,
+      apartamentId,
+      plata: {
+        suma: {
+          value,
+          moneda
+        }
+      }
+    } = data
+
+    const rels = ['asociatie', 'apartament']
+    rels.forEach(rel => {
+      await this[rel.plural].collection.findOne(data[`${rel}Id`])
+    })
+
+    const asoc = await this.asociatii.collection.findOne(asociatieId)
+    const ap = await this.apartamente.collection.findOne(apartamentId)
+
+    if (!asoc || !ap)
+      throw new Error('Something went wrong')
+
+    console.log('incasex', data, asoc, ap, this)
+  }
+}
+
 export {
-  fields
+  fields,
+  hooks
 }
