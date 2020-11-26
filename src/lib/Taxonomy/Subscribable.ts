@@ -176,6 +176,7 @@ implements SubscribableTaxonomy<T> {
     })
 
     reaction(() => sub.criteria, (n, o) => {
+      const { criteria } = n
       Object.assign(this.$lodger.state.subscribers, { [ descriptor ]: { criteria } })
     })
 
