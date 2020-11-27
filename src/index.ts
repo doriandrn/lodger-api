@@ -345,7 +345,7 @@ class Lodger implements LodgerAPI {
 
     axios
       .get('https://doriandrn.github.io/currencies-rates/rates.json')
-      .then(data => { this.rates = data.data })
+      .then(data => { this.rates = data })
       .catch(e => { console.error('could not fetch rates', e) })
   }
 
@@ -569,6 +569,7 @@ class Lodger implements LodgerAPI {
   }
 
   set rates (rates: Object) {
+    console.info('mew rattes', rates)
     Object.assign(this.state.rates, {
       rates: rates.data,
       timestamp: rates.timestamp
