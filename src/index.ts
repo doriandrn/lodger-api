@@ -569,7 +569,7 @@ class Lodger implements LodgerAPI {
   }
 
   set rates (rates: Object) {
-    this.state = { rates }
+    Object.assign(this.state.rates, rates)
   }
 
   get modal () {
