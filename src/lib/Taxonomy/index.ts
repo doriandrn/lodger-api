@@ -144,6 +144,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
         hooks[hook].bind(this.$lodger)
         collection[hook](() => hooks[hook])
       })
+    } else {
+      console.log('no hooks')
     }
 
     this.form.fieldsIds

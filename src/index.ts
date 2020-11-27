@@ -338,7 +338,7 @@ class Lodger implements LodgerAPI {
 
     axios
       .get('https://doriandrn.github.io/currencies-rates/rates.json')
-      .then(data => { this.rates = data })
+      .then(data => { console.log(data); this.rates = data })
       .catch(e => { console.error('could not fetch rates', e) })
   }
 
