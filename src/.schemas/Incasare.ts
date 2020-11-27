@@ -89,6 +89,7 @@ const hooks = {
     //     }
     //   }
     // } = data
+    console.log('i1')
 
     const rels = ['asociatie', 'apartament']
     rels.map(async rel => {

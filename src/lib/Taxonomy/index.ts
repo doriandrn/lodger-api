@@ -112,7 +112,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   set collection (collection: RxCollection) {
-    const { hooks, options: { timestamps }, $collection } = this
+    const { _schema: { hooks }, options: { timestamps }, $collection } = this
 
     if ($collection)
       throw new Error('Collection already set for this taxonomy')
@@ -140,7 +140,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       Object.keys(hooks).forEach(hook => {
         if (['empty'].indexOf(hook) > -1)
           return
-
+        console.log('c hook', hook)
         hooks[hook].bind(this.$lodger)
         collection[hook](() => hooks[hook])
       })
