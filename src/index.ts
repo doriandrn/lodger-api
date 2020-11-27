@@ -334,11 +334,18 @@ class Lodger implements LodgerAPI {
     const { timestamp } = this.state.rates
     const conv = new Date(timestamp).getTime()
     const diff = Date.now() - conv
-    console.log(conv, 'diff:', diff)
+
+    if (diff < 1000000) {
+      notify({
+        text: 'too early: ' + diff,
+        type: 'error'
+      })
+      return
+    }
 
     axios
       .get('https://doriandrn.github.io/currencies-rates/rates.json')
-      .then(data => { console.log(data); this.rates = data })
+      .then(data => { this.rates = data.data })
       .catch(e => { console.error('could not fetch rates', e) })
   }
 
