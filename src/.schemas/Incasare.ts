@@ -93,7 +93,7 @@ const hooks = {
 
     const rels = ['asociatie', 'apartament']
     rels.map(async rel => {
-      console.log(await doc.collection.findOne(data[`${rel}Id`]))
+      console.log(await doc.collection.database[rel.plural].findOne(data[`${rel}Id`]))
     })
 
     // if (!asoc || !ap)
