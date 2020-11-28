@@ -88,12 +88,11 @@ const hooks = {
     //       moneda
     //     }
     //   }
-    // } = data
-    console.log('i1', this)
+    // } = data)
 
     const rels = ['asociatie', 'apartament']
     rels.map(async rel => {
-      console.log(await doc.collection.database[rel.plural].findOne(data[`${rel}Id`]))
+      console.log(await this.database[rel.plural].findOne(data[`${rel}Id`]))
     })
 
     // if (!asoc || !ap)
