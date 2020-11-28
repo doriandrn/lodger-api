@@ -264,6 +264,11 @@ class Lodger implements LodgerAPI {
     this.taxonomies.map((tax: Taxonomie) => {
       const $tax = $taxonomies[tax]
 
+      Object.defineProperty($taxonomies[tax], '$lodger', {
+        value: this,
+        writable: false
+      })
+
       const parents = []
       const children = []
       const { schema: { required }} = $tax.form
@@ -291,15 +296,9 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         $tax.children = children
 
-      Object.defineProperty($taxonomies[tax], '$lodger', {
-        value: this,
-        writable: false
-      })
-
       return tax
     })
   }
-
 
   /**
    * Updates currency rates
