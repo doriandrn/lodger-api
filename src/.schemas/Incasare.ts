@@ -78,7 +78,7 @@ const fields: FieldsCreator<Incasare> = {
 }
 
 const hooks = {
-  postInsert: (doc, data) => {
+  postInsert: function (doc, data) {
     // const {
     //   asociatieId,
     //   apartamentId,
@@ -89,7 +89,7 @@ const hooks = {
     //     }
     //   }
     // } = data
-    console.log('i1')
+    console.log('i1', this)
 
     const rels = ['asociatie', 'apartament']
     rels.map(async rel => {
