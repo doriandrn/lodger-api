@@ -530,8 +530,7 @@ class Lodger implements LodgerAPI {
     return this.state.appPreferences?.display.locale
   }
 
-  set locale (e: CustomEvent) {
-    const language = e.target.value
+  set locale (language: string) {
     const langCode = language.indexOf('-') > -1 ?
       language.split('-')[0] :
       language
