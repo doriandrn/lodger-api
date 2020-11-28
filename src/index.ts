@@ -178,43 +178,19 @@ const defaultState: State = {
  * @requires <rxdb> RxDatabase
  */
 class Lodger implements LodgerAPI {
-  @computed get i18n () {
-    return locales ? locales[this.locale] : {}
-  }
-
-  @computed get crumbs () {
-    const { subs } = this.state
-
-    return Object.keys(subs)
-      .filter(k => (k.indexOf(this.mainSubName) === 0 || k.indexOf('single') === 0) && subs[k].activeId || subs[k].selectedId)
-      .map((subDescriptor : string) => {
-        const { activeId, selectedId } = subs[subDescriptor]
-        const id = activeId || selectedId
-        const tax = this.taxonomies[Number(subDescriptor.split('-')[1])]
-        return {
-          id, tax, status: true
-        } as Breadcrumb
-      })
-  }
-
-  get mainSubName () {
-    return 'prince'
-  }
-
-  @computed get activeUserId () {
-    const { mainSubName } = this
-    const subState = this.state.subs[`${mainSubName}-0`]
-
-    return subState && subState.activeId ?
-      subState.activeId :
-      undefined
-  }
-
   @observable appState: State = this.restoreState ?
     merge(defaultState, this.restoreState) :
     defaultState
 
-  taxonomies: Taxonomie[] = Object.keys($taxonomies)
+  @computed get state () {
+    return this.appState
+  }
+
+  set state (s) {
+    merge(this.appState, s)
+  }
+
+  taxonomies: Taxonomie[] = Object.keys(this.$taxonomies)
   static db ?: RxDatabase
 
   /**
@@ -455,12 +431,6 @@ class Lodger implements LodgerAPI {
     plugins.push(plugin)
   }
 
-  // async search (input: string, taxonomy ?: Taxonomy) {
-  //   if (taxonomy) {}
-
-  //   return results
-  // }
-
   /**
    * Destroys the Lodger instance
    *
@@ -513,21 +483,45 @@ class Lodger implements LodgerAPI {
    * @returns {string}
    * @memberof Lodger
    */
-  @computed get translate () {
+  translate (key: string) {
     const { i18n } = this
-    return (key: string) => key.split('.').reduce((o,i)=>o[i], i18n)
-  }
-
-  @computed get state () {
-    return this.appState
-  }
-
-  set state (s) {
-    merge(this.appState, s)
+    return key.split('.').reduce((o,i)=>o[i], i18n)
   }
 
   get supportedLangs () {
     return langs
+  }
+
+  @computed get i18n () {
+    return locales ? locales[this.locale] : {}
+  }
+
+  @computed get crumbs () {
+    const { subs } = this.state
+
+    return Object.keys(subs)
+      .filter(k => (k.indexOf(this.mainSubName) === 0 || k.indexOf('single') === 0) && subs[k].activeId || subs[k].selectedId)
+      .map((subDescriptor : string) => {
+        const { activeId, selectedId } = subs[subDescriptor]
+        const id = activeId || selectedId
+        const tax = this.taxonomies[Number(subDescriptor.split('-')[1])]
+        return {
+          id, tax, status: true
+        } as Breadcrumb
+      })
+  }
+
+  get mainSubName () {
+    return 'prince'
+  }
+
+  @computed get activeUserId () {
+    const { mainSubName } = this
+    const subState = this.state.subs[`${mainSubName}-0`]
+
+    return subState && subState.activeId ?
+      subState.activeId :
+      undefined
   }
 
 
@@ -536,7 +530,8 @@ class Lodger implements LodgerAPI {
     return this.state.appPreferences?.display.locale
   }
 
-  set locale (language) {
+  set locale (e: CustomEvent) {
+    const language = e.target.value
     const langCode = language.indexOf('-') > -1 ?
       language.split('-')[0] :
       language
@@ -547,7 +542,7 @@ class Lodger implements LodgerAPI {
     this.state.appPreferences.display.locale = langCode
   }
 
-  /** Currencies */
+  /** Currencies and rates */
   static get currencies () {
     return Object.keys(rates.data).map(id => Number(id))
   }
@@ -575,6 +570,7 @@ class Lodger implements LodgerAPI {
     })
   }
 
+  /** Modals */
   get modal () {
     return this.state.modal
   }
