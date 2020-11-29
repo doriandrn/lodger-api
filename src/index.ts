@@ -222,11 +222,6 @@ class Lodger implements LodgerAPI {
 
     await Lodger.setupRxDB(opts.db, collectionsCreator)
 
-    // Assign collections to taxonomies
-    Object.keys(Taxonomies).forEach(taxName => {
-      Taxonomies[taxName].collection = Lodger.db[taxName]
-    })
-
     return new Lodger(
       Taxonomies,
       plugins,
@@ -245,6 +240,11 @@ class Lodger implements LodgerAPI {
   ) {
     this.bindRelationships($taxonomies)
     this.taxonomies = Object.keys($taxonomies)
+
+    // Assign collections to taxonomies
+    Object.keys(Taxonomies).forEach(taxName => {
+      Taxonomies[taxName].collection = Lodger.db[taxName]
+    })
 
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)
