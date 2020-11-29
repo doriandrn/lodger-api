@@ -242,8 +242,8 @@ class Lodger implements LodgerAPI {
     this.taxonomies = Object.keys($taxonomies)
 
     // Assign collections to taxonomies
-    Object.keys(Taxonomies).forEach(taxName => {
-      Taxonomies[taxName].collection = Lodger.db[taxName]
+    Object.keys($taxonomies).forEach(taxName => {
+      $taxonomies[taxName].collection = Lodger.db[taxName]
     })
 
     // Bind shortcuts for every tax to `this` for easy access
