@@ -101,11 +101,11 @@ const hooks = {
         const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
         // const { balanta: { moneda, value } } = doc
         const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda, ctx.rates)
-        console.log(newConvertedValue, 'ncv')
+        console.log(newConvertedValue, 'ncv', rel)
 
 
         doc.atomicUpdate(docdata => {
-          data.plata[`${rel}BalAnte`] = { ...docdata.balanta.value }
+          data.plata[`${rel}BalAnte`] = { ...docdata.balanta }
 
           docdata.balanta.value = Number(docdata.balanta.value) + Number(newConvertedValue)
           return docdata
