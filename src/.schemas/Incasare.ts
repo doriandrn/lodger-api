@@ -95,21 +95,24 @@ const hooks = {
 
 
       const rels = ['asociatie', 'apartament']
+      data.plata = {}
+
       await Promise.all(rels.map(async rel => {
         const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
         // const { balanta: { moneda, value } } = doc
         const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda, ctx.rates)
         console.log(newConvertedValue, 'ncv')
 
-        data.plata = {}
 
         doc.atomicUpdate(docdata => {
           data.plata[`${rel}BalAnte`] = { ...docdata.balanta.value }
+
           docdata.balanta.value = Number(docdata.balanta.value) + Number(newConvertedValue)
           return docdata
         })
       }))
 
+      await $doc.atomicPatch({ plata: data.plata })
       // if (!asoc || !ap)
       //   throw new Error('Something went wrong')
 
