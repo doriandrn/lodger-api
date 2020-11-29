@@ -100,23 +100,22 @@ const hooks = {
       await Promise.all(rels.map(async rel => {
         const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
         // const { balanta: { moneda, value } } = doc
-        const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda, ctx.rates)
-        console.log(newConvertedValue, 'ncv', rel)
+        const newConvertedValue = convert(data.suma.value, data.suma.moneda, doc.balanta.moneda, ctx.rates)
+        console.log('Balanta noua', rel, { value: newConvertedValue, moneda: doc.balanta.moneda })
 
 
         doc.atomicUpdate(docdata => {
           data.plata[`${rel}BalAnte`] = { ...docdata.balanta }
-
+          console.log('balanta anterioara', rel, data.plata[`${rel}BalAnte`])
           docdata.balanta.value = Number(docdata.balanta.value) + Number(newConvertedValue)
           return docdata
         })
       }))
 
       await $doc.atomicPatch({ plata: data.plata })
+      console.log('plata', data.plata)
       // if (!asoc || !ap)
       //   throw new Error('Something went wrong')
-
-      console.log('incasex', data, rels, this)
 
       return data
     }
