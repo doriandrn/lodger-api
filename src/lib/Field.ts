@@ -133,6 +133,7 @@ export class Field implements FieldAPI {
   search ?: boolean
   fieldset ?: number
   final ?: boolean
+  freezed ?: boolean // cannott be edited by the user after init
 
   /**
    * Creates an instance of Field.
@@ -213,7 +214,7 @@ export class Field implements FieldAPI {
     })
 
     if (this._type === '$') {
-      this.final = true
+      this.freezed = true
 
       this.items = {
         type: 'object',
