@@ -75,8 +75,9 @@ const fields: FieldsCreator<Incasare> = {
 
 const hooks = {
   postInsert: (ctx) => {
-    const { convert } = ctx.$lodger
-    return function (data, $doc) {
+    const { convert } = ctx
+
+    return (data, $doc) => {
       // const {
       //   asociatieId,
       //   apartamentId,
