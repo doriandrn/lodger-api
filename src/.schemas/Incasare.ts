@@ -97,7 +97,7 @@ const hooks = {
         const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda, ctx.rates)
         console.log(newConvertedValue, 'ncv')
         doc.atomicUpdate(docdata => {
-          docdata.balanta.value += newConvertedValue
+          docdata.balanta.value = Number(docdata.balanta.value) + Number(newConvertedValue)
           return docdata
         })
       })
