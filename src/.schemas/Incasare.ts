@@ -58,10 +58,6 @@ const fields: FieldsCreator<Incasare> = {
     default: () => ({
       metoda: 'fiat:banca',
       // metoda: 'crypto:nano',
-      suma: {
-        value: 101.23,
-        moneda: 'RON'
-      },
       balantaAnterioara: {
         moneda: '',
         value: 0
@@ -96,7 +92,7 @@ const hooks = {
     rels.map(async rel => {
       const doc = await this.database[rel.plural].findOne(data[`${rel}Id`]).exec()
       // const { balanta: { moneda, value } } = doc
-      const newConvertedValue = convert(data.plata.suma.value, doc.balanta.moneda, data.plata.suma.moneda)
+      const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda)
       console.log(newConvertedValue, 'ncv')
       doc.atomicUpdate(docdata => {
         docdata.balanta.value += newConvertedValue
