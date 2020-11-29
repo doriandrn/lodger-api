@@ -94,7 +94,7 @@ const hooks = {
       rels.map(async rel => {
         const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
         // const { balanta: { moneda, value } } = doc
-        const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda)
+        const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda, ctx.rates)
         console.log(newConvertedValue, 'ncv')
         doc.atomicUpdate(docdata => {
           docdata.balanta.value += newConvertedValue
