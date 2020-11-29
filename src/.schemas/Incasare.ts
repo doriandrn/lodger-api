@@ -92,7 +92,7 @@ const hooks = {
 
       const rels = ['asociatie', 'apartament']
       rels.map(async rel => {
-        const doc = await this.database[rel.plural].findOne(data[`${rel}Id`]).exec()
+        const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
         // const { balanta: { moneda, value } } = doc
         const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda)
         console.log(newConvertedValue, 'ncv')
