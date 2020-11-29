@@ -58,9 +58,13 @@ const fields: FieldsCreator<Incasare> = {
     default: () => ({
       metoda: 'fiat:banca',
       // metoda: 'crypto:nano',
-      balantaAnterioara: {
-        moneda: '',
-        value: 0
+      asociatieBalAnte: {
+        moneda: 1,
+        value: 1
+      },
+      apartamentBalAnte: {
+        moneda: 1,
+        value: 1
       },
       achitata: {
         status: false,
@@ -77,7 +81,7 @@ const hooks = {
   postInsert: (ctx) => {
     const { convert } = ctx
 
-    return (data, $doc) => {
+    return async (data, $doc) => {
       // const {
       //   asociatieId,
       //   apartamentId,
@@ -91,21 +95,27 @@ const hooks = {
 
 
       const rels = ['asociatie', 'apartament']
-      rels.map(async rel => {
+      await Promise.all(rels.map(async rel => {
         const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
         // const { balanta: { moneda, value } } = doc
         const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda, ctx.rates)
         console.log(newConvertedValue, 'ncv')
+
+        data.plata = {}
+
         doc.atomicUpdate(docdata => {
+          data.plata[`${rel}BalAnte`] = { ...docdata.balanta.value }
           docdata.balanta.value = Number(docdata.balanta.value) + Number(newConvertedValue)
           return docdata
         })
-      })
+      }))
 
       // if (!asoc || !ap)
       //   throw new Error('Something went wrong')
 
       console.log('incasex', data, rels, this)
+
+      return data
     }
   }
 }
