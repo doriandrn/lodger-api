@@ -140,8 +140,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       Object.keys(hooks).forEach(hook => {
         if (['empty'].indexOf(hook) > -1)
           return
-        console.log('c hook', hook, this)
-        hooks[hook].bind(this)
+
+        console.log('c hook', hook, this, this.$lodger)
+        // hooks[hook].bind(this)
+        hooks[hook] = hooks[hook](this)
         collection[hook](hooks[hook])
       })
     }

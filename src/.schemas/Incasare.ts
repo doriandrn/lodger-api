@@ -78,7 +78,7 @@ const fields: FieldsCreator<Incasare> = {
 }
 
 const hooks = {
-  postInsert: function (doc, data) {
+  postInsert: ctx => function (data, $doc) {
     // const {
     //   asociatieId,
     //   apartamentId,
@@ -90,9 +90,18 @@ const hooks = {
     //   }
     // } = data)
 
+    const { convert } = ctx.$lodger
+
     const rels = ['asociatie', 'apartament']
     rels.map(async rel => {
-      console.log(await this.database[rel.plural].findOne(data[`${rel}Id`]))
+      const doc = await this.database[rel.plural].findOne(data[`${rel}Id`]).exec()
+      // const { balanta: { moneda, value } } = doc
+      const newConvertedValue = convert(data.plata.suma.value, doc.balanta.moneda, data.plata.suma.moneda)
+      console.log(newConvertedValue, 'ncv')
+      doc.atomicUpdate(docdata => {
+        docdata.balanta.value += newConvertedValue
+        return docdata
+      })
     })
 
     // if (!asoc || !ap)
