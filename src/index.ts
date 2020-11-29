@@ -161,7 +161,7 @@ const defaultState: State = {
         return
 
       this.activeDoc = null
-      if (this.sub)
+      if (this.sub && this.sub.edit && typeof this.sub.edit === 'function')
         this.sub.edit()
     }
   },
