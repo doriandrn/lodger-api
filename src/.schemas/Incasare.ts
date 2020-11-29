@@ -87,6 +87,7 @@ const hooks = {
     // } = data)
 
     const { convert } = ctx.$lodger
+    convert.bind(ctx.$lodger)
 
     const rels = ['asociatie', 'apartament']
     rels.map(async rel => {
