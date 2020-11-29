@@ -74,37 +74,38 @@ const fields: FieldsCreator<Incasare> = {
 }
 
 const hooks = {
-  postInsert: ctx => function (data, $doc) {
-    // const {
-    //   asociatieId,
-    //   apartamentId,
-    //   plata: {
-    //     suma: {
-    //       value,
-    //       moneda
-    //     }
-    //   }
-    // } = data)
-
+  postInsert: (ctx) => {
     const { convert } = ctx.$lodger
-    convert.bind(ctx.$lodger)
+    return function (data, $doc) {
+      // const {
+      //   asociatieId,
+      //   apartamentId,
+      //   plata: {
+      //     suma: {
+      //       value,
+      //       moneda
+      //     }
+      //   }
+      // } = data)
 
-    const rels = ['asociatie', 'apartament']
-    rels.map(async rel => {
-      const doc = await this.database[rel.plural].findOne(data[`${rel}Id`]).exec()
-      // const { balanta: { moneda, value } } = doc
-      const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda)
-      console.log(newConvertedValue, 'ncv')
-      doc.atomicUpdate(docdata => {
-        docdata.balanta.value += newConvertedValue
-        return docdata
+
+      const rels = ['asociatie', 'apartament']
+      rels.map(async rel => {
+        const doc = await this.database[rel.plural].findOne(data[`${rel}Id`]).exec()
+        // const { balanta: { moneda, value } } = doc
+        const newConvertedValue = convert(data.suma.value, doc.balanta.moneda, data.suma.moneda)
+        console.log(newConvertedValue, 'ncv')
+        doc.atomicUpdate(docdata => {
+          docdata.balanta.value += newConvertedValue
+          return docdata
+        })
       })
-    })
 
-    // if (!asoc || !ap)
-    //   throw new Error('Something went wrong')
+      // if (!asoc || !ap)
+      //   throw new Error('Something went wrong')
 
-    console.log('incasex', data, rels, this)
+      console.log('incasex', data, rels, this)
+    }
   }
 }
 
