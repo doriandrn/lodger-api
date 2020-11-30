@@ -3,6 +3,7 @@ import axios from 'axios'
 import { observable, computed } from 'mobx'
 import merge from 'deepmerge'
 import { convert } from 'cashify'
+import numeral from 'numeral'
 // import yaml from 'json2yaml'
 
 import config from './lodger.config'
@@ -321,7 +322,10 @@ class Lodger implements LodgerAPI {
     axios
       .get('https://doriandrn.github.io/currencies-rates/rates.json')
       .then(data => { this.rates = data.data })
-      .catch(e => { console.error('could not fetch rates', e) })
+      .catch(e => { notify({
+        text: 'Rates could not be fetched - ' + e,
+        type: 'error'
+      }) })
   }
 
   /**
@@ -343,6 +347,17 @@ class Lodger implements LodgerAPI {
     base: number = 2781
   ) {
     return convert(suma, { from, to, base, rates })
+  }
+
+  format (suma: number, moneda: number = this.displayCurrency) {
+    return numeral(suma).format(this.isCrypto(moneda) ? '0,0[.]00000000' : '0,0[.]00')
+  }
+
+  isCrypto (moneda: number) {
+    const { cryptocurrency } = Lodger.currencyList
+    if (!cryptocurrency)
+      return
+    return Object.keys(cryptocurrency).map(n => Number(n)).indexOf(moneda) > -1
   }
 
   /**

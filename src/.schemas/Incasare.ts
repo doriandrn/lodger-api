@@ -80,21 +80,9 @@ const fields: FieldsCreator<Incasare> = {
 const hooks = {
   postInsert: (ctx) => {
     const { convert } = ctx
+    const rels = ['asociatie', 'apartament']
 
     return async (data, $doc) => {
-      // const {
-      //   asociatieId,
-      //   apartamentId,
-      //   plata: {
-      //     suma: {
-      //       value,
-      //       moneda
-      //     }
-      //   }
-      // } = data)
-
-
-      const rels = ['asociatie', 'apartament']
       data.plata = {}
 
       await Promise.all(rels.map(async rel => {
@@ -110,9 +98,6 @@ const hooks = {
       }))
 
       $doc.atomicUpdate(docdata => { docdata.plata = data.plata; return docdata })
-      console.log('upd', data.plata)
-      // if (!asoc || !ap)
-      //   throw new Error('Something went wrong')
 
       return $doc
     }
