@@ -280,7 +280,7 @@ class Lodger implements LodgerAPI {
         const parentsKeys = [`${name}Id`, plural]
           .filter(key => $tax.form.fieldsIds.indexOf(key) > -1 && required.indexOf(key) > -1)[0]
 
-        const childrenKeys = $t.form.fieldsIds.filter(key => [`${$tax.form.name}Id`, $tax.form.plural].indexOf(key) > -1)
+        const childrenKeys = $t.form.fieldsIds.filter(key => [`${$tax.form.name}Id`, $tax.form.plural].indexOf(key) > -1 && required.indexOf(key) > -1)
 
         if (parentsKeys) {
           parents.push(parentsKeys.replace('Id', ''))

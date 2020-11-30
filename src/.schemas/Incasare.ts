@@ -70,20 +70,20 @@ const fields: FieldsCreator<Incasare> = {
         status: false,
         la: 0
       },
-      curs: {
-        rata: 0
-      }
+      curs: 1
     })
   }
 }
 
 const hooks = {
   postInsert: (ctx) => {
-    const { convert } = ctx
+    const { convert, rates } = ctx
     const rels = ['asociatie', 'apartament']
 
     return async (data, $doc) => {
-      data.plata = {}
+      data.plata = {
+        curs: rates[data.suma.moneda]
+      }
 
       await Promise.all(rels.map(async rel => {
         const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
@@ -93,6 +93,11 @@ const hooks = {
         doc.atomicUpdate(docdata => {
           data.plata[`${rel}BalAnte`] = { ...docdata.balanta }
           docdata.balanta.value = Number(docdata.balanta.value) + Number(newConvertedValue)
+
+          // if (rel === 'asociatie') {
+          //   ctx.state.
+          // }
+
           return docdata
         })
       }))
