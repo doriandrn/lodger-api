@@ -350,7 +350,7 @@ class Lodger implements LodgerAPI {
   }
 
   format (suma: number, moneda: number = this.displayCurrency) {
-    return Number(numeral(suma).format(this.isCrypto(moneda) ? '0,0[.]00000000' : '0,0[.]00'))
+    return numeral(suma).format(this.isCrypto(moneda) ? '0,0[.]00000000' : '0,0[.]00')
   }
 
   isCrypto (moneda: number = this.displayCurrency) {
