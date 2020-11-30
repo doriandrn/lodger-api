@@ -350,13 +350,14 @@ class Lodger implements LodgerAPI {
   }
 
   format (suma: number, moneda: number = this.displayCurrency) {
-    return numeral(suma).format(this.isCrypto(moneda) ? '0,0[.]00000000' : '0,0[.]00')
+    return Number(numeral(suma).format(this.isCrypto(moneda) ? '0,0[.]00000000' : '0,0[.]00'))
   }
 
-  isCrypto (moneda: number) {
+  isCrypto (moneda: number = this.displayCurrency) {
     const { cryptocurrency } = Lodger.currencyList
     if (!cryptocurrency)
       return
+
     return Object.keys(cryptocurrency).map(n => Number(n)).indexOf(moneda) > -1
   }
 
