@@ -101,19 +101,15 @@ const hooks = {
         const doc = await ctx[rel.plural].collection.findOne(data[`${rel}Id`]).exec()
         // const { balanta: { moneda, value } } = doc
         const newConvertedValue = convert(data.suma.value, data.suma.moneda, doc.balanta.moneda, ctx.rates)
-        console.log('Balanta noua', rel, { value: newConvertedValue, moneda: doc.balanta.moneda })
-
 
         doc.atomicUpdate(docdata => {
           data.plata[`${rel}BalAnte`] = { ...docdata.balanta }
-          console.log('balanta anterioara', rel, data.plata[`${rel}BalAnte`])
           docdata.balanta.value = Number(docdata.balanta.value) + Number(newConvertedValue)
           return docdata
         })
       }))
 
-      await $doc.atomicPatch({ plata: data.plata })
-      console.log('plata', data.plata)
+      await $doc.atomicUpdate(docdata => { docdata.plata = data.plata })
       // if (!asoc || !ap)
       //   throw new Error('Something went wrong')
 
