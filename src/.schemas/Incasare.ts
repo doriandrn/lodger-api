@@ -109,11 +109,13 @@ const hooks = {
         })
       }))
 
+      console.log('pl', data.plata)
       await $doc.atomicUpdate(docdata => { docdata.plata = data.plata })
+      console.log('upd')
       // if (!asoc || !ap)
       //   throw new Error('Something went wrong')
 
-      return data
+      return $doc
     }
   }
 }
