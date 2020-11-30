@@ -109,9 +109,8 @@ const hooks = {
         })
       }))
 
-      console.log('pl', data.plata)
-      await $doc.atomicUpdate(docdata => { docdata.plata = data.plata })
-      console.log('upd')
+      $doc.atomicUpdate(docdata => { docdata.plata = data.plata; return docdata })
+      console.log('upd', data.plata)
       // if (!asoc || !ap)
       //   throw new Error('Something went wrong')
 
