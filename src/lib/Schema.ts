@@ -17,9 +17,6 @@ interface LodgerSchema extends RxJsonSchema {
 
 type LodgerSchemaOptions = {}
 
-// const datamodelDir = ['dev', 'test']
-//   .indexOf(env) > -1 ? '.schemas' : '.'
-
 type SchemaProperties<Interface> = {
   [k in keyof Interface] ?: RxJsonSchemaTopLevel
 }
@@ -37,7 +34,6 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
   readonly properties : SchemaProperties<Interface> = {}
   readonly required: string[] = []
   readonly indexes : string[] = []
-  // protected _fields : any = {}
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -94,19 +90,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     }
   }
 
-  extendInternal (id, field) {
-    if (!this.fields) {
-      throw new Error('invalid this')
-    }
-    this.internalFields[id] = field
-    this.schema.add(id, field)
-  }
-
   get ids () {
     return Object.keys(this.properties)
   }
-
-  // get $fields () {
-  //   return this._fields
-  // }
 }
