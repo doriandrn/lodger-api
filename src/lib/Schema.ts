@@ -37,7 +37,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
   readonly properties : SchemaProperties<Interface> = {}
   readonly required: string[] = []
   readonly indexes : string[] = []
-  private _fields : any = {}
+  protected _fields : any = {}
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
