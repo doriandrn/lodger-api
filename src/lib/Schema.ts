@@ -95,7 +95,11 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
   }
 
   extendInternal (id, field) {
-    this[id] = field
+    if (!this.fields) {
+      throw new Error('invalid this')
+    }
+    this.internalFields[id] = field
+    this.schema.add(id, field)
   }
 
   get ids () {

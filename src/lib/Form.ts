@@ -121,7 +121,7 @@ implements FormAPI<I> {
     }
 
     this.schema = new Schema(name, this.fields)
-    this.schema.extendInternal.bind(this.internalFields)
+    this.schema.extendInternal.bind(this)
 
     // default onsubmit func
     this.onsubmit = () => {}
