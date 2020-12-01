@@ -303,12 +303,13 @@ class Lodger implements LodgerAPI {
       if ($tax.children.length) {
         $tax.form.schema.add('counters', new Field({
           type: 'object',
-          default: () => $tax.children.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
+          default: $tax.children.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
         }))
       }
 
       return tax
     })
+
   }
 
   /**
