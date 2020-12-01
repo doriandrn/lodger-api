@@ -270,8 +270,8 @@ class Lodger implements LodgerAPI {
         writable: false
       })
 
-      const parents = []
-      const children = []
+      const parents: Taxonomie[] = []
+      const children: Taxonomie[] = []
       const { schema: { required }} = $tax.form
 
       this.taxonomies.forEach(t => {
@@ -286,7 +286,7 @@ class Lodger implements LodgerAPI {
 
         const childrenKeys = $t.form.fieldsIds
           .filter(key => [`${$tax.form.name}Id`, $tax.form.plural].indexOf(key) > -1 &&
-          key !== 'servicii' && parentsKeys.indexOf(key) < 0)
+          key !== 'servicii' && parents.indexOf(key) < 0)
 
         if (childrenKeys.length) {
           children.push($t.form.plural)
