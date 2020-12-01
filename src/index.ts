@@ -286,7 +286,7 @@ class Lodger implements LodgerAPI {
 
         const childrenKeys = $t.form.fieldsIds
           .filter(key => [`${$tax.form.name}Id`, $tax.form.plural].indexOf(key) > -1 &&
-          key !== 'servicii' && parents.map(p => p.plural).indexOf(key.replace('Id', '').plural) < 0)
+          key !== 'servicii' && parents.map(p => p.plural).indexOf(key.replace('Id', '').plural) > -1)
 
         if (childrenKeys.length) {
           children.push($t.form.plural)
