@@ -60,6 +60,7 @@ implements FormAPI<I> {
   // readonly captureTimestamp : boolean = false
   readonly schema : Schema<string, I>
   readonly fields : FormFields<I> = {}
+  readonly internalFields : FormFields<I> = {}
   readonly fieldsets ?: string[]
 
   $active: boolean = false
@@ -84,6 +85,7 @@ implements FormAPI<I> {
 
     this.name = name
     this.fields = {}
+    this.internalFields = {}
 
     this.plural = this.name.plural
 
@@ -119,6 +121,7 @@ implements FormAPI<I> {
     }
 
     this.schema = new Schema(name, this.fields)
+    this.schema.extendInternal.bind(this.internalFields)
 
     // default onsubmit func
     this.onsubmit = () => {}

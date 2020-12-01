@@ -37,7 +37,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
   readonly properties : SchemaProperties<Interface> = {}
   readonly required: string[] = []
   readonly indexes : string[] = []
-  protected _fields : any = {}
+  // protected _fields : any = {}
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -84,24 +84,25 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
 
     const required =  v && v.indexOf('required') > -1
     this.properties[id] = rxSchema || {}
-    this._fields[id] = field
+    // this._fields[id] = field
 
     if (required && this.required.indexOf(id) < 0)
       this.required.push(id)
 
     if (_index) {
-      if (_type !== '$')
-        this.indexes.push(id)
-      else
-        this.indexes.push(`${id}.[].value`)
+      this.indexes.push(_type !== '$' ? id : `${id}.[].value`)
     }
+  }
+
+  extendInternal (id, field) {
+    this[id] = field
   }
 
   get ids () {
     return Object.keys(this.properties)
   }
 
-  get $fields () {
-    return this._fields
-  }
+  // get $fields () {
+  //   return this._fields
+  // }
 }

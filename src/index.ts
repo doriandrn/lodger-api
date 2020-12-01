@@ -301,7 +301,7 @@ class Lodger implements LodgerAPI {
         $tax.children = children.filter(c => parents.map(p => p.plural).indexOf(c.replace('Id', '').plural) === -1)
 
       if ($tax.children.length) {
-        $tax.form.schema.add('counters', new Field({
+        $tax.form.schema.extendInternal('counters', new Field({
           type: 'object',
           default: $tax.children.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
         }))
