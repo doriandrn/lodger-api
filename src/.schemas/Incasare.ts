@@ -11,6 +11,8 @@ declare global {
     blocId: string
     asociatieId: string
 
+    cheltuieli: string[]
+
     plata: Plata
   }
 }
@@ -37,6 +39,10 @@ const fields: FieldsCreator<Incasare> = {
     type: 'search',
     ref: 'apartamente',
     preview: 2
+  },
+  cheltuieli: {
+    ref: 'cheltuieli',
+    preview: 3
   },
 
   // ASTEA TREBUIE SA RAMANA IN CAZ CA UN APARTAMENT SE STERGE
