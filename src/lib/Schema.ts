@@ -83,6 +83,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
 
     const required =  v && v.indexOf('required') > -1
     this.properties[id] = rxSchema || {}
+    this._fields[id] = field
 
     if (required && this.required.indexOf(id) < 0)
       this.required.push(id)
