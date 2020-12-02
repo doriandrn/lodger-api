@@ -229,7 +229,7 @@ class Lodger implements LodgerAPI {
 
     // Assign collections to taxonomies
     Object.keys(Taxonomies).forEach((taxName: string) => {
-      Taxonomies[taxName].collection = Lodger.db[taxName]
+
     })
 
     return new Lodger(
@@ -253,9 +253,15 @@ class Lodger implements LodgerAPI {
 
     // Bind lodger context to taxes for easy access
     this.taxonomies.forEach(tax => {
-      Object.defineProperty($taxonomies[tax], '$lodger', {
-        value: this,
-        writable: false
+      Object.defineProperties($taxonomies[tax], {
+        '$lodger': {
+          value: this,
+          writable: false
+        },
+        collection: {
+          value: Lodger.db[tax],
+          writable: false
+        }
       })
     })
   }
