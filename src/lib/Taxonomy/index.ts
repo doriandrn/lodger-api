@@ -148,12 +148,13 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
           }
 
           await parentDoc.atomicUpdate(data => {
-            data.counters[parent.plural] += 1
+            data.counters[collection.name.plural] += 1
             return data
           })
         }))
       }
     }, true)
+
     collection.postRemove(() => { this.totals -= 1 }, false)
 
     if (hooks) {
