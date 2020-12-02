@@ -82,17 +82,16 @@ implements SubscribableTaxonomy<T> {
       $lodger: {
         state,
         modal,
-        taxonomies
+        taxonomies,
+        $taxonomies
       }
     } = this
 
     if (subscribers[subscriberName])
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
-    console.log('gh', this, taxonomies)
 
     const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
-    console.log(descriptor)
     const subState = state.subs[descriptor] ||
       Object.assign(state.subs, { [descriptor]: {} }) && state.subs[descriptor]
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
@@ -100,7 +99,6 @@ implements SubscribableTaxonomy<T> {
     if (this.parents && this.parents.length && !sub.refsIds) {
       sub.refsIds = observable({})
     }
-
 
     let allTaxes : Taxonomie[] = []
 
@@ -112,11 +110,9 @@ implements SubscribableTaxonomy<T> {
         allTaxes = [ ...taxonomies ]
 
       taxes.map((tax: Taxonomie) => {
-        const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
+        const $tax = $taxonomies[tax] || $taxonomies[tax.plural]
         if (!$tax)
           return true
-
-        console.log('AT', allTaxes, taxonomies)
 
         if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
           allTaxes.splice(allTaxes.indexOf(tax.plural), 1)

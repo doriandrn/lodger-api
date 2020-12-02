@@ -225,16 +225,8 @@ class Lodger implements LodgerAPI {
       console.error('Could not bind relationships', e)
     }
 
-    // const Taxonomies = taxesSchemas
-    //   .map(schema => {
-    //     const tax = new Taxonomy(schema, { timestamps: true })
-    //     collectionsCreator[tax.plural] = tax._collectionCreator
-    //     return tax
-    //   }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
-
-
-
     await Lodger.setupRxDB(opts.db, collectionsCreator)
+
     // Assign collections to taxonomies
     Object.keys(Taxonomies).forEach((taxName: string) => {
       Taxonomies[taxName].collection = Lodger.db[taxName]
@@ -258,6 +250,14 @@ class Lodger implements LodgerAPI {
   ) {
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)
+
+    // Bind lodger context to taxes for easy access
+    this.taxonomies.forEach(tax => {
+      Object.defineProperty($taxonomies[tax], '$lodger', {
+        value: this,
+        writable: false
+      })
+    })
   }
 
  /**
@@ -278,11 +278,6 @@ class Lodger implements LodgerAPI {
 
     return await Promise.all(taxes.map((tax: Taxonomie) => {
       const $tax = $taxonomies[tax]
-
-      Object.defineProperty($taxonomies[tax], '$lodger', {
-        value: this,
-        writable: false
-      })
 
       const parents: Taxonomie[] = []
       const children: Taxonomie[] = []
