@@ -99,6 +99,8 @@ implements SubscribableTaxonomy<T> {
       sub.refsIds = observable({})
     }
 
+    console.log('gh', this, taxonomies)
+
     let allTaxes : Taxonomie[] = []
 
     const updateTaxes = async (taxes: Taxonomie[], id : string, name: string) => {
