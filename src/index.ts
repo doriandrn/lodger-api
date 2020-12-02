@@ -227,11 +227,6 @@ class Lodger implements LodgerAPI {
 
     await Lodger.setupRxDB(opts.db, collectionsCreator)
 
-    // Assign collections to taxonomies
-    Object.keys(Taxonomies).forEach((taxName: string) => {
-
-    })
-
     return new Lodger(
       Taxonomies,
       plugins,
