@@ -112,7 +112,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   set collection (collection: RxCollection) {
-    const { _schema: { hooks }, options: { timestamps }, $collection } = this
+    const { _schema: { hooks }, options: { timestamps }, $collection, $lodger, parents } = this
 
     if ($collection)
       throw new Error('Collection already set for this taxonomy')
@@ -124,7 +124,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
 
     // Global hooks
-    collection.postInsert((data, doc) => {
+    collection.postInsert(async (data, doc) => {
       this.totals += 1;
       this.last = doc._id
 
@@ -133,7 +133,27 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
         d.updatedAt = data.createdAt
         return d
       })
-    }, false)
+
+      if (parents && parents.length) {
+        await Promise.all(parents.map(async parent => {
+          const pId = data[`${parent}Id`]
+          if (!pId) {
+            console.error('Missing parent id', parent)
+            return
+          }
+
+          const parentDoc = await $taxonomies[parent.plural].collection.findOne(pId).exec()
+          if (!parentDoc) {
+            console.error('Missing parent doc', parent)
+          }
+
+          await parentDoc.atomicUpdate(data => {
+            data.counters[parent.plural] += 1
+            return data
+          })
+        }))
+      }
+    }, true)
     collection.postRemove(() => { this.totals -= 1 }, false)
 
     if (hooks) {
