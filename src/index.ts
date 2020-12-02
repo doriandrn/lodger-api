@@ -192,7 +192,7 @@ class Lodger implements LodgerAPI {
     merge(this.appState, s)
   }
 
-  taxonomies: Taxonomie[] = Object.keys(this.$taxonomies)
+  readonly taxonomies: Taxonomie[] = Object.keys(this.$taxonomies)
   static db ?: RxDatabase
   static boundRels : boolean = false
 
@@ -257,9 +257,7 @@ class Lodger implements LodgerAPI {
     protected restoreState ?: Partial<State>
   ) {
     // Bind shortcuts for every tax to `this` for easy access
-    Object.assign(this, $taxonomies, {
-      taxonomies: Object.keys($taxonomies)
-    })
+    Object.assign(this, $taxonomies)
   }
 
  /**
@@ -431,7 +429,7 @@ class Lodger implements LodgerAPI {
     subscriberName : string = 'main',
   ) {
     Object.keys(taxonomii).forEach(taxonomie => {
-      this.taxonomies[taxonomie].subscribe(subscriberName, { ... criteriuCerut })
+      this.$taxonomies[taxonomie].subscribe(subscriberName, { ... criteriuCerut })
     })
   }
 
