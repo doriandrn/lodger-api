@@ -112,7 +112,15 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   set collection (collection: RxCollection) {
-    const { _schema: { hooks }, options: { timestamps }, $collection, $lodger: { $taxonomies }, parents } = this
+    const {
+      _schema: { hooks },
+      options: { timestamps },
+      form: { internalFields },
+      $lodger: { $taxonomies },
+      $collection,
+      parents,
+      children
+    } = this
 
     if ($collection)
       throw new Error('Collection already set for this taxonomy')
@@ -131,6 +139,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       doc.atomicUpdate((d) => {
         d.createdAt = new Date().getTime()
         d.updatedAt = data.createdAt
+
+        if (children && children.length) {
+          Object.assign(d, Object.keys(internalFields).reduce((a, b) => ({ ...a, [b]: internalFields[b].default }), {}))
+        }
         return d
       })
 
