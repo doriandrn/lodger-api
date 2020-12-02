@@ -194,6 +194,7 @@ class Lodger implements LodgerAPI {
 
   taxonomies: Taxonomie[] = Object.keys(this.$taxonomies)
   static db ?: RxDatabase
+  static boundRels : boolean = false
 
   /**
    * Main Init function
@@ -212,17 +213,32 @@ class Lodger implements LodgerAPI {
     const opts = merge({ ... config.build }, options || {} )
     const { state } = opts
 
-    const collectionsCreator = {}
     const taxesSchemas = await loadSchemas(taxonomies)
+    const taxes = taxesSchemas.map(sch => new Taxonomy(sch, { timestamps: true }))
+    const Taxonomies  = taxes.reduce((a, b) => ({ ...a, [b.plural]: b }), {})
+    const collectionsCreator = Object.keys(Taxonomies).reduce((a, b) => ({ ...a, [b]: Taxonomies[b]._collectionCreator }), {})
 
-    const Taxonomies = taxesSchemas
-      .map(schema => {
-        const tax = new Taxonomy(schema, { timestamps: true })
-        collectionsCreator[tax.plural] = tax._collectionCreator
-        return tax
-      }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
+    try {
+      await Lodger.bindRelationships(Taxonomies)
+      Lodger.boundRels = true
+    } catch (e) {
+      console.error('Could not bind relationships', e)
+    }
+
+    // const Taxonomies = taxesSchemas
+    //   .map(schema => {
+    //     const tax = new Taxonomy(schema, { timestamps: true })
+    //     collectionsCreator[tax.plural] = tax._collectionCreator
+    //     return tax
+    //   }).reduce((a, b) => ({ ...a, [b.plural]: b }), {})
+
+
 
     await Lodger.setupRxDB(opts.db, collectionsCreator)
+    // Assign collections to taxonomies
+    Object.keys(Taxonomies).forEach((taxName: string) => {
+      Taxonomies[taxName].collection = Lodger.db[taxName]
+    })
 
     return new Lodger(
       Taxonomies,
@@ -240,16 +256,10 @@ class Lodger implements LodgerAPI {
     protected plugins: LodgerPlugin[] = [],
     protected restoreState ?: Partial<State>
   ) {
-    this.bindRelationships($taxonomies)
-    this.taxonomies = Object.keys($taxonomies)
-
-    // Assign collections to taxonomies
-    Object.keys($taxonomies).forEach(taxName => {
-      $taxonomies[taxName].collection = Lodger.db[taxName]
-    })
-
     // Bind shortcuts for every tax to `this` for easy access
-    Object.assign(this, $taxonomies)
+    Object.assign(this, $taxonomies, {
+      taxonomies: Object.keys($taxonomies)
+    })
   }
 
  /**
@@ -262,8 +272,11 @@ class Lodger implements LodgerAPI {
   * @param {*} $taxonomies
   * @memberof Lodger
   */
-  bindRelationships ($taxonomies: TaxesList) {
-    this.taxonomies.map((tax: Taxonomie) => {
+  private static async bindRelationships ($taxonomies: TaxesList) {
+    if (Lodger.boundRels)
+      return
+
+    return await Promise.all(Object.keys($taxonomies).map((tax: Taxonomie) => {
       const $tax = $taxonomies[tax]
 
       Object.defineProperty($taxonomies[tax], '$lodger', {
@@ -310,8 +323,7 @@ class Lodger implements LodgerAPI {
       }
 
       return tax
-    })
-
+    }))
   }
 
   /**
