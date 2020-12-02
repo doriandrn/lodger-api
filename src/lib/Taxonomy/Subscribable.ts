@@ -89,8 +89,10 @@ implements SubscribableTaxonomy<T> {
     if (subscribers[subscriberName])
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
+    console.log('gh', this, taxonomies)
 
     const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
+    console.log(descriptor)
     const subState = state.subs[descriptor] ||
       Object.assign(state.subs, { [descriptor]: {} }) && state.subs[descriptor]
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
@@ -99,7 +101,6 @@ implements SubscribableTaxonomy<T> {
       sub.refsIds = observable({})
     }
 
-    console.log('gh', this, taxonomies)
 
     let allTaxes : Taxonomie[] = []
 
