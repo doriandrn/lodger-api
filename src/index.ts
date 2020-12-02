@@ -248,16 +248,21 @@ class Lodger implements LodgerAPI {
 
     // Bind lodger context to taxes for easy access
     this.taxonomies.forEach(tax => {
-      Object.defineProperties($taxonomies[tax], {
-        '$lodger': {
-          value: this,
-          writable: false
-        },
-        collection: {
-          value: Lodger.db[tax],
-          writable: false
-        }
+      Object.defineProperty($taxonomies[tax], '$lodger', {
+        value: this,
+        writable: false
       })
+      $taxonomies[tax].collection = Lodger.db[tax]
+      // Object.defineProperties($taxonomies[tax], {
+      //   '$lodger': {
+      //     value: this,
+      //     writable: false
+      //   },
+      //   collection: {
+      //     value: Lodger.db[tax],
+      //     writable: false
+      //   }
+      // })
     })
   }
 
