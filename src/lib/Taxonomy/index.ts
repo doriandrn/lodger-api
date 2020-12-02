@@ -112,7 +112,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   set collection (collection: RxCollection) {
-    const { _schema: { hooks }, options: { timestamps }, $collection, $lodger, parents } = this
+    const { _schema: { hooks }, options: { timestamps }, $collection, $lodger: { $taxonomies }, parents } = this
 
     if ($collection)
       throw new Error('Collection already set for this taxonomy')
