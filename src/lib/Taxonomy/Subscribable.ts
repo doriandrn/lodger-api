@@ -102,12 +102,18 @@ implements SubscribableTaxonomy<T> {
     let allTaxes : Taxonomie[] = []
 
     const updateTaxes = async (taxes: Taxonomie[], id : string, name: string) => {
-      if (!taxes || !taxes.length) return
-      if (!allTaxes.length) allTaxes = [ ...this.$lodger.taxonomies ]
+      if (!taxes || !taxes.length)
+        return
+
+      if (!allTaxes.length)
+        allTaxes = [ ...taxonomies ]
 
       taxes.map((tax: Taxonomie) => {
         const $tax = this.$lodger[tax] || this.$lodger[tax.plural]
-        if (!$tax) return true
+        if (!$tax)
+          return true
+
+        console.log('AT', allTaxes, taxonomies)
 
         if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
           allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
@@ -164,6 +170,17 @@ implements SubscribableTaxonomy<T> {
       })
     }
 
+    if (hooks) {
+      // Object.keys(hooks).map(hook => hooks[hook].bind(this))
+
+      // run onEmpty hook
+      if (hooks.empty) {
+        await sub.updates
+        if (!sub.ids.length)
+          hooks.empty.call(this)
+      }
+    }
+
     reaction(() => sub.selectedId, (id) => {
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
@@ -183,17 +200,7 @@ implements SubscribableTaxonomy<T> {
       Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
     })
 
-    if (hooks) {
-      // Object.keys(hooks).map(hook => hooks[hook].bind(this))
 
-      // run onEmpty hook
-      if (hooks.empty) {
-        await sub.updates
-        if (!sub.ids.length)
-          hooks.empty.call(this)
-      }
-
-    }
   }
 
   /**
