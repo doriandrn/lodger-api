@@ -276,7 +276,9 @@ class Lodger implements LodgerAPI {
     if (Lodger.boundRels)
       return
 
-    return await Promise.all(Object.keys($taxonomies).map((tax: Taxonomie) => {
+    const taxes = Object.keys($taxonomies)
+
+    return await Promise.all(taxes.map((tax: Taxonomie) => {
       const $tax = $taxonomies[tax]
 
       Object.defineProperty($taxonomies[tax], '$lodger', {
@@ -288,7 +290,7 @@ class Lodger implements LodgerAPI {
       const children: Taxonomie[] = []
       const { schema: { required }} = $tax.form
 
-      this.taxonomies.forEach(t => {
+      taxes.forEach(t => {
         const $t = $taxonomies[t]
         const { name, plural } = $t.form
         const parentsKeys = [`${name}Id`, plural]
