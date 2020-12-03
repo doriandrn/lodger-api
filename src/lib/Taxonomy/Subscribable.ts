@@ -87,7 +87,7 @@ implements SubscribableTaxonomy<T> {
       }
     } = this
 
-    if (subscribers[subscriberName] || subscriberName === 'single')
+    if (subscribers[subscriberName])
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
@@ -181,6 +181,9 @@ implements SubscribableTaxonomy<T> {
     }
 
     reaction(() => sub.selectedId, (id) => {
+      if (subscriberName === 'single')
+        return
+
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
       Object.assign(subState, { selectedId: id })
