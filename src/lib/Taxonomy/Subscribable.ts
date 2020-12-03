@@ -87,7 +87,7 @@ implements SubscribableTaxonomy<T> {
       }
     } = this
 
-    if (subscribers[subscriberName])
+    if (subscribers[subscriberName] || subscriberName === 'single')
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
