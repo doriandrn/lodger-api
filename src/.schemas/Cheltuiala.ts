@@ -33,10 +33,10 @@ const fields: FieldsCreator<Cheltuiala> = {
     preview: 0,
     search: true
   },
-  proiect: {
-    preview: 3,
-    index: true
-  },
+  // proiect: {
+  //   preview: 3,
+  //   index: true
+  // },
   dataScadenta: {
     type: 'dateTime',
     preview: 0,
@@ -45,11 +45,11 @@ const fields: FieldsCreator<Cheltuiala> = {
     type: 'string',
     ref: 'furnizori'
   },
-  facturi: {
-    type: 'search',
-    ref: 'facturi',
-    // required: true TODO: e necesar? ?????????
-  },
+  // facturi: {
+  //   type: 'search',
+  //   ref: 'facturi',
+  //   // required: true TODO: e necesar? ?????????
+  // },
   suma: {
     type: '$',
     required: true,
@@ -57,11 +57,11 @@ const fields: FieldsCreator<Cheltuiala> = {
     preview: 1,
   },
   distribuire: {
-    type: 'distribuire'
+    type: 'distribuire',
+    options: ['suprafata', 'locatari', 'contor', 'custom']
   },
   apartamenteEligibile: {
-    type: 'selApartamente',
-    options: ({ getters }) => getters['asociatie/apartamente']
+    type: 'selApartamente'
   }
 }
 
