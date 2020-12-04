@@ -557,11 +557,12 @@ class Lodger implements LodgerAPI {
   }
 
   @computed get activeUserId () {
-    const { mainSubName } = this
-    const subState = this.state.subs[`${mainSubName}-0`]
+    const subState = this.state.subs[`${this.mainSubName}-0`]
+    if (!subState)
+      return
 
-    return subState && subState.activeId ?
-      subState.activeId :
+    return subState && subState.selectedId ?
+      subState.selectedId :
       undefined
   }
 
