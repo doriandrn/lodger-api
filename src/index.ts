@@ -314,7 +314,7 @@ class Lodger implements LodgerAPI {
       if (children && children.length > 0)
         $tax.children = children.filter(c => parents.map(p => p.plural).indexOf(c.replace('Id', '').plural) === -1)
 
-      if ($tax.children.length) {
+      if ($tax.children && $tax.children.length) {
         const countersField = new Field({
           type: 'object',
           default: $tax.children.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
