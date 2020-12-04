@@ -83,7 +83,8 @@ implements SubscribableTaxonomy<T> {
         state,
         modal,
         taxonomies,
-        $taxonomies
+        $taxonomies,
+        mainSubName
       }
     } = this
 
