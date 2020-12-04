@@ -303,7 +303,7 @@ class Lodger implements LodgerAPI {
           .filter(key => [`${$tax.form.name}Id`, $tax.form.plural].indexOf(key) > -1)
           // key !== 'servicii'
 
-        if (childrenKeys.length) {
+        if (childrenKeys && childrenKeys.length) {
           children.push($t.form.plural)
         }
       })
