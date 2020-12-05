@@ -133,6 +133,7 @@ export class Field implements FieldAPI {
   search ?: boolean
   fieldset ?: number
   final ?: boolean
+  readonly options ?: string[] | {}
   freezed ?: boolean // cannott be edited by the user after init
 
   /**
@@ -163,14 +164,16 @@ export class Field implements FieldAPI {
       oninput,
       key,
       fieldset,
-      search
+      search,
+      options
     } = data
 
-    this.preview = preview
+    if (preview && preview > -1) this.preview = preview
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
-    this.oninput = oninput
-    this.focus = focus
+    if (oninput) this.oninput = oninput
+    if (focus) this.focus = focus
+    if (options) this.options = options
 
     if (key) this.key = key
     if (search) this.search = search
