@@ -58,6 +58,7 @@ const fields: FieldsCreator<Cheltuiala> = {
   },
   distribuire: {
     type: 'distribuire',
+    default: 0,
     options: ['suprafata', 'locatari', 'contor', 'custom']
   },
   apartamenteEligibile: {

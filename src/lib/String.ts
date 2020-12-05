@@ -18,7 +18,7 @@ export enum strings {
  * @enum {number}
  */
 export enum numbers {
-  date, dateTime, number, rol
+  date, dateTime, number, rol, distribuire
 }
 
 /**
@@ -27,7 +27,7 @@ export enum numbers {
  * @enum {number}
  */
 export enum arrays {
-  array, contoare, distribuire,
+  array, contoare,
   furnizori, selApartamente, servicii, scari
 }
 
