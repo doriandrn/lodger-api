@@ -168,7 +168,7 @@ export class Field implements FieldAPI {
       options
     } = data
 
-    if (preview && preview > -1) this.preview = preview
+    if (preview !== undefined) this.preview = preview
     this._type = type // hold this for reference
     this.type = String(type || '').asRxDBType
     if (oninput) this.oninput = oninput
@@ -203,9 +203,10 @@ export class Field implements FieldAPI {
     }
 
     // assign default value, can be undefined
-    this.default = typeof data.default === 'function' ?
-      data.default() :
-      data.default
+    if (data.default)
+      this.default = typeof data.default === 'function' ?
+        data.default() :
+        data.default
 
     // bind the value function
     const { storage } = this
