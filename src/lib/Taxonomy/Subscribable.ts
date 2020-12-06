@@ -95,7 +95,7 @@ implements SubscribableTaxonomy<T> {
     const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
     const subState = state.subs[descriptor] ||
       Object.assign(state.subs, { [descriptor]: {} }) && state.subs[descriptor]
-    const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, options || subState)
+    const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
 
     if (this.parents && this.parents.length && !sub.refsIds) {
       sub.refsIds = observable({})
