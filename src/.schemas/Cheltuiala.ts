@@ -40,6 +40,7 @@ const fields: FieldsCreator<Cheltuiala> = {
   dataScadenta: {
     type: 'dateTime',
     preview: 0,
+    default: () => new Date().getTime() + 2629743830 // 1mo
   },
   catre: {
     type: 'string',
