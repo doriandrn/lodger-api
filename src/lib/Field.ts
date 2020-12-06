@@ -203,7 +203,7 @@ export class Field implements FieldAPI {
     }
 
     // assign default value, can be undefined
-    if (data.default)
+    if (data.default !== undefined)
       this.default = typeof data.default === 'function' ?
         data.default() :
         data.default
