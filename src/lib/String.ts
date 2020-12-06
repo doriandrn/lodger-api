@@ -28,7 +28,7 @@ export enum numbers {
  */
 export enum arrays {
   array, contoare,
-  furnizori, selApartamente, servicii, scari
+  furnizori, servicii, scari
 }
 
 /**
@@ -37,7 +37,7 @@ export enum arrays {
  * @enum {number}
  */
 export enum objects {
-  contactFields, object, organizatie, $
+  contactFields, object, organizatie, $, selApartamente
 }
 
 

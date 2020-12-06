@@ -14,6 +14,7 @@ declare global {
     catre: Furnizor,
     suma: Money,
     facturi: Factura[],
+    progres: number,
     dataScadenta: Date,
     distribuire: Distribuire
     proiect: string
@@ -45,6 +46,10 @@ const fields: FieldsCreator<Cheltuiala> = {
   catre: {
     type: 'string',
     ref: 'furnizori'
+  },
+  progres: {
+    type: 'number',
+    default: 0
   },
   // facturi: {
   //   type: 'search',
