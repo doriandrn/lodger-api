@@ -64,7 +64,7 @@ const fields: FieldsCreator<Cheltuiala> = {
     final: true
   },
   modDistribuire: {
-    type: 'select',
+    type: 'number',
     default: 0,
     final: true,
     options: ['suprafata', 'locatari', 'contor', 'custom']
