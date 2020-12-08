@@ -111,6 +111,14 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
   }
 
+  get freshDates () {
+    const createdAt = new Date().getTime()
+    return {
+      createdAt,
+      updatedAt: createdAt
+    }
+  }
+
   set collection (collection: RxCollection) {
     const {
       _schema: { hooks },
@@ -127,7 +135,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
     if (timestamps) {
       collection.preSave((data) => {
-        data.updatedAt = new Date().getTime()
+        Object.assign(data, this.freshDates)
+        return data
       }, false)
     }
 
@@ -137,8 +146,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       this.last = doc._id
 
       doc.atomicUpdate((d) => {
-        d.createdAt = new Date().getTime()
-        d.updatedAt = data.createdAt
+        Object.assign(d, this.freshDates)
 
         if (children && children.length) {
           Object.assign(d, Object.keys(internalFields).reduce((a, b) => ({ ...a, [b]: internalFields[b].default }), {}))

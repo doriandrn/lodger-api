@@ -111,7 +111,6 @@ implements FormAPI<I> {
         const timestampKeys: string[] = ['createdAt', 'updatedAt']
         const captureTimestampField: FieldCreator = {
           type: 'dateTime',
-          // required: true, // for filters / sorts
           index: true
         }
         timestampKeys.map(key => {
