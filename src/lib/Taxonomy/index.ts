@@ -254,7 +254,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   /**
-   * Removes a Document by ID from the collection
+   * * Removes a Document by ID from the collection
    *
    * @param {string} id
    * @returns {RxDocument<T>} removed document
@@ -273,7 +273,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   }
 
   /**
-   * Inserts/upserts a new item in DB
+   * * Inserts/upserts a new item in DB
    *
    * @param {Object} doc
    * @returns {RxDocument<Taxonomie>} the fresh document
