@@ -115,7 +115,12 @@ implements FormAPI<I> {
           index: true
         }
         timestampKeys.map(key => {
-          this.fields[key] = new Field({ ...captureTimestampField, final: key === 'createdAt', freezed: key === 'updatedAt' })
+          this.fields[key] = new Field({
+            ...captureTimestampField,
+            final: key === 'createdAt',
+            freezed: key === 'updatedAt',
+            default: () => new Date().getTime()
+          })
         })
       }
     }
