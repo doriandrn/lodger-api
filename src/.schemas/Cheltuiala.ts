@@ -52,7 +52,7 @@ const fields: FieldsCreator<Cheltuiala> = {
     ref: 'furnizori'
   },
   progres: {
-    type: 'number',
+    type: 'meter',
     default: 0,
     freezed: true
   },

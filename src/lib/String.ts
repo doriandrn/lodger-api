@@ -1,5 +1,5 @@
 import { JsonSchemaTypes } from "rxdb";
-import { Currency } from './maintainable/currencies'
+// import { Currency } from './maintainable/currencies'
 
 /**
  * Accepted -strings- for a LodgerSchema field's type
@@ -18,7 +18,7 @@ export enum strings {
  * @enum {number}
  */
 export enum numbers {
-  date, dateTime, number, rol, distribuire
+  date, dateTime, number, rol, meter
 }
 
 /**
