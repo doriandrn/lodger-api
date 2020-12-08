@@ -619,6 +619,16 @@ class Lodger implements LodgerAPI {
   set modal (data) {
     merge(this.appState.modal, data)
   }
+
+  get freshDates () {
+    return () => {
+      const createdAt = new Date().getTime()
+      return {
+        createdAt,
+        updatedAt: createdAt
+      }
+    }
+  }
 }
 
 export {

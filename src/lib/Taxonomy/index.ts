@@ -111,20 +111,12 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
   }
 
-  get freshDates () {
-    const createdAt = new Date().getTime()
-    return {
-      createdAt,
-      updatedAt: createdAt
-    }
-  }
-
   set collection (collection: RxCollection) {
     const {
       _schema: { hooks },
       options: { timestamps },
       form: { internalFields },
-      $lodger: { $taxonomies },
+      $lodger: { $taxonomies, freshDates },
       $collection,
       parents,
       children
@@ -135,7 +127,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
     if (timestamps) {
       collection.preSave((data) => {
-        Object.assign(data, this.freshDates)
+        if (!d.updatedAt)
+          Object.assign(data, freshDates())
         return data
       }, false)
     }
@@ -146,7 +139,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       this.last = doc._id
 
       doc.atomicUpdate((d) => {
-        Object.assign(d, this.freshDates)
+        if (!d.updatedAt)
+          Object.assign(d, freshDates())
 
         if (children && children.length) {
           Object.assign(d, Object.keys(internalFields).reduce((a, b) => ({ ...a, [b]: internalFields[b].default }), {}))
@@ -301,12 +295,16 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       'upsert' :
       'insert'
 
-    const { name, options } = this
+    const { name, options, $lodger: { freshDates } } = this
 
     /**
      * do the insert / upsert and following actions
      */
     try {
+      if (method === 'insert') {
+        Object.assign(doc, freshDates())
+      }
+
       const _doc = await this.collection[method](doc)
       const id = _doc._id
 
