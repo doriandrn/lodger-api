@@ -19,6 +19,7 @@ declare global {
     modDistribuire: Distribuire
     proiect: string
     snapshotsApartamente: {}
+    attachments: {}
 
     readonly distribuire: []
     readonly asociatieId: string
@@ -76,7 +77,8 @@ const fields: FieldsCreator<Cheltuiala> = {
   snapshotsApartamente: {
     final: true,
     type: 'object',
-  }
+  },
+  attachments: {}
 }
 
 export {
