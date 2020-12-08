@@ -59,7 +59,8 @@ declare global {
     step ?: number // incrementer for number inputs, step or multipleOf
     min ?: number
     max ?: number
-    final ?: boolean // cannot be changed later on after first init
+    final ?: boolean // cannot be modified at all
+    freezed ?: boolean // cannot be changed later on after first init
 
     v ?: string // validation string (for vee-validate)
 
@@ -164,6 +165,7 @@ export class Field implements FieldAPI {
       oninput,
       key,
       fieldset,
+      freezed,
       search,
       options
     } = data
@@ -201,6 +203,9 @@ export class Field implements FieldAPI {
         v :
         `required|${v}`
     }
+
+    if (freezed)
+      this.freezed = true
 
     // assign default value, can be undefined
     if (data.default !== undefined)

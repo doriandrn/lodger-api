@@ -16,10 +16,11 @@ declare global {
     facturi: Factura[],
     progres: number,
     dataScadenta: Date,
-    distribuire: Distribuire
+    modDistribuire: Distribuire
     proiect: string
+    snapshotsApartamente: {}
 
-    readonly apartamenteEligibile: []
+    readonly distribuire: []
     readonly asociatieId: string
   }
 }
@@ -29,6 +30,7 @@ const fields: FieldsCreator<Cheltuiala> = {
     ref: 'asociatii',
     required: true,
     index: true,
+    final: true
   },
   denumire: {
     preview: 0,
@@ -40,35 +42,40 @@ const fields: FieldsCreator<Cheltuiala> = {
   // },
   dataScadenta: {
     type: 'dateTime',
+    final: true,
     preview: 0,
     default: () => new Date().getTime() + 2629743830 // 1mo
   },
   catre: {
     type: 'string',
+    final: true,
     ref: 'furnizori'
   },
   progres: {
     type: 'number',
-    default: 0
+    default: 0,
+    freezed: true
   },
-  // facturi: {
-  //   type: 'search',
-  //   ref: 'facturi',
-  //   // required: true TODO: e necesar? ?????????
-  // },
   suma: {
     type: '$',
     required: true,
     index: true,
     preview: 1,
+    final: true
   },
-  distribuire: {
-    type: 'distribuire',
+  modDistribuire: {
+    type: 'select',
     default: 0,
+    final: true,
     options: ['suprafata', 'locatari', 'contor', 'custom']
   },
-  apartamenteEligibile: {
+  distribuire: {
+    final: true,
     type: 'selApartamente'
+  },
+  snapshotsApartamente: {
+    final: true,
+    type: 'object',
   }
 }
 

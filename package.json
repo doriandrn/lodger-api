@@ -1,6 +1,6 @@
 {
   "name": "lodger",
-  "version": "0.0.192",
+  "version": "0.0.193",
   "type": "module",
   "description": "Offline-first API for HOAs",
   "main": "dist/index.cjs",
@@ -52,7 +52,7 @@
     "json2yaml": "^1.1.0",
     "pouchdb-adapter-memory": "^7.2.2",
     "regenerator-runtime": "^0.13.7",
-    "rollup": "^2.34.1",
+    "rollup": "^2.34.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-copy": "^3.3.0",
