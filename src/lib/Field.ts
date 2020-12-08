@@ -9,8 +9,7 @@ import S from './String'
 // This should only be imported for DEVELOPMENT PURPOSES
 import fakeData from 'helper/dev/fakeData'
 
-import { observable, computed } from 'mobx'
-import { hasInterceptors } from "mobx/lib/internal";
+import { computed } from 'mobx'
 
 const { String } = S
 
@@ -166,6 +165,7 @@ export class Field implements FieldAPI {
       key,
       fieldset,
       freezed,
+      final,
       search,
       options
     } = data
@@ -176,7 +176,7 @@ export class Field implements FieldAPI {
     if (oninput) this.oninput = oninput
     if (focus) this.focus = focus
     if (options) this.options = options
-
+    if (final) this.final = final
     if (key) this.key = key
     if (search) this.search = search
     if (index !== undefined) this._index = true
