@@ -127,7 +127,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
     if (timestamps) {
       collection.preSave((data) => {
-        if (!d.updatedAt)
+        if (!data.updatedAt)
           Object.assign(data, freshDates())
         return data
       }, false)
