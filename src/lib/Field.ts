@@ -178,6 +178,7 @@ export class Field implements FieldAPI {
     if (options) this.options = options
     if (final) this.final = final
     if (key) this.key = key
+    if (key === 'attachments') this.type = undefined
     if (search) this.search = search
     if (index !== undefined) this._index = true
     if (fieldset !== undefined) this.fieldset = fieldset
