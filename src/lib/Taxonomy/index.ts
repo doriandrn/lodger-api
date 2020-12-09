@@ -150,11 +150,12 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
       if (parents && parents.length) {
         await Promise.all(parents.map(async parent => {
-          const pId = data[`${parent}Id`] || data[parent]
+          let pId = data[`${parent}Id`] || data[parent]
           if (!pId) {
             console.error(`Missing parent id ${parent} for ${plural}`)
             return
           }
+          pId = pId.length === 1 ? pId[0] : pId
 
           const parentDoc = await $taxonomies[parent.plural].collection.findOne(pId).exec()
           if (!parentDoc) {
