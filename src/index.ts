@@ -32,9 +32,9 @@ const { env: { NODE_ENV }, browser } = process
  * @enum {number}
  */
 enum Taxonomii {
-  Apartament, Asociatie, Bloc, Cheltuiala,
-  Contor, Factura, Furnizor, Incasare,
-  Serviciu, Utilizator
+  Apartament, Asociatie, Bloc,
+  Cheltuiala, Contor, Furnizor,
+  Incasare, Serviciu, Utilizator
 }
 
 const taxonomies: Taxonomie[] = Object
@@ -220,7 +220,6 @@ class Lodger implements LodgerAPI {
 
     try {
       await Lodger.bindRelationships(Taxonomies)
-      Lodger.boundRels = true
     } catch (e) {
       console.error('Could not bind relationships', e)
     }
@@ -282,6 +281,8 @@ class Lodger implements LodgerAPI {
 
     const taxes = Object.keys($taxonomies)
 
+    Lodger.boundRels = true
+
     return await Promise.all(taxes.map((tax: Taxonomie) => {
       const $tax = $taxonomies[tax]
 
@@ -308,16 +309,15 @@ class Lodger implements LodgerAPI {
         }
       })
 
-      if (parents && parents.length > 0)
+      if (parents && parents.length)
         $tax.parents = parents
 
-      if (children && children.length > 0)
-        $tax.children = children.filter(c => parents.map(p => p.plural).indexOf(c.replace('Id', '').plural) === -1)
+      if (children && children.length) {
+        const _c = $tax.children = children.filter(c => parents.map(p => p.plural).indexOf(c.replace('Id', '').plural) === -1)
 
-      if ($tax.children && $tax.children.length) {
         const countersField = new Field({
           type: 'object',
-          default: $tax.children.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
+          default: _c.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
         })
         $tax.form.schema.add('counters', countersField)
         $tax.form.internalFields['counters'] = countersField
