@@ -81,7 +81,7 @@ const fields: FieldsCreator<Asociatie> = {
   utilizatori: {
     type: 'array',
     ref: 'utilizator',
-    // required: true,
+    required: true,
     value: ({ activeDoc }) => activeDoc.utilizatori
   },
   servicii: {
@@ -143,10 +143,10 @@ const methods: RxCollectionBase<Asociatie, AsociatieAPI> = {
 }
 
 const statics = {
-  selected: async function (id) {
-    // console.log('STATIC!', this)
-    return await this.findOne(id).exec()
-  }
+  // selected: async function (id) {
+  //   // console.log('STATIC!', this)
+  //   return await this.findOne(id).exec()
+  // }
 }
 
 // DRY: la buatoane, daca au 'click', n-au nevoie de id
