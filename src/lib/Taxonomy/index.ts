@@ -115,7 +115,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     const {
       _schema: { hooks },
       options: { timestamps },
-      form: { internalFields },
+      form: { internalFields, plural },
       $lodger: { $taxonomies, freshDates },
       $collection,
       parents,
@@ -150,9 +150,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
       if (parents && parents.length) {
         await Promise.all(parents.map(async parent => {
-          const pId = data[`${parent}Id`]
+          const pId = data[`${parent}Id`] || data[parent]
           if (!pId) {
-            console.error('Missing parent id', parent)
+            console.error(`Missing parent id ${parent} for ${plural}`)
             return
           }
 
