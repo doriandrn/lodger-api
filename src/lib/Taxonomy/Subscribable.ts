@@ -182,21 +182,21 @@ implements SubscribableTaxonomy<T> {
     }
 
     reaction(() => sub.selectedId, (id) => {
+      Object.assign(subState, { selectedId: id })
       if (subscriberName === 'single')
         return
 
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
-      Object.assign(subState, { selectedId: id })
     })
 
     // Trigger the modal on activeId change
     reaction(() => sub.activeId, async (id) => {
+      Object.assign(subState, { activeId: id })
       if (!id) return
       const activeDoc = await this.collection.findOne(id).exec()
       modal.activeDoc = activeDoc
       Object.assign(modal, { sub })
-      Object.assign(subState, { activeId: id })
     })
 
     reaction(() => ({ ...sub.criteria }), criteria => {
