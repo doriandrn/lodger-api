@@ -78,7 +78,9 @@ const fields: FieldsCreator<Cheltuiala> = {
     final: true,
     type: 'object',
   },
-  attachments: {}
+  attachments: {
+    encrypted: true
+  }
 }
 
 export {
