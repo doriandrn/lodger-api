@@ -124,7 +124,7 @@ implements FormAPI<I> {
       }
     }
 
-    this.schema = new Schema(name, this.fields)
+    this.schema = new Schema(name, this.fields, opts)
 
     // default onsubmit func
     this.onsubmit = () => {}

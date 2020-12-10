@@ -205,10 +205,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     readonly options : LodgerTaxonomyCreatorOptions = { timestamps: true },
   ) {
     const { name, fields, fieldsets, hooks } = _schema
-    const { timestamps } = options
+    const { timestamps, attachments } = options
 
     this.form = new Form({ name, fields, fieldsets, hooks }, {
-      captureTimestamp: timestamps
+      captureTimestamp: timestamps,
+      attachments
     })
   }
 

@@ -214,7 +214,7 @@ class Lodger implements LodgerAPI {
     const { state } = opts
 
     const taxesSchemas = await loadSchemas(taxonomies)
-    const taxes = taxesSchemas.map(sch => new Taxonomy(sch, { timestamps: true }))
+    const taxes = taxesSchemas.map(sch => new Taxonomy(sch, { timestamps: true, attachments: sch.name === 'cheltuiala' }))
     const Taxonomies  = taxes.reduce((a, b) => ({ ...a, [b.plural]: b }), {})
     const collectionsCreator = Object.keys(Taxonomies).reduce((a, b) => ({ ...a, [b]: Taxonomies[b]._collectionCreator }), {})
 

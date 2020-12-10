@@ -34,6 +34,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
   readonly properties : SchemaProperties<Interface> = {}
   readonly required: string[] = []
   readonly indexes : string[] = []
+  readonly attachments ?: File[]
 
   /**
    * Constructs a valid RxJsonSchema out of a Lodger Form Data item
@@ -54,7 +55,13 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
 
     Object.keys(fields).map(f => this.add(fields[f].id || f, fields[f]))
 
-    if (options) {}
+    if (options) {
+      if (options.attachments) {
+        this.attachments = {
+          encrypted: true
+        }
+      }
+    }
   }
 
   /**
