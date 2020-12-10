@@ -128,6 +128,7 @@ export class Field implements FieldAPI {
 
   readonly _type ?: FieldTypes
   readonly _index ?: boolean // should be indexed to search for
+  readonly encrypted ?: boolean
   key : string = 'index'
   focus ?: boolean
   search ?: boolean
@@ -153,6 +154,7 @@ export class Field implements FieldAPI {
     const {
       ref,
       focus,
+      encrypted,
       index,
       indexRef,
       type,
@@ -182,6 +184,7 @@ export class Field implements FieldAPI {
     if (search) this.search = search
     if (index !== undefined) this._index = true
     if (fieldset !== undefined) this.fieldset = fieldset
+    if (encrypted !== undefined) this.encrypted = encrypted
 
     // transform the ref
     if (ref) {
