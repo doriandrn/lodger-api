@@ -58,7 +58,7 @@ export default class Schema<Name extends string, Interface> implements RxJsonSch
     if (options) {
       if (options.attachments) {
         this.attachments = {
-          encrypted: true
+          encrypted: false
         }
       }
     }
