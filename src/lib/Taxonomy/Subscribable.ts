@@ -103,7 +103,7 @@ implements SubscribableTaxonomy<T> {
 
     let allTaxes : Taxonomie[] = []
 
-    const updateTaxes = async (taxes: Taxonomie[], id : string, name: string) => {
+    const updateTaxes = (taxes: Taxonomie[], id : string, name: string) => {
       if (!taxes || !taxes.length)
         return
 
