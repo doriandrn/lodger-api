@@ -557,7 +557,7 @@ class Lodger implements LodgerAPI {
   }
 
   @computed get activeUserId () {
-    const subState = this.state.subs[`${this.mainSubName}-0`]
+    const subState = this.state.subs[`${this.mainSubName}-${this.taxonomies.indexOf('utilizatori')}`]
     if (!subState)
       return
 
