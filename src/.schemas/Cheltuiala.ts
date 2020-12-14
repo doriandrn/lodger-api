@@ -77,6 +77,7 @@ const fields: FieldsCreator<Cheltuiala> = {
   snapshotsApartamente: {
     final: true,
     type: 'object',
+    default: () => ({})
   }
 }
 
