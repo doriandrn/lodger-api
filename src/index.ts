@@ -355,7 +355,7 @@ class Lodger implements LodgerAPI {
           }
         }
 
-        merge(_stateField.items.properties, taxState[$tax.plural])
+        merge(_stateField.items.properties, taxState[$tax.plural] || {})
 
 
         const state = new Field(_stateField)

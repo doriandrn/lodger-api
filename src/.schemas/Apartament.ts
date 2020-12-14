@@ -155,16 +155,13 @@ const fields: FieldsCreator<Apartament> = {
 // }
 
 const hooks = {
-  postInsert: (ctx) => {
-    const { findOne } = ctx.blocuri.collection
-    return async (data, $doc) => {
-      const bloc = await findOne(data.blocId)
-      bloc.atomicUpdate(docd => {
-        docd.state.ultimulApNr += 1
-        return docd
-      })
-      return $doc
-    }
+  postInsert: ($ldg) => async (data, $doc) => {
+    const bloc = await $ldg.blocuri.collection.findOne(data.blocId)
+    bloc.atomicUpdate(docd => {
+      docd.state.ultimulApNr += 1
+      return docd
+    })
+    return $doc
   }
 }
 
