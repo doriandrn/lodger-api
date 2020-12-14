@@ -82,6 +82,7 @@ const fields: FieldsCreator<Asociatie> = {
     type: 'array',
     ref: 'utilizator',
     required: true,
+    default: ($ldg) => [ $ldg.activeUserId ],
     value: ({ activeDoc }) => activeDoc.utilizatori
   },
   servicii: {
