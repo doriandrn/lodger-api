@@ -3,7 +3,7 @@ import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
 import { computed, reaction, observable } from 'mobx'
 import merge from 'deepmerge'
-import { deepObserve } from 'mobx-utils'
+
 /**
  *
  *
@@ -156,7 +156,12 @@ implements SubscribableTaxonomy<T> {
           if (taxSub.criteria.filter) {
             try {
               console.info('Deleting filter on', descriptor, sOrP)
-              delete taxSub.criteria.filter[sOrP]
+              // An ugly implementantion, mobx and even deepobserve, dont react on delete
+              taxSub.criteria.filter = {
+                ...Object.keys(taxSub.criteria.filter)
+                  .filter(k => k !== sOrP)
+                  .reduce((a, b) => ({ ...a, [b]: taxSub.criteria.filter[b] }), {})
+              }
             } catch (e) {
               console.error('Could not delete filter', sOrP, 'on', tax, e)
             }
@@ -193,6 +198,11 @@ implements SubscribableTaxonomy<T> {
       updateTaxes(this.children, id, this.name)
     })
 
+    reaction(() => ({ ...sub.criteria }), (criteria, prevCriteria) => {
+      console.info('Criteria changed', criteria, prevCriteria)
+      Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
+    })
+
     // Trigger the modal on activeId change
     if (subscriberName !== 'single') {
       reaction(() => sub.activeId, async (id) => {
@@ -201,11 +211,6 @@ implements SubscribableTaxonomy<T> {
         const activeDoc = await this.collection.findOne(id).exec()
         modal.activeDoc = activeDoc
         Object.assign(modal, { sub })
-      })
-
-      deepObserve(sub.criteria, (criteria, prevCriteria) => {
-        console.info('Criteria changed', criteria, prevCriteria)
-        Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
       })
     }
   }
