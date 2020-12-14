@@ -151,7 +151,7 @@ implements SubscribableTaxonomy<T> {
         if (sOrP && op && val) {
           const filter = { [sOrP]: { [op]: val } }
           console.info('Settting filters on ', descriptor, filter)
-          taxSub.criteria.filter = filter
+          taxSub.criteria.filter = merge(taxSub.criteria.filter, filter)
         } else {
           if (taxSub.criteria.filter) {
             try {
