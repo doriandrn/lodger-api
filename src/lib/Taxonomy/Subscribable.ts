@@ -110,7 +110,7 @@ implements SubscribableTaxonomy<T> {
       if (!allTaxes.length)
         allTaxes = [ ...taxonomies ]
 
-      taxes.map((tax: Taxonomie) => {
+      taxes.forEach((tax: Taxonomie) => {
         const $tax = $taxonomies[tax] || $taxonomies[tax.plural]
         if (!$tax)
           return true
@@ -169,6 +169,8 @@ implements SubscribableTaxonomy<T> {
         }
 
       })
+
+      console.info(plural, 'tax updated! ->', taxes)
     }
 
     if (hooks) {
@@ -184,26 +186,28 @@ implements SubscribableTaxonomy<T> {
 
     reaction(() => sub.selectedId, (id) => {
       Object.assign(subState, { selectedId: id })
-      if (subscriberName === 'single')
-        return
+      // if (subscriberName === 'single')
+      //   return
 
       allTaxes = [] // has to be reset every time !
       updateTaxes(this.children, id, this.name)
     })
 
     // Trigger the modal on activeId change
-    reaction(() => sub.activeId, async (id) => {
-      Object.assign(subState, { activeId: id })
-      if (!id) return
-      const activeDoc = await this.collection.findOne(id).exec()
-      modal.activeDoc = activeDoc
-      Object.assign(modal, { sub })
-    })
+    if (subscriberName !== 'single') {
+      reaction(() => sub.activeId, async (id) => {
+        Object.assign(subState, { activeId: id })
+        if (!id) return
+        const activeDoc = await this.collection.findOne(id).exec()
+        modal.activeDoc = activeDoc
+        Object.assign(modal, { sub })
+      })
 
-    reaction(() => ({ ...sub.criteria }), (criteria, prevCriteria) => {
-      console.info('Criteria changed', criteria, prevCriteria)
-      Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
-    })
+      reaction(() => ({ ...sub.criteria }), (criteria, prevCriteria) => {
+        console.info('Criteria changed', criteria, prevCriteria)
+        Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
+      })
+    }
   }
 
   /**
