@@ -25,6 +25,7 @@ enum Roluri {
 declare global {
   interface Utilizator {
     _id: string
+    codPIN: number,
     name: string
     avatar: string
     rol: keyof Roluri
@@ -64,6 +65,13 @@ const fields: FieldsCreator<Utilizator> = {
     min: 0,
     max: 6,
     default: 1
+  },
+  codPIN: {
+    type: 'number',
+    min:  1000,
+    max: 9999,
+    encrypted: true,
+    required: true
   }
 }
 

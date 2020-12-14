@@ -49,6 +49,7 @@ const fields: FieldsCreator<Cheltuiala> = {
   catre: {
     type: 'string',
     final: true,
+    required: true,
     ref: 'furnizori'
   },
   progres: {

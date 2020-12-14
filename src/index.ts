@@ -173,6 +173,30 @@ const defaultState: State = {
   }
 }
 
+const ultimaTranzactie = {
+  type: '$'
+}
+
+const taxState = {
+  asociatii: {
+    ultimaTranzactie
+  },
+  blocuri: {
+    ultimulApNr: {
+      type: 'number',
+      default: 1
+    }
+  },
+  apartamente: {
+    ultimaTranzactie
+  },
+  cheltuieli: {
+    progres: {
+      type: 'number'
+    }
+  }
+}
+
 /**
  *
  * @class The main API
@@ -309,13 +333,14 @@ class Lodger implements LodgerAPI {
         }
       })
 
+      // ---- SEPARATOR LOL
+
       if (parents && parents.length)
         $tax.parents = parents
 
       if (children && children.length) {
         const _c = $tax.children = children.filter(c => parents.map(p => p.plural).indexOf(c.replace('Id', '').plural) === -1)
-
-        const state = new Field({
+        const _stateField = {
           type: 'object',
           items: {
             type: 'object',
@@ -328,7 +353,12 @@ class Lodger implements LodgerAPI {
           default: {
             counters: _c.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
           }
-        })
+        }
+
+        merge(_stateField.items.properties, taxState[$tax.plural])
+
+
+        const state = new Field(_stateField)
 
         $tax.form.schema.add('state', state)
         $tax.form.internalFields['state'] = state

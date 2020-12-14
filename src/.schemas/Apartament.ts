@@ -140,22 +140,37 @@ const fields: FieldsCreator<Apartament> = {
     type: 'array',
     ref: 'cheltuieli',
     fieldset: 2,
-  }
+  },
 }
 
-const methods = {
-  async incaseaza (data: Incasare) {
-    if (!this.balanta) this.balanta = 0
-    let incasari = this.incasari || []
-    this.balanta += data.suma
-    incasari.push(data._id)
-    this.incasari = incasari
-    await this.save()
+// const methods = {
+//   async incaseaza (data: Incasare) {
+//     if (!this.balanta) this.balanta = 0
+//     let incasari = this.incasari || []
+//     this.balanta += data.suma
+//     incasari.push(data._id)
+//     this.incasari = incasari
+//     await this.save()
+//   }
+// }
+
+const hooks = {
+  postInsert: (ctx) => {
+    const { findOne } = ctx.blocuri.collection
+    return async (data, $doc) => {
+      const bloc = await findOne(data.blocId)
+      bloc.atomicUpdate(docd => {
+        docd.state.ultimulApNr += 1
+        return docd
+      })
+      return $doc
+    }
   }
 }
 
 export {
-  methods,
+  // methods,
+  hooks,
   fields,
   fieldsets
 }
