@@ -42,8 +42,22 @@ implements SubscribableTaxonomy<T> {
    * @readonly
    * @memberof Taxonomy
    */
-  get data () {
-    return this.subscribers
+  @computed get data () {
+    return Object.keys(this.subscribers).reduce((a, b) => ({ ...a, ...b.items }), {})
+  }
+
+  @computed get dataIds () {
+    return Object.keys(this.data)
+  }
+
+  async getDocument (id: string) {
+    try {
+      return this.dataIds.indexOf(id) > -1 ?
+        this.data[id]._doc :
+        await this.$collection?.findOne(id).exec()
+    } catch (e) {
+      console.error('could not get document', id, this.plural)
+    }
   }
 
   @computed get refsIds () {

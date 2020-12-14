@@ -40,7 +40,7 @@ const fields: FieldsCreator<Apartament> = {
     type: 'number',
     search: true,
     default: async ($ldg, data) => {
-      const bloc = await $ldg.blocuri.getOne(data.blocId)
+      const bloc = await $ldg.blocuri.getDocument(data.blocId)
       return ( bloc.state.ultimulApNr || 0 ) + 1
     },
     value: g => g[selectedApGetter].nr,
