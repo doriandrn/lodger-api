@@ -70,7 +70,7 @@ const fields: FieldsCreator<Utilizator> = {
     type: 'number',
     min:  1000,
     max: 9999,
-    encrypted: true,
+    // encrypted: true,
     required: true
   }
 }
