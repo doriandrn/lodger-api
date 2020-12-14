@@ -315,12 +315,23 @@ class Lodger implements LodgerAPI {
       if (children && children.length) {
         const _c = $tax.children = children.filter(c => parents.map(p => p.plural).indexOf(c.replace('Id', '').plural) === -1)
 
-        const countersField = new Field({
+        const state = new Field({
           type: 'object',
-          default: _c.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
+          items: {
+            type: 'object',
+            properties: {
+              counters: {
+                type: 'object'
+              }
+            },
+          },
+          default: {
+            counters: _c.reduce((a, b) => ({ ...a, [ b.plural ]: 0 }), {})
+          }
         })
-        $tax.form.schema.add('counters', countersField)
-        $tax.form.internalFields['counters'] = countersField
+
+        $tax.form.schema.add('state', state)
+        $tax.form.internalFields['state'] = state
       }
 
       return tax

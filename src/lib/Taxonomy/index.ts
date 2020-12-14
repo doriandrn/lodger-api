@@ -163,7 +163,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
           }
 
           await parentDoc.atomicUpdate(data => {
-            data.counters[collection.name.plural] += 1
+            data.state.counters[collection.name.plural] += 1
             return data
           })
         }))

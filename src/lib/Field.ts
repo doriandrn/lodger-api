@@ -78,6 +78,7 @@ declare global {
     }
     focus ?: boolean // if this should be the first option to focus on
     search ?: boolean // if searchable
+    items ?: { type: 'string' | 'object' | 'array', properties: { [k: string]: any} }
   }
 }
 
