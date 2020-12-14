@@ -158,7 +158,7 @@ const hooks = {
   postInsert: ($ldg) => async (data, $doc) => {
     const bloc = await $ldg.blocuri.collection.findOne(data.blocId).exec()
     bloc.atomicUpdate(docd => {
-      docd.state.ultimulApNr += 1
+      docd.state.ultimulApNr = data.nr
       return docd
     })
     return $doc
