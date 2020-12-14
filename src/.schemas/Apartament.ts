@@ -39,18 +39,9 @@ const fields: FieldsCreator<Apartament> = {
   nr: {
     type: 'number',
     search: true,
-    default: g => {
-      //TODO: numerotare pentru hoteluri, 101 et 1, 201 et 2
-      // const { apartamente } = g['bloc/activeDoc']
-      // if (!apartamente || !apartamente.length) return 1
-
-      // // TODO: asta e pt hoteluri, daca toate ap de pe etaj la scara
-      // const sortate = apartamente
-      //   .map(ap => g.apartamente[ap].nr)
-      //   .sort((a, b) => Number(a) - Number(b))
-      //   .reverse()
-
-      // return sortate[0] + 1
+    default: async ($ldg, data) => {
+      const bloc = await $ldg.blocuri.getOne(data.blocId)
+      return ( bloc.state.ultimulApNr || 0 ) + 1
     },
     value: g => g[selectedApGetter].nr,
     required: true,
