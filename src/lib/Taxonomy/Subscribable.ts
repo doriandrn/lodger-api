@@ -3,7 +3,7 @@ import SubscribableTaxonomyError from '~/lib/Error'
 import Subscriber from 'rxcollection-subscriber'
 import { computed, reaction, observable } from 'mobx'
 import merge from 'deepmerge'
-
+import { deepObserve } from 'mobx-utils'
 /**
  *
  *
@@ -156,7 +156,7 @@ implements SubscribableTaxonomy<T> {
           if (taxSub.criteria.filter) {
             try {
               console.info('Deleting filter on', descriptor, sOrP)
-              taxSub.criteria.filter[sOrP] = null
+              delete taxSub.criteria.filte[sOrP]
             } catch (e) {
               console.error('Could not delete filter', sOrP, 'on', tax, e)
             }
@@ -203,7 +203,7 @@ implements SubscribableTaxonomy<T> {
         Object.assign(modal, { sub })
       })
 
-      reaction(() => ({ ...sub.criteria }), (criteria, prevCriteria) => {
+      deepObserve(sub.criteria, (criteria, prevCriteria) => {
         console.info('Criteria changed', criteria, prevCriteria)
         Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
       })
