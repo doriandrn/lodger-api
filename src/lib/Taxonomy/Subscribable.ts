@@ -156,7 +156,7 @@ implements SubscribableTaxonomy<T> {
           if (taxSub.criteria.filter) {
             try {
               console.info('Deleting filter on', descriptor, sOrP)
-              delete taxSub.criteria.filte[sOrP]
+              delete taxSub.criteria.filter[sOrP]
             } catch (e) {
               console.error('Could not delete filter', sOrP, 'on', tax, e)
             }
