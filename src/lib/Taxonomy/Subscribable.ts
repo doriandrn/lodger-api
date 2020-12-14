@@ -118,11 +118,8 @@ implements SubscribableTaxonomy<T> {
         if (allTaxes && allTaxes.length && allTaxes.indexOf(tax.plural) > -1) {
           allTaxes.splice(allTaxes.indexOf(tax.plural), 1)
         } else {
-          // console.error(tax, 'has been handled.')
           return true
         }
-
-        // console.info('DOIN', tax)
 
         const { subscribers, parents, children } = $tax
         const taxSub = subscribers[subscriberName] ||
@@ -152,16 +149,20 @@ implements SubscribableTaxonomy<T> {
         }
 
         if (sOrP && op && val) {
-          taxSub.criteria.filter = { [sOrP]: { [op]: val } }
+          const filter = { [sOrP]: { [op]: val } }
+          console.info('Settting filters on ', descriptor, filter)
+          taxSub.criteria.filter = filter
         } else {
           if (taxSub.criteria.filter) {
             try {
+              console.info('Deleting filter on', descriptor, sOrP)
               delete taxSub.criteria.filter[sOrP]
             } catch (e) {
-              console.error('could not delete filter', sOrP, 'on', tax, e)
+              console.error('Could not delete filter', sOrP, 'on', tax, e)
             }
 
             if (Object.keys(taxSub.criteria.filter).length === 0) {
+              console.info('Settting filter to NULL on', descriptor, Object.keys(taxSub.criteria.filter))
               taxSub.criteria.filter = null
             }
           }
@@ -199,7 +200,8 @@ implements SubscribableTaxonomy<T> {
       Object.assign(modal, { sub })
     })
 
-    reaction(() => ({ ...sub.criteria }), criteria => {
+    reaction(() => ({ ...sub.criteria }), (criteria, prevCriteria) => {
+      console.info('Criteria changed', criteria, prevCriteria)
       Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
     })
   }
