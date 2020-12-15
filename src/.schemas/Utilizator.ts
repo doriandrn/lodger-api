@@ -52,6 +52,7 @@ const fields: FieldsCreator<Utilizator> = {
   },
   contact: {
     type: 'contactFields',
+    default: () => ({ email: [], tel: [] }),
     value: ({ activeDoc }) => activeDoc.contact
   },
   // preferinte: {

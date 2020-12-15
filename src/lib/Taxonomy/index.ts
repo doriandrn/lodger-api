@@ -133,6 +133,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       }, false)
     }
 
+    const incCounters = data => {
+      data.state.counters[collection.name.plural] += 1
+      return data
+    }
+
     // Global hooks
     collection.postInsert(async (data, doc) => {
       this.totals += 1;
@@ -152,20 +157,24 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
         await Promise.all(parents.map(async parent => {
           let pId = data[`${parent}Id`] || data[parent]
           if (!pId) {
-            console.error(`Missing parent id ${parent} for ${plural}`)
+            console.error(`Missing parent(s) id(s) ${parent} for ${plural}`)
             return
           }
-          pId = pId.length === 1 ? pId[0] : pId
+          const multiple = typeof pId === 'object' && pId.length > 1
+          pId =  multiple ? pId : [ pId ]
+          const { collection } = $taxonomies[parent.plural]
+          const parentDoc = await collection[pId.length > 1 ? 'find' : 'findOne'](pId.length > 1 ? pId : pId[0]).exec()
 
-          const parentDoc = await $taxonomies[parent.plural].collection.findOne(pId).exec()
           if (!parentDoc) {
-            console.error('Missing parent doc', parent)
+            console.error('Missing parent(s) doc(s)', parent)
           }
 
-          await parentDoc.atomicUpdate(data => {
-            data.state.counters[collection.name.plural] += 1
-            return data
-          })
+          if (!multiple)
+            await parentDoc.atomicUpdate(incCounters)
+          else
+            await Promise.all(parentDoc.map(async doc => {
+              await doc.atomicUpdate(incCounters)
+            }))
         }))
       }
     }, true)
