@@ -25,7 +25,7 @@ type SubscriberList<T extends Taxonomie> = {
 export default class STaxonomy<T extends Taxonomie, I>
 extends Taxonomy<T, I>
 implements SubscribableTaxonomy<T> {
-  readonly subscribers: SubscriberList<T> = {}
+  @observable subscribers: SubscriberList<T> = {}
   @observable _refsIds: {[k in Taxonomii]: string} = {}
 
   constructor () {
@@ -51,6 +51,9 @@ implements SubscribableTaxonomy<T> {
   }
 
   async getDocument (id: string) {
+    if (typeof id === 'object' && id.length === 1)
+      id = id[0]
+
     try {
       return this.dataIds.indexOf(id) > -1 ?
         this.data[id]._doc :
