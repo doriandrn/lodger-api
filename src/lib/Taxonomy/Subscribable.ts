@@ -43,7 +43,7 @@ implements SubscribableTaxonomy<T> {
    * @memberof Taxonomy
    */
   @computed get data () {
-    return Object.keys(this.subscribers).reduce((a, b) => ({ ...a, ...b.items }), {})
+    return Object.keys(this.subscribers).reduce((a, b) => ({ ...a, ...this.subscribers[b].items }), {})
   }
 
   @computed get dataIds () {
