@@ -164,12 +164,12 @@ implements SubscribableTaxonomy<T> {
 
         if (sOrP && op && val) {
           const filter = { [sOrP]: { [op]: val } }
-          console.info('Settting filters on ', descriptor, filter)
+          console.info('Settting filters on ', tax, subscriberName, filter)
           taxSub.criteria.filter = merge(taxSub.criteria.filter, filter)
         } else {
           if (taxSub.criteria.filter) {
             try {
-              console.info('Deleting filter on', descriptor, sOrP)
+              console.info('Deleting filter', sOrP, 'on', tax, subscriberName)
               // An ugly implementantion, mobx and even deepobserve, dont react on delete
               taxSub.criteria.filter = {
                 ...Object.keys(taxSub.criteria.filter)

@@ -47,7 +47,6 @@ const fields: FieldsCreator<Cheltuiala> = {
     default: () => new Date().getTime() + 2629743830 // 1mo
   },
   catre: {
-    type: 'string',
     final: true,
     required: true,
     ref: 'furnizori'
@@ -72,7 +71,8 @@ const fields: FieldsCreator<Cheltuiala> = {
   },
   distribuire: {
     final: true,
-    type: 'selApartamente'
+    type: 'selApartamente',
+    default: () => ({})
   },
   snapshotsApartamente: {
     final: true,
