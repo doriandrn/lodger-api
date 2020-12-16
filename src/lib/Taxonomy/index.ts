@@ -164,7 +164,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
           pId =  multiple ? pId : [ pId ]
           const coll = $taxonomies[parent.plural].collection
           const parentDoc = multiple ?
-            (await coll.findByIds(pId)).values() :
+            await coll.findByIds(pId) :
             await coll.findOne(pId[0]).exec()
 
           console.info('parent doc(s)', parentDoc)
@@ -175,8 +175,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
           if (!multiple)
             await parentDoc.atomicUpdate(incCounters)
-          else if (parentDoc.length)
-            await Promise.all(parentDoc.map(async _doc => {
+          else if (parentDoc.size)
+            await Promise.all(pId.map(async id => {
+              const _doc = parentDoc.get(id)
               await _doc.atomicUpdate(incCounters)
             }))
         }))
