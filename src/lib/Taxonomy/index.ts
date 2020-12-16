@@ -160,7 +160,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
             console.error(`Missing parent(s) id(s) ${parent} for ${plural}`)
             return
           }
-          const multiple = typeof pId === 'object' && pId.length > 1
+          const multiple = typeof pId === 'object' && pId.length >= 1
           pId =  multiple ? pId : [ pId ]
           const coll = $taxonomies[parent.plural].collection
           const parentDoc = multiple ?
