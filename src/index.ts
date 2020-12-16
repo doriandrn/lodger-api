@@ -4,6 +4,7 @@ import { observable, computed } from 'mobx'
 import merge from 'deepmerge'
 import { convert } from 'cashify'
 import numeral from 'numeral'
+import { EventEmitter } from 'events'
 // import yaml from 'json2yaml'
 
 import config from './lodger.config'
@@ -268,6 +269,8 @@ class Lodger implements LodgerAPI {
   ) {
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)
+    const { on, emit } = new EventEmitter()
+    Object.assign(this, { on, emit })
 
     // Bind lodger context to taxes for easy access
     this.taxonomies.forEach(tax => {

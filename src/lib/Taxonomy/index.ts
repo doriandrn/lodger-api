@@ -116,7 +116,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       _schema: { hooks },
       options: { timestamps },
       form: { internalFields, plural },
-      $lodger: { $taxonomies, freshDates },
+      $lodger: { $taxonomies, freshDates, emit },
       $collection,
       parents,
       children
@@ -137,6 +137,16 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       data.state.counters[collection.name.plural] += 1
       return data
     }
+
+    const emitDBupdated = () => {
+      emit('dbUpdated')
+    }
+
+    const generalHooks = ['Insert', 'Remove', 'Save']
+    generalHooks.map(hook => {
+      const huk = `post${ hook }`
+      collection[huk](emitDBupdated)
+    })
 
     // Global hooks
     collection.postInsert(async (data, doc) => {
