@@ -116,7 +116,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       _schema: { hooks },
       options: { timestamps },
       form: { internalFields, plural },
-      $lodger: { $taxonomies, freshDates, emit },
+      $lodger: { $taxonomies, freshDates },
       $collection,
       parents,
       children
@@ -139,7 +139,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
 
     const emitDBupdated = () => {
-      emit('dbUpdated')
+      this.$lodger.emit('dbUpdated')
     }
 
     const generalHooks = ['Insert', 'Remove', 'Save']
