@@ -216,7 +216,7 @@ implements SubscribableTaxonomy<T> {
     })
 
     reaction(() => ({ ...sub.criteria }), (criteria, prevCriteria) => {
-      console.info('Criteria changed', criteria, prevCriteria)
+      console.info(this.name, 'Criteria changed', criteria, prevCriteria)
       Object.assign(subState, { criteria: JSON.parse(JSON.stringify(criteria)) })
     })
 

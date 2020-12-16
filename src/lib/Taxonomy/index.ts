@@ -167,6 +167,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
             await coll.findByIds(pId) :
             await coll.findOne(pId[0]).exec()
 
+          console.info('parent doc(s)', parentDoc)
+
           if (!parentDoc) {
             console.error('Missing parent(s) doc(s)', parent)
           }
