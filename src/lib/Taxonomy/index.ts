@@ -162,7 +162,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
           }
           const multiple = typeof pId === 'object' && pId.length > 1
           pId =  multiple ? pId : [ pId ]
-          const coll = $taxonomies[parent.plural]
+          const coll = $taxonomies[parent.plural].collection
           const parentDoc = multiple ?
             await coll.findByIds(pId) :
             await coll.findOne(pId[0]).exec()
