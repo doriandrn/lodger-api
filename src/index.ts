@@ -536,7 +536,7 @@ class Lodger implements LodgerAPI {
     if (!Lodger.db)
       throw new LodgerError('No database to export')
 
-    const json = await Lodger.db.dump()
+    const data = await Lodger.db.dump()
     const extension = 'ldb'
     if (!path) path = `${require('os').homeDir}/downloads/`
 
@@ -544,9 +544,17 @@ class Lodger implements LodgerAPI {
       const date = new Date()
       filename = `LdgDB-${date}`
     }
+
+    return {
+      data,
+      extension,
+      filename
+    }
+
+    // node veersion, @TODO
     // fs.writeFile(`${path}/${filename}.${extension}`, yaml.stringify(json), (e: Error) => {
     //   if (e) throw new LodgerError(Errors.couldNotWriteFile)
-    //   // debug(`written ${filename}.${extension} in path`)
+    //   this.debug(`written ${filename}.${extension} in path`)
     // })
   }
 
