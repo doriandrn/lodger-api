@@ -220,6 +220,7 @@ class Lodger implements LodgerAPI {
   readonly taxonomies: Taxonomie[] = Object.keys(this.$taxonomies)
   static db ?: RxDatabase
   static boundRels : boolean = false
+  readonly $e = new EventEmitter()
 
   /**
    * Main Init function
@@ -269,8 +270,7 @@ class Lodger implements LodgerAPI {
   ) {
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)
-    const { on, emit } = new EventEmitter()
-    Object.assign(this, { on, emit })
+    Object.assign(this, { on: this.$e.on, emit: this.$e.emit })
 
     // Bind lodger context to taxes for easy access
     this.taxonomies.forEach(tax => {
