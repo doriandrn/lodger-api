@@ -174,8 +174,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
           if (!multiple)
             await parentDoc.atomicUpdate(incCounters)
           else if (parentDoc.length)
-            await Promise.all(parentDoc.map(async doc => {
-              await doc.atomicUpdate(incCounters)
+            await Promise.all(parentDoc.map(async _doc => {
+              await _doc.atomicUpdate(incCounters)
             }))
         }))
       }
