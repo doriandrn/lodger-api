@@ -4,6 +4,8 @@ import Subscriber from 'rxcollection-subscriber'
 import { computed, reaction, observable } from 'mobx'
 import merge from 'deepmerge'
 
+const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
+
 /**
  *
  *
@@ -168,7 +170,7 @@ implements SubscribableTaxonomy<T> {
         if (sOrP && op && val) {
           const filter = { [sOrP]: { [op]: val } }
           console.info('Settting filters on ', tax, subscriberName, filter)
-          taxSub.criteria.filter = merge(taxSub.criteria.filter, filter)
+          taxSub.criteria.filter = merge(taxSub.criteria.filter, filter, { arrayMerge: overwriteMerge })
         } else {
           if (taxSub.criteria.filter) {
             try {
