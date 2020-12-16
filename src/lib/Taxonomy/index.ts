@@ -162,10 +162,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
           }
           const multiple = typeof pId === 'object' && pId.length > 1
           pId =  multiple ? pId : [ pId ]
-          const { collection } = $taxonomies[parent.plural]
+          const coll = $taxonomies[parent.plural]
           const parentDoc = multiple ?
-            await collection.findByIds(pId) :
-            await collection.findOne(pId[0]).exec()
+            await coll.findByIds(pId) :
+            await coll.findOne(pId[0]).exec()
 
           if (!parentDoc) {
             console.error('Missing parent(s) doc(s)', parent)
@@ -173,7 +173,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
           if (!multiple)
             await parentDoc.atomicUpdate(incCounters)
-          else
+          else if (parentDoc.length)
             await Promise.all(parentDoc.map(async doc => {
               await doc.atomicUpdate(incCounters)
             }))
