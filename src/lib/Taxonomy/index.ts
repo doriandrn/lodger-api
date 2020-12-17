@@ -151,9 +151,14 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       this.$lodger.emit('dbUpdated')
     }
 
-    const updateParentsStateCounters = (incDec: boolean = false) => async (data) => {
+    const updateParentsStateCounters = hook => async (data, doc) => {
+      if (hook && hook === 'Save' && !doc._isTemporary)
+        return
+
       if (!parents || !parents.length)
         return
+
+      const incDec = hook !== 'Remove'
 
       await Promise.all(parents.map(async parent => {
         let pId = data[`${parent}Id`] || data[parent]
@@ -185,15 +190,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
 
     const assignFreshDates = (async (data, doc) => {
-      doc.atomicUpdate((d) => {
-        if (!d.updatedAt)
-          Object.assign(d, freshDates())
+      const dates = freshDates()
+      Object.assign(data, !data.updatedAt ? dates : { updatedAt: dates.updatedAt } )
 
-        if (children && children.length) {
-          Object.assign(d, Object.keys(internalFields).reduce((a, b) => ({ ...a, [b]: internalFields[b].default }), {}))
-        }
-        return d
-      })
+      return data
     })
 
     const setLastDocument = (updRmv: boolean) => (data, doc) => {
@@ -203,11 +203,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     generalHooks.map(hookName => {
       const hook = `post${ hookName }`
       collection[hook](emitDBupdated, true)
-      collection[hook](updateParentsStateCounters(hookName !== 'Remove'), true)
+      collection[hook](updateParentsStateCounters(hookName), true)
       collection[hook](setLastDocument(hookName !== 'Remove'))
 
-      // if (hookName !== 'Remove')
-      //   collection[hook](assignFreshDates, false)
+      if (hookName !== 'Remove')
+        collection[hook](assignFreshDates, false)
     })
 
     // Schema hooks. Individual for each taxonomy
