@@ -45,7 +45,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   implements LodgerTaxonomy<T, Interface> {
 
   @observable lastItems: string[] = []
-  @observable totals: number = 0
   form : Form<Interface>
   $collection ?: RxCollection
 
@@ -132,9 +131,19 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
         return data
       }, false)
     }
+    const generalHooks = ['Insert', 'Remove', 'Save']
 
+    /**
+     * HELPER HOOK FUNCTIONS
+     * @param data
+     */
     const incCounters = data => {
       data.state.counters[collection.name.plural] += 1
+      return data
+    }
+
+    const decCounters = data => {
+      data.state.counters[collection.name.plural] -= 1
       return data
     }
 
@@ -142,17 +151,40 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       this.$lodger.emit('dbUpdated')
     }
 
-    const generalHooks = ['Insert', 'Remove', 'Save']
-    generalHooks.map(hook => {
-      const huk = `post${ hook }`
-      collection[huk](emitDBupdated)
-    })
+    const updateParentsStateCounters = (incDec: boolean = false) => async (data) => {
+      if (!parents || !parents.length)
+        return
 
-    // Global hooks
-    collection.postInsert(async (data, doc) => {
-      this.totals += 1;
-      this.last = doc._id
+      await Promise.all(parents.map(async parent => {
+        let pId = data[`${parent}Id`] || data[parent]
+        if (!pId) {
+          console.error(`Missing parent(s) id(s) ${parent} for ${plural}`)
+          return
+        }
+        const multiple = typeof pId === 'object' && pId.length >= 1
+        pId =  multiple ? pId : [ pId ]
+        const coll = $taxonomies[parent.plural].collection
+        const parentDoc = multiple ?
+          await coll.findByIds(pId) :
+          await coll.findOne(pId[0]).exec()
 
+        if (!parentDoc) {
+          console.error('Missing parent(s) doc(s)', parent)
+          return
+        }
+
+        if (!multiple)
+          await parentDoc.atomicUpdate(incDec ? incCounters : decCounters)
+        else
+          if (parentDoc.size)
+            await Promise.all(pId.map(async id => {
+              const _doc = parentDoc.get(id)
+              await _doc.atomicUpdate(incDec ? incCounters : decCounters)
+            }))
+      }))
+    }
+
+    const assignFreshDates = (async (data, doc) => {
       doc.atomicUpdate((d) => {
         if (!d.updatedAt)
           Object.assign(d, freshDates())
@@ -162,40 +194,23 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
         }
         return d
       })
+    })
 
-      if (parents && parents.length) {
-        await Promise.all(parents.map(async parent => {
-          let pId = data[`${parent}Id`] || data[parent]
-          if (!pId) {
-            console.error(`Missing parent(s) id(s) ${parent} for ${plural}`)
-            return
-          }
-          const multiple = typeof pId === 'object' && pId.length >= 1
-          pId =  multiple ? pId : [ pId ]
-          const coll = $taxonomies[parent.plural].collection
-          const parentDoc = multiple ?
-            await coll.findByIds(pId) :
-            await coll.findOne(pId[0]).exec()
+    const setLastDocument = (updRmv: boolean) => (data, doc) => {
+      this.last = updRmv ? doc._id : undefined
+    }
 
-          console.info('parent doc(s)', parentDoc)
+    generalHooks.map(hookName => {
+      const hook = `post${ hookName }`
+      collection[hook](emitDBupdated, true)
+      collection[hook](updateParentsStateCounters(hookName !== 'Remove'), true)
+      collection[hook](setLastDocument(hookName !== 'Remove'))
 
-          if (!parentDoc) {
-            console.error('Missing parent(s) doc(s)', parent)
-          }
+      if (hookName !== 'Remove')
+        collection[hook](assignFreshDates, false)
+    })
 
-          if (!multiple)
-            await parentDoc.atomicUpdate(incCounters)
-          else if (parentDoc.size)
-            await Promise.all(pId.map(async id => {
-              const _doc = parentDoc.get(id)
-              await _doc.atomicUpdate(incCounters)
-            }))
-        }))
-      }
-    }, true)
-
-    collection.postRemove(() => { this.totals -= 1 }, false)
-
+    // Schema hooks. Individual for each taxonomy
     if (hooks) {
       Object.keys(hooks).forEach(hook => {
         if (['empty'].indexOf(hook) > -1)
