@@ -265,7 +265,7 @@ export class Field implements FieldAPI {
    */
   get rxSchema (): RxJsonSchemaTopLevel {
     const schema = {}
-    const excludes = ['storage', 'value', 'v', 'default']
+    const excludes = ['storage', 'value', 'v']
     Object.keys(this).forEach(prop => {
       if (this[prop] === undefined) return
       if (excludes.indexOf(prop) > -1) return
