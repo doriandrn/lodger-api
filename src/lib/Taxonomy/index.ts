@@ -220,10 +220,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       .filter(h => h !== 'Remove')
       .map(hName => {
         const preHook = `pre${ hName }`
-        const postHook = `post${ hName }`
+        // const postHook = `post${ hName }`
 
         collection[preHook](assignFreshDates, false)
-        collection[postHook](putInternalFieldsIfMissing, false)
+        collection[preHook](putInternalFieldsIfMissing, false)
       })
 
     generalHooks.map(hookName => {
