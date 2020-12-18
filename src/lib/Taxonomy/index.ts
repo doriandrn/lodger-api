@@ -216,16 +216,19 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       return data
     }
 
+    generalHooks
+      .filter(h => h !== 'Remove')
+      .map(hName => {
+        const preHook = `pre${ hName }`
+        collection[preHook](assignFreshDates, false)
+        collection[preHook](putInternalFieldsIfMissing, false)
+      })
+
     generalHooks.map(hookName => {
       const hook = `post${ hookName }`
       collection[hook](emitDBupdated, true)
       collection[hook](updateParentsStateCounters(hookName), true)
-      collection[hook](setLastDocument(hookName !== 'Remove'))
-
-      if (hookName !== 'Remove') {
-        collection[hook](assignFreshDates, false)
-        collection[hook](putInternalFieldsIfMissing, false)
-      }
+      collection[hook](setLastDocument(hookName !== 'Remove'), true)
     })
 
     // Schema hooks. Individual for each taxonomy
