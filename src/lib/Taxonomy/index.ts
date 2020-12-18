@@ -212,7 +212,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       if (!doc._isTemporary || !children || !children.length)
         return
 
-      Object.assign(data, internalFields)
+      Object.assign(data, Object.keys(internalFields).reduce((a, b) => ({ ...a, [b]: internalFields[b].default }), {}))
       return data
     }
 
