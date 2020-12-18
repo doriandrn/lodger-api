@@ -194,7 +194,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       }))
     }
 
-    const assignFreshDates = (async (data, doc) => {
+    const assignFreshDates = (async (data) => {
       if (!timestamps)
         return
 
@@ -208,8 +208,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       this.last = updRmv ? doc._id : undefined
     }
 
-    const putInternalFieldsIfMissing = (data, doc) => {
-      if (!doc._isTemporary || !children || !children.length)
+    const putInternalFieldsIfMissing = (data) => {
+      if (!children || !children.length)
         return
 
       Object.assign(data, Object.keys(internalFields).reduce((a, b) => ({ ...a, [b]: internalFields[b].default }), {}))
