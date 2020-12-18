@@ -122,16 +122,21 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     } = this
 
     if ($collection)
-      throw new Error('Collection already set for this taxonomy')
+      throw new Error(`Collection already set for ${ plurral } taxonomy`)
 
-    if (timestamps) {
-      collection.preSave((data) => {
-        if (!data.updatedAt)
-          Object.assign(data, freshDates())
-        return data
-      }, false)
-    }
-    const generalHooks = ['Insert', 'Remove', 'Save']
+    // if (timestamps) {
+    //   collection.preSave((data) => {
+    //     if (!data.updatedAt)
+    //       Object.assign(data, freshDates())
+    //     return data
+    //   }, false)
+    // }
+
+    const generalHooks = [
+      'Save',
+      'Insert',
+      'Remove'
+    ]
 
     /**
      * HELPER HOOK FUNCTIONS
@@ -190,6 +195,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
 
     const assignFreshDates = (async (data, doc) => {
+      if (!timestamps)
+        return
+
       const dates = freshDates()
       Object.assign(data, !data.updatedAt ? dates : { updatedAt: dates.updatedAt } )
 
@@ -200,14 +208,24 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       this.last = updRmv ? doc._id : undefined
     }
 
+    const putInternalFieldsIfMissing = (data, doc) => {
+      if (!doc._isTemporary || !children || !children.length)
+        return
+
+      Object.assign(data, internalFields)
+      return data
+    }
+
     generalHooks.map(hookName => {
       const hook = `post${ hookName }`
       collection[hook](emitDBupdated, true)
       collection[hook](updateParentsStateCounters(hookName), true)
       collection[hook](setLastDocument(hookName !== 'Remove'))
 
-      if (hookName !== 'Remove')
+      if (hookName !== 'Remove') {
         collection[hook](assignFreshDates, false)
+        collection[hook](putInternalFieldsIfMissing, false)
+      }
     })
 
     // Schema hooks. Individual for each taxonomy
@@ -336,24 +354,16 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       'upsert' :
       'insert'
 
-    const { name, options, $lodger: { freshDates } } = this
-
     /**
      * do the insert / upsert and following actions
      */
     try {
-      if (method === 'insert') {
-        Object.assign(doc, freshDates())
-      }
-
       const _doc = await this.collection[method](doc)
       const id = _doc._id
 
-      // this.last = id
-
       notify({
         type: 'success',
-        text: `[${method}] ${name}!${['dev', 'test'].indexOf(process.env.NODE_ENV) > -1 ? `(${id})` : ''}`
+        text: `[${method}] ${this.name}!${['dev', 'test'].indexOf(process.env.NODE_ENV) > -1 ? `(${id})` : ''}`
       })
 
       return _doc
