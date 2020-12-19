@@ -211,7 +211,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
 
     const putInternalFieldsIfMissing = (data) => {
-      if (!children || !children.length)
+      if (!children || !children.length || data.state)
         return
 
       Object.assign(data, Object.keys(internalFields).reduce((a, b) => ({ ...a, [b]: internalFields[b].default }), {}))
