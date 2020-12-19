@@ -192,6 +192,8 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
               await _doc.atomicUpdate(incDec ? incCounters : decCounters)
             }))
       }))
+
+      console.info('upded counters')
     }
 
     const assignFreshDates = (async (data) => {
@@ -228,9 +230,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
     generalHooks.map(hookName => {
       const hook = `post${ hookName }`
-      collection[hook](emitDBupdated, true)
-      collection[hook](updateParentsStateCounters(hookName), true)
+      collection[hook](updateParentsStateCounters(hookName), false)
       collection[hook](setLastDocument(hookName !== 'Remove'), true)
+      collection[hook](emitDBupdated, true)
     })
 
     // Schema hooks. Individual for each taxonomy
