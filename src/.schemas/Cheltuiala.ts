@@ -51,11 +51,11 @@ const fields: FieldsCreator<Cheltuiala> = {
     required: true,
     ref: 'furnizori'
   },
-  progres: {
-    type: 'meter',
-    default: 0,
-    freezed: true
-  },
+  // progres: {
+  //   type: 'meter',
+  //   default: 0,
+  //   freezed: true
+  // },
   suma: {
     type: '$',
     required: true,

@@ -141,8 +141,7 @@ implements SubscribableTaxonomy<T> {
         }
 
         const { subscribers, parents, children } = $tax
-        const taxSub = subscribers[subscriberName] ||
-          subscribers[mainSubName]
+        const taxSub = subscribers[subscriberName]
 
         if (!taxSub) {
           console.error('Invalid subscriber requested', subscriberName, tax)
@@ -223,7 +222,7 @@ implements SubscribableTaxonomy<T> {
     })
 
     // Trigger the modal on activeId change
-    if (subscriberName !== 'single') {
+    if (subscriberName.indexOf('single') < 0) {
       reaction(() => sub.activeId, async (id) => {
         Object.assign(subState, { activeId: id })
         if (!id) return
