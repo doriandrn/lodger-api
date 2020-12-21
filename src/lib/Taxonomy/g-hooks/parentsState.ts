@@ -11,19 +11,16 @@ const counterUpdates = ({
   const { inc, dec } = counters(plural)
 
   return taxes.map(async (tax: Taxonomie) => {
-    let id = data[`${tax}Id`] || data[tax]
+    const id = data[`${tax}Id`] || data[tax]
     if (!id)
       throw new Error(`Missing taxes ids to update counters ${{ taxes, data }}`)
 
     const isMultiple = typeof id === 'object' && id.length >= 1
-    id = isMultiple ? [ id ] : id
-
-    const $tax = $taxonomies[tax.plural]
-    const { collection } = $tax
+    const { collection } = $taxonomies[tax.plural]
 
     const parentDocs = isMultiple ?
       await collection.findByIds(id) :
-      await collection.findOne(id[0]).exec()
+      await collection.findOne(id).exec()
 
     if (!parentDocs)
       throw new Error(`Missing parent(s) doc(s): ${ id, tax }`)
