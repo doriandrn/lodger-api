@@ -44,6 +44,9 @@ export default {
   counters: function (incDec: boolean = true) {
     const { parents, $taxonomies, plural } = this
 
+    if (!parents || !parents.length)
+      return
+
     return async (data, $doc: RxDocument) => {
       if (!$doc._isTemporary)
         return
