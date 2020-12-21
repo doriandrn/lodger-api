@@ -5,6 +5,7 @@ import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
+import { counters } from './g-hooks/parentsState'
 
 export type TaxonomyCreator<I> = LodgerFormCreator<I>
 
@@ -31,6 +32,13 @@ interface LodgerTaxonomy<N extends Taxonomie, Interface = {}> {
 }
 
 let db: RxDatabase
+
+const generalHooks = [
+  'Save',
+  'Insert',
+  'Remove'
+]
+
 
 /**
  * @class Taxonomy
@@ -112,89 +120,23 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
   set collection (collection: RxCollection) {
     const {
-      _schema: { hooks },
+      _schema: { hooks, methods },
       options: { timestamps },
-      form: { internalFields, plural },
-      $lodger: { $taxonomies, freshDates },
+      form: { internalFields },
+      $lodger: { freshDates },
       $collection,
-      parents,
       children
     } = this
 
     if ($collection)
       throw new Error(`Collection already set for ${ plurral } taxonomy`)
 
-    // if (timestamps) {
-    //   collection.preSave((data) => {
-    //     if (!data.updatedAt)
-    //       Object.assign(data, freshDates())
-    //     return data
-    //   }, false)
-    // }
-
-    const generalHooks = [
-      'Save',
-      'Insert',
-      'Remove'
-    ]
-
-    /**
-     * HELPER HOOK FUNCTIONS
-     * @param data
-     */
-    const incCounters = data => {
-      data.state.counters[collection.name.plural] += 1
-      return data
-    }
-
-    const decCounters = data => {
-      data.state.counters[collection.name.plural] -= 1
-      return data
-    }
 
     const emitDBupdated = () => {
       this.$lodger.emit('dbUpdated')
     }
 
-    const updateParentsStateCounters = hook => async (data, doc) => {
-      if (hook && hook === 'Save' && !doc._isTemporary)
-        return
-
-      if (!parents || !parents.length)
-        return
-
-      const incDec = hook !== 'Remove'
-
-      await Promise.all(parents.map(async parent => {
-        let pId = data[`${parent}Id`] || data[parent]
-        if (!pId) {
-          console.error(`Missing parent(s) id(s) ${parent} for ${plural}`)
-          return
-        }
-        const multiple = typeof pId === 'object' && pId.length >= 1
-        pId =  multiple ? pId : [ pId ]
-        const coll = $taxonomies[parent.plural].collection
-        const parentDoc = multiple ?
-          await coll.findByIds(pId) :
-          await coll.findOne(pId[0]).exec()
-
-        if (!parentDoc) {
-          console.error('Missing parent(s) doc(s)', parent)
-          return
-        }
-
-        if (!multiple)
-          await parentDoc.atomicUpdate(incDec ? incCounters : decCounters)
-        else
-          if (parentDoc.size)
-            await Promise.all(pId.map(async id => {
-              const _doc = parentDoc.get(id)
-              await _doc.atomicUpdate(incDec ? incCounters : decCounters)
-            }))
-      }))
-
-      console.info('upded counters')
-    }
+    const updateParentsStateCounters = counters.bind(this)
 
     const assignFreshDates = (async (data) => {
       if (!timestamps)
@@ -230,9 +172,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
     generalHooks.map(hookName => {
       const hook = `post${ hookName }`
-      collection[hook](updateParentsStateCounters(hookName), false)
       collection[hook](setLastDocument(hookName !== 'Remove'), true)
       collection[hook](emitDBupdated, true)
+
+      if (hookName !== 'Save')
+        collection[hook](updateParentsStateCounters(hookName !== 'Remove'), false)
     })
 
     // Schema hooks. Individual for each taxonomy
@@ -243,6 +187,12 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
 
         hooks[hook] = hooks[hook](this.$lodger)
         collection[hook](hooks[hook])
+      })
+    }
+
+    if (methods) {
+      Object.keys(methods).forEach(method => {
+        this[method] = methods[method].bind(this.$lodger)
       })
     }
 

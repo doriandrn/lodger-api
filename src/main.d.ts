@@ -13,12 +13,17 @@ declare global {
   type LodgerDocument = {
     _id: string,
 
-    '@' ?: string
-    'upd@' ?: string
+    state : {
+      counters: {
+        [k in Taxonomie]: number
+      }
+      createdAt ?: string
+      updatedAt ?: string
+    }
   }
 
   type Money = {
-    amount: string // string because could be saved from bigInt. support for cryptocurrencies
-    currency: Currency
+    value: string // string because could be saved from bigInt. support for cryptocurrencies
+    moneda: Currency
   }
 }

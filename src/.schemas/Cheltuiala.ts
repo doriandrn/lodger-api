@@ -3,25 +3,25 @@ import { FieldsCreator } from '../lib/Field'
 
 declare global {
   type Distribuire = {
-    [apartamentId: string]: {
-      suma: Money,
-      procent: number
-    }
+    [apartamentId: string]: number
   }
 
   interface Cheltuiala {
     denumire: string,
     catre: Furnizor,
     suma: Money,
-    facturi: Factura[],
-    progres: number,
-    dataScadenta: Date,
-    modDistribuire: Distribuire
-    proiect: string
-    snapshotsApartamente: {}
+    dataScadenta: Date
 
-    readonly distribuire: []
+    modDistribuire: number
+
+    readonly distribuire: Distribuire
+    readonly snapshotsApartamente: {}
     readonly asociatieId: string
+    readonly state: {
+      progres: number
+    }
+
+    distribuie: () => Distribuire
   }
 }
 
@@ -36,10 +36,6 @@ const fields: FieldsCreator<Cheltuiala> = {
     preview: 0,
     search: true
   },
-  // proiect: {
-  //   preview: 3,
-  //   index: true
-  // },
   dataScadenta: {
     type: 'dateTime',
     final: true,
@@ -51,11 +47,6 @@ const fields: FieldsCreator<Cheltuiala> = {
     required: true,
     ref: 'furnizori'
   },
-  // progres: {
-  //   type: 'meter',
-  //   default: 0,
-  //   freezed: true
-  // },
   suma: {
     type: '$',
     required: true,
@@ -81,6 +72,50 @@ const fields: FieldsCreator<Cheltuiala> = {
   }
 }
 
+const methods = {
+  /**
+   * Distribuie suma la apartamente dupa ids si mod
+   * @param suma
+   * @param ids
+   * @param mod
+   */
+  distribuie: function (suma: Money, ids: string[], mod : number = 0) {
+    const { value, moneda } = suma
+    if (!suma || value === undefined)
+      return
+
+    const sub = this.apartamente.subscribers[`single-cheltuiala`]
+    const { items } = sub
+
+    const allUnits = ids.reduce((a, b) => a + items[b][mod], 0)
+    const cpu = Number(value) / allUnits
+
+    return ids.reduce((a, b) => ({ ...a, [b]: items[b][mod] * cpu }), {})
+  },
+
+  /**
+   * Snapshots aps as they are before doing a transaction
+   *
+   * @param ids
+   */
+  ssAps: function (ids: string[]) {
+    const { apartamente } = this
+    const sub = apartamente.subscribers[`single-cheltuiala`]
+    const { items } = sub
+
+    return ids
+      .reduce((a, b) => ({
+        ...a,
+        [b]: apartamente.form.fieldsIds
+          .reduce((x, y) => ({
+            ...x,
+            [y]: items[b]._doc ? items[b]._doc._data[y] : apartamente.data[b]._doc._data[y]
+          }), {})
+      }), {})
+  }
+}
+
 export {
-  fields
+  fields,
+  methods
 }

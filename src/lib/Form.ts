@@ -15,6 +15,8 @@ export type LodgerFormCreator<T> = {
   plural?: Plural<String>
   fields?: FieldsCreator<T>,
   fieldsets ?: number[] // consecutive: todo: post gh issue on ts for consecutive type
+  hooks ?: {},
+  methods ?: {}
 }
 
 /**
@@ -56,12 +58,14 @@ implements FormAPI<I> {
   private _onsubmit : Function[] = [] // hooks
 
   readonly name : string
-  readonly plural : string
+  readonly plural : Taxonomie
   // readonly captureTimestamp : boolean = false
   readonly schema : Schema<string, I>
   readonly fields : FormFields<I> = {}
   readonly internalFields : FormFields<I> = {}
   readonly fieldsets ?: string[]
+
+  // readonly methods ?: {}
 
   $active: boolean = false
 
@@ -78,7 +82,7 @@ implements FormAPI<I> {
     data ?: LodgerFormCreator<I>,
     protected opts ?: FormOptions
   ) {
-    const { fields, fieldsets, name, hooks } = data || {
+    const { fields, fieldsets, name } = data || {
       name: 'untitled',
       fields: {}
     }
@@ -87,7 +91,7 @@ implements FormAPI<I> {
     this.fields = {}
     this.internalFields = {}
 
-    this.plural = this.name.plural
+    this.plural = this.name.plural as Taxonomie
 
     if (fields) {
       Object.keys(fields).map((key: string) => {
@@ -100,9 +104,9 @@ implements FormAPI<I> {
       this.fieldsets = fieldsets
     }
 
-    if (hooks) {
-      this.taxHooks = hooks
-    }
+    // if (methods) {
+    //   this.methods = methods
+    // }
 
     if (opts) {
       const { captureTimestamp } = opts

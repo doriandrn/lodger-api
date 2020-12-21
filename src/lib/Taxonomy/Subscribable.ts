@@ -154,6 +154,11 @@ implements SubscribableTaxonomy<T> {
         if (taxSub.selectedId)
           taxSub.select(taxSub.selectedId)
 
+        // select parents if differ
+        if ($tax.parents && tax.parents.length) {
+
+        }
+
         if (taxSub.refsIds) {
           if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
             const isSingular = parents.indexOf(name) > -1
@@ -291,6 +296,6 @@ implements SubscribableTaxonomy<T> {
   // }
 
   get hooks () {
-    return this.form.taxHooks
+    return this._schema.hooks
   }
 }
