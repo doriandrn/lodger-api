@@ -177,12 +177,11 @@ export default {
     // }),
 
     // builtins(),
-
-    terser()
   ],
 
-  output: {
-    file: 'dist/index.cjs',
-    format: 'cjs'
-  }
+  output: [
+    { file: "dist/index.cjs", format: "cjs" },
+    { file: "dist/index.min.js", format: "cjs", plugins: [terser()] },
+    { file: "dist/index.esm.js", format: "esm" },
+  ]
 };
