@@ -155,9 +155,9 @@ implements SubscribableTaxonomy<T> {
           taxSub.select(taxSub.selectedId)
 
         // select parents if differ
-        if ($tax.parents && tax.parents.length) {
+        // if ($tax.parents && tax.parents.length) {
 
-        }
+        // }
 
         if (taxSub.refsIds) {
           if (parents && parents.length && (parents.indexOf(name) > -1 || parents.indexOf(name.plural) > -1)) {
