@@ -5,7 +5,8 @@ import LodgerConfig from 'lodger.config'
 import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
-import { counters } from './g-hooks/parentsState'
+import parentsState from './g-hooks/parentsState'
+const { counters } = parentsState
 
 export type TaxonomyCreator<I> = LodgerFormCreator<I>
 
