@@ -126,7 +126,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       form: { internalFields },
       $lodger: { freshDates },
       $collection,
-      children
+
+      children,
+      parents
     } = this
 
     if ($collection)
@@ -176,7 +178,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       collection[hook](setLastDocument(hookName !== 'Remove'), true)
       collection[hook](emitDBupdated, true)
 
-      if (hookName !== 'Save')
+      if (hookName !== 'Save' && parents && parents.lenght)
         collection[hook](updateParentsStateCounters(hookName !== 'Remove'), false)
     })
 
