@@ -42,7 +42,7 @@ const counterUpdates = ({
 
 export default {
   counters: function (incDec: boolean = true) {
-    const { parents, $taxonomies, plural } = this
+    const { parents, $lodger: { $taxonomies }, plural } = this
 
     return async (data, $doc: RxDocument) => {
       if (!$doc._isTemporary)
