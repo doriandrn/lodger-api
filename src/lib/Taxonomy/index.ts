@@ -6,6 +6,7 @@ import TaxonomyError from '../Error'
 import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 import parentsState from './g-hooks/parentsState'
+import { Lodger } from 'index'
 const { counters } = parentsState
 
 export type TaxonomyCreator<I> = LodgerFormCreator<I>
@@ -56,6 +57,11 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
   @observable lastItems: string[] = []
   form : Form<Interface>
   $collection ?: RxCollection
+
+  parents ?: Taxonomie[]
+  children ?: Taxonomie[]
+  $lodger : Lodger
+
 
   /**
    * Last added item's id
@@ -178,7 +184,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       collection[hook](setLastDocument(hookName !== 'Remove'), true)
       collection[hook](emitDBupdated, true)
 
-      if (hookName !== 'Save' && parents && parents.lenght)
+      if (hookName !== 'Save' && parents && parents.length)
         collection[hook](updateParentsStateCounters(hookName !== 'Remove'), false)
     })
 

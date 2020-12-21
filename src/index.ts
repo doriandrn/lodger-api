@@ -62,7 +62,6 @@ enum Errors {
   couldNotWriteFile
 }
 
-
 // type FormsHolder = { [k in Taxonomie & Forms]: Form<k> }
 
 type BuildOptions = {
@@ -220,7 +219,11 @@ class Lodger implements LodgerAPI {
   readonly taxonomies: Taxonomie[] = Object.keys(this.$taxonomies)
   static db ?: RxDatabase
   static boundRels : boolean = false
-  readonly $e = new EventEmitter()
+
+  // Events
+  readonly _$e = new EventEmitter()
+  readonly emit = this._$e.emit
+  readonly on = this._$e.on
 
   /**
    * Main Init function
@@ -270,7 +273,7 @@ class Lodger implements LodgerAPI {
   ) {
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)
-    Object.assign(this, { on: this.$e.on, emit: this.$e.emit })
+
 
     // Bind lodger context to taxes for easy access
     this.taxonomies.forEach(tax => {
@@ -359,7 +362,6 @@ class Lodger implements LodgerAPI {
         }
 
         merge(_stateField.items.properties, taxState[$tax.plural] || {})
-
 
         const state = new Field(_stateField)
 
