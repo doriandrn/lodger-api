@@ -79,16 +79,15 @@ const methods = {
    * @param ids
    * @param mod
    */
-  distribuie: function (suma: Money, ids: string[], mod : number = 0) {
-    const { value, moneda } = suma
-    if (!suma || value === undefined)
+  distribuie: function (valoare: number, ids: string[], mod : number = 0) {
+    if (valoare === undefined || ids === undefined)
       return
 
     const sub = this.apartamente.subscribers[`single-cheltuiala`]
     const { items } = sub
 
     const allUnits = ids.reduce((a, b) => a + items[b][mod], 0)
-    const cpu = Number(value) / allUnits
+    const cpu = Number(valoare) / allUnits
 
     return ids.reduce((a, b) => ({ ...a, [b]: items[b][mod] * cpu }), {})
   },
