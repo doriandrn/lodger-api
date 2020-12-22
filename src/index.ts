@@ -274,14 +274,24 @@ class Lodger implements LodgerAPI {
     // Bind shortcuts for every tax to `this` for easy access
     Object.assign(this, $taxonomies)
 
-
     // Bind lodger context to taxes for easy access
     this.taxonomies.forEach(tax => {
-      Object.defineProperty($taxonomies[tax], '$lodger', {
+      const $tax = $taxonomies[tax]
+      Object.defineProperty($tax, '$lodger', {
         value: this,
         writable: false
       })
-      $taxonomies[tax].collection = Lodger.db[tax]
+      $tax.collection = Lodger.db[tax]
+
+      const { form: { fieldsIds, fields } } = $tax
+
+      // bind $ldg context to fields defaults
+      fieldsIds.forEach((fieldId: string) => {
+        const def = fields[fieldId].default
+        if (def && typeof def === 'function')
+          def.bind(this)
+      })
+
       // Object.defineProperties($taxonomies[tax], {
       //   '$lodger': {
       //     value: this,
