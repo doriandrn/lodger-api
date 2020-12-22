@@ -229,10 +229,12 @@ export class Field implements FieldAPI {
       this.freezed = true
 
       if (!this.default)
-        this.default = ({ displayCurrency }) => ({
-          value: 0,
-          moneda: displayCurrency
-        })
+        this.default = function () {
+          return {
+            value: 0,
+            moneda: this.displayCurrency
+          }
+        }
 
       this.items = {
         type: 'object',
