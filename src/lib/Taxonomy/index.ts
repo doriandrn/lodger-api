@@ -146,7 +146,6 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
 
     const updateParentsStateCounters = counters.bind(this)
-    console.info('LOL', updateParentsStateCounters)
 
     const assignFreshDates = (async (data) => {
       if (!timestamps)
@@ -185,7 +184,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       collection[hook](setLastDocument(hookName !== 'Remove'), true)
       collection[hook](emitDBupdated, true)
 
-      if (hookName !== 'Save' && parents && parents.length)
+      if (parents && parents.length)
         collection[hook](updateParentsStateCounters(hookName !== 'Remove'), false)
     })
 

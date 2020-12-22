@@ -9,7 +9,6 @@ const counterUpdates = ({
   plural
 }) => {
   const { inc, dec } = counters(plural)
-  console.log('CALLED CUPD HOOK', { incDec, taxes, data, $taxonomies, plural })
 
   return taxes.map(async (tax: Taxonomie) => {
     const id = data[`${tax}Id`] || data[tax]
@@ -17,7 +16,7 @@ const counterUpdates = ({
       throw new Error(`Missing taxes ids to update counters ${{ taxes, data }}`)
 
     const isMultiple = typeof id === 'object' && id.length >= 1
-    console.log('ISM', isMultiple)
+    // console.log('ISM', isMultiple)
     const { collection } = $taxonomies[tax.plural]
 
     const parentDocs = isMultiple ?
@@ -43,7 +42,6 @@ export default {
   counters: function (incDec: boolean = true) {
     const { parents, $lodger: { $taxonomies }, plural } = this
 
-    console.log('FML CCALLED', incDec, this)
     return async (data, $doc: RxDocument) => {
       if (!$doc._isTemporary)
         return
