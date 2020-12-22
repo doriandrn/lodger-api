@@ -43,6 +43,7 @@ export default {
   counters: function (incDec: boolean = true) {
     const { parents, $lodger: { $taxonomies }, plural } = this
 
+    console.log('FML CCALLED', incDec, this)
     return async (data, $doc: RxDocument) => {
       if (!$doc._isTemporary)
         return
