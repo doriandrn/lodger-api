@@ -146,6 +146,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     }
 
     const updateParentsStateCounters = counters.bind(this)
+    console.info('LOL', updateParentsStateCounters)
 
     const assignFreshDates = (async (data) => {
       if (!timestamps)
