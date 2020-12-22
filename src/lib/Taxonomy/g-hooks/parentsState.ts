@@ -39,11 +39,12 @@ const counterUpdates = ({
 }
 
 export default {
-  counters: function (incDec: boolean = true) {
+  counters: function (hookName: string) {
     const { parents, $lodger: { $taxonomies }, plural } = this
+    const incDec = hookName !== 'Remove'
 
     return async (data, $doc: RxDocument) => {
-      if (!$doc._isTemporary)
+      if (hookName === 'Save' && !$doc._isTemporary)
         return
 
       await Promise.all(counterUpdates({

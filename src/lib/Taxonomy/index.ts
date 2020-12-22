@@ -185,7 +185,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       collection[hook](emitDBupdated, true)
 
       if (parents && parents.length)
-        collection[hook](updateParentsStateCounters(hookName !== 'Remove'), false)
+        collection[hook](updateParentsStateCounters(hookName), false)
     })
 
     // Schema hooks. Individual for each taxonomy
