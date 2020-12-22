@@ -144,7 +144,7 @@ implements FormAPI<I> {
     return Object
       .fromEntries(this.fieldsIds
         .filter(fieldId => fieldId.indexOf('Id') < 0)
-        .map(fieldId => ([fieldId, this.fields[fieldId].default || this.fields[fieldId].fakeValue ])))
+        .map(fieldId => ([fieldId, this.fields[fieldId].default ? typeof this.fields[fieldId].default === 'function' ? this.fields[fieldId].default() : this.fields[fieldId].default : this.fields[fieldId].fakeValue ])))
   }
 
   /**
