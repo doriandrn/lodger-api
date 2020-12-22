@@ -141,10 +141,23 @@ implements FormAPI<I> {
    * @memberof Form
    */
   get fakeData () {
+    const { fields, fieldsIds } = this
     return Object
-      .fromEntries(this.fieldsIds
+      .fromEntries(fieldsIds
         .filter(fieldId => fieldId.indexOf('Id') < 0)
-        .map(fieldId => ([fieldId, this.fields[fieldId].default ? typeof this.fields[fieldId].default === 'function' ? this.fields[fieldId].default() : this.fields[fieldId].default : this.fields[fieldId].fakeValue ])))
+        .map(fieldId => {
+          const field = fields[fieldId]
+          if (!field.default)
+            return [fieldId, field.fakeValue]
+
+          try {
+            const def = typeof field.default === 'function' ? field.default() : field.default
+            return [fieldId, def]
+          } catch (e) {
+            console.log('Using fake val and not default on', fieldId, 'because (missing context)', e)
+          }
+          return [fieldId, field.fakeValue]
+        }))
   }
 
   /**
