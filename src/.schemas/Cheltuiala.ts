@@ -86,10 +86,11 @@ const methods = {
     const sub = this.apartamente.subscribers[`single-cheltuiala`]
     const { items } = sub
 
-    const allUnits = ids.reduce((a, b) => a + items[b][mod], 0)
+    const distrKey = fields.modDistribuire.options[mod]
+    const allUnits = ids.reduce((a, b) => a + items[b][distrKey], 0)
     const cpu = Number(valoare) / allUnits
 
-    return ids.reduce((a, b) => ({ ...a, [b]: items[b][mod] * cpu }), {})
+    return ids.reduce((a, b) => ({ ...a, [b]: items[b][distrKey] * cpu }), {})
   },
 
   /**
