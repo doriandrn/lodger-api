@@ -25,6 +25,7 @@ enum Roluri {
 declare global {
   interface Utilizator {
     _id: string
+    permisiuni: object,
     codPIN: number,
     name: string
     avatar: string
@@ -34,6 +35,15 @@ declare global {
   }
 }
 const fields: FieldsCreator<Utilizator> = {
+  // permisiuni: {
+  //   type: 'object',
+  //   items: {
+  //     type:
+  //   },
+  //   default: ($ldg) => {
+
+  //   }
+  // },
   avatar: {
     type: 'userAvatar',
     preview: 0,
