@@ -33,8 +33,6 @@ declare global {
 
 const fieldsets = ['descriere', 'localizare', 'registru']
 
-const selectedApGetter = 'apartament/activeDoc'
-
 const fields: FieldsCreator<Apartament> = {
   nr: {
     type: 'number',
@@ -46,7 +44,6 @@ const fields: FieldsCreator<Apartament> = {
         const bloc = await this.blocuri.getDocument(data.blocId)
       return ( bloc.state.ultimulApNr || 0 ) + 1
     },
-    value: g => g[selectedApGetter].nr,
     required: true,
     index: true,
     preview: 0,
@@ -60,14 +57,12 @@ const fields: FieldsCreator<Apartament> = {
     },
     preview: 1,
     v: 'alpha_spaces|max:32',
-    value: g => g[selectedApGetter].proprietar
   },
   suprafata: {
     fieldset: 0,
     type: 'number',
     default: null, // TODO: ia de la apartamentul de la etajul de dedesubt, in functie de cate ap sunt
     step: 0.01,
-    value: g => g[selectedApGetter].suprafata
   },
   locatari: {
     fieldset: 0,
@@ -76,7 +71,6 @@ const fields: FieldsCreator<Apartament> = {
     default: 2,
     min: 0,
     max: 10,
-    value: g => g[selectedApGetter].locatari
   },
   camere: {
     fieldset: 0,
@@ -85,45 +79,36 @@ const fields: FieldsCreator<Apartament> = {
     default: 2,
     max: 12,
     min: 1,
-    value: g => g[selectedApGetter].camere
   },
   etaj: {
     fieldset: 1,
     type: 'number',
     required: true,
-    // default: g => g['etaj/selectat'].etaj,
-    value: g => g[selectedApGetter].etaj
   },
   blocId: {
     required: true,
     fieldset: 1,
-    // default: g => g['etaj/selectat'].bloc,
-    value: g => g[selectedApGetter].bloc
+    ref: 'bloc'
   },
   asociatieId: {
     required: true,
     fieldset: 1,
-    // default: g => g['asociatie/activeDoc']._id,
-    value: g => g['asociatie/activeDoc']._id
+    ref: 'asociatie'
   },
   scara: {
     fieldset: 1,
     type: 'number',
     required: true,
-    // default: g => g['etaj/selectat'].scara,
-    value: g => g[selectedApGetter].scara
   },
   balanta: {
     type: '$',
     default: null,
     required: true,
     preview: 2,
-    index: true,
-    value: g => g[selectedApGetter].balanta
+    index: true
   },
   contoare: {
-    type: 'contoare',
-    value: g => g[selectedApGetter].contoare
+    type: 'contoare'
   },
   incasari: {
     type: 'array',
