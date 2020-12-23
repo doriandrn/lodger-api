@@ -277,31 +277,23 @@ class Lodger implements LodgerAPI {
     // Bind lodger context to taxes for easy access
     this.taxonomies.forEach(tax => {
       const $tax = $taxonomies[tax]
+      const { form } = $tax
+      const { fields, fieldsIds } = form
+
       Object.defineProperty($tax, '$lodger', {
         value: this,
         writable: false
       })
+
       $tax.collection = Lodger.db[tax]
 
-      const { form: { fieldsIds, fields } } = $tax
-
-      // bind $ldg context to fields defaults
-      fieldsIds.forEach((fieldId: string) => {
-        const def = fields[fieldId].default
-        if (def && typeof def === 'function')
-          def.bind(this)
-      })
-
-      // Object.defineProperties($taxonomies[tax], {
-      //   '$lodger': {
-      //     value: this,
-      //     writable: false
-      //   },
-      //   collection: {
-      //     value: Lodger.db[tax],
-      //     writable: false
-      //   }
-      // })
+      form.defaults = async () => (await Promise.all(
+        fieldsIds
+          .concat(['state'])
+          .map(async b => ({ [b]: fields[b] && (typeof fields[b].default === 'function' ?
+                await fields[b].default.call(this) :
+                fields[b].default) }))
+      )).reduce((a, b) => ({ ...a, ...b }), {})
     })
   }
 
