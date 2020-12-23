@@ -290,7 +290,7 @@ class Lodger implements LodgerAPI {
       form.defaults = async () => {
         const { fields, fieldsIds } = form
 
-        return await Promise.all(
+        return (await Promise.all(
           fieldsIds
             .filter(id => fields[id].default !== undefined)
             .map(async fId => {
@@ -303,7 +303,7 @@ class Lodger implements LodgerAPI {
                   d
               }
             })
-          ).reduce((a, b) => ({ ...a, ...b }), {})
+          )).reduce((a, b) => ({ ...a, ...b }), {})
       }
     })
   }
