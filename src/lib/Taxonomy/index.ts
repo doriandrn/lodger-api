@@ -113,6 +113,10 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     return this.form.plural
   }
 
+  get refTaxes () {
+    return this.form.refFields.map(f => f.replace('Id', '').plural)
+  }
+
   get _collectionCreator () {
     const { name, methods, statics, } = this._schema
     const { schema } = this.form
