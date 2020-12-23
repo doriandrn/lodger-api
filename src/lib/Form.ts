@@ -205,6 +205,11 @@ implements FormAPI<I> {
       .sort((a, b) => this.fields[a].preview - this.fields[b].preview)
   }
 
+  get refFields () {
+    return this.fieldsIds
+      .filter(f => this.schema.properties[f].ref !== undefined)
+  }
+
   /**
    * register a new onsubmit function
    *
