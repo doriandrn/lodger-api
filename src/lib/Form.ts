@@ -134,20 +134,20 @@ implements FormAPI<I> {
     this.onsubmit = () => {}
   }
 
-  get _defaults () {
-    const { fields, fieldsIds } = this
-    return fieldsIds
-      .concat(['state'])
-      .map(async function (b) {
-        const field = fields[b]
-        if (!field)
-          return
-        const def = field.default
-        if (!def)
-          return
-        return def
-      })
-  }
+  // get _defaults () {
+  //   const { fields, fieldsIds } = this
+  //   return fieldsIds
+  //     .concat(['state'])
+  //     .map(function (b) {
+  //       const field = fields[b]
+  //       if (!field)
+  //         return
+  //       const def = field.default
+  //       if (!def)
+  //         return
+  //       return def
+  //     })
+  // }
 
   /**
    * Fakes data for testing

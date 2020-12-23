@@ -287,13 +287,24 @@ class Lodger implements LodgerAPI {
 
       $tax.collection = Lodger.db[tax]
 
-      form.defaults = async () => (await Promise.all(
-        form._defaults.map(async d =>
-          typeof d === 'function' ?
-            await d.call(this) :
-            d
-        )
-      )).reduce((a, b) => ({ ...a, ...b }), {})
+      form.defaults = async () => {
+        const { fields, fieldsIds } = form
+
+        return await Promise.all(
+          fieldsIds
+            .filter(id => fields[id].default !== undefined)
+            .map(async fId => {
+              const field = fields[fId]
+              const d = field.default
+
+              return {
+                [fId]: typeof d === 'function' ?
+                  await d.call(this) :
+                  d
+              }
+            })
+          ).reduce((a, b) => ({ ...a, ...b }), {})
+      }
     })
   }
 
