@@ -296,12 +296,12 @@ class Lodger implements LodgerAPI {
             .map(async fId => {
               const field = fields[fId]
               const d = field.default
+              const val = typeof d === 'function' ?
+                await d.call(this, data) :
+                d
 
-              return {
-                [fId]: typeof d === 'function' ?
-                  await d.call(this, data) :
-                  d
-              }
+              if (val !== undefined && val !== null)
+                return { [fId]: val }
             })
           )).reduce((a, b) => ({ ...a, ...b }), {})
       }
