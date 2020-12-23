@@ -145,11 +145,7 @@ implements FormAPI<I> {
         const def = field.default
         if (!def)
           return
-        return {
-          [b]: typeof def === 'function' ?
-            await def() :
-            def
-        }
+        return def
       })
   }
 
