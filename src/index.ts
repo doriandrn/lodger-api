@@ -287,7 +287,7 @@ class Lodger implements LodgerAPI {
 
       $tax.collection = Lodger.db[tax]
 
-      form.defaults = async () => {
+      form.defaults = async (data ?: any) => {
         const { fields, fieldsIds } = form
 
         return (await Promise.all(
@@ -299,7 +299,7 @@ class Lodger implements LodgerAPI {
 
               return {
                 [fId]: typeof d === 'function' ?
-                  await d.call(this) :
+                  await d.call(this, data) :
                   d
               }
             })
