@@ -278,7 +278,7 @@ class Lodger implements LodgerAPI {
     this.taxonomies.forEach(tax => {
       const $tax = $taxonomies[tax]
       const { form } = $tax
-      const { fields, fieldsIds } = form
+
 
       Object.defineProperty($tax, '$lodger', {
         value: this,
@@ -288,11 +288,7 @@ class Lodger implements LodgerAPI {
       $tax.collection = Lodger.db[tax]
 
       form.defaults = async () => (await Promise.all(
-        fieldsIds
-          .concat(['state'])
-          .map(async b => ({ [b]: fields[b] && (typeof fields[b].default === 'function' ?
-                await fields[b].default.call(this) :
-                fields[b].default) }))
+        form._defaults
       )).reduce((a, b) => ({ ...a, ...b }), {})
     })
   }

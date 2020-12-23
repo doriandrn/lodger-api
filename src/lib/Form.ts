@@ -134,6 +134,15 @@ implements FormAPI<I> {
     this.onsubmit = () => {}
   }
 
+  get _defaults () {
+    const { fields, fieldsIds } = this
+    return fieldsIds
+      .concat(['state'])
+      .map(async b => ({ [b]: fields[b] && (typeof fields[b].default === 'function' ?
+            await fields[b].default.call(this) :
+            fields[b].default) }))
+  }
+
   /**
    * Fakes data for testing
    *
@@ -146,16 +155,16 @@ implements FormAPI<I> {
       .fromEntries(fieldsIds
         .filter(fieldId => fieldId.indexOf('Id') < 0)
         .map(fieldId => {
-          const field = fields[fieldId]
-          if (!field.default)
-            return [fieldId, field.fakeValue]
+          // const field = fields[fieldId]
+          // if (!field.default)
+          //   return [fieldId, field.fakeValue]
 
-          try {
-            const def = typeof field.default === 'function' ? field.default() : field.default
-            return [fieldId, def]
-          } catch (e) {
-            console.log('Using fake val and not default on', fieldId, 'because (missing context)', e)
-          }
+          // try {
+          //   const def = typeof field.default === 'function' ? field.default() : field.default
+          //   return [fieldId, def]
+          // } catch (e) {
+          //   console.log('Using fake val and not default on', fieldId, 'because (missing context)', e)
+          // }
           return [fieldId, field.fakeValue]
         }))
   }
