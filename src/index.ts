@@ -288,7 +288,7 @@ class Lodger implements LodgerAPI {
       $tax.collection = Lodger.db[tax]
 
       form.defaults = async () => (await Promise.all(
-        form._defaults
+        form._defaults.map(d => d.call(this))
       )).reduce((a, b) => ({ ...a, ...b }), {})
     })
   }

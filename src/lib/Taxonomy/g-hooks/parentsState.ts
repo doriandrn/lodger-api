@@ -16,7 +16,6 @@ const counterUpdates = ({
       throw new Error(`Missing taxes ids to update counters ${{ taxes, data }}`)
 
     const isMultiple = typeof id === 'object' && id.length >= 1
-    // console.log('ISM', isMultiple)
     const { collection } = $taxonomies[tax.plural]
 
     const parentDocs = isMultiple ?

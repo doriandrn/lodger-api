@@ -82,7 +82,7 @@ const fields: FieldsCreator<Asociatie> = {
     type: 'array',
     ref: 'utilizator',
     required: true,
-    default: function ({ activeUserId }) { ([ activeUserId ]) },
+    default: function () { ([ this.activeUserId ]) },
     value: ({ activeDoc }) => activeDoc.utilizatori
   },
   servicii: {

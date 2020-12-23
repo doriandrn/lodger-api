@@ -138,9 +138,16 @@ implements FormAPI<I> {
     const { fields, fieldsIds } = this
     return fieldsIds
       .concat(['state'])
-      .map(async b => ({ [b]: fields[b] && (typeof fields[b].default === 'function' ?
-            await fields[b].default.call(this) :
-            fields[b].default) }))
+      .map(async function (b) {
+        const def = fields[b].default
+        if (!def)
+          return
+        return {
+          [b]: typeof def === 'function' ?
+            await def() :
+            def
+        }
+      })
   }
 
   /**
@@ -155,7 +162,7 @@ implements FormAPI<I> {
       .fromEntries(fieldsIds
         .filter(fieldId => fieldId.indexOf('Id') < 0)
         .map(fieldId => {
-          // const field = fields[fieldId]
+          const field = fields[fieldId]
           // if (!field.default)
           //   return [fieldId, field.fakeValue]
 
