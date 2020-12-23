@@ -139,7 +139,10 @@ implements FormAPI<I> {
     return fieldsIds
       .concat(['state'])
       .map(async function (b) {
-        const def = fields[b].default
+        const field = fields[b]
+        if (!field)
+          return
+        const def = field.default
         if (!def)
           return
         return {
