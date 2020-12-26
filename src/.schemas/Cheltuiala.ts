@@ -63,6 +63,7 @@ const fields: FieldsCreator<Cheltuiala> = {
   distribuire: {
     final: true,
     type: 'selApartamente',
+    ref: 'apartamente',
     default: () => ({})
   },
   snapshotsApartamente: {
