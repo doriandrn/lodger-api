@@ -209,9 +209,9 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
       })
     }
 
-    this.form.fieldsIds
-      .filter(fieldId => this.form.fields[fieldId].search)
-      .forEach(fieldId => collection.searchFields.push(fieldId))
+    // this.form.fieldsIds
+    //   .filter(fieldId => this.form.fields[fieldId].search)
+    //   .forEach(fieldId => collection.searchFields.push(fieldId))
 
     this.$collection = collection
   }
