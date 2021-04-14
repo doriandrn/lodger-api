@@ -9,7 +9,7 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import globals from 'rollup-plugin-node-globals'
 import babel from 'rollup-plugin-babel'
 import ts from 'rollup-plugin-typescript'
-import copy from 'rollup-plugin-copy'
+// import copy from 'rollup-plugin-copy'
 import json from '@rollup/plugin-json'
 import { terser } from "rollup-plugin-terser"
 
@@ -36,7 +36,9 @@ export default {
     'rxcollection-subscriber',
     'rxdb',
     'mobx',
-    'deepmerge'
+    'deepmerge',
+    'numeral',
+    'events'
   ],
 
   plugins: [
