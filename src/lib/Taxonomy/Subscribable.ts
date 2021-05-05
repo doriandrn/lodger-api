@@ -111,7 +111,8 @@ implements SubscribableTaxonomy<T> {
       return
       // throw new LodgerError('Cannot subscribe - A subscriber with this name already exists!')
 
-    const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
+    const descriptor = `${subscriberName}`
+    // const descriptor = `${subscriberName}-${taxonomies.indexOf(plural)}`
     const subState = state.subs[descriptor] ||
       Object.assign(state.subs, { [descriptor]: {} }) && state.subs[descriptor]
     const sub = this.subscribers[subscriberName] = new Subscriber(this.collection, merge(options, subState))
@@ -140,11 +141,12 @@ implements SubscribableTaxonomy<T> {
           return true
         }
 
+        const subName = subscriberName.indexOf('prince') < 0 ? `${subscriberName.split('-')[0]}-${tax.plural}` : subscriberName
         const { subscribers, parents, children } = $tax
-        const taxSub = subscribers[subscriberName]
+        const taxSub = subscribers[subName]
 
         if (!taxSub) {
-          console.error('Invalid subscriber requested', subscriberName, tax)
+          console.error('Invalid subscriber requested', subName, tax)
           return
         }
 
