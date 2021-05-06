@@ -147,6 +147,7 @@ implements SubscribableTaxonomy<T> {
 
         if (!taxSub) {
           console.error('Invalid subscriber requested', subName, tax)
+          console.error('orig subscriberName', subscriberName)
           return
         }
 
