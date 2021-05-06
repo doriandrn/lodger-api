@@ -146,7 +146,7 @@ implements SubscribableTaxonomy<T> {
           `${parentTax}-${tax}` :
           subscriberName
         const { subscribers, parents, children } = $tax
-        const taxSub = subscribers[subName]
+        const taxSub = subscribers[subName] || subscribers.prince
 
         if (!taxSub) {
           console.error('Invalid subscriber requested for', tax, subName)
