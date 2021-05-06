@@ -141,12 +141,12 @@ implements SubscribableTaxonomy<T> {
           return true
         }
 
-        const subName = subscriberName.indexOf('prince') < 0 ? `${subscriberName.split('-')[0]}-${tax.plural}` : subscriberName
+        // const subName = subscriberName.indexOf('prince') < 0 ? `${subscriberName.split('-')[0]}-${tax.plural}` : subscriberName
         const { subscribers, parents, children } = $tax
-        const taxSub = subscribers[subName]
+        const taxSub = subscribers[subscriberName]
 
         if (!taxSub) {
-          console.error('Invalid subscriber requested', subName, tax)
+          console.error('Invalid subscriber requested for', tax)
           console.error('orig subscriberName', subscriberName)
           return
         }
