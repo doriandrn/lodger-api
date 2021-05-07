@@ -13,7 +13,7 @@ const counterUpdates = ({
   return taxes.map(async (tax: Taxonomie) => {
     const id = data[`${tax}Id`] || data[tax]
     if (!id)
-      throw new Error(`Missing taxes ids to update counters ${{ taxes, data }}`)
+      throw new Error(`Missing ${tax} tax id (${id}) to update counters ${JSON.stringify({ taxes, data })}`)
 
     const isMultiple = typeof id === 'object' && id.length >= 1
     const { collection } = $taxonomies[tax.plural]
