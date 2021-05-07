@@ -7,7 +7,6 @@ import { LodgerFormCreator, Form } from "../Form"
 import notify from '../helpers/notify'
 import parentsState from './g-hooks/parentsState'
 import { Lodger } from 'index'
-const { counters } = parentsState
 
 export type TaxonomyCreator<I> = LodgerFormCreator<I>
 
@@ -144,6 +143,7 @@ export default class Taxonomy<T extends Taxonomie, Interface = { updatedAt ?: nu
     if ($collection)
       throw new Error(`Collection already set for ${ plurral } taxonomy`)
 
+    const { counters } = parentsState
 
     const emitDBupdated = () => {
       this.$lodger.emit('dbUpdated')
