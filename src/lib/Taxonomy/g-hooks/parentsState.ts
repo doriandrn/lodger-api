@@ -23,7 +23,7 @@ const counterUpdates = ({
       await collection.findOne(id).exec()
 
     if (!parentDocs)
-      throw new Error(`Missing parent(s) doc(s): ${ id, tax }`)
+      throw new Error(`Missing parent(s) doc(s): ${ id } ${ tax }`)
 
     if (isMultiple) {
       if (parentDocs.size)
