@@ -71,8 +71,8 @@ export default {
             const { sep } = path
 
             dirs.map(dir => {
-              const dirPath = __dirname.split(sep)
-              let targetDir = path.join(...dirPath, 'src', dir);
+              // const dirPath = __dirname.split(sep)
+              let targetDir = path.join(__dirname, 'src', dir);
               let files = fs.readdirSync(targetDir);
 
               if (files.indexOf('.DS_Store') > -1)
