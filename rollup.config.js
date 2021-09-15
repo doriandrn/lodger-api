@@ -15,9 +15,10 @@ import { terser } from "rollup-plugin-terser"
 
 const extensions = [ 'js', 'jsx', 'ts', 'tsx', 'json' ];
 const input = [ 'src/index.ts' ]
-const additionalReposURL = 'https://doriandrn.github.io'
-const repos = {
+export const additionalReposURL = 'https://doriandrn.github.io'
+export const repos = {
   currencies: 'currencies-rates',
+  currenciesIds: 'currencies-ids',
   locales: 'lodger-i18n'
 }
 
@@ -66,22 +67,27 @@ export default {
 
         switch (id) {
           case 'dynamic-targets':
-            dirs = ['src/.schemas']
+            dirs = ['.schemas']
+            const { sep } = path
 
             dirs.map(dir => {
-              const targetDir = path.join(__dirname, dir);
+              const dirPath = __dirname.split(sep)
+              let targetDir = path.join(...dirPath, 'src', dir);
               let files = fs.readdirSync(targetDir);
 
               if (files.indexOf('.DS_Store') > -1)
                 files.splice(0, 1)
 
-              if (!files.length) return
+              if (!files.length)
+                return
+              
               objectEntries.push(...files
-                .map(file => `  '${file}': () => import('${path.join(targetDir, file)}')`));
+                .map(fileName => `  '${ fileName }': () => import('${ targetDir }${ sep }${ fileName }')`));
             })
 
-            if (objectEntries)
-              return `export default {\n${objectEntries.join(',\n')}\n};`;
+            if (objectEntries) {
+              return `export default {\n${objectEntries.join(',\n')}\n};`.replace(/\\/g,'\\\\');
+            }
 
           case 'rates':
           case 'langs':

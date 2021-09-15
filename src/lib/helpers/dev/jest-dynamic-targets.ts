@@ -5,7 +5,11 @@ export default (() => {
   const o = {}
   const targetDir = path.join(__dirname, '../../../../src/.schemas');
   let files = fs.readdirSync(targetDir);
-  files.splice(files.indexOf('.DS_Store'), 1)
+  const dsStoreFileIndex = files.indexOf('.DS_Store') 
+  const isMac = dsStoreFileIndex > -1
+
+  if (isMac)
+    files.splice(dsStoreFileIndex, 1)
 
   for (let fileName of files) {
     o[fileName] = () => require(targetDir + '/' + fileName)

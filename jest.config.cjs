@@ -31,7 +31,8 @@ module.exports = {
     'fixtures/(.*)$': '<rootDir>/src/__fixtures__/$1',
     'lodger.config': '<rootDir>/src/lodger.config',
     'dynamic-targets': '<rootDir>/src/lib/helpers/dev/jest-dynamic-targets',
-    'locales': '<rootDir>/src/lib/helpers/dev/jest-locales'
+    'currencies-ids': '<rootDir>/src/lib/helpers/dev/jest-dynamics'
+    // 'locales': '<rootDir>/src/lib/helpers/dev/jest-locales'
   },
   modulePathIgnorePatterns: [
     "<rootDir>/dist/",
